@@ -1,4 +1,4 @@
-package exceptions.DashAB;
+package ab.dash.exceptions;
 
 public class InvalidAssignmentException extends Exception {
 
