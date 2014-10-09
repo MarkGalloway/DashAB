@@ -11,8 +11,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import exceptions.DashAB.InvalidAssignmentException;
-import exceptions.DashAB.ParserException;
+import ab.dash.exceptions.InvalidAssignmentException;
+import ab.dash.exceptions.ParserException;
 
 public class ASTtest {
 
@@ -44,7 +44,7 @@ public class ASTtest {
         
         DashAB_Part1_Test.main(args);
         
-        assertEquals("(PROGRAM)", outErrIntercept.toString().trim());
+        assertEquals("PROGRAM", outErrIntercept.toString().trim());
     }
     
 }

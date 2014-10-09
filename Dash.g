@@ -3,10 +3,15 @@ grammar Dash;
 options {
   language = Java;
   output = AST;
+  ASTLabelType = DashAST;
 }
 
 tokens {
   PROGRAM;
+}
+
+@header {
+  import ab.dash.ast.*;
 }
 
 program 
