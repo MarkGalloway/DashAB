@@ -18,3 +18,5 @@ Dash.tokens
 DashParser.java
 
 DashLexer.java
+
+Dash__.g

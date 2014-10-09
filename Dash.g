@@ -60,11 +60,12 @@ Stream_state : 'stream_state';
 Revserse : 'reverse';
 
 
-ID : LETTER ((LETTER | DIGIT))*;
+ID : (UNDERSCORE | LETTER) ((UNDERSCORE |LETTER | DIGIT))*;
 INTEGER : DIGIT+;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;};
 
+fragment UNDERSCORE : '_';
 fragment DIGIT : '0'..'9';
 fragment LETTER : 'a'..'z' |'A'..'Z';
