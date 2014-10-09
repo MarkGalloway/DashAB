@@ -16,3 +16,5 @@ bin/
 Dash.tokens
 
 DashParser.java
+
+DashLexer.java
