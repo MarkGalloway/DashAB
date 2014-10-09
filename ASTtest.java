@@ -38,10 +38,9 @@ public class ASTtest {
     
     @Test // Dummy Test
     public void dummyTest() throws IOException, RecognitionException, ParserException, InvalidAssignmentException {
-        SampleFileWriter.destroy("Tests/00dummytest.dash");
         SampleFileWriter.createFile("Tests/00dummytest.dash", "");
-        String[] args = new String[] {"Tests/00dummytest.dash","astDebug"};
         
+        String[] args = new String[] {"Tests/00dummytest.dash","astDebug"};
         DashAB_Part1_Test.main(args);
         
         assertEquals("PROGRAM", outErrIntercept.toString().trim());
