@@ -11,7 +11,12 @@ tokens {
 }
 
 @header {
+  package ab.dash;
   import ab.dash.ast.*;
+}
+
+@lexer::header {
+  package ab.dash;
 }
 
 program 

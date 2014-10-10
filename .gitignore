@@ -41,3 +41,5 @@ LLVMIROutput/*
 Thumbs.db
 Destok.ini
 ._*
+
+.classpath
