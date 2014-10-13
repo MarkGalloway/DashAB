@@ -273,14 +273,10 @@ REAL
 	
 CHARACTER :	'\'' . '\'' ;
 
-
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
-SL_COMMENT
-    :   '//' ~('\r'|'\n')* '\r'? '\n' {$channel=HIDDEN;}
-    ;
+SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? '\n' {$channel=HIDDEN;};
+COMMENT: '/*' .* '*/' {$channel=HIDDEN;};
 NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;};
-
-
 
 fragment DecimalExponent : ('e' | 'E') ('+' | '-')? DIGIT+;
 fragment FloatTypeSuffix : 'f' | 'F' | 'l' | 'L';
