@@ -1,0 +1,17 @@
+const integer i;
+const integer i = 0;
+
+var integer i;
+var integer i = 1;
+
+integer i;
+integer i = 1;
+
+boolean b;
+boolean b = true;
+
+real r;
+real r = 0.0;
+
+character c;
+character c = 'a';
