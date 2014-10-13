@@ -53,8 +53,14 @@ block
 // END: block
 
 // START: var
+specifier
+	:	Var
+	|	Const
+	;
+
 varDeclaration
-    :   type ID (ASSIGN expression)? DELIM 	-> ^(VAR_DECL type ID expression?)
+	:   type ID (ASSIGN expression)? DELIM 	-> ^(VAR_DECL Var type ID expression?)
+    |   specifier type ID (ASSIGN expression)? DELIM 	-> ^(VAR_DECL specifier type ID expression?)
 	;
 // END: var
 
