@@ -27,12 +27,12 @@ tokens {
 }
 
 program 
-  : .* EOF -> ^(PROGRAM)
+  : statement* EOF -> ^(PROGRAM statement*)
   ;
   
-tupleDeclaration
-	:
-	;
+//tupleDeclaration
+//	:
+//	;
 
 type
 	:	primitiveType
@@ -66,7 +66,7 @@ varDeclaration
 
 statement
     :   block
-    |	tupleDeclaration
+//    |	tupleDeclaration
     |	varDeclaration
     |	If LPAREN expression RPAREN s=statement (Else e=statement)?
     	-> ^(If expression $s $e?)
