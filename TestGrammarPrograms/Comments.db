@@ -1,0 +1,11 @@
+x = 1; // x = 2;
+
+/* This is a block comment
+ * and 
+ 
+ x = 3;
+ 
+ * should not display
+ada faf */
+
+x = 4;
