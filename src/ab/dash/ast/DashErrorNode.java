@@ -1,4 +1,5 @@
 package ab.dash.ast;
+
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
@@ -7,7 +8,7 @@ import org.antlr.runtime.tree.CommonErrorNode;
 
 public class DashErrorNode {
     /** A node representing erroneous token range in token stream */
-    org.antlr.runtime.tree.CommonErrorNode delegate;
+    CommonErrorNode delegate;
 
     public DashErrorNode(TokenStream input, Token start, Token stop,
                        RecognitionException e)
