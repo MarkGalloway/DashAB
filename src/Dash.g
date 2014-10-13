@@ -12,6 +12,8 @@ tokens {
 	PROGRAM;
 	BLOCK;
 	VAR_DECL;
+	FIELD_DECL;
+	TUPLE_LIST;
 	ELIST;       	// expression list
 	EXPR; 	   		// root of an expression
 	UNARY_MINUS;
@@ -29,10 +31,6 @@ tokens {
 program 
   : statement* EOF -> ^(PROGRAM statement*)
   ;
-  
-//tupleDeclaration
-//	:
-//	;
 
 type
 	:	primitiveType
@@ -52,6 +50,22 @@ block
     ;
 // END: block
 
+// START: tuple
+tupleType
+	: Tuple LPAREN tupleMember (',' tupleMember)* RPAREN -> ^(Tuple tupleMember+)
+	;
+	
+tupleMember
+	:	type ID? -> ^(FIELD_DECL type ID?)
+	|	tupleType ID? -> ^(FIELD_DECL tupleType ID?)
+	;
+	
+tupleMemeberList
+	:   LPAREN tupleMemeberList (',' tupleMemeberList)* RPAREN -> ^(TUPLE_LIST tupleMemeberList+)
+	|	expr -> expr
+	;
+// END: tuple
+
 // START: var
 specifier
 	:	Var
@@ -61,12 +75,13 @@ specifier
 varDeclaration
 	:   type ID (ASSIGN expression)? DELIM 	-> ^(VAR_DECL Var type ID expression?)
     |   specifier type ID (ASSIGN expression)? DELIM 	-> ^(VAR_DECL specifier type ID expression?)
+    |	tupleType ID (ASSIGN tupleMemeberList)? DELIM 	-> ^(VAR_DECL Var tupleType ID tupleMemeberList?)
+    |	specifier tupleType ID (ASSIGN tupleMemeberList)? DELIM 	-> ^(VAR_DECL specifier tupleType ID tupleMemeberList?)
 	;
 // END: var
 
 statement
     :   block
-//    |	tupleDeclaration
     |	varDeclaration
     |	If LPAREN expression RPAREN s=statement (Else e=statement)?
     	-> ^(If expression $s $e?)
@@ -79,7 +94,7 @@ statement
 lhs 
 	:	postfixExpression -> ^(EXPR postfixExpression)
 	;
-	
+
 expressionList
     :   expr (',' expr)* -> ^(ELIST expr+)
     |   -> ELIST
