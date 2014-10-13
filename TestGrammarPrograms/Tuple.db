@@ -1,0 +1,10 @@
+tuple(integer, real r, boolean) tuple_var;
+tuple(integer, real r, boolean) tuple_var = (1, 0.2, true);
+
+const tuple(integer, real r, boolean) tuple_var;
+const tuple(integer, real r, boolean) tuple_var = (1, 0.2, true);
+
+var tuple(integer, real r, boolean) tuple_var;
+var tuple(integer, real r, boolean) tuple_var = (1, 0.2, true);
+
+tuple(integer, tuple(integer, integer)) tuple_var = (1, (2, 3));
