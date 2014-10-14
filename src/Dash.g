@@ -67,7 +67,7 @@ formalParameters
     ;
     
 parameter
-	:	type ID		 -> ^(ARG_DECL type ID)
+	:	type ID	-> ^(ARG_DECL type ID)
 	;
 
 // START: block
