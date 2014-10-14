@@ -13,6 +13,7 @@ tokens {
 	CALL;
 	BLOCK;
 	FUNCTION_DECL;
+	PROCEDURE_DECL;
 	VAR_DECL;
 	FIELD_DECL;
 	ARG_DECL;
@@ -36,7 +37,7 @@ program
 	;
   
 line
-	: functionDeclaration
+	: methodDeclaration
 	| statement
 	;
 
@@ -53,22 +54,27 @@ primitiveType
     ;
     
     
-// START: function
-functionDeclaration
+// START: method
+methodDeclaration
     :   Function ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
         -> ^(FUNCTION_DECL type ID formalParameters? expression)
     |   Function ID LPAREN formalParameters? RPAREN Returns type block
         -> ^(FUNCTION_DECL type ID formalParameters? block)
+    |   Procedure ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
+        -> ^(PROCEDURE_DECL type ID formalParameters? expression)
+    |   Procedure ID LPAREN formalParameters? RPAREN (Returns type)? block
+        -> ^(PROCEDURE_DECL type? ID formalParameters? block)
     ;
-// END: function
 
 formalParameters
     :   parameter (',' parameter)* -> parameter+
     ;
     
 parameter
-	:	type ID	-> ^(ARG_DECL type ID)
+	:	specifier type ID -> ^(ARG_DECL specifier type ID)
+	|	type ID -> ^(ARG_DECL Const type ID)
 	;
+// END: method
 
 // START: block
 block 
