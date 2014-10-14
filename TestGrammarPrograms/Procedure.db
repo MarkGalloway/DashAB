@@ -1,0 +1,25 @@
+procedure times_two(integer x) returns integer = 2 * x;
+
+procedure f() returns integer = 1;
+
+procedure pythag(real a, real b) returns real = (a^2 + b^2)^(1/2);
+
+procedure get(real a, integer i) returns real = a+i;
+
+procedure g (boolean b) returns integer {
+    if (b) {
+        return 3;
+    }
+    else {
+        return 8;
+    }
+}
+
+procedure get2(var real a, var integer i) returns real = a+i;
+
+procedure g2(boolean b) {
+	integer x = 1;
+	if (b) {
+		integer x = 1;
+	}
+}
