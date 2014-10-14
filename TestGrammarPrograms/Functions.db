@@ -1,0 +1,20 @@
+function times_two(integer x) returns integer = 2 * x;
+
+/* A function with no arguments */
+function f() returns integer = 1;
+
+/* A function with two arguments */
+function pythag(real a, real b) returns real = (a^2 + b^2)^(1/2);
+
+/* A function with different types of arguments */
+function get(real a, integer i) returns real = a+i;
+
+/* Valid, all possible branches hit a return statement with a valid type */
+function g (boolean b) returns integer {
+    if (b) {
+        return 3;
+    }
+    else {
+        return 8;
+    }
+}
