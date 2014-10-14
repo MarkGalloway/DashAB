@@ -37,8 +37,9 @@ program
 	;
   
 line
-	: methodDeclaration
-	| statement
+	:	methodForwardDeclaration
+	|	methodDeclaration
+	|	statement
 	;
 
 type
@@ -55,6 +56,13 @@ primitiveType
     
     
 // START: method
+methodForwardDeclaration
+	:   Function ID LPAREN formalParameters? RPAREN Returns type DELIM
+        -> ^(FUNCTION_DECL type ID formalParameters?)
+    |   Procedure ID LPAREN formalParameters? RPAREN (Returns type)? DELIM
+        -> ^(PROCEDURE_DECL type? ID formalParameters?)
+    ;
+
 methodDeclaration
     :   Function ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
         -> ^(FUNCTION_DECL type ID formalParameters? expression)
