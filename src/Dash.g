@@ -10,9 +10,12 @@ options {
 
 tokens {
 	PROGRAM;
+	CALL;
 	BLOCK;
+	FUNCTION_DECL;
 	VAR_DECL;
 	FIELD_DECL;
+	ARG_DECL;
 	TUPLE_LIST;
 	ELIST;       	// expression list
 	EXPR; 	   		// root of an expression
@@ -29,8 +32,13 @@ tokens {
 }
 
 program 
-  : statement* EOF -> ^(PROGRAM statement*)
-  ;
+	: line* EOF -> ^(PROGRAM line*)
+	;
+  
+line
+	: functionDeclaration
+	| statement
+	;
 
 type
 	:	primitiveType
@@ -43,6 +51,24 @@ primitiveType
     |	Character
     |	Boolean
     ;
+    
+    
+// START: function
+functionDeclaration
+    :   Function ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
+        -> ^(FUNCTION_DECL type ID formalParameters? expression)
+    |   Function ID LPAREN formalParameters? RPAREN Returns type block
+        -> ^(FUNCTION_DECL type ID formalParameters? block)
+    ;
+// END: function
+
+formalParameters
+    :   parameter (',' parameter)* -> parameter+
+    ;
+    
+parameter
+	:	type ID		 -> ^(ARG_DECL type ID)
+	;
 
 // START: block
 block 
