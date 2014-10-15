@@ -41,50 +41,55 @@ public class SymbolTable {
         null, _boolean, _character, _integer, _real
     };
 
-    /** Map t1 op t2 to result type (_void implies illegal) */
+    /** Map t1 op t2 to result type (null implies illegal) */
     public static final Type[][] arithmeticResultType = new Type[][] {
-        /*          struct  boolean  char    int     float,   void */
-        /*struct*/  {_void, _void,   _void,  _void,  _void,   _void},
-        /*boolean*/ {_void, _void,   _void,  _void,  _void,   _void},
-        /*char*/    {_void, _void,   _char,  _int,   _float,  _void},
-        /*int*/     {_void, _void,   _int,   _int,   _float,  _void},
-        /*float*/   {_void, _void,   _float, _float, _float,  _void},
-        /*void*/    {_void, _void,   _void,  _void,  _void,   _void}
+    	/*          	tuple  		boolean  	character 	integer 	real*/
+        /*tuple*/  		{null,  	null,    	null,   	null,   	null},
+        /*boolean*/ 	{null,  	null,    	null,   	null,   	null},
+        /*character*/   {null,  	null,    	null,   	null,		null},
+        /*integer*/     {null,  	null,    	null,   	null,   	null},
+        /*real*/   		{null,  	null,    	null,   	null,		null}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
-        /*          struct  boolean char      int       float,    void */
-        /*struct*/  {_void, _void,  _void,    _void,    _void,    _void},
-        /*boolean*/ {_void, _void,  _void,    _void,    _void,    _void},
-        /*char*/    {_void, _void,  _boolean, _boolean, _boolean, _void},
-        /*int*/     {_void, _void,  _boolean, _boolean, _boolean, _void},
-        /*float*/   {_void, _void,  _boolean, _boolean, _boolean, _void},
-        /*void*/    {_void, _void,  _void,    _void,    _void,    _void}
+    	/*          	tuple  		boolean  	character 	integer 	real*/
+        /*tuple*/  		{null,  	null,    	null,   	null,   	null},
+        /*boolean*/ 	{null,  	null,    	null,   	null,   	null},
+        /*character*/   {null,  	null,    	null,   	null,		null},
+        /*integer*/     {null,  	null,    	null,   	null,   	null},
+        /*real*/   		{null,  	null,    	null,   	null,		null}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
-        /*           struct boolean   char      int       float,    void */
-        /*struct*/  {_void, _void,    _void,    _void,    _void,    _void},
-        /*boolean*/ {_void, _boolean, _void,    _void,    _void,    _void},
-        /*char*/    {_void, _void,    _boolean, _boolean, _boolean, _void},
-        /*int*/     {_void, _void,    _boolean, _boolean, _boolean, _void},
-        /*float*/   {_void, _void,    _boolean, _boolean, _boolean, _void},
-        /*void*/    {_void, _void,    _void,    _void,    _void,    _void}
+    	 /*          	tuple  		boolean  	character 	integer 	real*/
+        /*tuple*/  		{null,  	null,    	null,   	null,   	null},
+        /*boolean*/ 	{null,  	null,    	null,   	null,   	null},
+        /*character*/   {null,  	null,    	null,   	null,		null},
+        /*integer*/     {null,  	null,    	null,   	null,   	null},
+        /*real*/   		{null,  	null,    	null,   	null,		null}
     };
+    
+    public static final Type[][] castResultType = new Type[][] {
+   	 /*          		tuple  		boolean  	character 	integer 	real*/
+       /*tuple*/  		{null,  	null,    	null,   	null,   	null},
+       /*boolean*/ 		{null,  	null,    	null,   	null,   	null},
+       /*character*/	{null,  	null,    	null,   	null,		null},
+       /*integer*/		{null,  	null,    	null,   	null,   	null},
+       /*real*/   		{null,  	null,    	null,   	null,		null}
+   };
 
     /** Indicate whether a type needs a promotion to a wider type.
      *  If not null, implies promotion required.  Null does NOT imply
      *  error--it implies no promotion.  This works for
-     *  arithmetic, equality, and relational operators in Cymbol.
+     *  arithmetic, equality, and relational operators in Dash.
      */
     public static final Type[][] promoteFromTo = new Type[][] {
-        /*          struct  boolean  char    int     float,   void */
-        /*struct*/  {null,  null,    null,   null,   null,    null},
-        /*boolean*/ {null,  null,    null,   null,   null,    null},
-        /*char*/    {null,  null,    null,   _int,   _float,  null},
-        /*int*/     {null,  null,    null,   null,   _float,  null},
-        /*float*/   {null,  null,    null,   null,    null,   null},
-        /*void*/    {null,  null,    null,   null,    null,   null}
+        /*          	tuple  		boolean  	character 	integer 	real*/
+        /*tuple*/  		{null,  	null,    	null,   	null,   	null},
+        /*boolean*/ 	{null,  	null,    	null,   	null,   	null},
+        /*character*/   {null,  	null,    	null,   	null,		null},
+        /*integer*/     {null,  	null,    	null,   	null,   	_real},
+        /*real*/   		{null,  	null,    	null,   	null,		null}
     };
 
     GlobalScope globals = new GlobalScope();
@@ -107,7 +112,7 @@ public class SymbolTable {
         int ta = a.evalType.getTypeIndex(); // type index of left operand
         int tb = b.evalType.getTypeIndex(); // type index of right operand
         Type result = typeTable[ta][tb];    // operation result type
-        if ( result==_void ) {
+        if ( result==null ) {
             listener.error(text(a)+", "+
                            text(b)+" have incompatible types in "+
                            text((DashAST)a.getParent()));
@@ -134,10 +139,10 @@ public class SymbolTable {
     }
 
     public Type uminus(DashAST a) {
-        if ( !(a.evalType==_int || a.evalType==_float) ) {
+        if ( !(a.evalType==_integer || a.evalType==_real) ) {
             listener.error(text(a)+" must have int/float type in "+
                            text((DashAST)a.getParent()));
-            return _void;
+            return null;
         }
         return a.evalType;
     }
@@ -158,14 +163,14 @@ public class SymbolTable {
 //        {
 //            listener.error(text(id)+" must be an array variable in "+
 //                           text((DashAST)id.getParent()));
-//            return _void;
+//            return null;
 //        }
 //        VariableSymbol vs = (VariableSymbol)s;
 //        Type t = ((ArrayType)vs.type).elementType;   // get element type
 //        int texpr = index.evalType.getTypeIndex();
 //        // promote the index expr if necessary to int
 //        index.promoteToType = promoteFromTo[texpr][tINT];
-//        if ( !canAssignTo(index.evalType, _int, index.promoteToType) ) {
+//        if ( !canAssignTo(index.evalType, _integer, index.promoteToType) ) {
 //            listener.error(text(index)+" index must have integer type in "+
 //                           text((DashAST)id.getParent()));
 //        }        
@@ -177,7 +182,7 @@ public class SymbolTable {
         if ( s.getClass() != MethodSymbol.class ) {
             listener.error(text(id)+" must be a function in "+
                            text((DashAST)id.getParent()));
-            return _void;
+            return null;
         }
 		
         MethodSymbol ms = (MethodSymbol)s;
@@ -211,7 +216,7 @@ public class SymbolTable {
         if ( type.getClass() != TupleSymbol.class ) {
             listener.error(text(expr)+" must have struct type in "+
                            text((DashAST)expr.getParent()));
-            return _void;
+            return null;
         }
         TupleSymbol scope = (TupleSymbol)expr.evalType;		// get scope of left
         Symbol s = scope.resolveMember(field.getText());	// resolve ID in scope
