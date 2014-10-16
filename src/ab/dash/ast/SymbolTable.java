@@ -43,39 +43,35 @@ public class SymbolTable {
 
     /** Map t1 op t2 to result type (null implies illegal) */
     public static final Type[][] arithmeticResultType = new Type[][] {
-    	/*          	tuple  		boolean  	character 	integer 	real*/
-        /*tuple*/  		{null,  	null,    	null,   	null,   	null},
-        /*boolean*/ 	{null,  	null,    	null,   	null,   	null},
-        /*character*/   {null,  	null,    	null,   	null,		null},
-        /*integer*/     {null,  	null,    	null,   	null,   	null},
-        /*real*/   		{null,  	null,    	null,   	null,		null}
+    	 /*          	boolean  	character 	integer 	real*/
+        /*boolean*/ 	{null,    	null,   	null,   	null},
+        /*character*/   {null,  	null,    	null,   	null},
+        /*integer*/     {null,  	null,    	_integer,   null},
+        /*real*/   		{null,  	null,    	null,   	_real}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
-    	/*          	tuple  		boolean  	character 	integer 	real*/
-        /*tuple*/  		{null,  	null,    	null,   	null,   	null},
-        /*boolean*/ 	{null,  	null,    	null,   	null,   	null},
-        /*character*/   {null,  	null,    	null,   	null,		null},
-        /*integer*/     {null,  	null,    	null,   	null,   	null},
-        /*real*/   		{null,  	null,    	null,   	null,		null}
+    	 /*          	boolean  	character 	integer 	real*/
+        /*boolean*/ 	{_boolean,  null,   	null,   	null},
+        /*character*/   {null,  	_boolean,   null,   	null},
+        /*integer*/     {null,  	null,    	_boolean,   null},
+        /*real*/   		{null,  	null,    	null,   	_boolean}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
-    	 /*          	tuple  		boolean  	character 	integer 	real*/
-        /*tuple*/  		{null,  	null,    	null,   	null,   	null},
-        /*boolean*/ 	{null,  	null,    	null,   	null,   	null},
-        /*character*/   {null,  	null,    	null,   	null,		null},
-        /*integer*/     {null,  	null,    	null,   	null,   	null},
-        /*real*/   		{null,  	null,    	null,   	null,		null}
+    	 /*          	boolean  	character 	integer 	real*/
+        /*boolean*/ 	{_boolean,  null,   	null,   	null},
+        /*character*/   {null,  	_boolean,   null,   	null},
+        /*integer*/     {null,  	null,    	_boolean,	null},
+        /*real*/   		{null,  	null,    	null,   	_boolean}
     };
     
     public static final Type[][] castResultType = new Type[][] {
-   	 /*          		tuple  		boolean  	character 	integer 	real*/
-       /*tuple*/  		{null,  	null,    	null,   	null,   	null},
-       /*boolean*/ 		{null,  	null,    	null,   	null,   	null},
-       /*character*/	{null,  	null,    	null,   	null,		null},
-       /*integer*/		{null,  	null,    	null,   	null,   	null},
-       /*real*/   		{null,  	null,    	null,   	null,		null}
+    	/*          	boolean  	character 	integer 	real*/
+        /*boolean*/ 	{_boolean,  _character, _integer,   _real},
+        /*character*/   {_boolean,  _character,	_integer,   _real},
+        /*integer*/     {_boolean,  _character, _integer,   _real},
+        /*real*/   		{null,  	null,    	_integer,   _real}
    };
 
     /** Indicate whether a type needs a promotion to a wider type.
@@ -84,12 +80,11 @@ public class SymbolTable {
      *  arithmetic, equality, and relational operators in Dash.
      */
     public static final Type[][] promoteFromTo = new Type[][] {
-        /*          	tuple  		boolean  	character 	integer 	real*/
-        /*tuple*/  		{null,  	null,    	null,   	null,   	null},
-        /*boolean*/ 	{null,  	null,    	null,   	null,   	null},
-        /*character*/   {null,  	null,    	null,   	null,		null},
-        /*integer*/     {null,  	null,    	null,   	null,   	_real},
-        /*real*/   		{null,  	null,    	null,   	null,		null}
+        /*          	boolean  	character 	integer 	real*/
+        /*boolean*/ 	{null,    	null,   	null,   	null},
+        /*character*/   {null,  	null,    	null,   	null},
+        /*integer*/     {null,  	null,    	null,   	_real},
+        /*real*/   		{null,  	null,    	null,   	null}
     };
 
     GlobalScope globals = new GlobalScope();
@@ -127,12 +122,14 @@ public class SymbolTable {
     public Type bop(DashAST a, DashAST b) {
         return getResultType(arithmeticResultType, a, b);
     }
+    
     public Type relop(DashAST a, DashAST b) {
         getResultType(relationalResultType, a, b);
         // even if the operands are incompatible, the type of
         // this operation must be boolean
         return _boolean;
     }
+    
     public Type eqop(DashAST a, DashAST b) {
         getResultType(equalityResultType, a, b);
         return _boolean;
@@ -140,12 +137,13 @@ public class SymbolTable {
 
     public Type uminus(DashAST a) {
         if ( !(a.evalType==_integer || a.evalType==_real) ) {
-            listener.error(text(a)+" must have int/float type in "+
+            listener.error(text(a)+" must have integer or real type in "+
                            text((DashAST)a.getParent()));
             return null;
         }
         return a.evalType;
     }
+    
     public Type unot(DashAST a) {
         if ( a.evalType!=_boolean ) {
             listener.error(text(a)+" must have boolean type in "+
@@ -180,7 +178,7 @@ public class SymbolTable {
     public Type call(DashAST id, List args) {
         Symbol s = id.scope.resolve(id.getText());
         if ( s.getClass() != MethodSymbol.class ) {
-            listener.error(text(id)+" must be a function in "+
+            listener.error(text(id)+" must be a function or procedure in "+
                            text((DashAST)id.getParent()));
             return null;
         }
@@ -214,7 +212,7 @@ public class SymbolTable {
     public Type member(DashAST expr, DashAST field) {
         Type type = expr.evalType;
         if ( type.getClass() != TupleSymbol.class ) {
-            listener.error(text(expr)+" must have struct type in "+
+            listener.error(text(expr)+" must have tuple type in "+
                            text((DashAST)expr.getParent()));
             return null;
         }
