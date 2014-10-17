@@ -335,8 +335,8 @@ SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? '\n' {$channel=HIDDEN;};
 COMMENT: '/*' .* '*/' {$channel=HIDDEN;};
 NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;};
 
-fragment DecimalExponent : ('e' | 'E') ('+' | '-')? DIGIT+;
-fragment FloatTypeSuffix : 'f' | 'F' | 'l' | 'L';
+fragment DecimalExponent : ('e' | 'E') UNDERSCORE* ('+' | '-')? UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
+fragment FloatTypeSuffix : 'f' | 'F' | 'l' | 'L' UNDERSCORE*;
 fragment UNDERSCORE : '_';
 fragment DIGIT : '0'..'9';
 fragment LETTER : 'a'..'z' |'A'..'Z';
