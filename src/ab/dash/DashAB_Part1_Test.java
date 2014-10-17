@@ -34,39 +34,18 @@ public class DashAB_Part1_Test {
         DashLexer lexer = new DashLexer(input);
         final TokenRewriteStream tokens = new TokenRewriteStream(lexer);
         DashParser parser = new DashParser(tokens);
-        parser.setTreeAdaptor(DashAdaptor);
+        parser.setTreeAdaptor(DashAST.dashAdaptor);
         DashParser.program_return entry = parser.program();
   
         
         CommonTree ast = (CommonTree) entry.getTree();
         
+        /** TESTING FEATURE: REMOVE ON RELEASE */
         if(args.length > 1 && args[1].equals("astDebug")) {
             System.out.println(ast.toStringTree());
             return;
         }
+        /** TESTING FEATURE: END REMOVE ON RELEASE */
         
     }
-    
-    
-    /** An adaptor that tells ANTLR to build FashAST nodes */
-    public static TreeAdaptor DashAdaptor = new CommonTreeAdaptor() {
-        public Object create(Token token) {
-            return new DashAST(token);
-        }
-        public Object dupNode(Object t) {
-            if ( t==null ) {
-                return null;
-            }
-            return create(((DashAST)t).token);
-        }
-
-        public Object errorNode(TokenStream input,
-                                Token start,
-                                Token stop,
-                                RecognitionException e)
-        {
-            return new DashErrorNode(input,start,stop,e);
-        }
-    };
-
 }
