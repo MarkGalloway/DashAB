@@ -1,0 +1,3 @@
+procedure main() returns integer {
+    return 0;
+}
