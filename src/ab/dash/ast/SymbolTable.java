@@ -87,7 +87,7 @@ public class SymbolTable {
         /*real*/   		{null,  	null,    	null,   	null}
     };
 
-    GlobalScope globals = new GlobalScope();
+    public GlobalScope globals = new GlobalScope();
 
     /** Need to have token buffer to print out expressions, errors */
     TokenStream tokens;
