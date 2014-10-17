@@ -120,7 +120,10 @@ exitMethod
 atoms
 @init {DashAST t = (DashAST)input.LT(1);}
     :  {t.hasAncestor(EXPR)||t.hasAncestor(ASSIGN)}? ID
-       {t.scope = currentScope;}
+       {
+       System.out.println("line " + $ID.getLine() + ": ref " + $ID.text);
+       t.scope = currentScope;
+       }
     ;
 //END: atoms
 
@@ -133,7 +136,7 @@ specifier
 varDeclaration // global, parameter, or local variable
     :   ^((VAR_DECL|ARG_DECL) specifier type ID .?)
         {
-        //System.out.println("line "+$ID.getLine()+": def "+$ID.text);
+        System.out.println("line " + $ID.getLine() + ": def " + $ID.text);
         VariableSymbol vs = new VariableSymbol($ID.text,$type.type);
         vs.def = $ID;            // track AST location of def's ID
         $ID.symbol = vs;         // track in AST
