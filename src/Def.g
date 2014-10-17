@@ -116,8 +116,13 @@ atoms
 //END: atoms
 
 // START: var
+specifier
+	:	Var
+	|	Const
+	;
+	
 varDeclaration // global, parameter, or local variable
-    :   ^((FIELD_DECL|VAR_DECL|ARG_DECL) type ID .?)
+    :   ^((FIELD_DECL|VAR_DECL|ARG_DECL) specifier type ID .?)
         {
         //System.out.println("line "+$ID.getLine()+": def "+$ID.text);
         VariableSymbol vs = new VariableSymbol($ID.text,$type.type);
@@ -130,7 +135,7 @@ varDeclaration // global, parameter, or local variable
 
 /** Not included in tree pattern matching directly.  Needed by declarations */
 type returns [Type type]
-    :  typeElement         {$type = $typeElement.type;}
+    :	typeElement         {$type = $typeElement.type;}
     ;   
         
 typeElement returns [Type type]
