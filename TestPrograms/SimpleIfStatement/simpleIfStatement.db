@@ -1,0 +1,9 @@
+procedure main() returns integer {
+	integer i = 0;
+	
+	if (true) {
+		i = 1;
+	}
+	
+    return i;
+}
