@@ -280,7 +280,7 @@ Revserse : 'reverse';
 
 
 ID : (UNDERSCORE | LETTER) ((UNDERSCORE |LETTER | DIGIT))*;
-INTEGER : DIGIT+;
+INTEGER : DIGIT (DIGIT | UNDERSCORE)*;
 
 /*
 How to read diagram: 
@@ -321,9 +321,12 @@ Examples:
 */
 
 REAL 
-	: (DIGIT* '.' DIGIT+
-	| DIGIT+ '.'  
-	| DIGIT+) DecimalExponent? FloatTypeSuffix?;
+	: 	(
+			(DIGIT (DIGIT | UNDERSCORE)* '.' (DIGIT | UNDERSCORE)*)
+			| ('.' (DIGIT | UNDERSCORE)*)
+			| (DIGIT (DIGIT | UNDERSCORE)*)
+		) DecimalExponent? FloatTypeSuffix?
+	;
 	
 CHARACTER :	'\'' . '\'' ;
 
