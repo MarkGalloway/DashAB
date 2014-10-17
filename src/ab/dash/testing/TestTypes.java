@@ -39,10 +39,15 @@ public class TestTypes {
 		DashParser.program_return r = parser.program();
 
 		DashAST tree = (DashAST) r.getTree();
+		
+		System.out.println("\nTree:");
 		System.out.println(tree.toStringTree());
+		System.out.println();
 		
 		System.out.flush();
 		System.err.flush();
+		
+		System.out.println("Def Step:");
 
 		CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
 		nodes.setTokenStream(tokens);
@@ -50,7 +55,10 @@ public class TestTypes {
 		SymbolTable symtab = new SymbolTable(tokens); // make global scope, types
 		Def def = new Def(nodes, symtab); // use custom constructor
 		def.downup(tree); // trigger symtab actions upon certain subtrees
+		System.out.println("globals: "+symtab.globals);
+		System.out.println();
 
+		System.out.println("Type Step:");
 		// RESOLVE SYMBOLS, COMPUTE EXPRESSION TYPES
 		nodes.reset();
 		Types typeComp = new Types(nodes, symtab);
@@ -87,7 +95,9 @@ public class TestTypes {
 		};
 		v.visit(tree, actions2);
 
+		System.out.println("\nCode:");
 		System.out.println(tokens);
+		System.out.println("\n\n");
 		
 		System.out.flush();
 		System.err.flush();
