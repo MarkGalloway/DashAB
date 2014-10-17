@@ -325,7 +325,7 @@ REAL
 			(DIGIT (DIGIT | UNDERSCORE)* '.' (DIGIT | UNDERSCORE)*)
 			| ('.' (DIGIT | UNDERSCORE)*)
 			| (DIGIT (DIGIT | UNDERSCORE)*)
-		) DecimalExponent? FloatTypeSuffix?
+		) (DecimalExponent1 | DecimalExponent2)? FloatTypeSuffix?
 	;
 	
 CHARACTER :	'\'' . '\'' ;
@@ -335,7 +335,8 @@ SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? '\n' {$channel=HIDDEN;};
 COMMENT: '/*' .* '*/' {$channel=HIDDEN;};
 NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;};
 
-fragment DecimalExponent : ('e' | 'E') UNDERSCORE* ('+' | '-')? UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
+fragment DecimalExponent1 : ('e' | 'E') UNDERSCORE* ('+' | '-') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
+fragment DecimalExponent2 : ('e' | 'E') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
 fragment FloatTypeSuffix : 'f' | 'F' | 'l' | 'L' UNDERSCORE*;
 fragment UNDERSCORE : '_';
 fragment DIGIT : '0'..'9';
