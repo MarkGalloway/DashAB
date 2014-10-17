@@ -100,7 +100,7 @@ enterMethod
 /** Track method associated with this return. */
 ret :   ^(Return .) 
 	{
-	System.out.println("line "+$Return.getLine()+": return ");
+	System.out.println("line "+$Return.getLine()+": return " + currentMethod);
 	$ret.start.symbol = currentMethod;
 	}
     ;
