@@ -1,0 +1,5 @@
+const integer global_int = 0;
+
+procedure main() returns integer {
+    return 0;
+}
