@@ -128,24 +128,25 @@ atoms
 //END: atoms
 
 // START: var
-specifier
-	:	Var
-	|	Const
-	;
-	
 varDeclaration // global, parameter, or local variable
     :   ^((VAR_DECL|ARG_DECL) specifier type ID .?)
         {
-        System.out.println("line " + $ID.getLine() + ": def " + $ID.text);
-        VariableSymbol vs = new VariableSymbol($ID.text,$type.type);
+        System.out.println("line " + $ID.getLine() +
+         ": def " + $ID.text + 
+         " type ( " + $type.type +  " ) " + 
+         " specifier ( " + $specifier.specifier +  " )");
+        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
         vs.def = $ID;            // track AST location of def's ID
         $ID.symbol = vs;         // track in AST
         currentScope.define(vs);
         }
     |   ^(VAR_DECL specifier ID .)
         {
-        System.out.println("line " + $ID.getLine() + ": def " + $ID.text);
-        VariableSymbol vs = new VariableSymbol($ID.text, null);
+        System.out.println("line " + $ID.getLine() +
+         ": def " + $ID.text + 
+         " type ( unknown ) " + 
+         " specifier ( " + $specifier.specifier +  " )");
+        VariableSymbol vs = new VariableSymbol($ID.text, null, $specifier.specifier);
         vs.def = $ID;            // track AST location of def's ID
         $ID.symbol = vs;         // track in AST
         currentScope.define(vs);
@@ -162,6 +163,21 @@ varDeclaration // global, parameter, or local variable
 // END: field
 
 /** Not included in tree pattern matching directly.  Needed by declarations */
+specifier returns [Specifier specifier]
+    :	specifierElement         {$specifier = $specifierElement.specifier;}
+    ;   
+        
+specifierElement returns [Specifier specifier]
+@init {DashAST t = (DashAST)input.LT(1);}
+@after {
+    t.symbol = currentScope.resolve(t.getText()); // return Type
+    t.scope = currentScope;
+    $specifier = (Specifier)t.symbol;
+}
+    :   Const
+    |   Var
+    ;
+
 type returns [Type type]
     :	typeElement         {$type = $typeElement.type;}
     ;   

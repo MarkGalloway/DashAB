@@ -13,6 +13,10 @@ import org.antlr.runtime.TokenStream;
 import java.util.List;
 
 public class SymbolTable {
+	// Specifiers
+    public static final int sCONST = 0;
+    public static final int sVAR = 1;
+    
     // arithmetic types defined in order from narrowest to widest
     public static final int tUSER = 0; // user-defined type (tuple)
     public static final int tBOOLEAN = 1;
@@ -28,6 +32,11 @@ public class SymbolTable {
         new BuiltInTypeSymbol("integer", tINTEGER);
     public static final BuiltInTypeSymbol _real=
         new BuiltInTypeSymbol("real", tREAL);
+    
+    public static final BuiltInSpecifierSymbol _const =
+    	new BuiltInSpecifierSymbol("const", sCONST);
+    public static final BuiltInSpecifierSymbol _var =
+    	new BuiltInSpecifierSymbol("var", sVAR);
 
     public DashListener listener =
         new DashListener() {
@@ -39,6 +48,11 @@ public class SymbolTable {
     public static final Type[] indexToType = {
         // 0, 1,        2,     		3,    	  4
         null, _boolean, _character, _integer, _real
+    };
+    
+    public static final Specifier[] indexToSpecifier = {
+        // 0, 	1
+        _const, _var
     };
 
     /** Map t1 op t2 to result type (null implies illegal) */
@@ -100,6 +114,10 @@ public class SymbolTable {
     protected void initTypeSystem() {
         for (Type t : indexToType) {
             if ( t!=null ) globals.define((BuiltInTypeSymbol)t);
+        }
+        
+        for (Specifier s : indexToSpecifier) {
+        	if ( s!=null ) globals.define((BuiltInSpecifierSymbol)s);
         }
     }
 
