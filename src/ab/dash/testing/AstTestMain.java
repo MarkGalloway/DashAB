@@ -1,27 +1,19 @@
-package ab.dash;
-import java.io.ByteArrayOutputStream;
+package ab.dash.testing;
+
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Arrays;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenRewriteStream;
-import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
-import org.antlr.runtime.tree.TreeAdaptor;
 
+import ab.dash.DashLexer;
+import ab.dash.DashParser;
 import ab.dash.ast.DashAST;
-import ab.dash.ast.DashErrorNode;
 
-public class DashAB_Part1_Test {
+public class AstTestMain {
 
     public static void main(String[] args) throws RecognitionException {
-
-        //TODO: add command line rejection
-        
         ANTLRFileStream input = null;
         try {
             input = new ANTLRFileStream(args[0]);
@@ -40,12 +32,8 @@ public class DashAB_Part1_Test {
         
         CommonTree ast = (CommonTree) entry.getTree();
         
-        /** TESTING FEATURE: REMOVE ON RELEASE */
-        if(args.length > 1 && args[1].equals("astDebug")) {
-            System.out.println(ast.toStringTree());
-            return;
-        }
-        /** TESTING FEATURE: END REMOVE ON RELEASE */
-        
+        // Print the tree for testing
+        System.out.println(ast.toStringTree());
     }
+
 }

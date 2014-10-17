@@ -1,4 +1,4 @@
-package ab.dash;
+package ab.dash.testing;
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.20.2.4305 modeling language!*/
 
