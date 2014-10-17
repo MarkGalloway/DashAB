@@ -1,0 +1,1 @@
+(PROGRAM (VAR_DECL var x (EXPR 1)) (VAR_DECL var z (EXPR 4)))
