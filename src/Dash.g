@@ -97,12 +97,10 @@ tupleType
 	
 tupleMember
 	:	type ID? -> ^(FIELD_DECL type ID?)
-	|	tupleType ID? -> ^(FIELD_DECL tupleType ID?)
 	;
 	
 tupleMemeberList
-	:   LPAREN tupleMemeberList (',' tupleMemeberList)* RPAREN -> ^(TUPLE_LIST tupleMemeberList+)
-	|	expr -> expr
+	:   LPAREN expr (',' expr)* RPAREN -> ^(TUPLE_LIST expr+)
 	;
 // END: tuple
 
