@@ -7,6 +7,11 @@ options {
   filter = true;
 }
 
+@header {
+  package ab.dash;
+  import ab.dash.ast.*;
+}
+
 @members {
     SymbolTable symtab;
     Scope currentScope;
@@ -122,13 +127,21 @@ specifier
 	;
 	
 varDeclaration // global, parameter, or local variable
-    :   ^((FIELD_DECL|VAR_DECL|ARG_DECL) specifier type ID .?)
+    :   ^((VAR_DECL|ARG_DECL) specifier type ID .?)
         {
         //System.out.println("line "+$ID.getLine()+": def "+$ID.text);
         VariableSymbol vs = new VariableSymbol($ID.text,$type.type);
         vs.def = $ID;            // track AST location of def's ID
         $ID.symbol = vs;         // track in AST
         currentScope.define(vs);
+        }
+    |   ^(FIELD_DECL type ID?) //TODO if no ID then find location in parent example 2nd child.
+    	{
+        //System.out.println("line "+$ID.getLine()+": def "+$ID.text);
+//        VariableSymbol vs = new VariableSymbol($ID.text,$type.type);
+//        vs.def = $ID;            // track AST location of def's ID
+//        $ID.symbol = vs;         // track in AST
+//        currentScope.define(vs);
         }
     ;
 // END: field
