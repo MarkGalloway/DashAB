@@ -1,4 +1,4 @@
-package ab.dash;
+package ab.dash.testing;
 
 import static org.junit.Assert.*;
 
@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ab.dash.DashAB_Part1_Test;
 import ab.dash.exceptions.InvalidAssignmentException;
 import ab.dash.exceptions.ParserException;
 
