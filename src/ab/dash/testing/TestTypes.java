@@ -2,6 +2,8 @@ package ab.dash.testing;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CharStream;
@@ -140,13 +142,26 @@ public class TestTypes {
 	}
 
 	public static void showFiles(File[] files) throws RecognitionException {
+		Arrays.sort(files, new Comparator<File>() {
+		    public int compare(File f1, File f2) {
+		        return f1.getName().compareTo(f2.getName());
+		    }
+		});
+		
 		for (File file : files) {
 			if (file.isDirectory()) {
 				System.out.println("Directory: " + file.getName());
 				showFiles(file.listFiles()); // Calls same method again.
 			} else {
-				System.out.println("File: " + file.getName());
-				parseFile(file.getName(), file.getPath());
+				int i = file.getName().lastIndexOf('.');
+	        	if (i > 0) {
+	        	    String extension = file.getName().substring(i+1);
+	        	    
+	        	    if (extension.equals("db")) {
+		        	    System.out.println("File: " + file.getName());
+			            parseFile(file.getName(), file.getPath());
+	        	    }
+	        	}
 			}
 		}
 	}

@@ -66,8 +66,15 @@ public class TestGrammarParser {
 	            System.out.println("Directory: " + file.getName());
 	            showFiles(file.listFiles()); // Calls same method again.
 	        } else {
-	            System.out.println("File: " + file.getName());
-	            parseFile(file.getName(), file.getPath());
+	        	int i = file.getName().lastIndexOf('.');
+	        	if (i > 0) {
+	        	    String extension = file.getName().substring(i+1);
+	        	    
+	        	    if (extension.equals("db")) {
+		        	    System.out.println("File: " + file.getName());
+			            parseFile(file.getName(), file.getPath());
+	        	    }
+	        	}
 	        }
 	    }
 	}

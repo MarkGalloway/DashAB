@@ -96,7 +96,7 @@ tupleType
 	;
 	
 tupleMember
-	:	type ID? -> ^(FIELD_DECL Const["const"] type ID?)
+	:	type ID? -> ^(FIELD_DECL Var["var"] type ID?)
 	;
 	
 tupleMemeberList
@@ -111,11 +111,11 @@ specifier
 	;
 
 varDeclaration
-	:   type ID (ASSIGN expression)? DELIM 	-> ^(VAR_DECL Var["var"] type ID expression?)
-    |   specifier type ID (ASSIGN expression)? DELIM 	-> ^(VAR_DECL specifier type ID expression?)
-    |   specifier ID ASSIGN expression DELIM 	-> ^(VAR_DECL specifier ID expression)
-    |	tupleType ID (ASSIGN tupleMemeberList)? DELIM 	-> ^(VAR_DECL Var tupleType ID tupleMemeberList?)
-    |	specifier tupleType ID (ASSIGN tupleMemeberList)? DELIM 	-> ^(VAR_DECL specifier tupleType ID tupleMemeberList?)
+	:   type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL Var["var"] type ID expression?)
+    |   specifier type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL specifier type ID expression?)
+    |   specifier ID ASSIGN expression DELIM -> ^(VAR_DECL specifier ID expression)
+    |	tupleType ID (ASSIGN tupleMemeberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemeberList?)
+    |	specifier tupleType ID (ASSIGN tupleMemeberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemeberList?)
 	;
 // END: var
 
@@ -193,7 +193,8 @@ unaryExpression
 
 // START: call
 postfixExpression
-    :   primary
+    :   ID '.' (opt2=INTEGER | opt2=ID) -> ^('.' ID $opt2)
+    |	primary -> primary
 //    	(
 //    		(	r=LPAREN^ expressionList RPAREN!	{$r.setType(CALL);}
 //	    	|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
@@ -205,7 +206,7 @@ postfixExpression
 
 primary
     :   ID
-    |   INTEGER
+    |   (INTEGER | INTEGER_UNDERSCORES)
     |	REAL
     |	CHARACTER
     |	True
@@ -278,9 +279,9 @@ Tuple : 'tuple';
 Stream_state : 'stream_state';
 Revserse : 'reverse';
 
-
-ID : (UNDERSCORE | LETTER) ((UNDERSCORE |LETTER | DIGIT))*;
-INTEGER : DIGIT (DIGIT | UNDERSCORE)*;
+ID : (UNDERSCORE | LETTER) (UNDERSCORE |LETTER | DIGIT)*;
+INTEGER : DIGIT+;
+INTEGER_UNDERSCORES : DIGIT (DIGIT | UNDERSCORE)*;
 
 /*
 How to read diagram: 

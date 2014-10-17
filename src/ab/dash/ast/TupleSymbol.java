@@ -17,8 +17,8 @@ public class TupleSymbol extends ScopedSymbol implements Type, Scope {
     public Symbol resolveMember(String name) { return fields.get(name); }
     public Map<String, Symbol> getMembers() { return fields; }
     public String toString() {
-        return "struct "+name+":{"+
-               stripBrackets(fields.keySet().toString())+"}";
+        return "tuple("+
+               stripBrackets(fields.keySet().toString())+")";
     }
 	public int getTypeIndex() { return SymbolTable.tUSER; }
 }
