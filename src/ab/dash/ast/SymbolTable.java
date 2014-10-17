@@ -40,8 +40,8 @@ public class SymbolTable {
 
     public DashListener listener =
         new DashListener() {
-            public void info(String msg) { System.out.println(msg); }
-            public void error(String msg) { System.err.println(msg); }
+    		public void info(String msg) { System.out.println(msg); }
+        	public void error(String msg) { System.err.println(msg); }
         };
 
     /** arithmetic types defined in order from narrowest to widest */
@@ -107,12 +107,19 @@ public class SymbolTable {
     };
 
     public GlobalScope globals = new GlobalScope();
+    
+    private int error_count;
+	private int warnings_count;
 
     /** Need to have token buffer to print out expressions, errors */
     TokenStream tokens;
 
     public SymbolTable(TokenStream tokens) {
         this.tokens = tokens;
+        
+        this.error_count = 0;
+        this.warnings_count = 0;
+        
         initTypeSystem();
     }
 
@@ -125,13 +132,31 @@ public class SymbolTable {
         	if ( s!=null ) globals.define((BuiltInSpecifierSymbol)s);
         }
     }
+    
+    public int getWarningCount() {
+		return this.warnings_count;
+	}
+	
+	public int getErrorCount() {
+		return this.error_count;
+	}
+    
+    private void warning(String msg) {
+		this.warnings_count++;
+		this.listener.info(msg);
+	}
+	
+	private void error(String msg) {
+		this.error_count++;
+		this.listener.error(msg);
+	}
 
     public Type getResultType(Type[][] typeTable, DashAST a, DashAST b) {
         int ta = a.evalType.getTypeIndex(); // type index of left operand
         int tb = b.evalType.getTypeIndex(); // type index of right operand
         Type result = typeTable[ta][tb];    // operation result type
         if ( result==null ) {
-            listener.error(text(a)+", "+
+            error(text(a)+", "+
                            text(b)+" have incompatible types in "+
                            text((DashAST)a.getParent()));
         }
@@ -160,7 +185,7 @@ public class SymbolTable {
 
     public Type uminus(DashAST a) {
         if ( !(a.evalType==_integer || a.evalType==_real) ) {
-            listener.error(text(a)+" must have integer or real type in "+
+            error(text(a)+" must have integer or real type in "+
                            text((DashAST)a.getParent()));
             return null;
         }
@@ -169,7 +194,7 @@ public class SymbolTable {
     
     public Type unot(DashAST a) {
         if ( a.evalType!=_boolean ) {
-            listener.error(text(a)+" must have boolean type in "+
+            error(text(a)+" must have boolean type in "+
                            text((DashAST)a.getParent()));
             return _boolean; // even though wrong, assume result boolean
         }
@@ -182,7 +207,7 @@ public class SymbolTable {
 //        if ( s.getClass() != VariableSymbol.class || // ensure it's an array
 //             s.type.getClass() != ArrayType.class )
 //        {
-//            listener.error(text(id)+" must be an array variable in "+
+//            error(text(id)+" must be an array variable in "+
 //                           text((DashAST)id.getParent()));
 //            return null;
 //        }
@@ -192,7 +217,7 @@ public class SymbolTable {
 //        // promote the index expr if necessary to int
 //        index.promoteToType = promoteFromTo[texpr][tINT];
 //        if ( !canAssignTo(index.evalType, _integer, index.promoteToType) ) {
-//            listener.error(text(index)+" index must have integer type in "+
+//            error(text(index)+" index must have integer type in "+
 //                           text((DashAST)id.getParent()));
 //        }        
 //        return t;
@@ -201,7 +226,7 @@ public class SymbolTable {
     public Type call(DashAST id, List args) {
         Symbol s = id.scope.resolve(id.getText());
         if ( s.getClass() != MethodSymbol.class ) {
-            listener.error(text(id)+" must be a function or procedure in "+
+            error(text(id)+" must be a function or procedure in "+
                            text((DashAST)id.getParent()));
             return null;
         }
@@ -223,7 +248,7 @@ public class SymbolTable {
             argAST.promoteToType = promoteFromTo[targ][tformal];
             if ( !canAssignTo(actualArgType, formalArgType,
                               argAST.promoteToType) ) {
-                listener.error(text(argAST)+", argument "+
+                error(text(argAST)+", argument "+
                                a.name+":<"+a.type+"> of "+ms.name+
                                "() have incompatible types in "+
                                text((DashAST)id.getParent()));
@@ -235,7 +260,7 @@ public class SymbolTable {
     public Type member(DashAST expr, DashAST field) {
         Type type = expr.evalType;
         if ( type.getClass() != TupleSymbol.class ) {
-            listener.error(text(expr)+" must have tuple type in "+
+            error(text(expr)+" must have tuple type in "+
                            text((DashAST)expr.getParent()));
             return null;
         }
@@ -260,7 +285,7 @@ public class SymbolTable {
         init.promoteToType = promoteFromTo[te][tdecl];
         if ( !canAssignTo(init.evalType, declID.symbol.type,
                           init.promoteToType) ) {
-            listener.error(text(declID)+", "+
+            error(text(declID)+", "+
                 text(init)+" have incompatible types in "+
                 text((DashAST)declID.getParent()));
         }
@@ -273,7 +298,7 @@ public class SymbolTable {
         int tret = retType.getTypeIndex(); 
         expr.promoteToType = promoteFromTo[texpr][tret];
         if ( !canAssignTo(exprType, retType, expr.promoteToType) ) {
-            listener.error(text(expr)+", "+
+            error(text(expr)+", "+
                 ms.name+"():<"+ms.type+"> have incompatible types in "+
                 text((DashAST)expr.getParent()));
         }
@@ -284,7 +309,7 @@ public class SymbolTable {
         int trhs = rhs.evalType.getTypeIndex();
         rhs.promoteToType = promoteFromTo[trhs][tlhs];
         if ( !canAssignTo(rhs.evalType, lhs.evalType, rhs.promoteToType) ) {
-            listener.error(text(lhs)+", "+
+            error(text(lhs)+", "+
                            text(rhs)+" have incompatible types in "+
                            text((DashAST)lhs.getParent()));
         }
@@ -292,7 +317,7 @@ public class SymbolTable {
 
     public void ifstat(DashAST cond) {
         if ( cond.evalType != _boolean ) {
-            listener.error("if condition "+text(cond)+
+            error("if condition "+text(cond)+
                            " must have boolean type in "+
                            text((DashAST)cond.getParent()));
         }
