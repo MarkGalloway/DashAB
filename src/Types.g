@@ -5,6 +5,7 @@ options {
   tokenVocab = Dash;
   ASTLabelType = DashAST;
   filter = true;
+  backtrack=true; 
 }
 
 @header {
@@ -35,7 +36,7 @@ bottomup // match subexpressions innermost to outermost
 ifstat : ^(If cond=. s=. e=.?) {symtab.ifstat($cond);} ;
 // END: ifstat
 
-decl:   ^(VAR_DECL .* ID (init=.)?) // call declinit if we have init expr
+decl:   ^(VAR_DECL . .? ID (init=.)?) // call declinit if we have init expr
         {if ( $init!=null && $init.evalType!=null )
              symtab.declinit($ID, $init);}
     ;    

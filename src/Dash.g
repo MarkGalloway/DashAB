@@ -96,7 +96,7 @@ tupleType
 	;
 	
 tupleMember
-	:	type ID? -> ^(FIELD_DECL type ID?)
+	:	type ID? -> ^(FIELD_DECL Const["const"] type ID?)
 	;
 	
 tupleMemeberList

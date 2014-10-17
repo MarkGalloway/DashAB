@@ -57,35 +57,39 @@ public class SymbolTable {
 
     /** Map t1 op t2 to result type (null implies illegal) */
     public static final Type[][] arithmeticResultType = new Type[][] {
-    	 /*          	boolean  	character 	integer 	real*/
-        /*boolean*/ 	{null,    	null,   	null,   	null},
-        /*character*/   {null,  	null,    	null,   	null},
-        /*integer*/     {null,  	null,    	_integer,   null},
-        /*real*/   		{null,  	null,    	null,   	_real}
+    	/*          	tuple		boolean  	character 	integer 	real*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null},
+        /*boolean*/ 	{null,		null,    	null,   	null,   	null},
+        /*character*/   {null,		null,  		null,    	null,   	null},
+        /*integer*/     {null,		null,  		null,    	_integer,   null},
+        /*real*/   		{null,		null,  		null,    	null,   	_real}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
-    	 /*          	boolean  	character 	integer 	real*/
-        /*boolean*/ 	{_boolean,  null,   	null,   	null},
-        /*character*/   {null,  	_boolean,   null,   	null},
-        /*integer*/     {null,  	null,    	_boolean,   null},
-        /*real*/   		{null,  	null,    	null,   	_boolean}
+    	/*          	tuple		boolean  	character 	integer 	real*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null},
+        /*character*/   {null,		null,  		_boolean,   null,   	null},
+        /*integer*/     {null,		null,  		null,    	_boolean,   null},
+        /*real*/   		{null,		null,  		null,    	null,   	_boolean}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
-    	 /*          	boolean  	character 	integer 	real*/
-        /*boolean*/ 	{_boolean,  null,   	null,   	null},
-        /*character*/   {null,  	_boolean,   null,   	null},
-        /*integer*/     {null,  	null,    	_boolean,	null},
-        /*real*/   		{null,  	null,    	null,   	_boolean}
+    	/*          	tuple		boolean  	character 	integer 	real*/
+    	/*tuple*/		{_boolean,	null,    	null,   	null,   	null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null},
+        /*character*/   {null,		null,  		_boolean,   null,   	null},
+        /*integer*/     {null,		null,  		null,    	_boolean,	null},
+        /*real*/   		{null,		null,  		null,    	null,   	_boolean}
     };
     
     public static final Type[][] castResultType = new Type[][] {
-    	/*          	boolean  	character 	integer 	real*/
-        /*boolean*/ 	{_boolean,  _character, _integer,   _real},
-        /*character*/   {_boolean,  _character,	_integer,   _real},
-        /*integer*/     {_boolean,  _character, _integer,   _real},
-        /*real*/   		{null,  	null,    	_integer,   _real}
+    	/*          	tuple		boolean  	character 	integer 	real*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null},
+        /*boolean*/ 	{null,		_boolean,  _character, _integer,   _real},
+        /*character*/   {null,		_boolean,  _character,	_integer,   _real},
+        /*integer*/     {null,		_boolean,  _character, _integer,   _real},
+        /*real*/   		{null,		null,  		null,    	_integer,   _real}
    };
 
     /** Indicate whether a type needs a promotion to a wider type.
@@ -94,11 +98,12 @@ public class SymbolTable {
      *  arithmetic, equality, and relational operators in Dash.
      */
     public static final Type[][] promoteFromTo = new Type[][] {
-        /*          	boolean  	character 	integer 	real*/
-        /*boolean*/ 	{null,    	null,   	null,   	null},
-        /*character*/   {null,  	null,    	null,   	null},
-        /*integer*/     {null,  	null,    	null,   	_real},
-        /*real*/   		{null,  	null,    	null,   	null}
+        /*          	tuple		boolean  	character 	integer 	real*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null},
+        /*boolean*/ 	{null,		null,    	null,   	null,   	null},
+        /*character*/   {null,		null,  		null,    	null,   	null},
+        /*integer*/     {null,		null,  		null,    	null,   	_real},
+        /*real*/   		{null,		null,  		null,    	null,   	null}
     };
 
     public GlobalScope globals = new GlobalScope();
@@ -244,6 +249,12 @@ public class SymbolTable {
 
     public void declinit(DashAST declID, DashAST init) {
         int te = init.evalType.getTypeIndex(); // promote expr to decl type?
+        
+        // Check for Type Inference
+        if (declID.symbol.type == null) {
+        	declID.symbol.type = init.evalType;
+        }
+        
         int tdecl = declID.symbol.type.getTypeIndex();
         declID.evalType = declID.symbol.type;
         init.promoteToType = promoteFromTo[te][tdecl];
