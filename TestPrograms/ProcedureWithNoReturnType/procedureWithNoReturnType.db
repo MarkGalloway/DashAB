@@ -1,0 +1,6 @@
+procedure no_return() {
+}
+
+procedure main() returns integer {
+    return 0;
+}

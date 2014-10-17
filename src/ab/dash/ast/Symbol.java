@@ -9,9 +9,9 @@ package ab.dash.ast;
  * Visit http://www.pragmaticprogrammer.com/titles/tpdsl for more book information.
 ***/
 public class Symbol { // A generic programming language symbol
-    String name;      // All symbols at least have a name
-    Type type;
-    Scope scope;      // All symbols know what scope contains them.
+	public String name;      // All symbols at least have a name
+    public Type type;
+    public Scope scope;      // All symbols know what scope contains them.
     public DashAST def;	  // Location in AST of ID node
 
     public Symbol(String name) { this.name = name; }

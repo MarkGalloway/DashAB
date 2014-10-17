@@ -113,6 +113,7 @@ specifier
 varDeclaration
 	:   type ID (ASSIGN expression)? DELIM 	-> ^(VAR_DECL Var type ID expression?)
     |   specifier type ID (ASSIGN expression)? DELIM 	-> ^(VAR_DECL specifier type ID expression?)
+    |   specifier ID ASSIGN expression DELIM 	-> ^(VAR_DECL specifier ID expression)
     |	tupleType ID (ASSIGN tupleMemeberList)? DELIM 	-> ^(VAR_DECL Var tupleType ID tupleMemeberList?)
     |	specifier tupleType ID (ASSIGN tupleMemeberList)? DELIM 	-> ^(VAR_DECL specifier tupleType ID tupleMemeberList?)
 	;
@@ -279,7 +280,7 @@ Revserse : 'reverse';
 
 
 ID : (UNDERSCORE | LETTER) ((UNDERSCORE |LETTER | DIGIT))*;
-INTEGER : DIGIT+;
+INTEGER : DIGIT (DIGIT | UNDERSCORE)*;
 
 /*
 How to read diagram: 
@@ -320,9 +321,12 @@ Examples:
 */
 
 REAL 
-	: (DIGIT* '.' DIGIT+
-	| DIGIT+ '.'  
-	| DIGIT+) DecimalExponent? FloatTypeSuffix?;
+	: 	(
+			(DIGIT (DIGIT | UNDERSCORE)* '.' (DIGIT | UNDERSCORE)*)
+			| ('.' (DIGIT | UNDERSCORE)*)
+			| (DIGIT (DIGIT | UNDERSCORE)*)
+		) DecimalExponent? FloatTypeSuffix?
+	;
 	
 CHARACTER :	'\'' . '\'' ;
 
