@@ -1,0 +1,8 @@
+const b = true;
+
+procedure main() returns integer {
+	var i = 0;
+	var r = 0.0;
+	var c = 'a';
+    return 0;
+}

@@ -142,7 +142,15 @@ varDeclaration // global, parameter, or local variable
         $ID.symbol = vs;         // track in AST
         currentScope.define(vs);
         }
-    |   ^(FIELD_DECL type ID?) //TODO if no ID then find location in parent example 2nd child.
+    |   ^(VAR_DECL specifier ID .)
+        {
+        System.out.println("line " + $ID.getLine() + ": def " + $ID.text);
+        VariableSymbol vs = new VariableSymbol($ID.text, null);
+        vs.def = $ID;            // track AST location of def's ID
+        $ID.symbol = vs;         // track in AST
+        currentScope.define(vs);
+        }
+    | 	^(FIELD_DECL type ID?) //TODO if no ID then find location in parent example 2nd child.
     	{
         //System.out.println("line "+$ID.getLine()+": def "+$ID.text);
 //        VariableSymbol vs = new VariableSymbol($ID.text,$type.type);
