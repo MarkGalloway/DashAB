@@ -47,7 +47,7 @@ enterBlock
 exitBlock
     :   BLOCK
         {
-        //System.out.println("locals: "+currentScope);
+        System.out.println("locals: "+currentScope);
         currentScope = currentScope.getEnclosingScope();    // pop scope
         }
     ;
@@ -77,7 +77,7 @@ exitBlock
 enterMethod
     :   ^((FUNCTION_DECL | PROCEDURE_DECL) type ID .*) // match method subtree with 0-or-more args
         {
-        //System.out.println("line "+$ID.getLine()+": def method "+$ID.text);
+        System.out.println("line "+$ID.getLine()+": def method "+$ID.text);
         MethodSymbol ms = new MethodSymbol($ID.text,$type.type,currentScope);
         currentMethod = ms;
         ms.def = $ID;            // track AST location of def's ID
@@ -87,7 +87,7 @@ enterMethod
         }
     |	^(PROCEDURE_DECL ID .*) // match method subtree with 0-or-more args
         {
-        //System.out.println("line "+$ID.getLine()+": def method "+$ID.text);
+        System.out.println("line "+$ID.getLine()+": def method "+$ID.text);
         MethodSymbol ms = new MethodSymbol($ID.text, null, currentScope);
         currentMethod = ms;
         ms.def = $ID;            // track AST location of def's ID
@@ -98,7 +98,11 @@ enterMethod
     ;
 
 /** Track method associated with this return. */
-ret :   ^(Return .) {$ret.start.symbol = currentMethod;}
+ret :   ^(Return .) 
+	{
+	System.out.println("line "+$Return.getLine()+": return ");
+	$ret.start.symbol = currentMethod;
+	}
     ;
     
 exitMethod
