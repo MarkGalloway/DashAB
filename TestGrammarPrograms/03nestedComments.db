@@ -1,0 +1,21 @@
+var x = 1; // var y = 2;
+
+
+/* var z = 42; */
+
+/* This is a block comment
+ * and 
+ 
+ var y = 3;
+ 
+ * should not display
+ada faf */
+
+var z = 4;
+
+
+/* /* 
+
+Comments cannot nest ! this should throw some sort of error or exception 
+
+*/ */
