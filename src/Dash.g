@@ -219,7 +219,7 @@ unaryExpression
 
 // START: call
 postfixExpression
-    :   ID DOT (opt2=INTEGER | opt2=ID) -> ^(DOT ID $opt2)
+    :   ID DOT (mem=INTEGER | mem=ID) -> ^(DOT ID $mem)
     |	primary -> primary
 //    	(
 //    		(	r=LPAREN^ expressionList RPAREN!	{$r.setType(CALL);}
