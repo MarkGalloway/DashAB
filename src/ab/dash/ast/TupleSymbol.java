@@ -30,7 +30,7 @@ public class TupleSymbol extends Symbol implements Type, Scope {
     	
     	try {
     	      int i = Integer.parseInt(name);
-    	      return fields.get(i);
+    	      return fields.get(i-1);
     	} catch (NumberFormatException e) {
     		for (Symbol s : fields) {
     			if (s != null) {

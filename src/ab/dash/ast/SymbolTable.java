@@ -259,14 +259,14 @@ public class SymbolTable {
         return ms.type;
     }
 
-    public Type member(DashAST expr, DashAST field) {
-        Type type = expr.evalType;
-        if ( type.getClass() != TupleSymbol.class ) {
-            error(text(expr)+" must have tuple type in "+
-                           text((DashAST)expr.getParent()));
+    public Type member(DashAST id, DashAST field) {
+        Type type = id.symbol.type;
+        if ( type.getTypeIndex() != tTUPLE ) {
+            error(text(id)+" must have tuple type in "+
+                           text((DashAST)id.getParent()));
             return null;
         }
-        TupleSymbol scope = (TupleSymbol)expr.evalType;		// get scope of left
+        TupleSymbol scope = (TupleSymbol)id.symbol;			// get scope of left
         Symbol s = scope.resolveMember(field.getText());	// resolve ID in scope
         field.symbol = s;
         return s.type;           // return ID's type

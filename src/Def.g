@@ -124,7 +124,6 @@ varDeclaration // global, parameter, or local variable
 	         " type ( " + $type.type +  " ) " + 
 	         " specifier ( " + $specifier.specifier +  " )");
 	        if ($type.type.getTypeIndex() == SymbolTable.tTUPLE) {
-	        	//System.out.println("line "+$ID.getLine()+": def struct "+$ID.text);
 		        TupleSymbol ts = new TupleSymbol($ID.text, $type.type, $specifier.specifier, currentScope);
 		        ts.def = $ID;
 		        $ID.symbol = ts;

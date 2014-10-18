@@ -65,9 +65,20 @@ expr returns [Type type]
             $ID.symbol = s; $type = s.type;}
     |   ^(UNARY_MINUS a=expr)   {$type=symtab.uminus($a.start);}
     |   ^(Not a=expr) {$type=symtab.unot($a.start);}
-//    |   member      {$type = $member.type;}
+    |   member      {$type = $member.type;}
 //    |   call        {$type = $call.type;}
     |   binaryOps   {$type = $binaryOps.type;}
+    ;
+    
+member returns [Type type]
+	:	^(DOT id=ID m=(ID | INTEGER))	
+		{
+			TupleSymbol st=(TupleSymbol)$id.scope.resolve($id.text);
+	        $id.symbol = st; 
+	        
+			$type = symtab.member($id, $m);
+			$start.evalType = $type;
+		}
     ;
 
 binaryOps returns [Type type]
