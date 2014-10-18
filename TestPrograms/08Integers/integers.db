@@ -1,0 +1,8 @@
+procedure main() returns integer {
+	integer i;
+	i = 0;
+	i = 145;
+	i = 1_4_5__;
+	
+    return 0;
+}

@@ -219,7 +219,7 @@ postfixExpression
 
 primary
     :   ID
-    |   (INTEGER | INTEGER_UNDERSCORES)
+    |   r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
     |	REAL
     |	CHARACTER
     |	True

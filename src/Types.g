@@ -59,7 +59,6 @@ expr returns [Type type]
     |   False    	{$type = SymbolTable._boolean;}
     |   CHARACTER   {$type = SymbolTable._character;}
     |   INTEGER     {$type = SymbolTable._integer;}
-    |   INTEGER_UNDERSCORES     {$type = SymbolTable._integer;}
     |   REAL      	{$type = SymbolTable._real;}
     |   ID {VariableSymbol s=(VariableSymbol)$ID.scope.resolve($ID.text);
             $ID.symbol = s; $type = s.type;}
