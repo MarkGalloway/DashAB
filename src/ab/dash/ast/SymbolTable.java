@@ -18,12 +18,14 @@ public class SymbolTable {
     public static final int sVAR = 1;
     
     // arithmetic types defined in order from narrowest to widest
-    public static final int tUSER = 0; // user-defined type (tuple)
+    public static final int tTUPLE = 0;
     public static final int tBOOLEAN = 1;
     public static final int tCHARACTER = 2;
     public static final int tINTEGER = 3;
     public static final int tREAL = 4;
 
+    public static final BuiltInTypeSymbol _tuple =
+            new BuiltInTypeSymbol("tuple", tTUPLE);
     public static final BuiltInTypeSymbol _boolean =
         new BuiltInTypeSymbol("boolean", tBOOLEAN);
     public static final BuiltInTypeSymbol _character =
@@ -46,8 +48,8 @@ public class SymbolTable {
 
     /** arithmetic types defined in order from narrowest to widest */
     public static final Type[] indexToType = {
-        // 0, 1,        2,     		3,    	  4
-        null, _boolean, _character, _integer, _real
+        // 0, 	1,        2,     	  3,    	4
+    	_tuple, _boolean, _character, _integer, _real
     };
     
     public static final Specifier[] indexToSpecifier = {

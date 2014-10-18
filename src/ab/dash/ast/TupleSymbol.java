@@ -8,17 +8,77 @@ package ab.dash.ast;
  * We make no guarantees that this code is fit for any purpose. 
  * Visit http://www.pragmaticprogrammer.com/titles/tpdsl for more book information.
 ***/
-import java.util.Map;
-import java.util.LinkedHashMap;
-public class TupleSymbol extends ScopedSymbol implements Type, Scope {
-    Map<String, Symbol> fields = new LinkedHashMap<String, Symbol>();
-    public TupleSymbol(String name,Scope parent) {super(name, parent);}
-    /** For a.b, only look in a only to resolve b, not up scope tree */
-    public Symbol resolveMember(String name) { return fields.get(name); }
-    public Map<String, Symbol> getMembers() { return fields; }
-    public String toString() {
-        return "tuple("+
-               stripBrackets(fields.keySet().toString())+")";
+import java.util.ArrayList;
+
+public class TupleSymbol extends Symbol implements Type, Scope {
+    Scope enclosingScope;
+    public Specifier specifier;
+    
+    ArrayList<Symbol> fields = new ArrayList<Symbol>();
+
+    public TupleSymbol(String name, Type type, Specifier specifier, Scope enclosingScope) {
+        super(name, type);
+        this.enclosingScope = enclosingScope;
+        this.specifier = specifier;
     }
-	public int getTypeIndex() { return SymbolTable.tUSER; }
+    
+    /** For a.b, only look in a only to resolve b, not up scope tree */
+    public Symbol resolveMember(String name) 
+    {
+    	if (name == null)
+    		return null;
+    	
+    	try {
+    	      int i = Integer.parseInt(name);
+    	      return fields.get(i);
+    	} catch (NumberFormatException e) {
+    		for (Symbol s : fields) {
+    			if (s != null) {
+    				if (s.getName() != null)
+    					if (s.getName().equals(name))
+    						return s;
+    			}
+    		}
+    	}
+    	
+    	return null;
+    }
+
+    public Symbol resolve(String name) {
+		Symbol s = resolveMember(name);
+        if ( s!=null ) return s;
+		// if not here, check any enclosing scope
+		if ( getEnclosingScope() != null ) {
+			return getEnclosingScope().resolve(name);
+		}
+		return null; // not found
+	}
+
+    public Symbol resolveType(String name) { return resolve(name); }
+    
+    public void define(Symbol sym) {
+    	fields.add(sym);
+		sym.scope = this; // track the scope in each symbol
+	}
+
+    public Scope getEnclosingScope() { return enclosingScope; }
+    
+    public String getScopeName() { return name; }
+    
+    public String toString() {
+    	String out = "tuple(";
+    	for (int i = 0; i < fields.size(); i++) {
+    		if (i < fields.size() - 1)
+    			out += fields.get(i) + ", ";
+    		else
+    			out += fields.get(i);
+    	}
+    	out += ") " + name;
+        return out;
+    }
+    
+    public int getTypeIndex() 
+	{ 
+		return SymbolTable.tTUPLE; 
+	}
 }
