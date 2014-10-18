@@ -28,6 +28,10 @@ public class AstTestMain {
         DashParser parser = new DashParser(tokens);
         parser.setTreeAdaptor(DashAST.dashAdaptor);
         DashParser.program_return entry = parser.program();
+        
+        if (lexer.getErrorCount() > 0) {
+        	throw new RecognitionException();
+        }
   
         
         CommonTree ast = (CommonTree) entry.getTree();

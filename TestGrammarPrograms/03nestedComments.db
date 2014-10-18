@@ -19,3 +19,5 @@ var z = 4;
 Comments cannot nest ! this should throw some sort of error or exception 
 
 */ */
+
+var y = 5;

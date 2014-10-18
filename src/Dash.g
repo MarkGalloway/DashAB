@@ -33,7 +33,19 @@ tokens {
 }
 
 @lexer::members {
+	
+	int error_count = 0;
 	boolean member_access = false;
+	
+	@Override
+	public void emitErrorMessage(String msg) {
+		System.err.println(msg);
+		error_count++;
+	}
+	
+	public int getErrorCount() { return error_count; }
+
+	
 	@Override
 	public void emit(Token token) {
 		if (token.getType() == ID) {
@@ -44,6 +56,7 @@ tokens {
 		super.emit(token);
 	}
 }
+
 
 program 
 	: line* EOF -> ^(PROGRAM line*)
@@ -345,8 +358,24 @@ REAL
 CHARACTER :	'\'' . '\'' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
+
 SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? '\n' {$channel=HIDDEN;};
-COMMENT: '/*' .* '*/' {$channel=HIDDEN;};
+MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
+
+fragment
+COMMENT_NESTED
+options {backtrack = false;}
+  : '/*'
+    ( options {greedy=false;} : . )*
+    ( COMMENT_NESTED 
+    {
+    	if(!$COMMENT_NESTED.getText().equals(""))
+    		emitErrorMessage("Not allowed to have nested comments.");
+    		
+    }( options {greedy=false;} : . )* )*
+    '*/'
+  ;
+  
 NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;};
 
 fragment DecimalExponent1 : ('e' | 'E') UNDERSCORE* ('+' | '-') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;

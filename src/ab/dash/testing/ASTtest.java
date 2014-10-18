@@ -59,21 +59,21 @@ public class ASTtest {
     }
     
     //TODO: replace this with a custom exception
-    @Test  (expected=RuntimeException.class)  // Block comments must not nest!
+    @Test  (expected=RecognitionException.class)  // Block comments must not nest!
     public void nestedCommentTest() throws RecognitionException {
         String[] args = new String[] {"TestGrammarPrograms/03nestedComments.db"};
         AstTestMain.main(args);
     }
     
     //TODO: replace this with a custom exception
-    @Test  (expected=RuntimeException.class)  // Block comments must match up
+    @Test  (expected=RecognitionException.class)  // Block comments must match up
     public void missingEndComment() throws RecognitionException {
         String[] args = new String[] {"TestGrammarPrograms/03missingEndComment.db"};
         AstTestMain.main(args);
     }
     
     //TODO: replace this with a custom exception
-    @Test  (expected=RuntimeException.class)  // Block comments must match up
+    @Test  (expected=RecognitionException.class)  // Block comments must match up
     public void missingStartComment() throws RecognitionException {
         String[] args = new String[] {"TestGrammarPrograms/03missingStartComment.db"};
         AstTestMain.main(args);
