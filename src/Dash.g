@@ -32,6 +32,19 @@ tokens {
   package ab.dash;
 }
 
+@lexer::members {
+	boolean member_access = false;
+	@Override
+	public void emit(Token token) {
+		if (token.getType() == ID) {
+    		member_access = true;
+    	} else {
+    		member_access = false;
+    	}
+		super.emit(token);
+	}
+}
+
 program 
 	: line* EOF -> ^(PROGRAM line*)
 	;
@@ -193,7 +206,7 @@ unaryExpression
 
 // START: call
 postfixExpression
-    :   ID '.' (opt2=INTEGER | opt2=ID) -> ^('.' ID $opt2)
+    :   ID DOT (opt2=INTEGER | opt2=ID) -> ^(DOT ID $opt2)
     |	primary -> primary
 //    	(
 //    		(	r=LPAREN^ expressionList RPAREN!	{$r.setType(CALL);}
@@ -323,8 +336,8 @@ Examples:
 
 REAL 
 	: 	(
-			(DIGIT (DIGIT | UNDERSCORE)* '.' (DIGIT | UNDERSCORE)*)
-			| ('.' (DIGIT | UNDERSCORE)*)
+			(DIGIT (DIGIT | UNDERSCORE)* DOT (DIGIT | UNDERSCORE)*)
+			| {!member_access}?=> (DOT (DIGIT | UNDERSCORE)*)
 			| (DIGIT (DIGIT | UNDERSCORE)*)
 		) (DecimalExponent1 | DecimalExponent2)? FloatTypeSuffix?
 	;

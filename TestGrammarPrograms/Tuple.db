@@ -6,3 +6,8 @@ const tuple(integer, real r, boolean) tuple_var = (1, 0.2, true);
 
 var tuple(integer, real r, boolean) tuple_var;
 var tuple(integer, real r, boolean) tuple_var = (1, 0.2, true);
+
+tuple_var.1 = 0;
+a_.21 = true;
+t._ = 2;
+i._ad_ = 5;

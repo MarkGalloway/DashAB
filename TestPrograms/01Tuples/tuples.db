@@ -1,0 +1,7 @@
+procedure main() returns integer {
+	tuple(real, integer i) t = (0.0, 0);
+	t.1 = 0.5;
+	t.i = 5;
+	
+    return 0;
+}
