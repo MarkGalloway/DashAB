@@ -296,7 +296,7 @@ public class SymbolTable {
     
     public void declTuple (DashAST declID, ArrayList<DashAST> args, ArrayList<Type> fields) {
     	if (fields.size() != args.size()) {
-    		error("Tuple's have mismatched sizes in"+
+    		error("Tuple's have mismatched sizes in "+
                     text((DashAST)declID.getParent()));
     		return;
     	}
