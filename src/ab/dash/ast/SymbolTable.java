@@ -10,6 +10,7 @@ package ab.dash.ast;
 ***/
 import org.antlr.runtime.TokenStream;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SymbolTable {
@@ -291,6 +292,39 @@ public class SymbolTable {
                 text(init)+" have incompatible types in "+
                 text((DashAST)declID.getParent()));
         }
+    }
+    
+    public void declTuple (DashAST declID, ArrayList<DashAST> args, ArrayList<Type> fields) {
+    	if (fields.size() != args.size()) {
+    		error("Tuple's have mismatched sizes in"+
+                    text((DashAST)declID.getParent()));
+    		return;
+    	}
+    	
+    	for (int i = 0; i < fields.size(); i++) {
+    		Type f = fields.get(i);
+    		Type a = args.get(i).evalType;
+    		
+    		int tf = f.getTypeIndex();
+    		int ta = a.getTypeIndex();
+    		
+    		Type promoteToType = promoteFromTo[ta][tf];
+    		args.get(i).promoteToType = promoteToType;
+    		
+            if ( !canAssignTo(a, f, promoteToType) ) {
+    			error("Tuple argument at index " + (i+1) +
+    					" has incompatible types in " +
+                        text((DashAST)declID.getParent()));
+    		}
+    	}
+    	
+//    	System.out.println("\nFields:");
+//    	for (Type t : fields)
+//    		System.out.println(t);
+//    	
+//    	System.out.println("\nArgs:");
+//    	for (DashAST n : args)
+//    		System.out.println(n.evalType);
     }
 
     public void ret(MethodSymbol ms, DashAST expr) {

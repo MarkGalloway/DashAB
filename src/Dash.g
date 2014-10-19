@@ -126,7 +126,7 @@ tupleMember
 	;
 	
 tupleMemeberList
-	:   LPAREN expr (',' expr)* RPAREN -> ^(TUPLE_LIST expr+)
+	:   LPAREN expression (',' expression)* RPAREN -> ^(TUPLE_LIST expression+)
 	;
 // END: tuple
 

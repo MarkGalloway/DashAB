@@ -36,10 +36,17 @@ bottomup // match subexpressions innermost to outermost
 ifstat : ^(If cond=. s=. e=.?) {symtab.ifstat($cond);} ;
 // END: ifstat
 
-decl:   ^(VAR_DECL . .? ID (init=.)?) // call declinit if we have init expr
-        {if ( $init!=null && $init.evalType!=null )
-             symtab.declinit($ID, $init);}
-    ;    
+decl
+	:   ^(VAR_DECL . tuple_type ID tuple_list)
+        {
+        symtab.declTuple($ID, $tuple_list.arg_nodes, $tuple_type.field_types);
+        }
+	|	^(VAR_DECL . .? ID (init=.)?) // call declinit if we have init expr
+        {
+        if ( $init!=null && $init.evalType!=null )
+             symtab.declinit($ID, $init);
+        }
+    ;
 
 ret :   ^(Return v=.) {symtab.ret((MethodSymbol)$start.symbol, $v);} ;
 
@@ -79,6 +86,30 @@ member returns [Type type]
 			$start.evalType = $type;
 		}
     ;
+    
+tuple_type returns [ArrayList<Type> field_types]
+@init { $field_types = new ArrayList<Type>(); }
+	:	^(Tuple (tupleMember {$field_types.add($tupleMember.type);})+)
+	;
+	
+tupleMember returns [Type type]
+	: ^(FIELD_DECL . tupleMemberType ID?) {$type = $tupleMemberType.type;}
+	;
+	
+tupleMemberType returns [Type type]
+	:   Real		{$type = SymbolTable._real;}
+    |   Integer		{$type = SymbolTable._integer;}
+    |	Character	{$type = SymbolTable._character;}
+    |	Boolean		{$type = SymbolTable._boolean;}
+	|	ID			{$type = null;}						// TODO TypeDef
+	;
+	
+tuple_list returns [ArrayList<DashAST> arg_nodes]
+@init { 
+$arg_nodes = new ArrayList<DashAST>();
+}
+	:	^(TUPLE_LIST (^(EXPR expr) {$EXPR.evalType = $expr.type; $arg_nodes.add($EXPR);} )+)
+	;
 
 binaryOps returns [Type type]
 @after { $start.evalType = $type; }
