@@ -159,9 +159,10 @@ public class SymbolTable {
         int tb = b.evalType.getTypeIndex(); // type index of right operand
         Type result = typeTable[ta][tb];    // operation result type
         if ( result==null ) {
-            error(text(a)+", "+
-                           text(b)+" have incompatible types in "+
-                           text((DashAST)a.getParent()));
+            error("line " + a.getLine() + ": " +
+            		text(a)+", "+
+                    text(b)+" have incompatible types in "+
+                    text((DashAST)a.getParent()));
         }
         else {
             a.promoteToType = promoteFromTo[ta][tb];
@@ -188,7 +189,8 @@ public class SymbolTable {
 
     public Type uminus(DashAST a) {
         if ( !(a.evalType==_integer || a.evalType==_real) ) {
-            error(text(a)+" must have integer or real type in "+
+            error("line " + a.getLine() + ": " +
+            		text(a)+" must have integer or real type in "+
                            text((DashAST)a.getParent()));
             return null;
         }
@@ -197,7 +199,8 @@ public class SymbolTable {
     
     public Type unot(DashAST a) {
         if ( a.evalType!=_boolean ) {
-            error(text(a)+" must have boolean type in "+
+            error("line " + a.getLine() + ": " +
+            		text(a)+" must have boolean type in "+
                            text((DashAST)a.getParent()));
             return _boolean; // even though wrong, assume result boolean
         }
@@ -263,7 +266,8 @@ public class SymbolTable {
     public Type member(DashAST id, DashAST field) {
         Type type = id.symbol.type;
         if ( type.getTypeIndex() != tTUPLE ) {
-            error(text(id)+" must have tuple type in "+
+            error("line " + id.getLine() + ": " +
+            		text(id)+" must have tuple type in "+
                            text((DashAST)id.getParent()));
             return null;
         }
@@ -288,15 +292,16 @@ public class SymbolTable {
         init.promoteToType = promoteFromTo[te][tdecl];
         if ( !canAssignTo(init.evalType, declID.symbol.type,
                           init.promoteToType) ) {
-            error(text(declID)+", "+
-                text(init)+" have incompatible types in "+
-                text((DashAST)declID.getParent()));
+            error("line " + declID.getLine() + ": " +
+            		text(declID)+", "+
+            		text(init)+" have incompatible types in "+
+            		text((DashAST)declID.getParent()));
         }
     }
     
     public void declTuple (DashAST declID, ArrayList<DashAST> args, ArrayList<Type> fields) {
     	if (fields.size() != args.size()) {
-    		error("Tuple's have mismatched sizes in "+
+    		error("line " + declID.getLine() + ": Tuple's have mismatched sizes in "+
                     text((DashAST)declID.getParent()));
     		return;
     	}
@@ -312,7 +317,7 @@ public class SymbolTable {
     		args.get(i).promoteToType = promoteToType;
     		
             if ( !canAssignTo(a, f, promoteToType) ) {
-    			error("Tuple argument at index " + (i+1) +
+    			error("line " + declID.getLine() + ": Tuple argument at index " + (i+1) +
     					" has incompatible types in " +
                         text((DashAST)declID.getParent()));
     		}
@@ -334,9 +339,10 @@ public class SymbolTable {
         int tret = retType.getTypeIndex(); 
         expr.promoteToType = promoteFromTo[texpr][tret];
         if ( !canAssignTo(exprType, retType, expr.promoteToType) ) {
-            error(text(expr)+", "+
-                ms.name+"():<"+ms.type+"> have incompatible types in "+
-                text((DashAST)expr.getParent()));
+            error("line " + expr.getLine() + ": " +
+            		text(expr)+", "+
+            		ms.name+"():<"+ms.type+"> have incompatible types in "+
+            		text((DashAST)expr.getParent()));
         }
     }
 
@@ -345,15 +351,17 @@ public class SymbolTable {
         int trhs = rhs.evalType.getTypeIndex();
         rhs.promoteToType = promoteFromTo[trhs][tlhs];
         if ( !canAssignTo(rhs.evalType, lhs.evalType, rhs.promoteToType) ) {
-            error(text(lhs)+", "+
-                           text(rhs)+" have incompatible types in "+
-                           text((DashAST)lhs.getParent()));
+            error("line " + lhs.getLine() + ": " +
+            			text(lhs)+", "+
+                        text(rhs)+" have incompatible types in "+
+                        text((DashAST)lhs.getParent()));
         }
     }
 
     public void ifstat(DashAST cond) {
         if ( cond.evalType != _boolean ) {
-            error("if condition "+text(cond)+
+            error("line " + cond.getLine() + ": " +
+            		"if condition "+text(cond)+
                            " must have boolean type in "+
                            text((DashAST)cond.getParent()));
         }

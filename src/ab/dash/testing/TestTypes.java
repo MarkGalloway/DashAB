@@ -170,7 +170,7 @@ public class TestTypes {
 		File[] files = new File("TestPrograms/").listFiles();
 		showFiles(files);
 
-		// File[] invalid_files = new File("InvalidTestPrograms/").listFiles();
-		// showFiles(invalid_files);
+		File[] invalid_files = new File("TestInvalidTypePrograms/").listFiles();
+		showFiles(invalid_files);
 	}
 }
