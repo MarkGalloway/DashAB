@@ -43,6 +43,29 @@ public class TupleSymbol extends Symbol implements Type, Scope {
     	
     	return null;
     }
+    
+    public int getMemberIndex(String name) 
+    {
+    	if (name == null)
+    		return -1;
+    	
+    	try {
+    	      int i = Integer.parseInt(name);
+    	      return i-1;
+    	} catch (NumberFormatException e) {
+    		for (int i = 0; i < fields.size(); i++) {
+    			Symbol s = fields.get(i);
+    			if (s != null) {
+    				if (s.getName() != null)
+    					if (s.getName().equals(name))
+    						return i-1;
+    			}
+    		}
+    	}
+    	
+    	return -1;
+    }
+
 
     public Symbol resolve(String name) {
 		Symbol s = resolveMember(name);
