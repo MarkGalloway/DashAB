@@ -10,16 +10,22 @@ options {
 @header {
   package ab.dash;
   import ab.dash.ast.*;
+  import java.io.PrintStream;
 }
 
 @members {
     SymbolTable symtab;
     Scope currentScope;
     MethodSymbol currentMethod;
+    
     public Def(TreeNodeStream input, SymbolTable symtab) {
         this(input);
         this.symtab = symtab;
-        currentScope = symtab.globals;
+        this.currentScope = symtab.globals;
+    }
+    
+    private void debug(String msg) {
+    	System.out.println(msg);
     }
 }
 // END: header
@@ -46,7 +52,7 @@ enterBlock
 exitBlock
     :   BLOCK
         {
-        System.out.println("locals: "+currentScope);
+        debug("locals: "+currentScope);
         currentScope = currentScope.getEnclosingScope();    // pop scope
         }
     ;
@@ -56,7 +62,7 @@ exitBlock
 exitTuple
     :   Tuple
         {
-        System.out.println("fields: "+currentScope);
+        debug("fields: "+currentScope);
         currentScope = currentScope.getEnclosingScope();    // pop scope
         }
     ;
@@ -65,7 +71,7 @@ exitTuple
 enterMethod
     :   ^((FUNCTION_DECL | PROCEDURE_DECL) type ID .*) // match method subtree with 0-or-more args
         {
-        System.out.println("line "+$ID.getLine()+": def method "+$ID.text);
+        debug("line "+$ID.getLine()+": def method "+$ID.text);
         MethodSymbol ms = new MethodSymbol($ID.text,$type.type,currentScope);
         currentMethod = ms;
         ms.def = $ID;            // track AST location of def's ID
@@ -75,7 +81,7 @@ enterMethod
         }
     |	^(PROCEDURE_DECL ID .*) // match method subtree with 0-or-more args
         {
-        System.out.println("line "+$ID.getLine()+": def method "+$ID.text);
+        debug("line "+$ID.getLine()+": def method "+$ID.text);
         MethodSymbol ms = new MethodSymbol($ID.text, null, currentScope);
         currentMethod = ms;
         ms.def = $ID;            // track AST location of def's ID
@@ -88,7 +94,7 @@ enterMethod
 /** Track method associated with this return. */
 ret :   ^(Return .) 
 	{
-	System.out.println("line "+$Return.getLine()+": return " + currentMethod);
+	debug("line "+$Return.getLine()+": return " + currentMethod);
 	$ret.start.symbol = currentMethod;
 	}
     ;
@@ -109,7 +115,7 @@ atoms
 @init {DashAST t = (DashAST)input.LT(1);}
     :  {t.hasAncestor(EXPR)||t.hasAncestor(ASSIGN)}? ID
        {
-       System.out.println("line " + $ID.getLine() + ": ref " + $ID.text);
+       debug("line " + $ID.getLine() + ": ref " + $ID.text);
        t.scope = currentScope;
        }
     ;
@@ -119,7 +125,7 @@ atoms
 varDeclaration // global, parameter, or local variable
     :   ^((VAR_DECL|ARG_DECL) specifier type ID .?)
         {
-	         System.out.println("line " + $ID.getLine() +
+	         debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 
 	         " type ( " + $type.type +  " ) " + 
 	         " specifier ( " + $specifier.specifier +  " )");
@@ -138,7 +144,7 @@ varDeclaration // global, parameter, or local variable
         }
     |	^(VAR_DECL specifier ID .)
         {
-	        System.out.println("line " + $ID.getLine() +
+	        debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 
 	         " type ( unknown ) " + 
 	         " specifier ( " + $specifier.specifier +  " )");
@@ -149,7 +155,7 @@ varDeclaration // global, parameter, or local variable
         }
     | 	^(FIELD_DECL specifier type ID?) //TODO if no ID then find location in parent example 2nd child.
     	{
-	        //System.out.println("line "+$FIELD_DECL.getLine()+": def "+ $ID.text);
+	        debug("line "+$FIELD_DECL.getLine()+": def "+ $ID.text);
 	        String name = null;
 	        
 	        if ($ID!= null)
