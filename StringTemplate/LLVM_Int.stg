@@ -10,61 +10,61 @@ int_literal(id, val) ::= <<
   <vlocal_result(id)> = add i32 <val>, 0
 >>
 
-int_add(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = add i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-int_sub(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_sub(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = sub i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-int_mul(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_mul(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = mul i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-int_div(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_div(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = sdiv i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-int_eq(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_eq(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = icmp eq i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-int_ne(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_ne(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = icmp ne i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-int_lt(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_lt(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = icmp slt i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-int_le(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_le(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = icmp sle i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-int_gt(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_gt(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = icmp sgt i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-int_ge(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+int_ge(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = icmp sge i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>

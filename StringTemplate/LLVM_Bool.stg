@@ -10,31 +10,31 @@ bool_literal(id, val) ::= <<
   <vlocal_result(id)> = add i1 <val>, 0
 >>
 
-bool_and(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+bool_and(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = and i1 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-bool_or(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+bool_or(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = or i1 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-bool_xor(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+bool_xor(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = icmp ne i1 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-bool_eq(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+bool_eq(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = icmp eq i1 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
-bool_ne(lhs, lhs_id, rhs, rhs_id, id) ::= <<
+bool_ne(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
   <vlocal_result(id)> = icmp ne i1 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
