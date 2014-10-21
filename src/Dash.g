@@ -359,7 +359,7 @@ CHARACTER :	'\'' . '\'' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
-SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? '\n' {$channel=HIDDEN;};
+SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? ('\n'|EOF) {$channel=HIDDEN;};
 MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
 
 fragment
