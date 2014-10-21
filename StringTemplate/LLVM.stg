@@ -32,7 +32,7 @@ vlocal_result(id) ::= <<
 %__<id>_result
 >>
 fglobal(id) ::= <<
-___func<id>
+@___func<id>
 >>
 
 externs() ::= <<
