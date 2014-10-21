@@ -9,7 +9,9 @@ import java.io.PrintStream;
 import org.antlr.runtime.RecognitionException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
@@ -38,6 +40,9 @@ public class ASTtest {
         System.setErr(err_backup);
         SampleFileWriter.destroy("Tests/00dummytest.db");
     }
+    
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
     
     @Test // Dummy Test
     public void dummyTest() throws RecognitionException, LexerException, ParserException {
@@ -81,21 +86,26 @@ public class ASTtest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outIntercept.toString().trim());
     }
     
-    @Test  (expected=LexerException.class)  // Block comments must not nest!
+    @Test // Block comments must not nest!
     public void nestedCommentTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(LexerException.class);
+        expectedEx.expectMessage("Error: Comments cannot be nested.");
         String[] args = new String[] {"TestGrammarPrograms/03nestedComments.db"};
         AstTestMain.main(args);
-        assertEquals("Not allowed to have nested comments.", errIntercept.toString().trim());
     }
     
-    @Test  (expected=LexerException.class)  // Block comments must match up
+    @Test  // Block comments must match up
     public void missingEndComment() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(LexerException.class);
+        expectedEx.expectMessage("Error: Missing closing comment '*/'.");
         String[] args = new String[] {"TestGrammarPrograms/03missingEndComment.db"};
         AstTestMain.main(args);
     }
     
-    @Test (expected=ParserException.class)  // Block comments must match up
+    @Test // Block comments must match up
     public void missingStartComment() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(LexerException.class);
+        expectedEx.expectMessage("Error: Missing opening comment '/*'.");
         String[] args = new String[] {"TestGrammarPrograms/03missingStartComment.db"};
         AstTestMain.main(args);
     }
@@ -116,35 +126,36 @@ public class ASTtest {
         assertEquals("", errIntercept.toString().trim());
     }
     
-    @Test (expected=RecognitionException.class) // Single Element Tuples are invalid
+    @Test // Single Element Tuples are invalid
     public void singleElementTupleTestA() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("Error: Tuples must have more than one element.");
         String[] args = new String[] {"TestGrammarPrograms/06singleElementTupleFail_a.db"};
         AstTestMain.main(args);     
-
-        //assertEquals("", outIntercept.toString().trim());
-        
     }
     
-    @Test (expected=RecognitionException.class) // Single Element Tuples are invalid
+    @Test // Single Element Tuples are invalid
     public void singleElementTupleTestB() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("Error: Tuples must have more than one element.");
         String[] args = new String[] {"TestGrammarPrograms/06singleElementTupleFail_b.db"};
         AstTestMain.main(args);  
-        
-        //assertEquals("", outIntercept.toString().trim());
     }
     
-    @Test (expected=RecognitionException.class) // Empty Tuples are invalid
+    @Test // Empty Tuples are invalid
     public void emptyTupleTestA() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("Error: Tuples cannot be empty.");
         String[] args = new String[] {"TestGrammarPrograms/07emptyTupleFail_a.db"};
         AstTestMain.main(args);     
-        //assertEquals("", outIntercept.toString().trim());
     }
     
-    @Test (expected=RecognitionException.class) // Empty Tuples are invalid
+    @Test // Empty Tuples are invalid
     public void emptyTupleTestB() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("Error: Tuples cannot be empty.");
         String[] args = new String[] {"TestGrammarPrograms/07emptyTupleFail_b.db"};
         AstTestMain.main(args);        
-        assertEquals("", outIntercept.toString().trim());
     }
 
     
