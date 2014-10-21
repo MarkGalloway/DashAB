@@ -58,13 +58,13 @@ utils() ::= <<
 
 function_main(code) ::= <<
 define i32 @main() nounwind uwtable {
-<code>
+<code; separator="\n">
 }
 >>
 
 function(id, return_type, args, code) ::= <<
 define <return_type> <fglobal(id)>(<args>) {
-<code>
+<code; separator="\n">
 }
 >>
 
