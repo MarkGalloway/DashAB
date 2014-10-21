@@ -58,21 +58,18 @@ public class ASTtest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outErrIntercept.toString().trim());
     }
     
-    //TODO: replace this with a custom exception
     @Test  (expected=RecognitionException.class)  // Block comments must not nest!
     public void nestedCommentTest() throws RecognitionException {
         String[] args = new String[] {"TestGrammarPrograms/03nestedComments.db"};
         AstTestMain.main(args);
     }
     
-    //TODO: replace this with a custom exception
     @Test  (expected=RecognitionException.class)  // Block comments must match up
     public void missingEndComment() throws RecognitionException {
         String[] args = new String[] {"TestGrammarPrograms/03missingEndComment.db"};
         AstTestMain.main(args);
     }
     
-    //TODO: replace this with a custom exception
     @Test  (expected=RecognitionException.class)  // Block comments must match up
     public void missingStartComment() throws RecognitionException {
         String[] args = new String[] {"TestGrammarPrograms/03missingStartComment.db"};
@@ -85,5 +82,39 @@ public class ASTtest {
         AstTestMain.main(args);  
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/04AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // Tuples
+    public void tuplesTest() throws RecognitionException {
+        String[] args = new String[] {"TestGrammarPrograms/05tuples.db"};
+        AstTestMain.main(args);  
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/05AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test (expected=RecognitionException.class) // Single Element Tuples are invalid
+    public void singleElementTupleTestA() throws RecognitionException {
+        String[] args = new String[] {"TestGrammarPrograms/06singleElementTupleFail_a.db"};
+        AstTestMain.main(args);          
+    }
+    
+    @Test (expected=RecognitionException.class) // Single Element Tuples are invalid
+    public void singleElementTupleTestB() throws RecognitionException {
+        String[] args = new String[] {"TestGrammarPrograms/06singleElementTupleFail_b.db"};
+        AstTestMain.main(args);  
+    }
+    
+    @Test (expected=RecognitionException.class) // Single Element Tuples are invalid
+    public void emptyTupleTestA() throws RecognitionException {
+        String[] args = new String[] {"TestGrammarPrograms/07emptyTupleFail_a.db"};
+        AstTestMain.main(args);          
+    }
+    
+    @Test (expected=RecognitionException.class) // Single Element Tuples are invalid
+    public void emptyTupleTestB() throws RecognitionException {
+        String[] args = new String[] {"TestGrammarPrograms/07emptyTupleFail_b.db"};
+        AstTestMain.main(args);          
+    }
+    
+    
+    
     
 }

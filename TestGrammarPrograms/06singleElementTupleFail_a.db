@@ -1,0 +1,1 @@
+tuple(integer) tuple_var; //should elicit error
