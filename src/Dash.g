@@ -256,13 +256,15 @@ postfixExpression
 // END: call
 
 primary
-    :   ID
-    |   r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
+    : ID
+    | r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
     |	REAL
     |	CHARACTER
     |	True
     |	False
-    |   LPAREN expression RPAREN -> expression
+    | Identity
+    | Null
+    | LPAREN expression RPAREN -> expression
     ;
 
 
@@ -332,6 +334,8 @@ Inp : 'inp';
 Tuple : 'tuple';
 Stream_state : 'stream_state';
 Revserse : 'reverse';
+Identity : 'identity';
+Null : 'null';
 
 ID : (UNDERSCORE | LETTER) (UNDERSCORE |LETTER | DIGIT)*;
 INTEGER : DIGIT+;
