@@ -68,11 +68,24 @@ public class TestLLVMCode {
 		defs.add(stg.getInstanceOf("int_global_variable"));
 		defs.get(0).setAttribute("id", "foo");
 		defs.get(1).setAttribute("id", "bar");
+		
+		StringTemplate constant = stg.getInstanceOf("int_literal");
+		constant.setAttribute("id", "1");
+		constant.setAttribute("val", "33");
+
+		StringTemplate ret = stg.getInstanceOf("return");
+		ret.setAttribute("id", "2");
+		ret.setAttribute("expr", constant);
+		ret.setAttribute("expr_id", "1");
+		ret.setAttribute("type", stg.getInstanceOf("int_type"));
+
+		StringTemplate main = stg.getInstanceOf("function_main");
+		main.setAttribute("code", ret);
 
 		StringTemplate prog = stg.getInstanceOf("program");
-		prog.setAttribute("types", defs);
+		prog.setAttribute("type_defs", defs);
 		prog.setAttribute("globals", "");
-		prog.setAttribute("code", "");
+		prog.setAttribute("code", main);
 
 		System.out.println(prog.toString());
 	}
