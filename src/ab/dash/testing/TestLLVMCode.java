@@ -98,7 +98,7 @@ public class TestLLVMCode {
 		StringTemplate prog = stg.getInstanceOf("program");
 		prog.setAttribute("type_defs", defs);
 		prog.setAttribute("globals", "");
-		prog.setAttribute("code", main);
+		prog.setAttribute("functions", main);
 
 		System.out.println(prog.toString());
 	}

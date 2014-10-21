@@ -10,6 +10,14 @@ int_literal(id, val) ::= <<
   <vlocal_result(id)> = add i32 <val>, 0
 >>
 
+int_null(id) ::= <<
+  <vlocal_result(id)> = add i32 0, 0
+>>
+
+int_identity(id) ::= <<
+  <vlocal_result(id)> = add i32 1, 0
+>>
+
 int_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
