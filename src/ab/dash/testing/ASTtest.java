@@ -58,6 +58,21 @@ public class ASTtest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outErrIntercept.toString().trim());
     }
     
+    @Test // Comments must not throw an error at end of file
+    public void endOfFileSingleLineCommentTest() throws RecognitionException {
+        String[] args = new String[] {"TestGrammarPrograms/02endOfFileSingleLineComment.db"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // Comments must not throw an error at end of file
+    public void endOfFileMultiLineCommentTest() throws RecognitionException {
+        String[] args = new String[] {"TestGrammarPrograms/02endOfFileMultiLineComment.db"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    
     @Test  (expected=RecognitionException.class)  // Block comments must not nest!
     public void nestedCommentTest() throws RecognitionException {
         String[] args = new String[] {"TestGrammarPrograms/03nestedComments.db"};
@@ -114,6 +129,8 @@ public class ASTtest {
         AstTestMain.main(args);          
     }
     
+    
+
     
     
     

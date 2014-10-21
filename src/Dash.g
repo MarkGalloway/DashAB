@@ -75,7 +75,7 @@ type
 
 primitiveType
 	:   Real
-    |   Integer
+    | Integer
     |	Character
     |	Boolean
     ;
@@ -241,6 +241,8 @@ primary
     ;
 
 
+OUTSTREAM : '-' '>';
+INSTREAM : '<' '-';
 EQUALITY : '==';
 INEQUALITY : '!=';
 ASSIGN : '=';
@@ -263,6 +265,7 @@ RBRACE : '}';
 PIPE : '|';
 DOT : '.';
 DELIM : ';';
+
 
 // DashAB reserved words
 In : 'in';
@@ -359,7 +362,7 @@ CHARACTER :	'\'' . '\'' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
-SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? '\n' {$channel=HIDDEN;};
+SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? '\n'? {$channel=HIDDEN;};
 MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
 
 fragment
