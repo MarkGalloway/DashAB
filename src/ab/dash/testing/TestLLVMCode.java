@@ -69,18 +69,31 @@ public class TestLLVMCode {
 		defs.get(0).setAttribute("id", "foo");
 		defs.get(1).setAttribute("id", "bar");
 		
-		StringTemplate constant = stg.getInstanceOf("int_literal");
-		constant.setAttribute("id", "1");
-		constant.setAttribute("val", "33");
+		StringTemplate constant1 = stg.getInstanceOf("int_literal");
+		constant1.setAttribute("id", "10");
+		constant1.setAttribute("val", "33");
 
-		StringTemplate ret = stg.getInstanceOf("return");
-		ret.setAttribute("id", "2");
-		ret.setAttribute("expr", constant);
-		ret.setAttribute("expr_id", "1");
-		ret.setAttribute("type", stg.getInstanceOf("int_type"));
+		StringTemplate constant2 = stg.getInstanceOf("int_literal");
+		constant2.setAttribute("id", "11");
+		constant2.setAttribute("val", "77");
+
+		List<StringTemplate> fbody = new ArrayList<StringTemplate>();
+
+		StringTemplate addition = stg.getInstanceOf("int_add");
+		addition.setAttribute("id", "12");
+		addition.setAttribute("lhs", constant1);
+		addition.setAttribute("lhs_id", constant1.getAttribute("id"));
+		addition.setAttribute("rhs", constant2);
+		addition.setAttribute("rhs_id", constant2.getAttribute("id"));
+
+		fbody.add(stg.getInstanceOf("return"));
+		fbody.get(0).setAttribute("id", "2");
+		fbody.get(0).setAttribute("expr", addition);
+		fbody.get(0).setAttribute("expr_id", addition.getAttribute("id"));
+		fbody.get(0).setAttribute("type", stg.getInstanceOf("int_type"));
 
 		StringTemplate main = stg.getInstanceOf("function_main");
-		main.setAttribute("code", ret);
+		main.setAttribute("code", fbody);
 
 		StringTemplate prog = stg.getInstanceOf("program");
 		prog.setAttribute("type_defs", defs);
