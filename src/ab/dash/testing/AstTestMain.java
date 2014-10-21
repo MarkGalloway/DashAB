@@ -30,7 +30,8 @@ public class AstTestMain {
         DashParser.program_return entry = parser.program();
         
         if (lexer.getErrorCount() > 0) {
-        	throw new RecognitionException();
+        	//throw new RecognitionException();
+            return;
         }
   
         
