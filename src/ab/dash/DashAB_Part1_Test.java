@@ -15,6 +15,7 @@ import org.antlr.runtime.tree.TreeAdaptor;
 
 import ab.dash.ast.DashAST;
 import ab.dash.ast.DashErrorNode;
+import ab.dash.exceptions.LexerException;
 
 public class DashAB_Part1_Test {
 
@@ -33,10 +34,15 @@ public class DashAB_Part1_Test {
         
         DashLexer lexer = new DashLexer(input);
         final TokenRewriteStream tokens = new TokenRewriteStream(lexer);
+        
         DashParser parser = new DashParser(tokens);
         parser.setTreeAdaptor(DashAST.dashAdaptor);
         DashParser.program_return entry = parser.program();
-  
+        
+        // exit if we find lexer errors
+        if (lexer.getErrorCount() > 0 || parser.getErrorCount() > 0) {
+        	System.exit(1);
+        }
         
         CommonTree ast = (CommonTree) entry.getTree();
         
@@ -44,6 +50,7 @@ public class DashAB_Part1_Test {
         if(args.length > 1 && args[1].equals("astDebug")) {
             System.out.println(ast.toStringTree());
             return;
+            
         }
         /** TESTING FEATURE: END REMOVE ON RELEASE */
         

@@ -28,23 +28,41 @@ tokens {
   import ab.dash.ast.*;
 }
 
+@members {
+  boolean member_access = false;
+  
+  int error_count = 0;
+  StringBuffer errorSB = new StringBuffer();
+  @Override
+  public void emitErrorMessage(String msg) {
+    System.err.println(msg);
+    error_count++;
+    errorSB.append(msg);
+  }
+  
+  public int getErrorCount() { return error_count; }
+  public String getErrors() { return errorSB.toString(); }
+}
+
+
 @lexer::header {
   package ab.dash;
 }
 
 @lexer::members {
-	
-	int error_count = 0;
 	boolean member_access = false;
 	
+	int error_count = 0;
+  StringBuffer errorSB = new StringBuffer();
 	@Override
 	public void emitErrorMessage(String msg) {
 		System.err.println(msg);
 		error_count++;
+		errorSB.append(msg);
 	}
 	
 	public int getErrorCount() { return error_count; }
-
+	public String getErrors() { return errorSB.toString(); }
 	
 	@Override
 	public void emit(Token token) {
@@ -56,6 +74,8 @@ tokens {
 		super.emit(token);
 	}
 }
+
+
 
 
 program 
