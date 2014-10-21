@@ -58,7 +58,7 @@ public class TupleSymbol extends Symbol implements Type, Scope {
     			if (s != null) {
     				if (s.getName() != null)
     					if (s.getName().equals(name))
-    						return i-1;
+    						return i;
     			}
     		}
     	}
