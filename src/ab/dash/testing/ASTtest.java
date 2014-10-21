@@ -20,18 +20,16 @@ public class ASTtest {
 
     private PrintStream out_backup;
     private PrintStream err_backup;
-    private ByteArrayOutputStream errIntercept;
-    private ByteArrayOutputStream outIntercept;
+    private ByteArrayOutputStream outErrIntercept;
 
     @Before
     public void setUp() throws Exception {
         out_backup = System.out;
         err_backup = System.err;
         
-        errIntercept = new ByteArrayOutputStream();
-        outIntercept = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outIntercept));
-        System.setErr(new PrintStream(errIntercept));     
+        outErrIntercept = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outErrIntercept));
+        System.setErr(new PrintStream(outErrIntercept));     
     }
 
     @After
@@ -51,16 +49,14 @@ public class ASTtest {
         String[] args = new String[] {"Tests/00dummytest.db"};
         AstTestMain.main(args);
         
-        assertEquals("PROGRAM", outIntercept.toString().trim());
-        assertEquals("", errIntercept.toString().trim());
+        assertEquals("PROGRAM", outErrIntercept.toString().trim());
     }
     
     @Test // Variable Declaration
     public void datatypeDeclarationTest() throws RecognitionException, LexerException, ParserException {        
         String[] args = new String[] {"TestGrammarPrograms/01datatypeDeclarationTest.db"};
         AstTestMain.main(args);  
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/01AST_output"), outIntercept.toString().trim());
-        assertEquals("", errIntercept.toString().trim());
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/01AST_output"), outErrIntercept.toString().trim());
     }
     
     @Test // Comments and block comments
@@ -68,22 +64,21 @@ public class ASTtest {
         
         String[] args = new String[] {"TestGrammarPrograms/02comments.db"};
         AstTestMain.main(args);
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outIntercept.toString().trim());
-        assertEquals("", errIntercept.toString().trim());
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outErrIntercept.toString().trim());
     }
     
     @Test // Comments must not throw an error at end of file
     public void endOfFileSingleLineCommentTest() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/02endOfFileSingleLineComment.db"};
         AstTestMain.main(args);
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outIntercept.toString().trim());
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outErrIntercept.toString().trim());
     }
     
     @Test // Comments must not throw an error at end of file
     public void endOfFileMultiLineCommentTest() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/02endOfFileMultiLineComment.db"};
         AstTestMain.main(args);
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outIntercept.toString().trim());
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/02AST_output"), outErrIntercept.toString().trim());
     }
     
     @Test // Block comments must not nest!
@@ -114,16 +109,14 @@ public class ASTtest {
     public void realsTest() throws RecognitionException, LexerException, ParserException {        
         String[] args = new String[] {"TestGrammarPrograms/04Reals.db"};
         AstTestMain.main(args);  
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/04AST_output"), outIntercept.toString().trim());
-        assertEquals("", errIntercept.toString().trim());
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/04AST_output"), outErrIntercept.toString().trim());
     }
     
     @Test // Tuples
     public void tuplesTest() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/05tuples.db"};
         AstTestMain.main(args);  
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/05AST_output"), outIntercept.toString().trim());
-        assertEquals("", errIntercept.toString().trim());
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/05AST_output"), outErrIntercept.toString().trim());
     }
     
     @Test // Single Element Tuples are invalid
@@ -157,8 +150,39 @@ public class ASTtest {
         String[] args = new String[] {"TestGrammarPrograms/07emptyTupleFail_b.db"};
         AstTestMain.main(args);        
     }
+    
+    @Test // Expressions test - null
+    public void expressionsNull() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/09nullTests.db"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/09AST_output"), outErrIntercept.toString().trim());
+    }
 
+    @Test // Expressions test - identity
+    public void expressionsIdentity() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/10identityTests.db"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/10AST_output"), outErrIntercept.toString().trim());
+    }
     
+    @Test // untyped Tuples test
+    public void untypedTuplesTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/11untypedTuples.db"};
+        AstTestMain.main(args);  
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/11AST_output"), outErrIntercept.toString().trim());
+    }
     
-    
+    @Test // Tuples test - null
+    public void tuplesNullTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/13nullTuples.db"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/13AST_output"), outErrIntercept.toString().trim());
+    }
+
+    @Test // Tuples test - identity
+    public void tuplesIdentityTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/12identityTuples.db"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/12AST_output"), outErrIntercept.toString().trim());
+    }
 }
