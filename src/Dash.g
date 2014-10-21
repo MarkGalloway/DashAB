@@ -154,6 +154,7 @@ statement
     |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
     |   a=postfixExpression DELIM // handles function calls like f(i);
     		-> ^(EXPR postfixExpression)
+    | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
     ;
     
 lhs 
@@ -362,7 +363,7 @@ CHARACTER :	'\'' . '\'' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
-SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? '\n'? {$channel=HIDDEN;};
+SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? ('\n'|EOF) {$channel=HIDDEN;};
 MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
 
 fragment

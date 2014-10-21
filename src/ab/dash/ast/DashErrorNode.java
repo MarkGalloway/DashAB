@@ -6,7 +6,7 @@ import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonErrorNode;
 
 
-public class DashErrorNode {
+public class DashErrorNode extends DashAST {
     /** A node representing erroneous token range in token stream */
     CommonErrorNode delegate;
 
