@@ -138,7 +138,11 @@ block
 
 // START: tuple
 tupleType
-	: Tuple LPAREN tupleMember (',' tupleMember)* RPAREN -> ^(Tuple tupleMember+)
+	: Tuple LPAREN tupleMember (',' tupleMember)+ RPAREN -> ^(Tuple tupleMember+)
+	| Tuple LPAREN tupleMember RPAREN
+	  { emitErrorMessage("Error: Tuples must have more than one element."); }
+	| Tuple LPAREN RPAREN
+	  { emitErrorMessage("Error: Tuples cannot be empty."); }
 	;
 	
 tupleMember
@@ -383,7 +387,7 @@ CHARACTER :	'\'' . '\'' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
-SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? ('\n'|EOF) {$channel=HIDDEN;};
+SL_COMMENT:   '//' ~('\r'|'\n')* NL {$channel=HIDDEN;};
 MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
 
 fragment
@@ -394,13 +398,13 @@ options {backtrack = false;}
     ( COMMENT_NESTED 
     {
     	if(!$COMMENT_NESTED.getText().equals(""))
-    		emitErrorMessage("Not allowed to have nested comments.");
+    		emitErrorMessage("Error: Comments cannot be nested.");
     		
     }( options {greedy=false;} : . )* )*
     '*/'
   ;
   
-NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;};
+NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;}; //EOF must not be removed here or we break SL_COMMENT
 
 fragment DecimalExponent1 : ('e' | 'E') UNDERSCORE* ('+' | '-') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
 fragment DecimalExponent2 : ('e' | 'E') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
