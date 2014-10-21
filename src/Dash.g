@@ -154,6 +154,7 @@ statement
     |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
     |   a=postfixExpression DELIM // handles function calls like f(i);
     		-> ^(EXPR postfixExpression)
+    | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
     ;
     
 lhs 
