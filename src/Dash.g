@@ -166,6 +166,7 @@ varDeclaration
     |   specifier ID ASSIGN expression DELIM -> ^(VAR_DECL specifier ID expression)
     |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
     |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
+    |   specifier ID ASSIGN tupleMemberList DELIM -> ^(VAR_DECL specifier ID tupleMemberList)
 	;
 // END: var
 
