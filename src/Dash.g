@@ -125,7 +125,7 @@ tupleMember
 	:	type ID? -> ^(FIELD_DECL Var["var"] type ID?)
 	;
 	
-tupleMemeberList
+tupleMemberList
 	:   LPAREN expression (',' expression)* RPAREN -> ^(TUPLE_LIST expression+)
 	;
 // END: tuple
@@ -140,8 +140,8 @@ varDeclaration
 	:   type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL Var["var"] type ID expression?)
     |   specifier type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL specifier type ID expression?)
     |   specifier ID ASSIGN expression DELIM -> ^(VAR_DECL specifier ID expression)
-    |	tupleType ID (ASSIGN tupleMemeberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemeberList?)
-    |	specifier tupleType ID (ASSIGN tupleMemeberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemeberList?)
+    |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
+    |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
 	;
 // END: var
 
