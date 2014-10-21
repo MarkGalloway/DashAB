@@ -7,7 +7,7 @@ i1
 >>
 
 bool_literal(id, val) ::= <<
-  <vlocal_result(id)> = add i1 <val> 0
+  <vlocal_result(id)> = add i1 <val>, 0
 >>
 
 bool_and(lhs, lhs_id, rhs, rhs_id, id) ::= <<
