@@ -150,7 +150,9 @@ tupleMember
 	;
 	
 tupleMemberList
-	:   LPAREN expression (',' expression)* RPAREN -> ^(TUPLE_LIST expression+)
+	: LPAREN expression (',' expression)* RPAREN -> ^(TUPLE_LIST expression+)
+	| Identity -> ^(TUPLE_LIST Identity)
+	| Null -> ^(TUPLE_LIST Null)
 	;
 // END: tuple
 
