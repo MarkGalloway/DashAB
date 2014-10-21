@@ -7,7 +7,7 @@ i32
 >>
 
 int_literal(id, val) ::= <<
-  <vlocal_result(id)> = add i32 <val> 0
+  <vlocal_result(id)> = add i32 <val>, 0
 >>
 
 int_add(lhs, lhs_id, rhs, rhs_id, id) ::= <<
