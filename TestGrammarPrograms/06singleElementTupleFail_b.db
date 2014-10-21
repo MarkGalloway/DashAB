@@ -1,1 +1,1 @@
-tuple(integer) tuple_var = (1); //should elicit error
+tuple(integer) tuple_var = (1);

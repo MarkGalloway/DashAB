@@ -10,10 +10,12 @@ import org.antlr.runtime.tree.CommonTree;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.ast.DashAST;
+import ab.dash.exceptions.LexerException;
+import ab.dash.exceptions.ParserException;
 
 public class AstTestMain {
 
-    public static void main(String[] args) throws RecognitionException {
+    public static void main(String[] args) throws LexerException, ParserException, RecognitionException {
         ANTLRFileStream input = null;
         try {
             input = new ANTLRFileStream(args[0]);
@@ -30,10 +32,13 @@ public class AstTestMain {
         DashParser.program_return entry = parser.program();
         
         if (lexer.getErrorCount() > 0) {
-        	throw new RecognitionException();
+        	throw new LexerException(lexer.getErrors());
+        }
+        
+        if (parser.getErrorCount() > 0) {
+        	throw new ParserException(parser.getErrors());
         }
   
-        
         CommonTree ast = (CommonTree) entry.getTree();
         
         // Print the tree for testing

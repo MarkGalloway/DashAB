@@ -10,6 +10,5 @@ var x = 1; // var y = 2;
  
  * should not display
 ada faf */
-// Signle line comment with a typo
-var z = 4;
-// this is a bad comment ):
+
+var z = 4; // end of line comment should not throw parser error

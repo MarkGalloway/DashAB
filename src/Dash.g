@@ -28,23 +28,41 @@ tokens {
   import ab.dash.ast.*;
 }
 
+@members {
+  boolean member_access = false;
+  
+  int error_count = 0;
+  StringBuffer errorSB = new StringBuffer();
+  @Override
+  public void emitErrorMessage(String msg) {
+    System.err.println(msg);
+    error_count++;
+    errorSB.append(msg);
+  }
+  
+  public int getErrorCount() { return error_count; }
+  public String getErrors() { return errorSB.toString(); }
+}
+
+
 @lexer::header {
   package ab.dash;
 }
 
 @lexer::members {
-	
-	int error_count = 0;
 	boolean member_access = false;
 	
+	int error_count = 0;
+  StringBuffer errorSB = new StringBuffer();
 	@Override
 	public void emitErrorMessage(String msg) {
 		System.err.println(msg);
 		error_count++;
+		errorSB.append(msg);
 	}
 	
 	public int getErrorCount() { return error_count; }
-
+	public String getErrors() { return errorSB.toString(); }
 	
 	@Override
 	public void emit(Token token) {
@@ -56,6 +74,8 @@ tokens {
 		super.emit(token);
 	}
 }
+
+
 
 
 program 
@@ -75,7 +95,7 @@ type
 
 primitiveType
 	:   Real
-    |   Integer
+    | Integer
     |	Character
     |	Boolean
     ;
@@ -154,6 +174,7 @@ statement
     |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
     |   a=postfixExpression DELIM // handles function calls like f(i);
     		-> ^(EXPR postfixExpression)
+    | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
     ;
     
 lhs 
@@ -241,6 +262,8 @@ primary
     ;
 
 
+OUTSTREAM : '-' '>';
+INSTREAM : '<' '-';
 EQUALITY : '==';
 INEQUALITY : '!=';
 ASSIGN : '=';
@@ -263,6 +286,7 @@ RBRACE : '}';
 PIPE : '|';
 DOT : '.';
 DELIM : ';';
+
 
 // DashAB reserved words
 In : 'in';
@@ -359,7 +383,7 @@ CHARACTER :	'\'' . '\'' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
-SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? '\n' {$channel=HIDDEN;};
+SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? ('\n'|EOF) {$channel=HIDDEN;};
 MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
 
 fragment
