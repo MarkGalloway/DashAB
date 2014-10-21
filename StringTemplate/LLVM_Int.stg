@@ -83,3 +83,9 @@ int_ge(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
   <vlocal_result(id)> = icmp sge i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
+
+int_print(id, expr, expr_id) ::= <<
+<expr>
+  <vlocal(id)>0 = getelementptr [3 x i8] @.str.fmt.int, i32 0, i32 0
+  call i32 @printf(i8* <vlocal(id)>0, i32 <vlocal_result(expr_id)>)
+>>
