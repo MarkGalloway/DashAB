@@ -1,0 +1,1 @@
+(PROGRAM (VAR_DECL var (tuple (FIELD_DECL var integer) (FIELD_DECL var real r) (FIELD_DECL var integer i)) tuple_var (TUPLE_LIST identity)) (VAR_DECL var (tuple (FIELD_DECL var integer) (FIELD_DECL var real r)) tuple_var2) (= (EXPR tuple_var2) (EXPR identity)))

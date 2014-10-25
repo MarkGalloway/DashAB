@@ -1,0 +1,12 @@
+
+/* Create a tuple containing 3 elements. The first contains the
+   value of 'x', the second element contains the boolean false,
+   and the third contains a vector. "var" can be used to infer
+   the type of the tuple. */
+var my_tuple = (x, false, 5);
+
+/* Create a tuple containing 3 elements. The first contains the
+   value of 'x', the second element contains the boolean false,
+   and the third contains a vector. "var" can be used to infer
+   the type of the tuple. */
+const my_tuple = (x, false, 5);

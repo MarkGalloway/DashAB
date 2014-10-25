@@ -4,19 +4,19 @@ typeInitMap ::= [
     default:   "null"
 ]
 
-program(types, globals, code) ::= <<
+program(type_defs, globals, functions, main_id) ::= <<
 target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v64:64:64-v128:128:128-a0:0:64-s0:64:64-f80:128:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
 <externs()>
 
-<types; separator="\n">
+<type_defs; separator="\n">
 
 <string_constants()>
 
 <globals>
 
-<code>
+<functions>
 
 <utils()>
 
@@ -30,6 +30,9 @@ vlocal(id) ::= <<
 >>
 vlocal_result(id) ::= <<
 %__<id>_result
+>>
+fglobal(id) ::= <<
+@___func<id>
 >>
 
 externs() ::= <<
@@ -45,11 +48,27 @@ string_constants() ::= <<
 @.str.lbrack = private unnamed_addr constant [2 x i8] c"[\00"
 @.str.rbrack = private unnamed_addr constant [3 x i8] c" ]\00"
 @.str.newline = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
-@.str.fmt.num = private unnamed_addr constant [3 x i8] c"%d\00", align 1
-@.str.fmt.num.newline = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
-@.str.fmt.num.lspace = private unnamed_addr constant [4 x i8] c" %d\00", align 1
+@.str.fmt.int = private unnamed_addr constant [3 x i8] c"%d\00", align 1
+@.str.fmt.int.newline = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@.str.fmt.int.lspace = private unnamed_addr constant [4 x i8] c" %d\00", align 1
 >>
 
 utils() ::= <<
 >>
 
+function_main(code) ::= <<
+define i32 @main() nounwind uwtable {
+<code; separator="\n">
+}
+>>
+
+function(id, return_type, args, code) ::= <<
+define <return_type> <fglobal(id)>(<args>) {
+<code; separator="\n">
+}
+>>
+
+return(id, expr, expr_id, type) ::= <<
+<expr>
+  ret <type> <vlocal_result(expr_id)>
+>>

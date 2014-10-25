@@ -138,7 +138,11 @@ block
 
 // START: tuple
 tupleType
-	: Tuple LPAREN tupleMember (',' tupleMember)* RPAREN -> ^(Tuple tupleMember+)
+	: Tuple LPAREN tupleMember (',' tupleMember)+ RPAREN -> ^(Tuple tupleMember+)
+	| Tuple LPAREN tupleMember RPAREN
+	  { emitErrorMessage("Error: Tuples must have more than one element."); }
+	| Tuple LPAREN RPAREN
+	  { emitErrorMessage("Error: Tuples cannot be empty."); }
 	;
 	
 tupleMember
@@ -146,7 +150,9 @@ tupleMember
 	;
 	
 tupleMemberList
-	:   LPAREN expression (',' expression)* RPAREN -> ^(TUPLE_LIST expression+)
+	: LPAREN expression (',' expression)* RPAREN -> ^(TUPLE_LIST expression+)
+	| Identity -> ^(TUPLE_LIST Identity)
+	| Null -> ^(TUPLE_LIST Null)
 	;
 // END: tuple
 
@@ -162,6 +168,7 @@ varDeclaration
     |   specifier ID ASSIGN expression DELIM -> ^(VAR_DECL specifier ID expression)
     |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
     |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
+    |   specifier ID ASSIGN tupleMemberList DELIM -> ^(VAR_DECL specifier ID tupleMemberList)
 	;
 // END: var
 
@@ -252,13 +259,15 @@ postfixExpression
 // END: call
 
 primary
-    :   ID
-    |   r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
+    : ID
+    | r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
     |	REAL
     |	CHARACTER
     |	True
     |	False
-    |   LPAREN expression RPAREN -> expression
+    | Identity
+    | Null
+    | LPAREN expression RPAREN -> expression
     ;
 
 
@@ -328,6 +337,8 @@ Inp : 'inp';
 Tuple : 'tuple';
 Stream_state : 'stream_state';
 Revserse : 'reverse';
+Identity : 'identity';
+Null : 'null';
 
 ID : (UNDERSCORE | LETTER) (UNDERSCORE |LETTER | DIGIT)*;
 INTEGER : DIGIT+;
@@ -383,7 +394,7 @@ CHARACTER :	'\'' . '\'' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
-SL_COMMENT:   '//' ~('\r'|'\n')* '\r'? ('\n'|EOF) {$channel=HIDDEN;};
+SL_COMMENT:   '//' ~('\r'|'\n')* NL {$channel=HIDDEN;};
 MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
 
 fragment
@@ -394,13 +405,13 @@ options {backtrack = false;}
     ( COMMENT_NESTED 
     {
     	if(!$COMMENT_NESTED.getText().equals(""))
-    		emitErrorMessage("Not allowed to have nested comments.");
+    		emitErrorMessage("Error: Comments cannot be nested.");
     		
     }( options {greedy=false;} : . )* )*
     '*/'
   ;
   
-NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;};
+NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;}; //EOF must not be removed here or we break SL_COMMENT
 
 fragment DecimalExponent1 : ('e' | 'E') UNDERSCORE* ('+' | '-') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
 fragment DecimalExponent2 : ('e' | 'E') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
