@@ -54,6 +54,7 @@ public class TestTypes {
 		SymbolTable symtab = new SymbolTable(tokens); // make global scope,
 														// types
 		Def def = new Def(nodes, symtab); // use custom constructor
+		def.debug_on();
 		def.downup(tree); // trigger symtab actions upon certain subtrees
 		System.out.println("globals: " + symtab.globals);
 		System.out.println();

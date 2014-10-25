@@ -18,14 +18,25 @@ options {
     Scope currentScope;
     MethodSymbol currentMethod;
     
+    boolean debug_mode = false;
+    
     public Def(TreeNodeStream input, SymbolTable symtab) {
         this(input);
         this.symtab = symtab;
         this.currentScope = symtab.globals;
     }
     
+    public void debug_on() {
+    	debug_mode = true;
+    }
+    
+    public void debug_off() {
+    	debug_mode = false;
+    }
+    
     private void debug(String msg) {
-    	System.out.println(msg);
+    	if (debug_mode)
+    		System.out.println(msg);
     }
 }
 // END: header
@@ -142,7 +153,19 @@ varDeclaration // global, parameter, or local variable
 		        currentScope.define(vs);
 		    }
         }
-    |	^(VAR_DECL specifier ID .)
+    |	^(VAR_DECL specifier ID ^(TUPLE_LIST .+))	// Tuple
+        {
+	        debug("line " + $ID.getLine() +
+	         ": def " + $ID.text + 
+	         " type ( tuple ) " + 
+	         " specifier ( " + $specifier.specifier +  " )");
+	        Type type = (Type) currentScope.resolve("tuple"); // return Type
+	        TupleSymbol ts = new TupleSymbol($ID.text, type, $specifier.specifier, currentScope);
+		    ts.def = $ID;
+		    $ID.symbol = ts;
+		    currentScope.define(ts); // def tuple in current scope
+        }
+    |	^(VAR_DECL specifier ID ^(EXPR .+)) // Buit-in
         {
 	        debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 

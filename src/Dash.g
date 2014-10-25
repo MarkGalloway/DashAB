@@ -95,7 +95,7 @@ type
 
 primitiveType
 	:   Real
-    | Integer
+    | 	Integer
     |	Character
     |	Boolean
     ;

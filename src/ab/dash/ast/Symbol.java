@@ -11,12 +11,25 @@ package ab.dash.ast;
 public class Symbol { // A generic programming language symbol
 	public String name;      // All symbols at least have a name
     public Type type;
+    public int id;
     public Scope scope;      // All symbols know what scope contains them.
     public DashAST def;	  // Location in AST of ID node
 
-    public Symbol(String name) { this.name = name; }
-    public Symbol(String name, Type type) { this(name); this.type = type; }
-    public String getName() { return name; }
+    public Symbol(String name) 
+    { 
+    	this.name = name;
+    	this.id = SymbolTable.getID();
+    }
+    public Symbol(String name, Type type) 
+    { 
+    	this(name); 
+    	this.type = type; 
+    }
+    
+    public String getName() 
+    { 
+    	return name; 
+    }
 
     public String toString() {
         String s = "";

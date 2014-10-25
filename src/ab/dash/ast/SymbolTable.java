@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SymbolTable {
+	private static int ID_COUNTER = 0;
+	
 	// Specifiers
     public static final int sCONST = 0;
     public static final int sVAR = 1;
@@ -109,6 +111,11 @@ public class SymbolTable {
         /*real*/   		{null,		null,  		null,    	null,   	null}
     };
 
+    public static int getID() {
+		ID_COUNTER++;
+		return ID_COUNTER;
+	}
+    
     public GlobalScope globals = new GlobalScope();
     
     private int error_count;
@@ -299,7 +306,8 @@ public class SymbolTable {
         }
     }
     
-    public void declTuple (DashAST declID, ArrayList<DashAST> args, ArrayList<Type> fields) {
+    // For the following format: var tuple(type id?, ...)tuple = (arg1, ...);
+    public void declTuple(DashAST declID, ArrayList<DashAST> args, ArrayList<Type> fields) {
     	if (fields.size() != args.size()) {
     		error("line " + declID.getLine() + ": Tuple's have mismatched sizes in "+
                     text((DashAST)declID.getParent()));
@@ -330,6 +338,19 @@ public class SymbolTable {
 //    	System.out.println("\nArgs:");
 //    	for (DashAST n : args)
 //    		System.out.println(n.evalType);
+    }
+    
+    // For the following format: var tuple = (arg1, ...);
+    public void declUndefinedTuple(DashAST declID, ArrayList<DashAST> args) {
+    	for (int i = 0; i < args.size(); i++) {
+    		Type type = args.get(i).evalType;
+    		
+    		TupleSymbol scope = (TupleSymbol)declID.symbol;	// get scope of tuple
+    		
+    		VariableSymbol vs = new VariableSymbol(null, type, _var);
+	        vs.def = null;
+	        scope.define(vs);
+    	}
     }
 
     public void ret(MethodSymbol ms, DashAST expr) {
