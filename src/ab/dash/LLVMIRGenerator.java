@@ -11,6 +11,7 @@ import ab.dash.DashLexer;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.Symbol;
 import ab.dash.ast.SymbolTable;
+import ab.dash.ast.TupleSymbol;
 import ab.dash.ast.Type;
 
 
@@ -68,7 +69,46 @@ public class LLVMIRGenerator {
 		
 		case DashLexer.PROCEDURE_DECL:
 		{
+			Symbol sym = ((DashAST)t.getChild(0)).symbol;
+			int sym_id = sym.id;
 			
+			Type type = sym.type;
+			int type_id = type.getTypeIndex();
+			
+			StringTemplate code = exec((DashAST)t.getChild(1));
+			
+			if (sym.name.equals("main")) {
+				StringTemplate template = stg.getInstanceOf("function_main");
+				template.setAttribute("code", code);
+				return template;
+			}
+			
+			// TODO handle generic methods
+			return null;
+		}
+		
+		case DashLexer.Return:
+		{
+			int id = t.llvmResultID;
+			int type = ((DashAST) t.getChild(0)).evalType.getTypeIndex();
+			
+			StringTemplate return_expression = exec((DashAST)t.getChild(0));
+			int expr_id = ((DashAST) t.getChild(0).getChild(0)).llvmResultID;
+
+			StringTemplate template = stg.getInstanceOf("return");
+			StringTemplate type_template = null;
+			if (type == SymbolTable.tINTEGER) {
+				type_template = stg.getInstanceOf("int_type");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				type_template = stg.getInstanceOf("bool_type");
+			}
+
+			template.setAttribute("expr_id", expr_id);
+			template.setAttribute("expr", return_expression);
+			template.setAttribute("type", type_template);
+			template.setAttribute("id", id);
+			
+			return template;
 		}
 			
 		case DashLexer.EXPR:
@@ -82,23 +122,23 @@ public class LLVMIRGenerator {
 			return new StringTemplate(temp);
 		}
 			
-//		case DashLexer.COND:
-//		{
-//			int id = ((DashAST)t).llvmResultID;
-//			
-//			StringTemplate expr = exec((DashAST)t.getChild(0));
-//			int expr_id = ((DashAST)t.getChild(0).getChild(0)).llvmResultID;
-//			
-//			StringTemplate block = exec((DashAST)t.getChild(1));
-//			
-//			StringTemplate template = stg.getInstanceOf("cond");
-//			
-//			template.setAttribute("block", block);
-//			template.setAttribute("expr_id", expr_id);
-//			template.setAttribute("expr", expr);
-//			template.setAttribute("id", id);
-//			return template;
-//		}
+		case DashLexer.If:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			
+			StringTemplate expr = exec((DashAST)t.getChild(0));
+			int expr_id = ((DashAST)t.getChild(0).getChild(0)).llvmResultID;
+			
+			StringTemplate block = exec((DashAST)t.getChild(1));
+			
+			StringTemplate template = stg.getInstanceOf("if");
+			
+			template.setAttribute("block", block);
+			template.setAttribute("expr_id", expr_id);
+			template.setAttribute("expr", expr);
+			template.setAttribute("id", id);
+			return template;
+		}
 //
 //		case DashLexer.LOOP:
 //		{
@@ -144,35 +184,73 @@ public class LLVMIRGenerator {
 			
 		case DashLexer.VAR_DECL:
 		{
-			Symbol sym = ((DashAST)t.getChild(1)).symbol;
+			Symbol sym = ((DashAST)t.getChild(0)).symbol;
 			int sym_id = sym.id;
 			
-			this.global.put(sym_id, sym);
+			//this.global.put(sym_id, sym);
 			
 			int id = ((DashAST)t).llvmResultID;
-			int type = ((DashAST)t.getChild(2)).evalType.getTypeIndex();
-			
-			StringTemplate expr = exec((DashAST)t.getChild(2));
-			int arg_id = ((DashAST)t.getChild(2).getChild(0)).llvmResultID;
-			
-			StringTemplate template = null;
-			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("assign_int");
+			int type = sym.type.getTypeIndex();
+			DashAST child = (DashAST)t.getChild(1);
+			if (child != null) {
+				// Tuple
+				if (child.getType() == DashLexer.TUPLE_LIST) {
+					String temp = "";
+					for(int i = 0; i < t.getChildCount(); i++) {
+						temp += exec((DashAST) child.getChild(i)).toString() + "\n";
+					}
+					return new StringTemplate(temp);
+				}
+				
+				StringTemplate expr = exec(child);
+				int arg_id = ((DashAST)child.getChild(0)).llvmResultID;
+				
+				StringTemplate template = null;
+				if (type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_local_assign");
+				}
+				
+				template.setAttribute("expr_id", arg_id);
+				template.setAttribute("expr", expr);
+				template.setAttribute("id", sym_id);
+				return template;
 			}
 			
-			template.setAttribute("expr_id", arg_id);
-			template.setAttribute("expr", expr);
-			template.setAttribute("name", sym_id);
-			template.setAttribute("id", id);
-			return template;
+			return new StringTemplate("");
 		}
 
 		case DashLexer.ASSIGN:
 		{
-			Symbol sym = ((DashAST)t.getChild(0)).symbol;
-			int sym_id = sym.id;
+			DashAST node = (DashAST)t.getChild(0).getChild(0);
+			Symbol sym = null;
+			int sym_id = 0;
 			
-			int id = ((DashAST)t).llvmResultID;
+			if (node.getType() == DashLexer.ID) {
+				sym = node.symbol;
+				sym_id = sym.id;
+			} else if (node.getType() == DashLexer.DOT) {
+				DashAST tupleNode = (DashAST) node.getChild(0);
+				DashAST memberNode = (DashAST) node.getChild(1);
+				
+				TupleSymbol tuple = (TupleSymbol) tupleNode.symbol;
+				sym_id = tuple.id;
+				int index = tuple.getMemberIndex(memberNode.getText());
+				
+				StringTemplate expr = exec((DashAST)t.getChild(1));
+				int arg_id = ((DashAST)t.getChild(1).getChild(0)).llvmResultID;
+				
+				StringTemplate template = null;
+				if (node.evalType.getTypeIndex() == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_local_tuple_assign");
+				}
+				
+				template.setAttribute("expr_id", arg_id);
+				template.setAttribute("expr", expr);
+				template.setAttribute("index", index);
+				template.setAttribute("id", sym_id);
+				return template;
+			}
+			
 			int type = ((DashAST)t.getChild(1)).evalType.getTypeIndex();
 			
 			StringTemplate expr = exec((DashAST)t.getChild(1));
@@ -180,13 +258,12 @@ public class LLVMIRGenerator {
 			
 			StringTemplate template = null;
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("assign_int");
+				template = stg.getInstanceOf("int_local_assign");
 			}
 			
 			template.setAttribute("expr_id", arg_id);
 			template.setAttribute("expr", expr);
-			template.setAttribute("name", sym_id);
-			template.setAttribute("id", id);
+			template.setAttribute("id", sym_id);
 			return template;
 		}
 
@@ -216,19 +293,7 @@ public class LLVMIRGenerator {
 
 		case DashLexer.ID:
 		{
-			int id = ((DashAST)t).llvmResultID;
-			int sym_id = ((DashAST)t).symbol.id;
-			
-			int type = ((DashAST)t).evalType.getTypeIndex();
-			
-			StringTemplate template = null;
-			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("get_int");
-			}
-			
-			template.setAttribute("name", sym_id);
-			template.setAttribute("id", id);
-			return template;
+			return getSymbol(t);
 		}
 
 		case DashLexer.INTEGER:
@@ -236,7 +301,7 @@ public class LLVMIRGenerator {
 			int id = ((DashAST)t).llvmResultID;
 			int val = Integer.parseInt(t.getText());
 			
-			StringTemplate template = stg.getInstanceOf("literal_int");
+			StringTemplate template = stg.getInstanceOf("int_literal");
 			template.setAttribute("val", val);
 			template.setAttribute("id", id);
 			return template;
@@ -249,6 +314,22 @@ public class LLVMIRGenerator {
 			throw new RuntimeException("Unrecognized token: " + t.getText());
 		}
 
+	}
+	
+	private StringTemplate getSymbol(DashAST t) {
+		int id = ((DashAST)t).llvmResultID;
+		int sym_id = ((DashAST)t).symbol.id;
+		
+		int type = ((DashAST)t).symbol.type.getTypeIndex();
+		
+		StringTemplate template = null;
+		if (type == SymbolTable.tINTEGER) {
+			template = stg.getInstanceOf("int_get_local");
+		}
+		
+		template.setAttribute("sym_id", sym_id);
+		template.setAttribute("id", id);
+		return template;
 	}
 
 	private StringTemplate operation(DashAST t, LLVMOps op)
@@ -274,42 +355,42 @@ public class LLVMIRGenerator {
 		switch (op) {
 		case EQ:
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("eq_int");
+				template = stg.getInstanceOf("int_eq");
 			}
 			break;
 		case NE:
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("ne_int");
+				template = stg.getInstanceOf("int_ne");
 			}
 			break;
 		case LT:
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("lt_int");
+				template = stg.getInstanceOf("int_lt");
 			}
 			break;
 		case GT:
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("gt_int");
+				template = stg.getInstanceOf("int_gt");
 			}
 			break;
 		case ADD:
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("add_int");
+				template = stg.getInstanceOf("int_add");
 			}
 			break;
 		case SUB:
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("sub_int");
+				template = stg.getInstanceOf("int_sub");
 			}
 			break;
 		case MULT:
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("mul_int");
+				template = stg.getInstanceOf("int_mul");
 			}
 			break;
 		case DIV:
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("div_int");
+				template = stg.getInstanceOf("int_div");
 			}
 			break;
 		}

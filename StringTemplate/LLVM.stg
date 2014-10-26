@@ -31,6 +31,9 @@ vlocal(id) ::= <<
 vlocal_result(id) ::= <<
 %__<id>_result
 >>
+vlocalSymbol(id) ::= <<
+%__<id>_symbol
+>>
 fglobal(id) ::= <<
 @___func<id>
 >>

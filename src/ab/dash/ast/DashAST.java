@@ -38,6 +38,11 @@ public class DashAST extends CommonTree {
                 annot += ":"+promoteToType.getName();
             }
             return s+'<'+annot+'>';
+        } else if ( symbol !=null ) {
+        	if (symbol.type != null) {
+	            String annot = symbol.type.getName();
+	            return s+'<'+annot+'>';
+        	}
         }
         return s;
     }

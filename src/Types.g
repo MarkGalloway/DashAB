@@ -37,15 +37,16 @@ ifstat : ^(If cond=. s=. e=.?) {symtab.ifstat($cond);} ;
 // END: ifstat
 
 decl
-	:   ^(VAR_DECL . tuple_type ID tuple_list)
+	:   ^(VAR_DECL tuple_type ID tuple_list)
         {
-        symtab.declTuple($ID, $tuple_list.arg_nodes, $tuple_type.field_types);
+        	symtab.declTuple($ID, $tuple_list.arg_nodes, $tuple_type.field_types);
+        	$VAR_DECL.deleteChild(0);
         }
-	|	^(VAR_DECL (Const | Var) ID tuple_list)
+	|	^(VAR_DECL ID tuple_list)
         {
-        symtab.declUndefinedTuple($ID, $tuple_list.arg_nodes);
+        	symtab.declUndefinedTuple($ID, $tuple_list.arg_nodes);
         }
-    |	^(VAR_DECL . .? ID (init=.)?) // call declinit if we have init expr
+    |	^(VAR_DECL ID (init=.)?) // call declinit if we have init expr
         {
         if ( $init!=null && $init.evalType!=null )
              symtab.declinit($ID, $init);

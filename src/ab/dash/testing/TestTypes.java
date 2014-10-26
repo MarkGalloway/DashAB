@@ -58,6 +58,10 @@ public class TestTypes {
 		def.downup(tree); // trigger symtab actions upon certain subtrees
 		System.out.println("globals: " + symtab.globals);
 		System.out.println();
+		
+		System.out.println("\nTree:");
+		System.out.println(tree.toStringTree());
+		System.out.println();
 
 		System.out.println("Type Step:");
 		System.out.flush();
@@ -100,6 +104,10 @@ public class TestTypes {
 			v.visit(tree, actions2);
 		}
 
+		System.out.println("\nTree:");
+		System.out.println(tree.toStringTree());
+		System.out.println();
+		
 		System.out.println("\nCode:");
 		System.out.println(tokens);
 		System.out.println("\n\n");

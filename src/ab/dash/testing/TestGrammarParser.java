@@ -85,6 +85,9 @@ public class TestGrammarParser {
 		
 		File[] files = new File("TestGrammarPrograms/").listFiles();
 		showFiles(files);
+		
+		files = new File("TestPrograms/").listFiles();
+		showFiles(files);
 	}
 
 }

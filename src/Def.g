@@ -80,7 +80,7 @@ exitTuple
 // END: tuple
 
 enterMethod
-    :   ^((FUNCTION_DECL | PROCEDURE_DECL) type ID .*) // match method subtree with 0-or-more args
+    :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) type ID function_block=.*) // match method subtree with 0-or-more args
         {
         debug("line "+$ID.getLine()+": def method "+$ID.text);
         MethodSymbol ms = new MethodSymbol($ID.text,$type.type,currentScope);
@@ -89,7 +89,9 @@ enterMethod
         $ID.symbol = ms;         // track in AST
         currentScope.define(ms); // def method in globals
         currentScope = ms;       // set current scope to method scope
-        }
+        
+        $method_node.deleteChild(0);
+        } 
     |	^(PROCEDURE_DECL ID .*) // match method subtree with 0-or-more args
         {
         debug("line "+$ID.getLine()+": def method "+$ID.text);
@@ -134,7 +136,7 @@ atoms
 
 // START: var
 varDeclaration // global, parameter, or local variable
-    :   ^((VAR_DECL|ARG_DECL) specifier type ID .?)
+    :   ^(var_node = (VAR_DECL|ARG_DECL) specifier type ID .?)
         {
 	         debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 
@@ -151,7 +153,11 @@ varDeclaration // global, parameter, or local variable
 		        vs.def = $ID;            // track AST location of def's ID
 		        $ID.symbol = vs;         // track in AST
 		        currentScope.define(vs);
+		        
+		        $var_node.deleteChild(0);
 		    }
+		    
+		    $var_node.deleteChild(0);
         }
     |	^(VAR_DECL specifier ID ^(TUPLE_LIST .+))	// Tuple
         {
@@ -164,6 +170,8 @@ varDeclaration // global, parameter, or local variable
 		    ts.def = $ID;
 		    $ID.symbol = ts;
 		    currentScope.define(ts); // def tuple in current scope
+		    
+		    $VAR_DECL.deleteChild(0);
         }
     |	^(VAR_DECL specifier ID ^(EXPR .+)) // Buit-in
         {
@@ -175,6 +183,8 @@ varDeclaration // global, parameter, or local variable
 	        vs.def = $ID;            // track AST location of def's ID
 	        $ID.symbol = vs;         // track in AST
 	        currentScope.define(vs);
+	        
+	        $VAR_DECL.deleteChild(0);
         }
     | 	^(FIELD_DECL specifier type ID?) //TODO if no ID then find location in parent example 2nd child.
     	{

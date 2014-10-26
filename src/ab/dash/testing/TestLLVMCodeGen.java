@@ -104,6 +104,8 @@ public class TestLLVMCodeGen {
 		if (symtab.getErrorCount() > 0) {
 			return;
 		}
+		
+		System.out.println(tree.toStringTree());
 
 		StringBuilder sb;
 		sb = new StringBuilder();
@@ -154,12 +156,12 @@ public class TestLLVMCodeGen {
 	}
 
 	public static void main(String[] args) throws RecognitionException {
-		parseFile("simpleMain.db", "TestPrograms/05SimpleMain/simpleMain.db");
-		parseFile("variableDeclarationInMain.db", "TestPrograms/07VariableDeclarationInMain/variableDeclarationInMain.db");
-//		File[] files = new File("TestPrograms/").listFiles();
-//		showFiles(files);
-//
-//		File[] invalid_files = new File("TestInvalidTypePrograms/").listFiles();
-//		showFiles(invalid_files);
+//		parseFile("simpleMain.db", "TestPrograms/05SimpleMain/simpleMain.db");
+//		parseFile("variableDeclarationInMain.db", "TestPrograms/07VariableDeclarationInMain/variableDeclarationInMain.db");
+		File[] files = new File("TestPrograms/").listFiles();
+		showFiles(files);
+
+		File[] invalid_files = new File("TestInvalidTypePrograms/").listFiles();
+		showFiles(invalid_files);
 	}
 }
