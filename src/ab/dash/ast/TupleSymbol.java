@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class TupleSymbol extends Symbol implements Type, Scope {
     Scope enclosingScope;
     public Specifier specifier;
+    public int tupleTypeIndex;
     
     ArrayList<Symbol> fields = new ArrayList<Symbol>();
 
@@ -83,6 +84,10 @@ public class TupleSymbol extends Symbol implements Type, Scope {
     	fields.add(sym);
 		sym.scope = this; // track the scope in each symbol
 	}
+    
+    public ArrayList<Symbol> getFields() {
+    	return fields;
+    }
 
     public Scope getEnclosingScope() { return enclosingScope; }
     

@@ -117,6 +117,7 @@ public class SymbolTable {
 	}
     
     public GlobalScope globals = new GlobalScope();
+    public ArrayList<ArrayList<Type>> tuples;
     
     private int error_count;
 	private int warnings_count;
@@ -129,6 +130,8 @@ public class SymbolTable {
         
         this.error_count = 0;
         this.warnings_count = 0;
+        
+        this.tuples = new ArrayList<ArrayList<Type>>();
         
         initTypeSystem();
     }

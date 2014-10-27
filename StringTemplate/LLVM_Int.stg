@@ -7,27 +7,27 @@ i32
 >>
 
 int_literal(id, val) ::= <<
-  <vlocal_result(id)> = add i32 <val>, 0
+ <vlocal_result(id)> = add i32 <val>, 0
 >>
 
 int_null(id) ::= <<
-  <vlocal_result(id)> = add i32 0, 0
+ <vlocal_result(id)> = add i32 0, 0
 >>
 
 int_identity(id) ::= <<
-  <vlocal_result(id)> = add i32 1, 0
+ <vlocal_result(id)> = add i32 1, 0
 >>
 
 int_get_local(id, sym_id) ::= <<
-	<vlocal_result(id)> = add i32 <vlocalSymbol(sym_id)>, 0
+<vlocal_result(id)> = add i32 <vlocalSymbol(sym_id)>, 0
 >>
 
 int_local_tuple_assign(id, index, expr, expr_id) ::= <<
-	int_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
+int_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
 >>
 
 int_local_assign(id, expr, expr_id) ::= <<
-	<expr>
+<expr>
 	<vlocalSymbol(id)> = add i32 <vlocal_result(expr_id)>, 0
 >>
 

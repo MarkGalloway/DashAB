@@ -137,6 +137,7 @@ public class LLVMIRGenerator {
 			template.setAttribute("expr_id", expr_id);
 			template.setAttribute("expr", expr);
 			template.setAttribute("id", id);
+			
 			return template;
 		}
 //
@@ -303,6 +304,26 @@ public class LLVMIRGenerator {
 			
 			StringTemplate template = stg.getInstanceOf("int_literal");
 			template.setAttribute("val", val);
+			template.setAttribute("id", id);
+			return template;
+		}
+		
+		case DashLexer.True:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			
+			StringTemplate template = stg.getInstanceOf("bool_literal");
+			template.setAttribute("val", 1);
+			template.setAttribute("id", id);
+			return template;
+		}
+		
+		case DashLexer.False:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			
+			StringTemplate template = stg.getInstanceOf("bool_literal");
+			template.setAttribute("val", 0);
 			template.setAttribute("id", id);
 			return template;
 		}

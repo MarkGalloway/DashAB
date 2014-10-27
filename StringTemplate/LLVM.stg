@@ -75,3 +75,16 @@ return(id, expr, expr_id, type) ::= <<
 <expr>
   ret <type> <vlocal_result(expr_id)>
 >>
+
+if(id, expr, expr_id, block) ::= <<
+  <expr>
+  %if<id>.cmp = icmp i1 <vlocal_result(expr_id)>, 1
+  br i1 %if<id>.cmp, label %if.body<id>, label %if.done<id>
+
+if.body<id>:
+  <block>
+  br label %if.done<id>
+  
+if.done<id>:
+
+>>
