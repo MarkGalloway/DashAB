@@ -26,7 +26,7 @@ vglobalSymbol(id) ::= <<
 @__<id>_symbol
 >>
 vlocal(id) ::= <<
-%__<id>
+%__<id>_
 >>
 vlocal_result(id) ::= <<
 %__<id>_result
@@ -51,6 +51,12 @@ string_constants() ::= <<
 @.str.lbrack = private unnamed_addr constant [2 x i8] c"[\00"
 @.str.rbrack = private unnamed_addr constant [3 x i8] c" ]\00"
 @.str.newline = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
+@.str.fmt.boolT = private unnamed_addr constant [2 x i8] c"T\00", align 1
+@.str.fmt.boolT.newline = private unnamed_addr constant [3 x i8] c"T\0A\00", align 1
+@.str.fmt.boolT.lspace = private unnamed_addr constant [3 x i8] c" T\00", align 1
+@.str.fmt.boolF = private unnamed_addr constant [2 x i8] c"F\00", align 1
+@.str.fmt.boolF.newline = private unnamed_addr constant [3 x i8] c"F\0A\00", align 1
+@.str.fmt.boolF.lspace = private unnamed_addr constant [3 x i8] c" F\00", align 1
 @.str.fmt.char = private unnamed_addr constant [3 x i8] c"%c\00", align 1
 @.str.fmt.char.newline = private unnamed_addr constant [4 x i8] c"%c\0A\00", align 1
 @.str.fmt.char.lspace = private unnamed_addr constant [4 x i8] c" %c\00", align 1
