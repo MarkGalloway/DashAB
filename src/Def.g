@@ -241,10 +241,10 @@ DashAST t = (DashAST)input.LT(1);
     t.scope = currentScope;
     $type = (Type)t.symbol;
 }
-    :   Real
-    |   Integer
-    |   Character
-    |   Boolean
+    :   REAL_TYPE
+    | 	INTEGER_TYPE
+    |	CHARACTER_TYPE
+    |	BOOLEAN_TYPE
     |	^(Tuple .+)
     ;
 

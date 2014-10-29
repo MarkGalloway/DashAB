@@ -23,4 +23,6 @@ public interface Scope {
     public Symbol resolve(String name);
     
     public Collection<Symbol> getDefined();
+    
+    public int getScopeIndex();
 }

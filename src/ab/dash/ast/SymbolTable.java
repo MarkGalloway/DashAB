@@ -16,6 +16,12 @@ import java.util.List;
 public class SymbolTable {
 	private static int ID_COUNTER = 0;
 	
+	// Scope
+    public static final int scGLOBAL = 0;
+    public static final int scLOCAL = 1;
+    public static final int scMETHOD = 2;
+    public static final int scTUPLE = 3;
+	
 	// Specifiers
     public static final int sCONST = 0;
     public static final int sVAR = 1;

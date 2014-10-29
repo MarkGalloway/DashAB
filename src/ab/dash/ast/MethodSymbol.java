@@ -26,4 +26,6 @@ public class MethodSymbol extends ScopedSymbol {
     public String getName() {
         return name+"("+stripBrackets(orderedArgs.keySet().toString())+")";
     }
+    
+    public int getScopeIndex() { return SymbolTable.scMETHOD; }
 }

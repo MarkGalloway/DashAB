@@ -10,5 +10,6 @@ package ab.dash.ast;
 ***/
 public class LocalScope extends BaseScope {
     public LocalScope(Scope parent) { super(parent); }
-    public String getScopeName() { return "local"; }    
+    public String getScopeName() { return "local"; }
+    public int getScopeIndex() { return SymbolTable.scLOCAL; }
 }
