@@ -1,0 +1,117 @@
+char_type() ::= <<
+i8
+>>
+
+char_literal(id, val) ::= <<
+ <vlocal_result(id)> = add i8 <val>, 0
+>>
+
+char_null(id) ::= <<
+ <vlocal_result(id)> = add i8 0, 0
+>>
+
+char_identity(id) ::= <<
+ <vlocal_result(id)> = add i8 1, 0
+>>
+
+char_init_local(sym_id) ::= <<
+<vlocalSymbol(sym_id)> = alloca i8
+>>
+
+char_init_global(sym_id) ::= <<
+<vglobalSymbol(sym_id)> = private unnamed_addr global i8 0
+>>
+
+char_get_local(id, sym_id) ::= <<
+<vlocal_result(id)> = load i8*  <vlocalSymbol(sym_id)>
+>>
+
+char_get_global(id, sym_id) ::= <<
+<vlocal_result(id)> = load i8*  <vglobalSymbol(sym_id)>
+>>
+
+char_local_assign(id, expr, expr_id) ::= <<
+<expr>
+	store i8 <vlocal_result(expr_id)>, i8* <vlocalSymbol(id)>
+>>
+
+char_global_assign(id, expr, expr_id) ::= <<
+<expr>
+	store i8 <vlocal_result(expr_id)>, i8* <vglobalSymbol(id)>
+>>
+
+char_local_tuple_assign(id, index, expr, expr_id) ::= <<
+char_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
+>>
+
+char_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = add i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_sub(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = sub i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_mul(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = mul i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_div(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = sdiv i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_mod(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = srem i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_eq(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = icmp eq i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_ne(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = icmp ne i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_lt(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = icmp slt i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_le(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = icmp sle i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_gt(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = icmp sgt i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_ge(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = icmp sge i8 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
+char_print(id, expr, expr_id) ::= <<
+<expr>
+  <vlocal(id)>0 = getelementptr [3 x i8]* @.str.fmt.char, i32 0, i32 0
+  call i32 (i8*, ...)* @printf(i8* <vlocal(id)>0, i8 <vlocal_result(expr_id)>)
+>>

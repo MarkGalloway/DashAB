@@ -123,6 +123,7 @@ public class TestLLVMCodeGen {
 		String[] STGFiles = new String[] {
 				"StringTemplate/LLVM.stg",
 				"StringTemplate/LLVM_Bool.stg",
+				"StringTemplate/LLVM_Char.stg",
 				"StringTemplate/LLVM_Int.stg",
 				"StringTemplate/LLVM_Real.stg"
 				};

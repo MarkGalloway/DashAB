@@ -483,6 +483,17 @@ public class LLVMIRGenerator {
 		{
 			return getSymbol(t);
 		}
+		
+		case DashLexer.CHARACTER:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			char val = t.getText().charAt(1);
+			
+			StringTemplate template = stg.getInstanceOf("char_literal");
+			template.setAttribute("val", val);
+			template.setAttribute("id", id);
+			return template;
+		}
 
 		case DashLexer.INTEGER:
 		{
