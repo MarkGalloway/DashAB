@@ -65,7 +65,7 @@ real_mul(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 real_div(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
-  <vlocal_result(id)> = sdiv float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+  <vlocal_result(id)> = fdiv float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
 real_mod(id, lhs, lhs_id, rhs, rhs_id) ::= <<
