@@ -65,6 +65,14 @@ tuple(id, types) ::= <<
 }
 >>
 
+tuple_init_local(sym_id, type_id) ::= <<
+<vlocalSymbol(sym_id)> = alloca %T<type_id>
+>>
+
+tuple_init_global(sym_id, type_id) ::= <<
+<vglobalSymbol(sym_id)> = private unnamed_addr global %T<type_id> 0
+>>
+
 function_main(code) ::= <<
 define i32 @main() nounwind uwtable {
 <code; separator="\n">
