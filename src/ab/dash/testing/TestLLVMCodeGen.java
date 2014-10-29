@@ -28,6 +28,7 @@ import org.antlr.stringtemplate.language.DefaultTemplateLexer;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
+import ab.dash.DefineTupleTypes;
 import ab.dash.LLVMCodeGenerator;
 import ab.dash.LLVMIRGenerator;
 import ab.dash.Types;
@@ -105,6 +106,15 @@ public class TestLLVMCodeGen {
 			return;
 		}
 		
+		nodes.reset();
+		DefineTupleTypes tupleTypeComp = new DefineTupleTypes(nodes, symtab);
+		tupleTypeComp.debug_off();
+		tupleTypeComp.downup(tree); // trigger resolve/type computation actions
+		
+		if (symtab.getErrorCount() > 0) {
+			return;
+		}
+		
 		System.out.println(tree.toStringTree());
 
 		StringBuilder sb;
@@ -113,7 +123,8 @@ public class TestLLVMCodeGen {
 		String[] STGFiles = new String[] {
 				"StringTemplate/LLVM.stg",
 				"StringTemplate/LLVM_Bool.stg",
-				"StringTemplate/LLVM_Int.stg"
+				"StringTemplate/LLVM_Int.stg",
+				"StringTemplate/LLVM_Real.stg"
 				};
 		
 		for (String s : STGFiles)
@@ -122,7 +133,8 @@ public class TestLLVMCodeGen {
 		StringTemplateGroup stg = new StringTemplateGroup(
 				new StringReader(sb.toString()));
 		
-		LLVMIRGenerator llvm = new LLVMIRGenerator(stg);
+		LLVMIRGenerator llvm = new LLVMIRGenerator(stg, symtab);
+		llvm.debug_on();
 		nodes.reset();
     	tokens.reset();
 		llvm.build(tree);

@@ -8,7 +8,12 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import ab.dash.DashLexer;
+import ab.dash.ast.BuiltInTypeSymbol;
 import ab.dash.ast.DashAST;
+import ab.dash.ast.GlobalScope;
+import ab.dash.ast.LocalScope;
+import ab.dash.ast.MethodSymbol;
+import ab.dash.ast.Scope;
 import ab.dash.ast.Symbol;
 import ab.dash.ast.SymbolTable;
 import ab.dash.ast.TupleSymbol;
@@ -18,50 +23,121 @@ import ab.dash.ast.Type;
 public class LLVMIRGenerator {
 	private StringTemplateGroup stg;
 	private StringTemplate template;
-	private Map<Integer, Symbol> global;
+	private SymbolTable symtab;
+	
+	private boolean debug_mode = false;
 	
 	public enum LLVMOps {
 	    ADD, SUB, MULT, DIV, EQ, NE, LT, GT
 	}
 	
-	public LLVMIRGenerator(StringTemplateGroup stg) {		
+	public LLVMIRGenerator(StringTemplateGroup stg, SymbolTable symtab) {		
 		this.stg = stg;
+		this.symtab = symtab;
 	}
 	
 	public String toString() {
 		return this.template.toString();
 	}
 	
+	public void debug_on() {
+    	debug_mode = true;
+    }
+    
+    public void debug_off() {
+    	debug_mode = false;
+    }
+    
+    private void debug(Object msg) {
+    	if (debug_mode)
+    		System.out.println(msg);
+    }
+	
 	public void build(DashAST tree) {
-		this.global = new HashMap<Integer, Symbol>();
 		this.template = exec(tree);
 	}
 	
 	protected StringTemplate exec(DashAST t) {
-		System.out.println("Parsing: " + t + ", ");
+		debug("Parsing: " + t + ", ");
 		
 		switch(t.getToken().getType()) {
 		case DashLexer.PROGRAM:
 		{	
+			// Generate Code
 			String code = "";
 			for(int i = 0; i < t.getChildCount(); i++)
 				code += exec((DashAST)t.getChild(i)).toString() + "\n";
 			
+			// Generate Globals
+			debug("\n\nCreated Globals:");
+			
 			String global_vars = "";
-			for (Map.Entry<Integer, Symbol> entry : this.global.entrySet()) {
-				int type = entry.getValue().type.getTypeIndex();
-				StringTemplate template = null;
-				if (type == SymbolTable.tINTEGER) {
-					template = stg.getInstanceOf("int_global_variable");
+			for (Symbol s : symtab.globals.getDefined()) {
+				if (!(s instanceof MethodSymbol)) {
+					if (s.type != null) {	
+						
+						debug(s);
+						
+						int type = s.type.getTypeIndex();
+						StringTemplate template = null;
+						if (type == SymbolTable.tINTEGER) {
+							template = stg.getInstanceOf("int_init_global");
+						} else if (type == SymbolTable.tREAL) {
+							template = stg.getInstanceOf("real_init_global");
+						} else if (type == SymbolTable.tCHARACTER) {
+							template = stg.getInstanceOf("char_init_global");
+						} else if (type == SymbolTable.tBOOLEAN) {
+							template = stg.getInstanceOf("bool_init_global");
+						} else if (type == SymbolTable.tTUPLE) {
+							template = stg.getInstanceOf("tuple_init_global");
+						}
+						
+						template.setAttribute("sym_id", s.id);
+						
+						global_vars += template.toString() + "\n";
+					}
+				}
+			}
+			
+			debug("\n\nGlobals in Symbol Table:");
+			debug(symtab.globals);
+			
+			// Generate Types
+			debug("\n\nCreated Types:");
+
+			String type_vars = "";
+			for (int id = 0; id < symtab.tuples.size(); id++) {
+				ArrayList<Type> fields = symtab.tuples.get(id);
+				String types = "";
+				for (int i = 0; i < fields.size(); i++) {
+					int type = fields.get(i).getTypeIndex();
+					
+					StringTemplate template = null;
+					if (type == SymbolTable.tINTEGER) {
+						template = stg.getInstanceOf("int_type");
+					} else if (type == SymbolTable.tREAL) {
+						template = stg.getInstanceOf("real_type");
+					} else if (type == SymbolTable.tCHARACTER) {
+						template = stg.getInstanceOf("char_type");
+					} else if (type == SymbolTable.tBOOLEAN) {
+						template = stg.getInstanceOf("bool_type");
+					}
+					
+					types += template.toString();
+					if (i < fields.size() - 1) {
+						types += ",\n";
+					}
 				}
 				
-				template.setAttribute("id", entry.getKey());
+				StringTemplate template = stg.getInstanceOf("tuple");
+				template.setAttribute("types", types);
+				template.setAttribute("id", id);
 				
-				global_vars += template.toString() + "\n";
+				type_vars += template.toString() + "\n\n";
 			}
 			
 			StringTemplate template = stg.getInstanceOf("program");
-			template.setAttribute("type_defs", null);
+			template.setAttribute("type_defs", type_vars);
 			template.setAttribute("globals", global_vars);
 			template.setAttribute("code", code);
 			return template;
@@ -99,8 +175,14 @@ public class LLVMIRGenerator {
 			StringTemplate type_template = null;
 			if (type == SymbolTable.tINTEGER) {
 				type_template = stg.getInstanceOf("int_type");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_type");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_type");
 			} else if (type == SymbolTable.tBOOLEAN) {
-				type_template = stg.getInstanceOf("bool_type");
+				template = stg.getInstanceOf("bool_type");
+			} else if (type == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("tuple_type");
 			}
 
 			template.setAttribute("expr_id", expr_id);
@@ -117,6 +199,20 @@ public class LLVMIRGenerator {
 		case DashLexer.BLOCK:
 		{
 			String temp = "";
+			
+			debug("locals: "+ t.scope);	
+			
+			// Alloca Local Variables
+			for (Symbol s : t.scope.getDefined()) {
+				int sym_id = s.id;
+				if (s.type.getTypeIndex() == SymbolTable.tINTEGER) {
+					StringTemplate template = stg.getInstanceOf("int_init_local");
+					template.setAttribute("sym_id", sym_id);
+					
+					temp += template.toString() + "\n";
+				}
+			}
+			
 			for(int i = 0; i < t.getChildCount(); i++)
 				temp += exec((DashAST)t.getChild(i)).toString() + "\n";
 			return new StringTemplate(temp);
@@ -186,6 +282,7 @@ public class LLVMIRGenerator {
 		case DashLexer.VAR_DECL:
 		{
 			Symbol sym = ((DashAST)t.getChild(0)).symbol;
+			Scope scope = sym.scope;
 			int sym_id = sym.id;
 			
 			//this.global.put(sym_id, sym);
@@ -207,8 +304,30 @@ public class LLVMIRGenerator {
 				int arg_id = ((DashAST)child.getChild(0)).llvmResultID;
 				
 				StringTemplate template = null;
-				if (type == SymbolTable.tINTEGER) {
-					template = stg.getInstanceOf("int_local_assign");
+				if (scope instanceof GlobalScope) {
+					if (type == SymbolTable.tINTEGER) {
+						template = stg.getInstanceOf("int_global_assign");
+					} else if (type == SymbolTable.tREAL) {
+						template = stg.getInstanceOf("real_global_assign");
+					} else if (type == SymbolTable.tCHARACTER) {
+						template = stg.getInstanceOf("char_global_assign");
+					} else if (type == SymbolTable.tBOOLEAN) {
+						template = stg.getInstanceOf("bool_global_assign");
+					} else if (type == SymbolTable.tTUPLE) {
+						template = stg.getInstanceOf("tuple_global_assign");
+					}
+				} else {
+					if (type == SymbolTable.tINTEGER) {
+						template = stg.getInstanceOf("int_local_assign");
+					} else if (type == SymbolTable.tREAL) {
+						template = stg.getInstanceOf("real_local_assign");
+					} else if (type == SymbolTable.tCHARACTER) {
+						template = stg.getInstanceOf("char_local_assign");
+					} else if (type == SymbolTable.tBOOLEAN) {
+						template = stg.getInstanceOf("bool_local_assign");
+					} else if (type == SymbolTable.tTUPLE) {
+						template = stg.getInstanceOf("tuple_local_assign");
+					}
 				}
 				
 				template.setAttribute("expr_id", arg_id);
@@ -223,34 +342,40 @@ public class LLVMIRGenerator {
 		case DashLexer.ASSIGN:
 		{
 			DashAST node = (DashAST)t.getChild(0).getChild(0);
-			Symbol sym = null;
-			int sym_id = 0;
 			
-			if (node.getType() == DashLexer.ID) {
-				sym = node.symbol;
-				sym_id = sym.id;
-			} else if (node.getType() == DashLexer.DOT) {
+			if (node.getType() == DashLexer.DOT) {
 				DashAST tupleNode = (DashAST) node.getChild(0);
 				DashAST memberNode = (DashAST) node.getChild(1);
 				
 				TupleSymbol tuple = (TupleSymbol) tupleNode.symbol;
-				sym_id = tuple.id;
 				int index = tuple.getMemberIndex(memberNode.getText());
 				
 				StringTemplate expr = exec((DashAST)t.getChild(1));
 				int arg_id = ((DashAST)t.getChild(1).getChild(0)).llvmResultID;
 				
+				int type = node.evalType.getTypeIndex();
+				
 				StringTemplate template = null;
-				if (node.evalType.getTypeIndex() == SymbolTable.tINTEGER) {
+				if (type == SymbolTable.tINTEGER) {
 					template = stg.getInstanceOf("int_local_tuple_assign");
+				}  else if (type == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_local_tuple_assign");
+				} else if (type == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("char_local_tuple_assign");
+				} else if (type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_local_tuple_assign");
 				}
 				
 				template.setAttribute("expr_id", arg_id);
 				template.setAttribute("expr", expr);
 				template.setAttribute("index", index);
-				template.setAttribute("id", sym_id);
+				template.setAttribute("id", tuple.id);
 				return template;
 			}
+			
+			Symbol sym = node.symbol;
+			Scope scope = sym.scope;
+			int sym_id = sym.id;
 			
 			int type = ((DashAST)t.getChild(1)).evalType.getTypeIndex();
 			
@@ -258,8 +383,30 @@ public class LLVMIRGenerator {
 			int arg_id = ((DashAST)t.getChild(1).getChild(0)).llvmResultID;
 			
 			StringTemplate template = null;
-			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_local_assign");
+			if (scope instanceof GlobalScope) {
+				if (type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_global_assign");
+				} else if (type == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_global_assign");
+				} else if (type == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("char_global_assign");
+				} else if (type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_global_assign");
+				} else if (type == SymbolTable.tTUPLE) {
+					template = stg.getInstanceOf("tuple_global_assign");
+				}
+			} else {
+				if (type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_local_assign");
+				} else if (type == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_local_assign");
+				} else if (type == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("char_local_assign");
+				} else if (type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_local_assign");
+				} else if (type == SymbolTable.tTUPLE) {
+					template = stg.getInstanceOf("tuple_local_assign");
+				}
 			}
 			
 			template.setAttribute("expr_id", arg_id);
@@ -308,6 +455,17 @@ public class LLVMIRGenerator {
 			return template;
 		}
 		
+		case DashLexer.REAL:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			float val = Float.parseFloat(t.getText());
+			
+			StringTemplate template = stg.getInstanceOf("real_literal");
+			template.setAttribute("val", val);
+			template.setAttribute("id", id);
+			return template;
+		}
+		
 		case DashLexer.True:
 		{
 			int id = ((DashAST)t).llvmResultID;
@@ -339,13 +497,33 @@ public class LLVMIRGenerator {
 	
 	private StringTemplate getSymbol(DashAST t) {
 		int id = ((DashAST)t).llvmResultID;
-		int sym_id = ((DashAST)t).symbol.id;
 		
-		int type = ((DashAST)t).symbol.type.getTypeIndex();
+		Symbol sym = ((DashAST)t).symbol;
+		int sym_id = sym.id;
+		Scope scope = sym.scope;
+		int type = sym.type.getTypeIndex();
 		
 		StringTemplate template = null;
-		if (type == SymbolTable.tINTEGER) {
-			template = stg.getInstanceOf("int_get_local");
+		if (scope instanceof GlobalScope) {
+			if (type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("int_get_global");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_get_global");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_get_global");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_get_global");
+			}
+		} else {
+			if (type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("int_get_local");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_get_local");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_get_local");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_get_local");
+			}
 		}
 		
 		template.setAttribute("sym_id", sym_id);
@@ -377,41 +555,97 @@ public class LLVMIRGenerator {
 		case EQ:
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_eq");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_eq");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_eq");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_eq");
+			} else if (type == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("tuple_eq");
 			}
 			break;
 		case NE:
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_ne");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_ne");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_ne");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_ne");
+			} else if (type == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("tuple_ne");
 			}
 			break;
 		case LT:
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_lt");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_lt");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_lt");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_lt");
+			} else if (type == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("tuple_lt");
 			}
 			break;
 		case GT:
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_gt");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_gt");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_gt");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_gt");
+			} else if (type == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("tuple_gt");
 			}
 			break;
 		case ADD:
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_add");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_add");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_add");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_add");
 			}
 			break;
 		case SUB:
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_sub");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_sub");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_sub");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_sub");
 			}
 			break;
 		case MULT:
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_mul");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_mul");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_mul");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_mul");
 			}
 			break;
 		case DIV:
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_div");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_div");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_div");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_div");
 			}
 			break;
 		}

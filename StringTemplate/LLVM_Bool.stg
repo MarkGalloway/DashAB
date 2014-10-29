@@ -1,7 +1,3 @@
-bool_global_variable(id) ::= <<
-<vglobal(id)> = private unnamed_addr global i1 0
->>
-
 bool_type() ::= <<
 i1
 >>
@@ -16,6 +12,36 @@ bool_null(id) ::= <<
 
 bool_identity(id) ::= <<
   <vlocal_result(id)> = add i1 1, 0
+>>
+
+bool_init_local(sym_id) ::= <<
+<vlocalSymbol(sym_id)> = alloca i1
+>>
+
+bool_init_global(sym_id) ::= <<
+<vglobalSymbol(sym_id)> = private unnamed_addr global i1 0
+>>
+
+bool_get_local(id, sym_id) ::= <<
+<vlocal_result(id)> = load i1*  <vlocalSymbol(sym_id)>
+>>
+
+bool_get_global(id, sym_id) ::= <<
+<vlocal_result(id)> = load i1*  <vglobalSymbol(sym_id)>
+>>
+
+bool_local_assign(id, expr, expr_id) ::= <<
+<expr>
+	store i1 <vlocal_result(expr_id)>, i32* <vlocalSymbol(id)>
+>>
+
+bool_global_assign(id, expr, expr_id) ::= <<
+<expr>
+	store i1 <vlocal_result(expr_id)>, i32* <vglobalSymbol(id)>
+>>
+
+bool_local_tuple_assign(id, index, expr, expr_id) ::= <<
+bool_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
 >>
 
 bool_and(id, lhs, lhs_id, rhs, rhs_id) ::= <<

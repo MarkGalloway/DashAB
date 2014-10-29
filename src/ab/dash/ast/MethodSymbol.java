@@ -8,6 +8,7 @@ package ab.dash.ast;
  * We make no guarantees that this code is fit for any purpose. 
  * Visit http://www.pragmaticprogrammer.com/titles/tpdsl for more book information.
 ***/
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ public class MethodSymbol extends ScopedSymbol {
     }
 
     public Map<String, Symbol> getMembers() { return orderedArgs; }
+    
+    public Collection<Symbol> getDefined() { return orderedArgs.values(); }
 
     public String getName() {
         return name+"("+stripBrackets(orderedArgs.keySet().toString())+")";

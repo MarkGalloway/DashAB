@@ -1,5 +1,7 @@
 package ab.dash.ast;
 
+import java.util.Collection;
+
 /***
  * Excerpted from "Language Implementation Patterns",
  * published by The Pragmatic Bookshelf.
@@ -19,4 +21,6 @@ public interface Scope {
 
     /** Look up name in this scope or in enclosing scope if not here */
     public Symbol resolve(String name);
+    
+    public Collection<Symbol> getDefined();
 }

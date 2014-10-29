@@ -9,6 +9,7 @@ package ab.dash.ast;
  * Visit http://www.pragmaticprogrammer.com/titles/tpdsl for more book information.
 ***/
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class TupleSymbol extends Symbol implements Type, Scope {
     Scope enclosingScope;
@@ -85,9 +86,7 @@ public class TupleSymbol extends Symbol implements Type, Scope {
 		sym.scope = this; // track the scope in each symbol
 	}
     
-    public ArrayList<Symbol> getFields() {
-    	return fields;
-    }
+    public Collection<Symbol> getDefined() { return fields; }
 
     public Scope getEnclosingScope() { return enclosingScope; }
     

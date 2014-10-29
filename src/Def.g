@@ -58,7 +58,11 @@ bottomup
 // S C O P E S
 
 enterBlock
-    :   BLOCK {currentScope = new LocalScope(currentScope);} // push scope
+    :   BLOCK 
+    {
+    currentScope = new LocalScope(currentScope);
+    $BLOCK.scope = currentScope;
+    } // push scope
     ;
 exitBlock
     :   BLOCK

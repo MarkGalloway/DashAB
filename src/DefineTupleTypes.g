@@ -77,7 +77,7 @@ tuple
 		    	//debug("Fields:");
 		    	
 		    	TupleSymbol tuple = (TupleSymbol) $ID.symbol;
-		    	ArrayList<Symbol> fields = tuple.getFields();
+		    	ArrayList<Symbol> fields = (ArrayList<Symbol>) tuple.getDefined();
 		    	ArrayList<Type> field_types = new ArrayList<Type>();
 		    	for (int i = 0; i < fields.size(); i++) {
 		    		Symbol field = fields.get(i);

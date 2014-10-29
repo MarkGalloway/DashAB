@@ -1,5 +1,0 @@
-procedure main() returns integer {
-	integer i;
-	i = 2;
-    return i;
-}
