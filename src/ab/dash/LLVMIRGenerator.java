@@ -501,7 +501,7 @@ public class LLVMIRGenerator {
 		case DashLexer.INTEGER:
 		{
 			int id = ((DashAST)t).llvmResultID;
-			int val = Integer.parseInt(t.getText());
+			int val = Integer.parseInt(t.getText().replaceAll("_", ""));
 			
 			StringTemplate template = stg.getInstanceOf("int_literal");
 			template.setAttribute("val", val);
@@ -512,7 +512,7 @@ public class LLVMIRGenerator {
 		case DashLexer.REAL:
 		{
 			int id = ((DashAST)t).llvmResultID;
-			float val = Float.parseFloat(t.getText());
+			float val = Float.parseFloat(t.getText().replaceAll("_", ""));
 			
 			StringTemplate template = stg.getInstanceOf("real_literal");
 			template.setAttribute("val", val);
