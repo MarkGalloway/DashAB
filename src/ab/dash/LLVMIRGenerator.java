@@ -149,7 +149,10 @@ public class LLVMIRGenerator {
 			int sym_id = sym.id;
 			
 			Type type = sym.type;
-			int type_id = type.getTypeIndex();
+			int type_id = -1;
+			
+			if (type != null)
+				type_id = type.getTypeIndex();
 			
 			StringTemplate code = exec((DashAST)t.getChild(1));
 			
