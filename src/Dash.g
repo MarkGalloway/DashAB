@@ -94,10 +94,10 @@ type
 	;
 
 primitiveType
-	:   Real
-    | 	Integer
-    |	Character
-    |	Boolean
+	:   REAL_TYPE
+    | 	INTEGER_TYPE
+    |	CHARACTER_TYPE
+    |	BOOLEAN_TYPE
     ;
     
     
@@ -306,12 +306,12 @@ Const : 'const';
 Matrix : 'matrix';
 Vector : 'vector';
 Interval : 'interval';
-Integer : 'integer';
-Boolean : 'boolean';
+INTEGER_TYPE : 'integer';
+BOOLEAN_TYPE : 'boolean';
 True : 'true';
 False : 'false';
-Real : 'real';
-Character : 'character';
+REAL_TYPE : 'real';
+CHARACTER_TYPE : 'character';
 String : 'string';
 Procedure : 'procedure';
 Function : 'function';

@@ -108,4 +108,6 @@ public class TupleSymbol extends Symbol implements Type, Scope {
 	{ 
 		return SymbolTable.tTUPLE; 
 	}
+    
+    public int getScopeIndex() { return SymbolTable.scTUPLE; }
 }

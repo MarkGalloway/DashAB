@@ -102,11 +102,11 @@ tupleMember returns [Type type]
 	;
 	
 tupleMemberType returns [Type type]
-	:   Real		{$type = SymbolTable._real;}
-    |   Integer		{$type = SymbolTable._integer;}
-    |	Character	{$type = SymbolTable._character;}
-    |	Boolean		{$type = SymbolTable._boolean;}
-	|	ID			{$type = null;}						// TODO TypeDef
+	:   REAL_TYPE		{$type = SymbolTable._real;}
+    |   INTEGER_TYPE	{$type = SymbolTable._integer;}
+    |	CHARACTER_TYPE	{$type = SymbolTable._character;}
+    |	BOOLEAN_TYPE	{$type = SymbolTable._boolean;}
+	|	ID				{$type = null;}						// TODO TypeDef
 	;
 	
 tuple_list returns [ArrayList<DashAST> arg_nodes]

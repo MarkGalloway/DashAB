@@ -10,7 +10,6 @@ import org.antlr.stringtemplate.StringTemplateGroup;
 import ab.dash.DashLexer;
 import ab.dash.ast.BuiltInTypeSymbol;
 import ab.dash.ast.DashAST;
-import ab.dash.ast.GlobalScope;
 import ab.dash.ast.LocalScope;
 import ab.dash.ast.MethodSymbol;
 import ab.dash.ast.Scope;
@@ -347,7 +346,7 @@ public class LLVMIRGenerator {
 				int arg_id = ((DashAST)child.getChild(0)).llvmResultID;
 				
 				StringTemplate template = null;
-				if (scope instanceof GlobalScope) {
+				if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
 					if (type == SymbolTable.tINTEGER) {
 						template = stg.getInstanceOf("int_global_assign");
 					} else if (type == SymbolTable.tREAL) {
@@ -426,7 +425,7 @@ public class LLVMIRGenerator {
 			int arg_id = ((DashAST)t.getChild(1).getChild(0)).llvmResultID;
 			
 			StringTemplate template = null;
-			if (scope instanceof GlobalScope) {
+			if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
 				if (type == SymbolTable.tINTEGER) {
 					template = stg.getInstanceOf("int_global_assign");
 				} else if (type == SymbolTable.tREAL) {
@@ -501,7 +500,7 @@ public class LLVMIRGenerator {
 		case DashLexer.INTEGER:
 		{
 			int id = ((DashAST)t).llvmResultID;
-			int val = Integer.parseInt(t.getText());
+			int val = Integer.parseInt(t.getText().replaceAll("_", ""));
 			
 			StringTemplate template = stg.getInstanceOf("int_literal");
 			template.setAttribute("val", val);
@@ -512,7 +511,7 @@ public class LLVMIRGenerator {
 		case DashLexer.REAL:
 		{
 			int id = ((DashAST)t).llvmResultID;
-			float val = Float.parseFloat(t.getText());
+			float val = Float.parseFloat(t.getText().replaceAll("_", ""));
 			
 			StringTemplate template = stg.getInstanceOf("real_literal");
 			template.setAttribute("val", val);
@@ -558,7 +557,7 @@ public class LLVMIRGenerator {
 		int type = sym.type.getTypeIndex();
 		
 		StringTemplate template = null;
-		if (scope instanceof GlobalScope) {
+		if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_get_global");
 			} else if (type == SymbolTable.tREAL) {

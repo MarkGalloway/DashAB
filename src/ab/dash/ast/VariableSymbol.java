@@ -11,9 +11,12 @@ package ab.dash.ast;
 /** Represents a variable definition (name,type) in symbol table */
 public class VariableSymbol extends Symbol {
 	public Specifier specifier;
+	public String initialValue;
 	public VariableSymbol(String name, Type type, Specifier specifier) 
 	{ 
 		super(name, type); 
 		this.specifier = specifier;
+		
+		this.initialValue = "";
 	}
 }

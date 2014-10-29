@@ -1,0 +1,18 @@
+integer i0 = -5;
+integer i1 = 5 + 2;
+integer i2 = 5 - 2;
+integer i3 = 5 * 2;
+integer i4 = 10 / 2;
+integer i5 = 5 % 2;
+integer i6 = 2^3;
+
+integer e0 = 5*2 + 1;
+integer e1 = i1 + 2*4;
+const integer e2 = e1 + 5;
+integer e3 = e1 + 5;
+
+procedure main() returns integer {
+	integer l1 = e2 + 5;
+	integer l2 = e3 + 5;
+    return 0;
+}
