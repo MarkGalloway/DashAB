@@ -97,7 +97,7 @@ public class TestLLVMCode {
 
 		StringTemplate constant4 = stg.getInstanceOf("bool_literal");
 		constant4.setAttribute("id", "7953");
-		constant4.setAttribute("val", "0");
+		constant4.setAttribute("val", "1");
 
 		fbody.add(printnum);
 

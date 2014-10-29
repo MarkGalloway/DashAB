@@ -81,17 +81,17 @@ bool_to_int(id, expr, expr_id) ::= <<
 
 bool_print(id, expr, expr_id) ::= <<
 <expr>
-  br i1 <vlocal_result(expr_id)>, label bool_print_true<id>, label bool_print_false<id>
+  br i1 <vlocal_result(expr_id)>, label %bool_print_true<id>, label %bool_print_false<id>
 
 bool_print_true<id>:
-  <vlocal(id)>.t = getelementptr [2 x i8]* @.str.fmt.boolT, i32 0, i32 0
-  br label bool_print_output<id>
+  <vlocal(id)>0 = getelementptr [2 x i8]* @.str.fmt.boolT, i32 0, i32 0
+  br label %bool_print_output<id>
 
-bool_print_true<id>:
-  <vlocal(id)>.f = getelementptr [2 x i8]* @.str.fmt.boolF, i32 0, i32 0
-  br label bool_print_output<id>
+bool_print_false<id>:
+  <vlocal(id)>1 = getelementptr [2 x i8]* @.str.fmt.boolF, i32 0, i32 0
+  br label %bool_print_output<id>
 
 bool_print_output<id>:
-  <vlocal(id)>.ptr = phi i8* [<vlocal(id)>.t bool_print_true<id>], [<vlocal(id)>.f bool_print_false<id>]
-  call i32 (i8*, ...)* @printf(i8* <vlocal(id)>, i32 <vlocal_result(expr_id)>)
+  <vlocal(id)>2 = phi i8* [<vlocal(id)>0, %bool_print_true<id>], [<vlocal(id)>1, %bool_print_false<id>]
+  call i32 (i8*, ...)* @printf(i8* <vlocal(id)>2)
 >>
