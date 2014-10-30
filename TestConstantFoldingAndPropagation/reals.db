@@ -1,0 +1,18 @@
+real f0 = -5.0;
+real f1 = 5.0 + 2.0;
+real f2 = 5.0 - 2.0;
+real f3 = 5.0 * 2.0;
+real f4 = 10.0 / 2.0;
+real f5 = 5.0 % 2.0;
+real f6 = 2.0^3.0;
+
+real e0 = 5.0*2.0 + 1.0;
+real e1 = f1 + 2.0*4.0;
+const real e2 = e1 + 5.0;
+real e3 = e1 + 5.0;
+
+procedure main() returns integer {
+	real l1 = e2 + 5.0;
+	real l2 = e3 + 5.0;
+    return 0;
+}

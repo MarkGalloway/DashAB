@@ -98,6 +98,7 @@ public class TestConstantFoldingAndPropagation {
 		Def def = new Def(nodes, symtab); // use custom constructor
 		def.debug_off();
 		def.downup(tree); // trigger symtab actions upon certain subtrees
+		
 
 		// RESOLVE SYMBOLS, COMPUTE EXPRESSION TYPES
 		nodes.reset();
@@ -124,23 +125,24 @@ public class TestConstantFoldingAndPropagation {
 		ConstantFolding opt1 = new ConstantFolding(nodes, symtab);
 		opt1.setTreeAdaptor(DashAST.dashAdaptor);
 
-		ConstantPropagation opt2 = new ConstantPropagation(nodes, symtab);
-		opt2.setTreeAdaptor(DashAST.dashAdaptor);
+		ConstantPropagation opt2 = new ConstantPropagation(symtab);
 		int iterations = 0;
+		String tree_before = tree.toStringTree();
+		
 		while (!fixed_state) {
 			iterations++;
 			System.out.println("Iteration: " + iterations);
-			
-			opt1.resetFixed();
-			opt2.resetFixed();
 			
 			nodes.reset();
 			opt1.downup(tree); // trigger resolve/type computation actions
 			
 			nodes.reset();
-			opt2.downup(tree); // trigger resolve/type computation actions
+	    	tokens.reset();
+	    	opt2.optimize(tree);
 			
-			fixed_state = opt1.isFixed() || opt2.isFixed();
+			String tree_after = tree.toStringTree();
+			fixed_state = tree_before.equals(tree_after);
+			tree_before = tree_after;
 		}
 		
 		System.out.println(tree.toStringTree());

@@ -107,4 +107,58 @@ expression
 		int i1 = Integer.parseInt($op1.getText().replaceAll("_", ""));
 		result = Integer.toString(-i1);
 	} -> INTEGER[result]
+	// Reals
+	|	^(ADD op1=REAL op2=REAL) 
+	{ 
+		float f1 = Float.parseFloat($op1.getText().replaceAll("_", ""));
+		float f2 = Float.parseFloat($op2.getText().replaceAll("_", ""));
+		float f3 = f1 + f2;
+		
+		result = Float.toString(f3);
+	} -> REAL[result]
+	|	^(SUBTRACT op1=REAL op2=REAL) 
+	{ 
+		float f1 = Float.parseFloat($op1.getText().replaceAll("_", ""));
+		float f2 = Float.parseFloat($op2.getText().replaceAll("_", ""));
+		float f3 = f1 - f2;
+		
+		result = Float.toString(f3);
+	} -> REAL[result]
+	|	^(MULTIPLY op1=REAL op2=REAL) 
+	{ 
+		float f1 = Float.parseFloat($op1.getText().replaceAll("_", ""));
+		float f2 = Float.parseFloat($op2.getText().replaceAll("_", ""));
+		float f3 = f1 * f2;
+		
+		result = Float.toString(f3);
+	} -> REAL[result]
+	|	^(DIVIDE op1=REAL op2=REAL) 
+	{ 
+		float f1 = Float.parseFloat($op1.getText().replaceAll("_", ""));
+		float f2 = Float.parseFloat($op2.getText().replaceAll("_", ""));
+		float f3 = f1 / f2;
+		
+		result = Float.toString(f3);
+	} -> REAL[result]
+	|	^(MODULAR op1=REAL op2=REAL)
+	{ 
+		float f1 = Float.parseFloat($op1.getText().replaceAll("_", ""));
+		float f2 = Float.parseFloat($op2.getText().replaceAll("_", ""));
+		float f3 = f1 \% f2;
+		
+		result = Float.toString(f3);
+	} -> REAL[result]
+	|	^(POWER op1=REAL op2=REAL) 
+	{ 
+		float f1 = Float.parseFloat($op1.getText().replaceAll("_", ""));
+		float f2 = Float.parseFloat($op2.getText().replaceAll("_", ""));
+		float f3 = (float)Math.pow(f1, f2);
+		
+		result = Float.toString(f3);
+	} -> REAL[result]
+	|	^(UNARY_MINUS op1=REAL) 
+	{ 
+		float f1 = Float.parseFloat($op1.getText().replaceAll("_", ""));
+		result = Float.toString(-f1);
+	} -> REAL[result]
 	;
