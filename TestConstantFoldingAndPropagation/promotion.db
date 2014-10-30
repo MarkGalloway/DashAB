@@ -1,0 +1,9 @@
+real e0 = 5.0*2.0 + 1;
+const real e2 = 5;
+real e3 = 5;
+
+procedure main() returns integer {
+	real l1 = e2 + 5.0;
+	real l2 = e3 + 5;
+    return 0;
+}

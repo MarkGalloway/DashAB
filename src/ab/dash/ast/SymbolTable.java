@@ -72,8 +72,8 @@ public class SymbolTable {
     	/*tuple*/		{null,		null,    	null,   	null,   	null},
         /*boolean*/ 	{null,		null,    	null,   	null,   	null},
         /*character*/   {null,		null,  		null,    	null,   	null},
-        /*integer*/     {null,		null,  		null,    	_integer,   null},
-        /*real*/   		{null,		null,  		null,    	null,   	_real}
+        /*integer*/     {null,		null,  		null,    	_integer,   _real},
+        /*real*/   		{null,		null,  		null,    	_real,   	_real}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
@@ -81,8 +81,8 @@ public class SymbolTable {
     	/*tuple*/		{null,		null,    	null,   	null,   	null},
         /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null},
         /*character*/   {null,		null,  		_boolean,   null,   	null},
-        /*integer*/     {null,		null,  		null,    	_boolean,   null},
-        /*real*/   		{null,		null,  		null,    	null,   	_boolean}
+        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
@@ -90,8 +90,8 @@ public class SymbolTable {
     	/*tuple*/		{_boolean,	null,    	null,   	null,   	null},
         /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null},
         /*character*/   {null,		null,  		_boolean,   null,   	null},
-        /*integer*/     {null,		null,  		null,    	_boolean,	null},
-        /*real*/   		{null,		null,  		null,    	null,   	_boolean}
+        /*integer*/     {null,		null,  		null,    	_boolean,	_boolean},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean}
     };
     
     public static final Type[][] castResultType = new Type[][] {

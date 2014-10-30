@@ -81,6 +81,18 @@ public class ConstantPropagation {
 		        }
 			}
 		}
+		case DashLexer.INTEGER: {
+			if (t.promoteToType != null) {
+				if (t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+					int integer = Integer.parseInt(t.getText().replaceAll("_", ""));
+					float real = (float)integer;
+					String value = Float.toString(real);
+					t.token = new CommonToken(DashLexer.REAL, value);
+					t.evalType = SymbolTable._real;
+					t.promoteToType = null;
+				}
+			}
+		}
 		default:
 		{
 			for (int i = 0; i < t.getChildCount(); i++)
