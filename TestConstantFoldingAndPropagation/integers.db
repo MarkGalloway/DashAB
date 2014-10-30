@@ -11,6 +11,28 @@ integer e1 = i1 + 2*4;
 const integer e2 = e1 + 5;
 integer e3 = e1 + 5;
 
+boolean b0 = 5 == 5;
+boolean b1 = 6 == 5;
+
+boolean b2 = 5 != 5;
+boolean b3 = 6 != 5;
+
+boolean b4 = 4 < 5;
+boolean b5 = 5 < 5;
+boolean b6 = 6 < 5;
+
+boolean b7 = 4 > 5;
+boolean b8 = 5 > 5;
+boolean b9 = 6 > 5;
+
+boolean b10 = 4 <= 5;
+boolean b11 = 5 <= 5;
+boolean b12 = 6 <= 5;
+
+boolean b13 = 4 >= 5;
+boolean b14 = 5 >= 5;
+boolean b15 = 6 >= 5;
+
 procedure main() returns integer {
 	integer l1 = e2 + 5;
 	integer l2 = e3 + 5;
