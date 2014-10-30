@@ -23,6 +23,7 @@ tokens {
 	UNARY_MINUS;
 	DECL_OUTSTREAM;
   DECL_INSTREAM;
+  PRINT;
 }
 
 // Parser Rules
@@ -209,9 +210,9 @@ statement
   ;
   
 output
-  : lhs OUTSTREAM ID DELIM -> ^(OUTSTREAM ID lhs)
-  | expressionList OUTSTREAM ID DELIM -> ^(OUTSTREAM ID expressionList)
-  | expression OUTSTREAM ID DELIM -> ^(OUTSTREAM ID expression)
+  : lhs OUTSTREAM ID DELIM -> ^(PRINT ID lhs)
+  | expressionList OUTSTREAM ID DELIM -> ^(PRINT ID expressionList)
+  | expression OUTSTREAM ID DELIM -> ^(PRINT ID expression)
   ;
     
 lhs 
