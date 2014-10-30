@@ -72,8 +72,14 @@ expr returns [Type type]
     |   CHARACTER   {$type = SymbolTable._character;}
     |   INTEGER     {$type = SymbolTable._integer;}
     |   REAL      	{$type = SymbolTable._real;}
-    |   ID {VariableSymbol s=(VariableSymbol)$ID.scope.resolve($ID.text);
-            $ID.symbol = s; $type = s.type;}
+    |   ID 
+    {
+    VariableSymbol s = (VariableSymbol)$ID.scope.resolve($ID.text);
+    $ID.symbol = s;
+    	if (symtab.checkIfDefined($ID)) {
+            $type = s.type;
+    	}
+    }
     |   ^(UNARY_MINUS a=expr)   {$type=symtab.uminus($a.start);}
     |   ^(Not a=expr) {$type=symtab.unot($a.start);}
     |   member      {$type = $member.type;}

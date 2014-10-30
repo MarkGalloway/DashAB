@@ -169,6 +169,18 @@ public class SymbolTable {
 		this.error_count++;
 		this.listener.error(msg);
 	}
+	
+	public boolean checkIfDefined(DashAST a) {
+		if (a.symbol != null) {
+	        if ( a.symbol.type != null ) {
+	            return true;
+	        }
+		}
+		
+		error("line " + a.getLine() + ": " +
+   			 text(a)+ " is not defined in the program.");
+        return false;
+    }
 
     public Type getResultType(Type[][] typeTable, DashAST a, DashAST b) {
         int ta = a.evalType.getTypeIndex(); // type index of left operand
