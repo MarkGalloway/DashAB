@@ -71,7 +71,7 @@ var_decl
 	
 expression
 @init {boolean update = false; String value = null;}
-	: opt=ID {$opt.symbol.type.getTypeIndex() == SymbolTable.tREAL}?=>
+	: opt=ID
 	{ 
 		int type = -1;
 		value = getValue($opt);
@@ -83,18 +83,5 @@ expression
 				update = true;
 	        }
 		}
-	} {update == true}?=> -> ^(INTEGER[value])
-	|	opt=ID {$opt.symbol.type.getTypeIndex() == SymbolTable.tINTEGER}?=>
-	{ 
-		int type = -1;
-		value = getValue($opt);
-		
-		if (value != null) {
-			type = $opt.symbol.type.getTypeIndex();
-			
-			if (type == SymbolTable.tINTEGER) {
-				update = true;
-	        }
-		}
-	} {update == true}?=> -> ^(INTEGER[value])
+	} {update}?=> -> ^(INTEGER[value])
 	;
