@@ -346,8 +346,8 @@ Null : 'null';
 
 // Lexer Rules
 
-OUTSTREAM : '-' '>';
-INSTREAM : '<' '-';
+OUTSTREAM : '->';
+INSTREAM : '<-';
 EQUALITY : '==';
 INEQUALITY : '!=';
 ASSIGN : '=';
