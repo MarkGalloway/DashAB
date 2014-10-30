@@ -212,6 +212,8 @@ public class SymbolTable {
     
     public Type eqop(DashAST a, DashAST b) {
         getResultType(equalityResultType, a, b);
+        // even if the operands are incompatible, the type of
+        // this operation must be boolean
         return _boolean;
     }
 
