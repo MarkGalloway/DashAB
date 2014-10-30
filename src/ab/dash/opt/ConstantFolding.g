@@ -335,4 +335,34 @@ expression
 		$GREATER_EQUAL.deleteChild(0);
 		$GREATER_EQUAL.deleteChild(0);
 	}
+	// Booleans
+	// Not
+	|	^(Not op1=False) -> True["true"]
+	|	^(Not op1=True) -> False["false"]
+	// Equality Ops
+	// EQUALITY
+	|	^(EQUALITY op1=False op2=False) -> True["true"]
+	|	^(EQUALITY op1=False op2=True) -> False["false"]
+	|	^(EQUALITY op1=True op2=False) -> False["false"]
+	|	^(EQUALITY op1=True op2=True) -> True["true"]
+	// INEQUALITY
+	|	^(INEQUALITY op1=False op2=False) -> False["false"]
+	|	^(INEQUALITY op1=False op2=True) -> True["true"]
+	|	^(INEQUALITY op1=True op2=False) -> True["true"]
+	|	^(INEQUALITY op1=True op2=True) -> False["false"]
+	// And
+	|	^(And op1=False op2=False) -> False["false"]
+	|	^(And op1=False op2=True) -> False["false"]
+	|	^(And op1=True op2=False) -> False["false"]
+	|	^(And op1=True op2=True) -> True["true"]
+	// Or
+	|	^(Or op1=False op2=False) -> False["false"]
+	|	^(Or op1=False op2=True) -> True["true"]
+	|	^(Or op1=True op2=False) -> True["true"]
+	|	^(Or op1=True op2=True) -> True["true"]
+	// Xor
+	|	^(Xor op1=False op2=False) -> False["false"]
+	|	^(Xor op1=False op2=True) -> True["true"]
+	|	^(Xor op1=True op2=False) -> True["true"]
+	|	^(Xor op1=True op2=True) -> False["false"]
 	;

@@ -136,6 +136,6 @@ binaryOps returns [Type type]
 
 bop	:	ADD | SUBTRACT | MULTIPLY | DIVIDE | MODULAR | POWER ;
 
-relop:	LESS | GREATER | LESS_EQUAL | GREATER_EQUAL ;
+relop:	LESS | GREATER | LESS_EQUAL | GREATER_EQUAL | And | Or | Xor;
 
 eqop:	EQUALITY | INEQUALITY ;

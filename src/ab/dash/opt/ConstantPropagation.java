@@ -85,9 +85,9 @@ public class ConstantPropagation {
 					t.token = new CommonToken(DashLexer.CHARACTER, value);
 		        } else if (type == SymbolTable.tBOOLEAN) {
 		        	if (value.equals("true")) {
-		        		t.token = new CommonToken(DashLexer.True, "true");
+		        		t.token = new CommonToken(DashLexer.True, value);
 		        	} else if (value.equals("false")) {
-		        		t.token = new CommonToken(DashLexer.False, "false");
+		        		t.token = new CommonToken(DashLexer.False, value);
 		        	} 
 		        }
 			}
