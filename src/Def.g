@@ -17,21 +17,20 @@ options {
     SymbolTable symtab;
     Scope currentScope;
     MethodSymbol currentMethod;
-    
-    boolean debug_mode = false;
+    boolean debug_mode;
     
     public Def(TreeNodeStream input, SymbolTable symtab) {
         this(input);
         this.symtab = symtab;
         this.currentScope = symtab.globals;
+        this.debug_mode = false;
     }
     
-    public void debug_on() {
-    	debug_mode = true;
-    }
-    
-    public void debug_off() {
-    	debug_mode = false;
+    public Def(TreeNodeStream input, SymbolTable symtab, Boolean debug) {
+        this(input);
+        this.symtab = symtab;
+        this.currentScope = symtab.globals;
+        this.debug_mode = debug;
     }
     
     private void debug(String msg) {

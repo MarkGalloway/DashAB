@@ -23,46 +23,49 @@ options {
 // END: header
 
 bottomup // match subexpressions innermost to outermost
-    :   exprRoot
-    |	decl
-    |	ret
-    |	assignment
-    |	ifstat
-    ;
+	: exprRoot
+	|	decl
+	|	ret
+	|	assignment
+	|	ifstat
+	;
 
 // promotion and type checking
 
 // START: ifstat
-ifstat : ^(If cond=. s=. e=.?) {symtab.ifstat($cond);} ;
+ifstat 
+  : ^(If cond=. s=. e=.?) {symtab.ifstat($cond);} ;
 // END: ifstat
 
 decl
-	:   ^(VAR_DECL tuple_type ID tuple_list)
-        {
-        	symtab.declTuple($ID, $tuple_list.arg_nodes, $tuple_type.field_types);
-        	$VAR_DECL.deleteChild(0);
-        }
+	: ^(VAR_DECL tuple_type ID tuple_list)
+			  {
+			  	symtab.declTuple($ID, $tuple_list.arg_nodes, $tuple_type.field_types);
+			  	$VAR_DECL.deleteChild(0);
+			  }
 	|	^(VAR_DECL ID tuple_list)
         {
         	symtab.declUndefinedTuple($ID, $tuple_list.arg_nodes);
         }
-    |	^(VAR_DECL ID (init=.)?) // call declinit if we have init expr
-        {
-        if ( $init!=null && $init.evalType!=null )
-             symtab.declinit($ID, $init);
-        }
-    ;
+  // call declinit if we have init expr
+  | ^(VAR_DECL ID (init=.)?) 
+      {
+      if ( $init!=null && $init.evalType!=null )
+           symtab.declinit($ID, $init);
+      }
+  ;
 
-ret :   ^(Return v=.) {symtab.ret((MethodSymbol)$start.symbol, $v);} ;
+ret 
+  : ^(Return v=.) {symtab.ret((MethodSymbol)$start.symbol, $v);} ;
 
 assignment // don't walk expressions, just examine types
-    :   ^(ASSIGN lhs=. rhs=.) {symtab.assign($lhs, $rhs);}
+    : ^(ASSIGN lhs=. rhs=.) {symtab.assign($lhs, $rhs);}
     ;
 
 // type computations and checking
 
 exprRoot // invoke type computation rule after matching EXPR
-    :   ^(EXPR expr) {$EXPR.evalType = $expr.type;} // annotate AST
+    : ^(EXPR expr) {$EXPR.evalType = $expr.type;} // annotate AST
     ;
 
 expr returns [Type type]

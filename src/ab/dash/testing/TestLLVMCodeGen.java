@@ -93,8 +93,8 @@ public class TestLLVMCodeGen {
 
 		SymbolTable symtab = new SymbolTable(tokens); // make global scope,
 														// types
-		Def def = new Def(nodes, symtab); // use custom constructor
-		def.debug_off();
+		Boolean debug = false;
+		Def def = new Def(nodes, symtab, debug); // use custom constructor
 		def.downup(tree); // trigger symtab actions upon certain subtrees
 
 		// RESOLVE SYMBOLS, COMPUTE EXPRESSION TYPES

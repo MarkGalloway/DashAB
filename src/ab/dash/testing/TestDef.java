@@ -39,8 +39,9 @@ public class TestDef {
         nodes.setTokenStream(tokens);
 
         SymbolTable symtab = new SymbolTable(tokens); // make global scope, types
-        Def def = new Def(nodes, symtab); // use custom constructor
-        def.debug_on();
+        
+        Boolean debug = true;
+        Def def = new Def(nodes, symtab, debug); // use custom constructor
         def.downup(tree); // trigger symtab actions upon certain subtrees 
         System.out.println("globals: "+symtab.globals);
 	}
