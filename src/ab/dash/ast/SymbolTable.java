@@ -32,6 +32,9 @@ public class SymbolTable {
     public static final int tCHARACTER = 2;
     public static final int tINTEGER = 3;
     public static final int tREAL = 4;
+    public static final int tOUTSTREAM = 5;
+    public static final int tINSTREAM = 6;
+    
 
     public static final BuiltInTypeSymbol _tuple =
             new BuiltInTypeSymbol("tuple", tTUPLE);
@@ -43,6 +46,10 @@ public class SymbolTable {
         new BuiltInTypeSymbol("integer", tINTEGER);
     public static final BuiltInTypeSymbol _real=
         new BuiltInTypeSymbol("real", tREAL);
+    public static final BuiltInTypeSymbol _outstream =
+            new BuiltInTypeSymbol("std_out()", tOUTSTREAM);
+    public static final BuiltInTypeSymbol _instream =
+            new BuiltInTypeSymbol("std_input()", tINSTREAM);
     
     public static final BuiltInSpecifierSymbol _const =
     	new BuiltInSpecifierSymbol("const", sCONST);
@@ -57,8 +64,8 @@ public class SymbolTable {
 
     /** arithmetic types defined in order from narrowest to widest */
     public static final Type[] indexToType = {
-        // 0, 	1,        2,     	  3,    	4
-    	_tuple, _boolean, _character, _integer, _real
+        // 0, 	1,        2,     	  3,    	4,		5,				6,
+    	_tuple, _boolean, _character, _integer, _real, _outstream, _instream
     };
     
     public static final Specifier[] indexToSpecifier = {
@@ -68,39 +75,47 @@ public class SymbolTable {
 
     /** Map t1 op t2 to result type (null implies illegal) */
     public static final Type[][] arithmeticResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null},
-        /*boolean*/ 	{null,		null,    	null,   	null,   	null},
-        /*character*/   {null,		null,  		null,    	null,   	null},
-        /*integer*/     {null,		null,  		null,    	_integer,   _real},
-        /*real*/   		{null,		null,  		null,    	_real,   	_real}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
+        /*boolean*/ 	{null,		null,    	null,   	null,   	null, 	null, 	null},
+        /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null},
+        /*integer*/     {null,		null,  		null,    	_integer,   _real,	null,	null},
+        /*real*/   		{null,		null,  		null,    	_real,   	_real,	null,	null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null},
-        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null},
-        /*character*/   {null,		null,  		_boolean,   null,   	null},
-        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean},
-        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	null,	null},
+        /*character*/   {null,		null,  		_boolean,   null,   	null,	null,	null},
+        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean,	null,	null},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real*/
-    	/*tuple*/		{_boolean,	null,    	null,   	null,   	null},
-        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null},
-        /*character*/   {null,		null,  		_boolean,   null,   	null},
-        /*integer*/     {null,		null,  		null,    	_boolean,	_boolean},
-        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
+    	/*tuple*/		{_boolean,	null,    	null,   	null,   	null,	null,	null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	null,	null},
+        /*character*/   {null,		null,  		_boolean,   null,   	null,	null,	null},
+        /*integer*/     {null,		null,  		null,    	_boolean,	_boolean,	null,	null},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
     };
     
     public static final Type[][] castResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null},
-        /*boolean*/ 	{null,		_boolean,  _character, _integer,   _real},
-        /*character*/   {null,		_boolean,  _character,	_integer,   _real},
-        /*integer*/     {null,		_boolean,  _character, _integer,   _real},
-        /*real*/   		{null,		null,  		null,    	_integer,   _real}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
+        /*boolean*/ 	{null,		_boolean,  _character, _integer,   _real,	null,	null},
+        /*character*/   {null,		_boolean,  _character,	_integer,   _real,	null,	null},
+        /*integer*/     {null,		_boolean,  _character, _integer,   _real,	null,	null},
+        /*real*/   		{null,		null,  		null,    	_integer,   _real,	null,	null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
    };
 
     /** Indicate whether a type needs a promotion to a wider type.
@@ -109,12 +124,14 @@ public class SymbolTable {
      *  arithmetic, equality, and relational operators in Dash.
      */
     public static final Type[][] promoteFromTo = new Type[][] {
-        /*          	tuple		boolean  	character 	integer 	real*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null},
-        /*boolean*/ 	{null,		null,    	null,   	null,   	null},
-        /*character*/   {null,		null,  		null,    	null,   	null},
-        /*integer*/     {null,		null,  		null,    	null,   	_real},
-        /*real*/   		{null,		null,  		null,    	null,   	null}
+        /*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
+        /*boolean*/ 	{null,		null,    	null,   	null,   	null,	null,	null},
+        /*character*/   {null,		null,  		null,    	null,   	null,	null,	null},
+        /*integer*/     {null,		null,  		null,    	null,   	_real,	null,	null},
+        /*real*/   		{null,		null,  		null,    	null,   	null, 	null, null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
     };
 
     public static int getID() {
@@ -309,6 +326,7 @@ public class SymbolTable {
 
     // assignnment stuff (arg assignment in call())
 
+    //TODO: add outstream/instream declarations, ensure streams are not redeclared
     public void declinit(DashAST declID, DashAST init) {
         int te = init.evalType.getTypeIndex(); // promote expr to decl type?
         
@@ -401,6 +419,18 @@ public class SymbolTable {
                         text((DashAST)lhs.getParent()));
         }
     }
+    
+    //TODO: This should evaluate whether it receives a variable for output stream
+    // and an expression to output
+    public void output(DashAST lhs, DashAST outputStream) {
+
+    }
+
+    //TODO: This should evaluate whether it receives a valid input stream
+    // on the RHS
+    public void input(DashAST lhs, DashAST inputStream) {
+
+    }
 
     public void ifstat(DashAST cond) {
         if ( cond.evalType != _boolean ) {
@@ -411,6 +441,7 @@ public class SymbolTable {
         }
     }
 
+    //TODO: prevent reassignment to input/output streams
     public boolean canAssignTo(Type valueType,Type destType,Type promotion) {
         // either types are same or value was successfully promoted
         return valueType==destType || promotion==destType;

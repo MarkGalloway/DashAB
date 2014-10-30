@@ -210,8 +210,7 @@ statement
   ;
   
 output
-  : lhs OUTSTREAM ID DELIM -> ^(PRINT ID lhs)
-  | expressionList OUTSTREAM ID DELIM -> ^(PRINT ID expressionList)
+  : expressionList OUTSTREAM ID DELIM -> ^(PRINT ID expressionList)
   | expression OUTSTREAM ID DELIM -> ^(PRINT ID expression)
   ;
     
@@ -280,6 +279,7 @@ unaryExpression
 postfixExpression
     : ID DOT (mem=INTEGER | mem=ID) -> ^(DOT ID $mem)
     |	primary -> primary
+ /* TODO: Part1/Part2 */
 //    	(
 //    		(	r=LPAREN^ expressionList RPAREN!	{$r.setType(CALL);}
 //	    	|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
