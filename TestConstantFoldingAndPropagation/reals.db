@@ -1,18 +1,39 @@
-real f0 = -5.0;
-real f1 = 5.0 + 2.0;
-real f2 = 5.0 - 2.0;
-real f3 = 5.0 * 2.0;
-real f4 = 10.0 / 2.0;
-real f5 = 5.0 % 2.0;
-real f6 = 2.0^3.0;
+const real f0 = -5.0;
+const real f1 = 5.0 + 2.0;
+const real f2 = 5.0 - 2.0;
+const real f3 = 5.0 * 2.0;
+const real f4 = 10.0 / 2.0;
+const real f5 = 5.0 % 2.0;
+const real f6 = 2.0^3.0;
 
-real e0 = 5.0*2.0 + 1.0;
-real e1 = f1 + 2.0*4.0;
+const real e0 = 5.0*2.0 + 1.0;
+const real e1 = f1 + 2.0*4.0;
 const real e2 = e1 + 5.0;
-real e3 = e1 + 5.0;
 
-procedure main() returns integer {
+const boolean b0 = 5.0 == 5.0;
+const boolean b1 = 6.0 == 5.0;
+
+const boolean b2 = 5.0 != 5.0;
+const boolean b3 = 6.0 != 5.0;
+
+const boolean b4 = 4.0 < 5.0;
+const boolean b5 = 5.0 < 5.0;
+const boolean b6 = 6.0 < 5.0;
+
+const boolean b7 = 4.0 > 5.0;
+const boolean b8 = 5.0 > 5.0;
+const boolean b9 = 6.0 > 5.0;
+
+const boolean b10 = 4.0 <= 5.0;
+const boolean b11 = 5.0 <= 5.0;
+const boolean b12 = 6.0 <= 5.0;
+
+const boolean b13 = 4.0 >= 5.0;
+const boolean b14 = 5.0 >= 5.0;
+const boolean b15 = 6.0 >= 5.0;
+
+procedure main() returns real {
 	real l1 = e2 + 5.0;
-	real l2 = e3 + 5.0;
+	real l2 = l1 + 5.0;
     return 0;
 }

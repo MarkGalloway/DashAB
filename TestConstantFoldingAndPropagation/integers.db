@@ -1,40 +1,39 @@
-integer i0 = -5;
-integer i1 = 5 + 2;
-integer i2 = 5 - 2;
-integer i3 = 5 * 2;
-integer i4 = 10 / 2;
-integer i5 = 5 % 2;
-integer i6 = 2^3;
+const integer i0 = -5;
+const integer i1 = 5 + 2;
+const integer i2 = 5 - 2;
+const integer i3 = 5 * 2;
+const integer i4 = 10 / 2;
+const integer i5 = 5 % 2;
+const integer i6 = 2^3;
 
-integer e0 = 5*2 + 1;
-integer e1 = i1 + 2*4;
+const integer e0 = 5*2 + 1;
+const integer e1 = i1 + 2*4;
 const integer e2 = e1 + 5;
-integer e3 = e1 + 5;
 
-boolean b0 = 5 == 5;
-boolean b1 = 6 == 5;
+const boolean b0 = 5 == 5;
+const boolean b1 = 6 == 5;
 
-boolean b2 = 5 != 5;
-boolean b3 = 6 != 5;
+const boolean b2 = 5 != 5;
+const boolean b3 = 6 != 5;
 
-boolean b4 = 4 < 5;
-boolean b5 = 5 < 5;
-boolean b6 = 6 < 5;
+const boolean b4 = 4 < 5;
+const boolean b5 = 5 < 5;
+const boolean b6 = 6 < 5;
 
-boolean b7 = 4 > 5;
-boolean b8 = 5 > 5;
-boolean b9 = 6 > 5;
+const boolean b7 = 4 > 5;
+const boolean b8 = 5 > 5;
+const boolean b9 = 6 > 5;
 
-boolean b10 = 4 <= 5;
-boolean b11 = 5 <= 5;
-boolean b12 = 6 <= 5;
+const boolean b10 = 4 <= 5;
+const boolean b11 = 5 <= 5;
+const boolean b12 = 6 <= 5;
 
-boolean b13 = 4 >= 5;
-boolean b14 = 5 >= 5;
-boolean b15 = 6 >= 5;
+const boolean b13 = 4 >= 5;
+const boolean b14 = 5 >= 5;
+const boolean b15 = 6 >= 5;
 
 procedure main() returns integer {
 	integer l1 = e2 + 5;
-	integer l2 = e3 + 5;
+	integer l2 = l1 + 5;
     return 0;
 }
