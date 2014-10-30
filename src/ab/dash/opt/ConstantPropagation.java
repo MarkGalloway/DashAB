@@ -1,7 +1,6 @@
 package ab.dash.opt;
 
 import org.antlr.runtime.CommonToken;
-import org.antlr.stringtemplate.StringTemplate;
 
 import ab.dash.DashLexer;
 import ab.dash.ast.DashAST;
