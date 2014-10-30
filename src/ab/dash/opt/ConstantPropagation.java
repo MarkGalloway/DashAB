@@ -1,7 +1,6 @@
 package ab.dash.opt;
 
 import org.antlr.runtime.CommonToken;
-import org.antlr.stringtemplate.StringTemplate;
 
 import ab.dash.DashLexer;
 import ab.dash.ast.DashAST;
@@ -79,6 +78,18 @@ public class ConstantPropagation {
 		        } else if (type == SymbolTable.tREAL) {
 					t.token = new CommonToken(DashLexer.REAL, value);
 		        }
+			}
+		}
+		case DashLexer.INTEGER: {
+			if (t.promoteToType != null) {
+				if (t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+					int integer = Integer.parseInt(t.getText().replaceAll("_", ""));
+					float real = (float)integer;
+					String value = Float.toString(real);
+					t.token = new CommonToken(DashLexer.REAL, value);
+					t.evalType = SymbolTable._real;
+					t.promoteToType = null;
+				}
 			}
 		}
 		default:

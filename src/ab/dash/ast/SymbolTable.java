@@ -72,8 +72,8 @@ public class SymbolTable {
     	/*tuple*/		{null,		null,    	null,   	null,   	null},
         /*boolean*/ 	{null,		null,    	null,   	null,   	null},
         /*character*/   {null,		null,  		null,    	null,   	null},
-        /*integer*/     {null,		null,  		null,    	_integer,   null},
-        /*real*/   		{null,		null,  		null,    	null,   	_real}
+        /*integer*/     {null,		null,  		null,    	_integer,   _real},
+        /*real*/   		{null,		null,  		null,    	_real,   	_real}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
@@ -81,8 +81,8 @@ public class SymbolTable {
     	/*tuple*/		{null,		null,    	null,   	null,   	null},
         /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null},
         /*character*/   {null,		null,  		_boolean,   null,   	null},
-        /*integer*/     {null,		null,  		null,    	_boolean,   null},
-        /*real*/   		{null,		null,  		null,    	null,   	_boolean}
+        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
@@ -90,8 +90,8 @@ public class SymbolTable {
     	/*tuple*/		{_boolean,	null,    	null,   	null,   	null},
         /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null},
         /*character*/   {null,		null,  		_boolean,   null,   	null},
-        /*integer*/     {null,		null,  		null,    	_boolean,	null},
-        /*real*/   		{null,		null,  		null,    	null,   	_boolean}
+        /*integer*/     {null,		null,  		null,    	_boolean,	_boolean},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean}
     };
     
     public static final Type[][] castResultType = new Type[][] {
@@ -169,6 +169,18 @@ public class SymbolTable {
 		this.error_count++;
 		this.listener.error(msg);
 	}
+	
+	public boolean checkIfDefined(DashAST a) {
+		if (a.symbol != null) {
+	        if ( a.symbol.type != null ) {
+	            return true;
+	        }
+		}
+		
+		error("line " + a.getLine() + ": " +
+   			 text(a)+ " is not defined in the program.");
+        return false;
+    }
 
     public Type getResultType(Type[][] typeTable, DashAST a, DashAST b) {
         int ta = a.evalType.getTypeIndex(); // type index of left operand
@@ -200,6 +212,8 @@ public class SymbolTable {
     
     public Type eqop(DashAST a, DashAST b) {
         getResultType(equalityResultType, a, b);
+        // even if the operands are incompatible, the type of
+        // this operation must be boolean
         return _boolean;
     }
 
