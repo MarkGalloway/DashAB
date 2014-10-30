@@ -115,3 +115,8 @@ int_print(id, expr, expr_id) ::= <<
   <vlocal(id)> = getelementptr [3 x i8]* @.str.fmt.int, i32 0, i32 0
   call i32 (i8*, ...)* @printf(i8* <vlocal(id)>, i32 <vlocal_result(expr_id)>)
 >>
+
+int_to_real(id, expr, expr_id) ::= <<
+<expr>
+  <vlocal_result(id)> = sitofp i32 <vlocal_result(expr_id)> to <real_type()>
+>>
