@@ -21,11 +21,16 @@ tokens {
 	ELIST;       	// expression list
 	EXPR; 	   		// root of an expression
 	UNARY_MINUS;
+	DECL_OUTSTREAM;
+  DECL_INSTREAM;
 }
 
+// Parser Rules
+
+
 @header {
-  package ab.dash;
-  import ab.dash.ast.*;
+	package ab.dash;
+	import ab.dash.ast.*;
 }
 
 @members {
@@ -54,6 +59,7 @@ tokens {
 	
 	int error_count = 0;
   StringBuffer errorSB = new StringBuffer();
+	
 	@Override
 	public void emitErrorMessage(String msg) {
 		System.err.println(msg);
@@ -94,35 +100,35 @@ type
 	;
 
 primitiveType
-	:   REAL_TYPE
-    | 	INTEGER_TYPE
-    |	CHARACTER_TYPE
-    |	BOOLEAN_TYPE
-    ;
-    
+	: REAL_TYPE
+  | INTEGER_TYPE
+  |	CHARACTER_TYPE
+  |	BOOLEAN_TYPE
+  ;
+  
     
 // START: method
 methodForwardDeclaration
-	:   Function ID LPAREN formalParameters? RPAREN Returns type DELIM
-        -> ^(FUNCTION_DECL type ID formalParameters?)
-    |   Procedure ID LPAREN formalParameters? RPAREN (Returns type)? DELIM
-        -> ^(PROCEDURE_DECL type? ID formalParameters?)
-    ;
+	: Function ID LPAREN formalParameters? RPAREN Returns type DELIM
+	    -> ^(FUNCTION_DECL type ID formalParameters?)
+  | Procedure ID LPAREN formalParameters? RPAREN (Returns type)? DELIM
+      -> ^(PROCEDURE_DECL type? ID formalParameters?)
+  ;
 
 methodDeclaration
-    :   Function ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
-        -> ^(FUNCTION_DECL type ID formalParameters? expression)
-    |   Function ID LPAREN formalParameters? RPAREN Returns type block
-        -> ^(FUNCTION_DECL type ID formalParameters? block)
-    |   Procedure ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
-        -> ^(PROCEDURE_DECL type ID formalParameters? expression)
-    |   Procedure ID LPAREN formalParameters? RPAREN (Returns type)? block
-        -> ^(PROCEDURE_DECL type? ID formalParameters? block)
-    ;
+  : Function ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
+       -> ^(FUNCTION_DECL type ID formalParameters? expression)
+	| Function ID LPAREN formalParameters? RPAREN Returns type block
+	    -> ^(FUNCTION_DECL type ID formalParameters? block)
+	| Procedure ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
+	    -> ^(PROCEDURE_DECL type ID formalParameters? expression)
+	| Procedure ID LPAREN formalParameters? RPAREN (Returns type)? block
+	    -> ^(PROCEDURE_DECL type? ID formalParameters? block)
+  ;
 
 formalParameters
-    :   parameter (',' parameter)* -> parameter+
-    ;
+   : parameter (',' parameter)* -> parameter+
+   ;
     
 parameter
 	:	specifier type ID -> ^(ARG_DECL specifier type ID)
@@ -132,8 +138,8 @@ parameter
 
 // START: block
 block 
-    :   LBRACE statement* RBRACE -> ^(BLOCK statement*)
-    ;
+  : LBRACE statement* RBRACE -> ^(BLOCK statement*)
+  ;
 // END: block
 
 // START: tuple
@@ -163,38 +169,62 @@ specifier
 	;
 
 varDeclaration
-	:   type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL Var["var"] type ID expression?)
-    |   specifier type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL specifier type ID expression?)
-    |   specifier ID ASSIGN expression DELIM -> ^(VAR_DECL specifier ID expression)
-    |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
-    |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
-    |   specifier ID ASSIGN tupleMemberList DELIM -> ^(VAR_DECL specifier ID tupleMemberList)
+	: type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL Var["var"] type ID expression?)
+  | specifier type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL specifier type ID expression?)
+  | specifier ID ASSIGN expression DELIM -> ^(VAR_DECL specifier ID expression)
+  |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
+  |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
+  | specifier ID ASSIGN tupleMemberList DELIM -> ^(VAR_DECL specifier ID tupleMemberList)
+  | inputDeclaration
+  | streamDeclaration
 	;
+	
+inputDeclaration
+  : type decl=ID INSTREAM instream=ID DELIM -> ^(INSTREAM Var["var"] type $decl $instream)
+  | specifier type decl=ID INSTREAM instream=ID DELIM -> ^(INSTREAM specifier type $decl $instream)
+  | specifier decl=ID INSTREAM ID instream=DELIM -> ^(INSTREAM specifier $decl $instream)
+  ;
+  
+streamDeclaration throws ParserError
+  : specifier ID ASSIGN STDOUT DELIM -> ^(DECL_OUTSTREAM ID STDOUT)
+  | specifier ID ASSIGN STDIN DELIM -> ^(DECL_INSTREAM ID STDIN)
+  | specifier? type ID ASSIGN STDIN DELIM
+      { emitErrorMessage("line " + $STDIN.getLine() + ": " + "Unexpected type for" + $STDIN.text + "."); }
+  | specifier? type ID ASSIGN STDOUT DELIM
+      { emitErrorMessage("line " + $STDOUT.getLine() + ": " + "Unexpected type for" + $STDOUT.text + "."); }
+  ;
 // END: var
 
 statement
-    :   block
-    |	varDeclaration
-    |	If LPAREN expression RPAREN s=statement (Else e=statement)?
-    	-> ^(If expression $s $e?)
-    |   Return expression? DELIM -> ^(Return expression?)
-    |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
-    |   a=postfixExpression DELIM // handles function calls like f(i);
-    		-> ^(EXPR postfixExpression)
-    | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
-    ;
+  : block
+  |	varDeclaration
+  | output
+  |	If LPAREN expression RPAREN s=statement (Else e=statement)?
+  	  -> ^(If expression $s $e?)
+  | Return expression? DELIM -> ^(Return expression?)
+  |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
+  | a=postfixExpression DELIM // handles function calls like f(i);
+  		-> ^(EXPR postfixExpression)
+  | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
+  ;
+  
+output
+  : lhs OUTSTREAM ID DELIM -> ^(OUTSTREAM ID lhs)
+  | expressionList OUTSTREAM ID DELIM -> ^(OUTSTREAM ID expressionList)
+  | expression OUTSTREAM ID DELIM -> ^(OUTSTREAM ID expression)
+  ;
     
 lhs 
 	:	postfixExpression -> ^(EXPR postfixExpression)
 	;
 
 expressionList
-    :   expr (',' expr)* -> ^(ELIST expr+)
-    |   -> ELIST
+    : expr (',' expr)* -> ^(ELIST expr+)
+    | -> ELIST
     ;
     
 expression
-    :   expr -> ^(EXPR expr)
+    : expr -> ^(EXPR expr)
     ;
 	
 expr
@@ -247,7 +277,7 @@ unaryExpression
 
 // START: call
 postfixExpression
-    :   ID DOT (mem=INTEGER | mem=ID) -> ^(DOT ID $mem)
+    : ID DOT (mem=INTEGER | mem=ID) -> ^(DOT ID $mem)
     |	primary -> primary
 //    	(
 //    		(	r=LPAREN^ expressionList RPAREN!	{$r.setType(CALL);}
@@ -269,33 +299,6 @@ primary
     | Null
     | LPAREN expression RPAREN -> expression
     ;
-
-
-OUTSTREAM : '-' '>';
-INSTREAM : '<' '-';
-EQUALITY : '==';
-INEQUALITY : '!=';
-ASSIGN : '=';
-GREATER : '>';
-LESS : '<';
-GREATER_EQUAL : '>=';
-LESS_EQUAL : '<=';
-ADD : '+';
-SUBTRACT : '-';
-MULTIPLY : '*';
-DIVIDE : '/';
-MODULAR : '%';
-POWER : '^';
-LPAREN : '(';
-RPAREN : ')';
-LBRACK : '[';
-RBRACK : ']';
-LBRACE : '{';
-RBRACE : '}';
-PIPE : '|';
-DOT : '.';
-DELIM : ';';
-
 
 // DashAB reserved words
 In : 'in';
@@ -339,6 +342,36 @@ Stream_state : 'stream_state';
 Revserse : 'reverse';
 Identity : 'identity';
 Null : 'null';
+
+
+// Lexer Rules
+
+OUTSTREAM : '-' '>';
+INSTREAM : '<' '-';
+EQUALITY : '==';
+INEQUALITY : '!=';
+ASSIGN : '=';
+GREATER : '>';
+LESS : '<';
+GREATER_EQUAL : '>=';
+LESS_EQUAL : '<=';
+ADD : '+';
+SUBTRACT : '-';
+MULTIPLY : '*';
+DIVIDE : '/';
+MODULAR : '%';
+POWER : '^';
+LPAREN : '(';
+RPAREN : ')';
+LBRACK : '[';
+RBRACK : ']';
+LBRACE : '{';
+RBRACE : '}';
+PIPE : '|';
+DOT : '.';
+DELIM : ';';
+STDOUT : 'std_output()';
+STDIN : 'std_input()';
 
 ID : (UNDERSCORE | LETTER) (UNDERSCORE |LETTER | DIGIT)*;
 INTEGER : DIGIT+;
