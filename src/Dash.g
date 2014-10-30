@@ -23,6 +23,7 @@ tokens {
 	UNARY_MINUS;
 	DECL_OUTSTREAM;
   DECL_INSTREAM;
+  PRINT;
 }
 
 // Parser Rules
@@ -209,9 +210,8 @@ statement
   ;
   
 output
-  : lhs OUTSTREAM ID DELIM -> ^(OUTSTREAM ID lhs)
-  | expressionList OUTSTREAM ID DELIM -> ^(OUTSTREAM ID expressionList)
-  | expression OUTSTREAM ID DELIM -> ^(OUTSTREAM ID expression)
+  : expressionList OUTSTREAM ID DELIM -> ^(PRINT ID expressionList)
+  | expression OUTSTREAM ID DELIM -> ^(PRINT ID expression)
   ;
     
 lhs 
@@ -279,6 +279,7 @@ unaryExpression
 postfixExpression
     : ID DOT (mem=INTEGER | mem=ID) -> ^(DOT ID $mem)
     |	primary -> primary
+ /* TODO: Part1/Part2 */
 //    	(
 //    		(	r=LPAREN^ expressionList RPAREN!	{$r.setType(CALL);}
 //	    	|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
