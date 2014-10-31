@@ -17,19 +17,10 @@ options {
 }
 
 @members {
- 	boolean fixed_state = true;
     SymbolTable symtab;
     public ConstantFolding(TreeNodeStream input, SymbolTable symtab) {
         this(input);
         this.symtab = symtab;
-    }
-    
-    public void resetFixed() {
-    	fixed_state = true;
-    }
-    
-    public boolean isFixed() {
-    	return fixed_state;
     }
     
     private int ipow(int base, int exp) {
@@ -53,7 +44,6 @@ bottomup
 
 expression
 @init {String result = null;}
-@after {fixed_state = false;}
 	// Integers
 	// Binary Ops
 	:	^(ADD op1=INTEGER op2=INTEGER) 
@@ -132,7 +122,7 @@ expression
 		if (i1 != i2) {
 			$INEQUALITY.token = new CommonToken(DashLexer.True, "true");
 		} else {
-			$INEQUALITY.token = new CommonToken(DashLexer.False, "false");
+			$INEQUALITY.token = new C 	boolean fixed_state = true;ommonToken(DashLexer.False, "false");
 		}
 		
 		$INEQUALITY.deleteChild(0);
