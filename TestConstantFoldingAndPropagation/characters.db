@@ -1,0 +1,30 @@
+const character c0 = 'a';
+const character c1 = 'b';
+
+const boolean b0 = 'a' == 'a';
+const boolean b1 = 'a' == 'b';
+
+const boolean b2 = 'a' != 'a';
+const boolean b3 = 'a' != 'b';
+
+const boolean b4 = 'a' < 'b';
+const boolean b5 = 'b' < 'b';
+const boolean b6 = 'c' < 'b';
+
+const boolean b7 = 'a' > 'b';
+const boolean b8 = 'b' > 'b';
+const boolean b9 = 'c' > 'b';
+
+const boolean b10 = 'a' <= 'b';
+const boolean b11 = 'b' <= 'b';
+const boolean b12 = 'c' <= 'b';
+
+const boolean b13 = 'a' >= 'b';
+const boolean b14 = 'b' >= 'b';
+const boolean b15 = 'c' >= 'b';
+
+procedure main() returns integer {
+	boolean l1 = c0 < 'b';
+	boolean l2 = l1 and true;
+    return 0;
+}
