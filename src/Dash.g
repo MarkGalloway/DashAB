@@ -24,6 +24,7 @@ tokens {
 	DECL_OUTSTREAM;
   DECL_INSTREAM;
   PRINT;
+  TYPEDEF;
 }
 
 // Parser Rules
@@ -196,9 +197,15 @@ streamDeclaration throws ParserError
   ;
 // END: var
 
+typedef
+  : Typedef primitiveType ID DELIM -> ^(TYPEDEF primitiveType ID)
+  | Typedef tupleType ID DELIM -> ^(TYPEDEF tupleType ID)
+  ;
+
 statement
   : block
   |	varDeclaration
+  | typedef
   | output
   |	If LPAREN expression RPAREN s=statement (Else e=statement)?
   	  -> ^(If expression $s $e?)
