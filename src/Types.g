@@ -128,14 +128,16 @@ $arg_nodes = new ArrayList<DashAST>();
 binaryOps returns [Type type]
 @after { $start.evalType = $type; }
 	:	(	^(bop a=expr b=expr)    {$type=symtab.bop($a.start, $b.start);}
+		|	^(lop a=expr b=expr)    {$type=symtab.lop($a.start, $b.start);}
 		|	^(relop a=expr b=expr)  {$type=symtab.relop($a.start, $b.start);}
 		|	^(eqop a=expr b=expr)   {$type=symtab.eqop($a.start, $b.start);}
 		)
 	;
 	
+lop : 	And | Or | Xor;
 
 bop	:	ADD | SUBTRACT | MULTIPLY | DIVIDE | MODULAR | POWER ;
 
-relop:	LESS | GREATER | LESS_EQUAL | GREATER_EQUAL | And | Or | Xor;
+relop:	LESS | GREATER | LESS_EQUAL | GREATER_EQUAL;
 
 eqop:	EQUALITY | INEQUALITY ;

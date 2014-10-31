@@ -84,6 +84,17 @@ public class SymbolTable {
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
     };
+    
+    public static final Type[][] logicResultType = new Type[][] {
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
+        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null},
+        /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null},
+        /*integer*/     {null,		null,  		null,    	null,   	null,	null,	null},
+        /*real*/   		{null,		null,  		null,    	null,   	null,	null,	null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
+    };
 
     public static final Type[][] relationalResultType = new Type[][] {
     	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
@@ -109,10 +120,10 @@ public class SymbolTable {
     
     public static final Type[][] castResultType = new Type[][] {
     	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
-        /*boolean*/ 	{null,		_boolean,  _character, _integer,   _real,	null,	null},
+    	/*tuple*/		{_tuple,	null,    	null,   	null,   	null,	null,	null},
+        /*boolean*/ 	{null,		_boolean,  _character, _integer,   	_real,	null,	null},
         /*character*/   {null,		_boolean,  _character,	_integer,   _real,	null,	null},
-        /*integer*/     {null,		_boolean,  _character, _integer,   _real,	null,	null},
+        /*integer*/     {null,		_boolean,  _character, _integer,   	_real,	null,	null},
         /*real*/   		{null,		null,  		null,    	_integer,   _real,	null,	null},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
@@ -218,6 +229,10 @@ public class SymbolTable {
 
     public Type bop(DashAST a, DashAST b) {
         return getResultType(arithmeticResultType, a, b);
+    }
+    
+    public Type lop(DashAST a, DashAST b) {
+        return getResultType(logicResultType, a, b);
     }
     
     public Type relop(DashAST a, DashAST b) {
