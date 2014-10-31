@@ -122,7 +122,7 @@ expression
 		if (i1 != i2) {
 			$INEQUALITY.token = new CommonToken(DashLexer.True, "true");
 		} else {
-			$INEQUALITY.token = new C 	boolean fixed_state = true;ommonToken(DashLexer.False, "false");
+			$INEQUALITY.token = new CommonToken(DashLexer.False, "false");
 		}
 		
 		$INEQUALITY.deleteChild(0);
