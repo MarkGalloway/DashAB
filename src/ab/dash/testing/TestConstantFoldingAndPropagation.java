@@ -1,42 +1,24 @@
 package ab.dash.testing;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.TreeSet;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenRewriteStream;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.antlr.runtime.tree.TreeVisitor;
-import org.antlr.runtime.tree.TreeVisitorAction;
-import org.antlr.stringtemplate.StringTemplate;
-import org.antlr.stringtemplate.StringTemplateGroup;
-import org.antlr.stringtemplate.language.DefaultTemplateLexer;
 
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
 import ab.dash.DefineTupleTypes;
-import ab.dash.LLVMCodeGenerator;
-import ab.dash.LLVMIRGenerator;
 import ab.dash.Types;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
-import ab.dash.exceptions.LexerException;
-import ab.dash.exceptions.ParserException;
 import ab.dash.opt.ConstantFolding;
 import ab.dash.opt.ConstantPropagation;
 import ab.dash.opt.Ref;
@@ -44,29 +26,6 @@ import ab.dash.opt.RemoveUnusedVariables;
 
 
 public class TestConstantFoldingAndPropagation {
-
-	private static String SlurpFile(String f)
-	{
-		StringBuilder sb = new StringBuilder();
-		BufferedReader br;
-		try {
-			br = new BufferedReader(new FileReader(f));
-			String l;
-
-			while ((l = br.readLine()) != null)
-				sb.append(l + System.getProperty("line.separator"));
-
-			br.close();
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-
-		return sb.toString();
-	}
 	
 	public static void parseFile(String name, String file) throws RecognitionException {
 		CharStream input = null;
