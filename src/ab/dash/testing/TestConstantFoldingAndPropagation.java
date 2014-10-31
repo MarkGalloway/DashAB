@@ -21,6 +21,7 @@ import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
 import ab.dash.opt.ConstantFolding;
 import ab.dash.opt.ConstantPropagation;
+import ab.dash.opt.Optimization;
 import ab.dash.opt.Ref;
 import ab.dash.opt.RemoveUnusedVariables;
 
@@ -82,45 +83,8 @@ public class TestConstantFoldingAndPropagation {
 		
 		System.out.println(tree.toStringTree());
 		
-		boolean fixed_state = false;
-		boolean remove_unused = false;
-		
-		ConstantFolding opt1 = new ConstantFolding(nodes, symtab);
-		opt1.setTreeAdaptor(DashAST.dashAdaptor);
-
-		ConstantPropagation opt2 = new ConstantPropagation(symtab);
-		int iterations = 0;
-		String tree_before = tree.toStringTree();
-		
-		while (!fixed_state) {
-			iterations++;
-			System.out.println("Iteration: " + iterations);
-			
-			nodes.reset();
-			opt1.downup(tree); // trigger resolve/type computation actions
-			
-			nodes.reset();
-	    	opt2.optimize(tree);
-			
-			if (remove_unused) {
-				Ref opt3 = new Ref(nodes, true);
-				nodes.reset();
-				opt3.downup(tree);
-				
-				TreeSet<Integer> refs = opt3.getRefs();
-				
-				RemoveUnusedVariables opt4 = new RemoveUnusedVariables(refs, true);
-				nodes.reset();
-				tokens.reset();
-				opt4.optimize(tree);
-			}
-			
-			String tree_after = tree.toStringTree();
-			fixed_state = tree_before.equals(tree_after);
-			tree_before = tree_after;
-		}
-		
-		System.out.println(tree.toStringTree());
+		Optimization opt = new Optimization(nodes, tree, symtab, true);
+		opt.optimize();
 	}
 
 

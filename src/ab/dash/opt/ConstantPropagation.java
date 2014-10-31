@@ -8,9 +8,7 @@ import ab.dash.ast.SymbolTable;
 import ab.dash.ast.VariableSymbol;
 
 public class ConstantPropagation {
-	SymbolTable symtab;
-    public ConstantPropagation(SymbolTable symtab) {
-        this.symtab = symtab;
+    public ConstantPropagation() {
     }
     
     private String getValue(DashAST id) {

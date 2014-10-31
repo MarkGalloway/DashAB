@@ -17,11 +17,6 @@ options {
 }
 
 @members {
-    SymbolTable symtab;
-    public ConstantFolding(TreeNodeStream input, SymbolTable symtab) {
-        this(input);
-        this.symtab = symtab;
-    }
     
     private int ipow(int base, int exp) {
 	    int result = 1;
