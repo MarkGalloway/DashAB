@@ -157,4 +157,13 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/12AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // Typedef test
+    public void typedefTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/14typedef.db"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/14AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    
 }
