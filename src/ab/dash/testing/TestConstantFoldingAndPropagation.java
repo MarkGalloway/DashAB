@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CharStream;
@@ -38,6 +39,8 @@ import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.opt.ConstantFolding;
 import ab.dash.opt.ConstantPropagation;
+import ab.dash.opt.Ref;
+import ab.dash.opt.RemoveUnusedVariables;
 
 
 public class TestConstantFoldingAndPropagation {
@@ -95,8 +98,8 @@ public class TestConstantFoldingAndPropagation {
 
 		SymbolTable symtab = new SymbolTable(tokens); // make global scope,
 										              // types
-		Boolean debug = false;
-		Def def = new Def(nodes, symtab, debug); // use custom constructor
+		
+		Def def = new Def(nodes, symtab, false); // use custom constructor
 		def.downup(tree); // trigger symtab actions upon certain subtrees
 		
 
@@ -121,6 +124,7 @@ public class TestConstantFoldingAndPropagation {
 		System.out.println(tree.toStringTree());
 		
 		boolean fixed_state = false;
+		boolean remove_unused = false;
 		
 		ConstantFolding opt1 = new ConstantFolding(nodes, symtab);
 		opt1.setTreeAdaptor(DashAST.dashAdaptor);
@@ -137,8 +141,20 @@ public class TestConstantFoldingAndPropagation {
 			opt1.downup(tree); // trigger resolve/type computation actions
 			
 			nodes.reset();
-	    	tokens.reset();
 	    	opt2.optimize(tree);
+			
+			if (remove_unused) {
+				Ref opt3 = new Ref(nodes, true);
+				nodes.reset();
+				opt3.downup(tree);
+				
+				TreeSet<Integer> refs = opt3.getRefs();
+				
+				RemoveUnusedVariables opt4 = new RemoveUnusedVariables(refs, true);
+				nodes.reset();
+				tokens.reset();
+				opt4.optimize(tree);
+			}
 			
 			String tree_after = tree.toStringTree();
 			fixed_state = tree_before.equals(tree_after);
