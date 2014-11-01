@@ -1,11 +1,11 @@
 package ab.dash.ast;
 
 public class TypedefSymbol extends Symbol implements Type {
-    Type type;
+    public Type def_type;
     public TypedefSymbol(String name, Type type) {
         super(name);
-        this.type = type;
+        this.def_type = type;
     }
-    public int getTypeIndex() { return type.getTypeIndex(); }
+    public int getTypeIndex() { return def_type.getTypeIndex(); }
     public String toString() { return getName(); }
 }
