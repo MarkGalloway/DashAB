@@ -218,7 +218,7 @@ statement
   
 output
   : expression OUTSTREAM ID DELIM -> ^(PRINT ID expression)
-  | expressionList OUTSTREAM ID DELIM -> ^(PRINT ID expressionList)
+  | expressionList OUTSTREAM ID DELIM -> ^(PRINT ID expressionList) // Don't know if this is valid
   ;
     
 lhs 
