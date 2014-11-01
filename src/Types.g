@@ -23,11 +23,12 @@ options {
 // END: header
 
 bottomup // match subexpressions innermost to outermost
-	: exprRoot
+	: 	exprRoot
 	|	decl
 	|	ret
 	|	assignment
 	|	ifstat
+	|	print
 	;
 
 // promotion and type checking
@@ -61,6 +62,13 @@ ret
 assignment // don't walk expressions, just examine types
     : ^(ASSIGN lhs=. rhs=.) {symtab.assign($lhs, $rhs);}
     ;
+    
+print
+	: ^(PRINT ID .)
+	{
+    	symtab.checkOutput($PRINT);
+	}
+	;
 
 // type computations and checking
 
@@ -77,8 +85,8 @@ expr returns [Type type]
     |   REAL      	{$type = SymbolTable._real;}
     |   ID 
     {
-    VariableSymbol s = (VariableSymbol)$ID.scope.resolve($ID.text);
-    $ID.symbol = s;
+    	Symbol s = (Symbol)$ID.scope.resolve($ID.text);
+    	$ID.symbol = s;
     	if (symtab.checkIfDefined($ID)) {
             $type = s.type;
     	}

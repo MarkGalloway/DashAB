@@ -340,8 +340,7 @@ public class SymbolTable {
     }
 
     // assignnment stuff (arg assignment in call())
-
-    //TODO: add outstream/instream declarations, ensure streams are not redeclared
+    
     public void declinit(DashAST declID, DashAST init) {
         int te = init.evalType.getTypeIndex(); // promote expr to decl type?
         
@@ -444,10 +443,36 @@ public class SymbolTable {
         }
     }
     
-    //TODO: This should evaluate whether it receives a variable for output stream
-    // and an expression to output
-    public void output(DashAST lhs, DashAST outputStream) {
-
+    public void checkOutput(DashAST print) {
+    	if (print.getChildCount() != 2) {
+    		 error("line " + print.getLine() + ": " +
+    				 " not enough arguments in "+
+                     text(print));
+    		 return;
+    	}
+    	
+    	DashAST stream = (DashAST) print.getChild(0);
+    	
+    	VariableSymbol s = (VariableSymbol)stream.scope.resolve(stream.getText());
+    	stream.symbol = s;
+    	
+    	if (s.type != null) {
+    		if (s.type.getTypeIndex() != SymbolTable.tOUTSTREAM) {
+    			error("line " + print.getLine() + ": " +
+       				 " the ouput stream is not a valid stream in "+
+                     text(print) + ", the stream needst to be of "+
+       				 "type std_output(). Currently, it is type " + s);
+       		 	return;
+    		}
+    	} else {
+    		error("line " + print.getLine() + ": " +
+    				"the ouput stream is currently undefined in "+
+                    text(print));
+    		return;
+    	}
+    	
+    	// Remove output stream since it is not needed after this point
+    	print.deleteChild(0);
     }
 
     //TODO: This should evaluate whether it receives a valid input stream
