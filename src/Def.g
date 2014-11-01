@@ -43,6 +43,7 @@ options {
 topdown
     :   enterBlock
     |   enterMethod
+    |	typeDef
     |   atoms
     |   varDeclaration
     |   ret
@@ -66,7 +67,7 @@ enterBlock
 exitBlock
     :   BLOCK
         {
-        debug("locals: "+currentScope);
+        debug("locals: " + currentScope);
         currentScope = currentScope.getEnclosingScope();    // pop scope
         }
     ;
@@ -83,10 +84,10 @@ exitTuple
 // END: tuple
 
 enterMethod
-    :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) type ID function_block=.*) // match method subtree with 0-or-more args
+    :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) typeElement ID function_block=.*) // match method subtree with 0-or-more args
         {
         debug("line "+$ID.getLine()+": def method "+$ID.text);
-        MethodSymbol ms = new MethodSymbol($ID.text,$type.type,currentScope);
+        MethodSymbol ms = new MethodSymbol($ID.text,$typeElement.type,currentScope);
         currentMethod = ms;
         ms.def = $ID;            // track AST location of def's ID
         $ID.symbol = ms;         // track in AST
@@ -125,6 +126,23 @@ exitMethod
 
 // D e f i n e  s y m b o l s
 
+typeDef
+	:	^(TYPEDEF typeElement ID)
+	{
+		debug("line " + $ID.getLine() + ": typedef " + $typeElement.type + " " + $ID.text);
+		Type type = $typeElement.type;
+		if (type != null) {
+			debug(type.getName());
+			TypedefSymbol ts = new TypedefSymbol($ID.text, type);
+			ts.def = $ID;            // track AST location of def's ID
+			$ID.symbol = ts;         // track in AST
+			currentScope.define(ts);
+		} else {
+			// TODO: Undefined type
+		}
+	}
+	;
+
 // START: atoms
 /** Set scope for any identifiers in expressions or assignments */
 atoms
@@ -139,28 +157,36 @@ atoms
 
 // START: var
 varDeclaration // global, parameter, or local variable
-    :   ^(var_node = (VAR_DECL|ARG_DECL) specifier type ID .?)
+/* Remember specifiers are added to the tree during parsing
+ * Therfore, the following case is handled:
+ * 		integer x = 0;
+ */
+    :   ^(var_node = (VAR_DECL|ARG_DECL) specifier type ID .?)	
         {
 	         debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 
 	         " type ( " + $type.type +  " ) " + 
 	         " specifier ( " + $specifier.specifier +  " )");
-	        if ($type.type.getTypeIndex() == SymbolTable.tTUPLE) {
-		        TupleSymbol ts = new TupleSymbol($ID.text, $type.type, $specifier.specifier, currentScope);
-		        ts.def = $ID;
-		        $ID.symbol = ts;
-		        currentScope.define(ts); // def tuple in current scope
-		        currentScope = ts;       // set current tuple to struct scope
+	         if ($type.type != null) {
+		        if ($type.type.getTypeIndex() == SymbolTable.tTUPLE) {
+			        TupleSymbol ts = new TupleSymbol($ID.text, $type.type, $specifier.specifier, currentScope);
+			        ts.def = $ID;
+			        $ID.symbol = ts;
+			        currentScope.define(ts); // def tuple in current scope
+			        currentScope = ts;       // set current tuple to struct scope
+			    } else {
+			        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
+			        vs.def = $ID;            // track AST location of def's ID
+			        $ID.symbol = vs;         // track in AST
+			        currentScope.define(vs);
+			        
+			        $var_node.deleteChild(0);
+			    }
+			    
+			    $var_node.deleteChild(0);
 		    } else {
-		        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
-		        vs.def = $ID;            // track AST location of def's ID
-		        $ID.symbol = vs;         // track in AST
-		        currentScope.define(vs);
-		        
-		        $var_node.deleteChild(0);
+		    	// TODO: Throw error type undefined
 		    }
-		    
-		    $var_node.deleteChild(0);
         }
     |	^(VAR_DECL specifier ID ^(TUPLE_LIST .+))	// Tuple
         {
@@ -228,6 +254,12 @@ type returns [Type type]
     :	typeElement         
     {
     $type = $typeElement.type;
+    }
+    |	ID
+    {
+    TypedefSymbol s = (TypedefSymbol) currentScope.resolve($ID.text);
+    $ID.symbol = s;
+    $type = s;
     }
     ;   
         
