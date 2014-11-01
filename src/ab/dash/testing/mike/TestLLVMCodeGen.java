@@ -121,7 +121,8 @@ public class TestLLVMCodeGen {
 				"StringTemplate/LLVM_Bool.stg",
 				"StringTemplate/LLVM_Char.stg",
 				"StringTemplate/LLVM_Int.stg",
-				"StringTemplate/LLVM_Real.stg"
+				"StringTemplate/LLVM_Real.stg",
+				"StringTemplate/LLVM_Tuple.stg"
 				};
 		
 		for (String s : STGFiles)
