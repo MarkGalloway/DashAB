@@ -15,6 +15,8 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenRewriteStream;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.stringtemplate.StringTemplateGroup;
+
+import ab.dash.CleanAST;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
@@ -103,7 +105,14 @@ public class TestLLVMCodeGen {
 		}
 		
 		System.out.println(tree.toStringTree());
-
+		
+		// Delete nodes that are no longer needed
+		nodes.reset();
+		CleanAST clean = new CleanAST();
+		clean.clean(tree);
+		
+		System.out.println(tree.toStringTree());
+		
 		StringBuilder sb;
 		sb = new StringBuilder();
 
