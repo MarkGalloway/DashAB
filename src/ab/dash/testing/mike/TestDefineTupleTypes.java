@@ -1,4 +1,4 @@
-package ab.dash.testing;
+package ab.dash.testing.mike;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,11 +19,12 @@ import org.antlr.runtime.CommonToken;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
+import ab.dash.DefineTupleTypes;
 import ab.dash.Types;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
 
-public class TestTypes {
+public class TestDefineTupleTypes {
 	public static void parseFile(String name, String file)
 			throws RecognitionException {
 		CharStream input = null;
@@ -54,7 +55,7 @@ public class TestTypes {
 		SymbolTable symtab = new SymbolTable(tokens); // make global scope,
 														// types
 		Boolean debug = true;
-		Def def = new Def(nodes, symtab, debug); // use custom constructor
+		Def def = new Def(nodes, symtab,debug); // use custom constructor
 		def.downup(tree); // trigger symtab actions upon certain subtrees
 		System.out.println("globals: " + symtab.globals);
 		System.out.println();
@@ -107,6 +108,12 @@ public class TestTypes {
 		System.out.println("\nTree:");
 		System.out.println(tree.toStringTree());
 		System.out.println();
+		
+		System.out.println("\nDefine Tuple Types:");
+		nodes.reset();
+		DefineTupleTypes tupleTypeComp = new DefineTupleTypes(nodes, symtab);
+		tupleTypeComp.debug_on();
+		tupleTypeComp.downup(tree); // trigger resolve/type computation actions
 		
 		System.out.println("\nCode:");
 		System.out.println(tokens);
@@ -166,7 +173,7 @@ public class TestTypes {
 	        	if (i > 0) {
 	        	    String extension = file.getName().substring(i+1);
 	        	    
-	        	    if (extension.equals("db")) {
+	        	    if (extension.equals("ds")) {
 		        	    System.out.println("File: " + file.getName());
 			            parseFile(file.getName(), file.getPath());
 	        	    }
@@ -178,8 +185,5 @@ public class TestTypes {
 	public static void main(String[] args) throws RecognitionException {
 		File[] files = new File("TestPrograms/").listFiles();
 		showFiles(files);
-
-		File[] invalid_files = new File("TestInvalidTypePrograms/").listFiles();
-		showFiles(invalid_files);
 	}
 }

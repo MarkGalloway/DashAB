@@ -1,0 +1,11 @@
+const real e0 = 5.0*2.0 + 1;
+
+procedure main() returns integer {
+	real l1 = e0 + 5.0;
+	
+	if (l1 > 0.0) {
+		l1 = 0.0;
+	}
+	
+    return 0;
+}

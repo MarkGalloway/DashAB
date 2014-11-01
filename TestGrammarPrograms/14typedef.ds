@@ -1,0 +1,13 @@
+// global declaration of tuple
+
+typedef tuple(real, real) point;
+
+typedef tuple(integer, real, bool) bla;
+
+typedef integer int;
+
+typedef boolean bool;
+
+typedef character char;
+
+typedef real double;

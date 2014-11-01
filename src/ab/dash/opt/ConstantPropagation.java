@@ -8,9 +8,7 @@ import ab.dash.ast.SymbolTable;
 import ab.dash.ast.VariableSymbol;
 
 public class ConstantPropagation {
-	SymbolTable symtab;
-    public ConstantPropagation(SymbolTable symtab) {
-        this.symtab = symtab;
+    public ConstantPropagation() {
     }
     
     private String getValue(DashAST id) {
@@ -56,10 +54,14 @@ public class ConstantPropagation {
 					if (id.getToken().getType() == DashLexer.ID) {
 						if (expr.getToken().getType() == DashLexer.EXPR) {
 							int value_type = value.getToken().getType();
+							VariableSymbol s = (VariableSymbol)id.symbol;
 							if (value_type == DashLexer.INTEGER ||
 									value_type == DashLexer.REAL) {
-								VariableSymbol s = (VariableSymbol)id.symbol;
 								s.initialValue = value.getText().replaceAll("_", "");
+							} else if (value_type == DashLexer.CHARACTER ||
+									value_type == DashLexer.True ||
+									value_type == DashLexer.False) {
+								s.initialValue = value.getText();
 							}
 						}
 					}
@@ -77,6 +79,14 @@ public class ConstantPropagation {
 					t.token = new CommonToken(DashLexer.INTEGER, value);
 		        } else if (type == SymbolTable.tREAL) {
 					t.token = new CommonToken(DashLexer.REAL, value);
+		        } else if (type == SymbolTable.tCHARACTER) {
+					t.token = new CommonToken(DashLexer.CHARACTER, value);
+		        } else if (type == SymbolTable.tBOOLEAN) {
+		        	if (value.equals("true")) {
+		        		t.token = new CommonToken(DashLexer.True, value);
+		        	} else if (value.equals("false")) {
+		        		t.token = new CommonToken(DashLexer.False, value);
+		        	} 
 		        }
 			}
 		}

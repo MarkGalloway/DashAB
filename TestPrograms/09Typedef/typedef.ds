@@ -1,0 +1,10 @@
+const out = std_output();
+typedef integer x;
+
+procedure main() returns integer {
+
+	x x = 5;
+	x -> out;
+	
+	return 0;
+}

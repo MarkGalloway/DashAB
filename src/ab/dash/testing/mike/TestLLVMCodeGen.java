@@ -1,4 +1,4 @@
-package ab.dash.testing;
+package ab.dash.testing.mike;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,36 +6,25 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenRewriteStream;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.antlr.runtime.tree.TreeVisitor;
-import org.antlr.runtime.tree.TreeVisitorAction;
-import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
-import org.antlr.stringtemplate.language.DefaultTemplateLexer;
 
+import ab.dash.CleanAST;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
 import ab.dash.DefineTupleTypes;
-import ab.dash.LLVMCodeGenerator;
 import ab.dash.LLVMIRGenerator;
 import ab.dash.Types;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
-import ab.dash.exceptions.LexerException;
-import ab.dash.exceptions.ParserException;
 
 
 public class TestLLVMCodeGen {
@@ -116,7 +105,14 @@ public class TestLLVMCodeGen {
 		}
 		
 		System.out.println(tree.toStringTree());
-
+		
+		// Delete nodes that are no longer needed
+		nodes.reset();
+		CleanAST clean = new CleanAST();
+		clean.clean(tree);
+		
+		System.out.println(tree.toStringTree());
+		
 		StringBuilder sb;
 		sb = new StringBuilder();
 
@@ -159,7 +155,7 @@ public class TestLLVMCodeGen {
 	        	if (i > 0) {
 	        	    String extension = file.getName().substring(i+1);
 	        	    
-	        	    if (extension.equals("db")) {
+	        	    if (extension.equals("ds")) {
 		        	    System.out.println("File: " + file.getName());
 			            parseFile(file.getName(), file.getPath());
 	        	    }

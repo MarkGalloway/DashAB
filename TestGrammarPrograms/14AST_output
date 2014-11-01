@@ -1,0 +1,1 @@
+(PROGRAM (TYPEDEF (tuple (FIELD_DECL var real) (FIELD_DECL var real)) point) (TYPEDEF (tuple (FIELD_DECL var integer) (FIELD_DECL var real) (FIELD_DECL var bool)) bla) (TYPEDEF integer int) (TYPEDEF boolean bool) (TYPEDEF character char) (TYPEDEF real double))

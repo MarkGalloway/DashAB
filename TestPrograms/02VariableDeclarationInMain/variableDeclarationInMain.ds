@@ -1,5 +1,8 @@
+const out = std_output();
+
 procedure main() returns integer {
 	integer i;
 	i = 2;
+	i -> out;
     return i;
 }

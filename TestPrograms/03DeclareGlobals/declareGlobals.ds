@@ -1,0 +1,7 @@
+const out = std_output();
+const integer global_int = 5;
+
+procedure main() returns integer {
+	global_int -> out;
+    return 0;
+}

@@ -23,6 +23,8 @@ tokens {
 	UNARY_MINUS;
 	DECL_OUTSTREAM;
   DECL_INSTREAM;
+  PRINT;
+  TYPEDEF;
 }
 
 // Parser Rules
@@ -175,8 +177,6 @@ varDeclaration
   |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
   |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
   | specifier ID ASSIGN tupleMemberList DELIM -> ^(VAR_DECL specifier ID tupleMemberList)
-  | inputDeclaration
-  | streamDeclaration
 	;
 	
 inputDeclaration
@@ -195,9 +195,17 @@ streamDeclaration throws ParserError
   ;
 // END: var
 
+typedef
+  : Typedef primitiveType ID DELIM -> ^(TYPEDEF primitiveType ID)
+  | Typedef tupleType ID DELIM -> ^(TYPEDEF tupleType ID)
+  ;
+
 statement
   : block
   |	varDeclaration
+  | inputDeclaration
+  | streamDeclaration
+  | typedef
   | output
   |	If LPAREN expression RPAREN s=statement (Else e=statement)?
   	  -> ^(If expression $s $e?)
@@ -209,9 +217,8 @@ statement
   ;
   
 output
-  : lhs OUTSTREAM ID DELIM -> ^(OUTSTREAM ID lhs)
-  | expressionList OUTSTREAM ID DELIM -> ^(OUTSTREAM ID expressionList)
-  | expression OUTSTREAM ID DELIM -> ^(OUTSTREAM ID expression)
+  : expression OUTSTREAM ID DELIM -> ^(PRINT ID expression)
+  | expressionList OUTSTREAM ID DELIM -> ^(PRINT ID expressionList) // Don't know if this is valid
   ;
     
 lhs 
@@ -279,6 +286,7 @@ unaryExpression
 postfixExpression
     : ID DOT (mem=INTEGER | mem=ID) -> ^(DOT ID $mem)
     |	primary -> primary
+ /* TODO: Part1/Part2 */
 //    	(
 //    		(	r=LPAREN^ expressionList RPAREN!	{$r.setType(CALL);}
 //	    	|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
@@ -335,8 +343,8 @@ Xor : 'xor';
 Rows : 'rows';
 Columns : 'columns';
 Length : 'length';
-Out : 'out';
-Inp : 'inp';
+//Out : 'out';
+//Inp : 'inp';
 Tuple : 'tuple';
 Stream_state : 'stream_state';
 Revserse : 'reverse';
