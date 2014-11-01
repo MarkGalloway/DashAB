@@ -46,6 +46,7 @@ topdown
     |	typeDef
     |   atoms
     |   varDeclaration
+    |	streamDeclaration
     |   ret
     ;
 
@@ -147,13 +148,27 @@ typeDef
 /** Set scope for any identifiers in expressions or assignments */
 atoms
 @init {DashAST t = (DashAST)input.LT(1);}
-    :  {t.hasAncestor(EXPR)||t.hasAncestor(ASSIGN)}? ID
+    :  {t.hasAncestor(EXPR)||t.hasAncestor(ASSIGN)||t.hasAncestor(PRINT)}? ID
        {
        debug("line " + $ID.getLine() + ": ref " + $ID.text);
        t.scope = currentScope;
        }
     ;
 //END: atoms
+
+streamDeclaration
+	:	^(DECL_OUTSTREAM ID std_type)
+	{
+		debug("line " + $ID.getLine() +
+	         ": def " + $ID.text + 
+	         " stream ( " + $std_type.type +  " ) ");
+	    BuiltInSpecifierSymbol specifier = (BuiltInSpecifierSymbol) currentScope.resolve("const");
+	    VariableSymbol vs = new VariableSymbol($ID.text, $std_type.type, specifier);
+		vs.def = $ID;            // track AST location of def's ID
+		$ID.symbol = vs;         // track in AST
+		currentScope.define(vs);
+	}
+	;
 
 // START: var
 varDeclaration // global, parameter, or local variable
@@ -277,5 +292,18 @@ DashAST t = (DashAST)input.LT(1);
     |	CHARACTER_TYPE
     |	BOOLEAN_TYPE
     |	^(Tuple .+)
+    ;
+    
+std_type returns [Type type]
+@init {
+DashAST t = (DashAST)input.LT(1);
+}
+@after {
+	t.symbol = currentScope.resolve(t.getText()); // return Type
+    t.scope = currentScope;
+    $type = (Type)t.symbol;
+}
+    :	STDOUT
+    |	STDIN
     ;
 
