@@ -56,7 +56,7 @@ public class TestDef {
 	        	if (i > 0) {
 	        	    String extension = file.getName().substring(i+1);
 	        	    
-	        	    if (extension.equals("db")) {
+	        	    if (extension.equals("ds")) {
 		        	    System.out.println("File: " + file.getName());
 			            parseFile(file.getName(), file.getPath());
 	        	    }
