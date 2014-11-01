@@ -1,22 +1,23 @@
-package ab.dash.testing;
-
+package ab.dash.testing.mike;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.runtime.tree.DOTTreeGenerator;
+import org.antlr.stringtemplate.StringTemplate;
 
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
-import ab.dash.Def;
 import ab.dash.ast.DashAST;
-import ab.dash.ast.SymbolTable;
 
-
-public class TestDef {
+public class TestGrammarParser {
+	
 	public static void parseFile(String name, String file) throws RecognitionException {
     	CharStream input = null;
     	try {
@@ -33,17 +34,30 @@ public class TestDef {
         DashParser.program_return r = parser.program();
 
         DashAST tree = (DashAST)r.getTree();
-        System.out.println(tree.toStringTree());
-        
-        CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
-        nodes.setTokenStream(tokens);
+        System.err.println(tree.toStringTree());
 
-        SymbolTable symtab = new SymbolTable(tokens); // make global scope, types
+        DOTTreeGenerator gen = new DOTTreeGenerator();
+        StringTemplate st = gen.toDOT(tree);
+        System.out.println(st);
         
-        Boolean debug = true;
-        Def def = new Def(nodes, symtab, debug); // use custom constructor
-        def.downup(tree); // trigger symtab actions upon certain subtrees 
-        System.out.println("globals: "+symtab.globals);
+        PrintWriter writer_AST;
+		try {
+			writer_AST = new PrintWriter("ASTOutput/" + name + ".dot", "UTF-8");
+			writer_AST.println(st);
+			writer_AST.close();
+			
+			Runtime.getRuntime().exec("dot -Tpng ASTOutput/" + name + ".dot -o ASTOutput/" + name + ".png");
+			//Runtime.getRuntime().exec("xdg-open ASTOutput/AST.png");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void showFiles(File[] files) throws RecognitionException {
@@ -61,16 +75,19 @@ public class TestDef {
 			            parseFile(file.getName(), file.getPath());
 	        	    }
 	        	}
-	            
 	        }
 	    }
 	}
 
-	public static void main(String[] args) throws RecognitionException {
-		File[] files = new File("TestPrograms/").listFiles();
+	public static void main(String[] args) throws RecognitionException, IOException, InterruptedException {
+		Process p = Runtime.getRuntime().exec("mkdir ASTOutput");
+		p.waitFor();
+		
+		File[] files = new File("TestGrammarPrograms/").listFiles();
 		showFiles(files);
 		
-//		File[] invalid_files = new File("InvalidTestPrograms/").listFiles();
-//		showFiles(invalid_files);
+		files = new File("TestPrograms/").listFiles();
+		showFiles(files);
 	}
+
 }

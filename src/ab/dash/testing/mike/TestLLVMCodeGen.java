@@ -1,32 +1,67 @@
-package ab.dash.testing;
+package ab.dash.testing.mike;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.TreeSet;
+import java.util.List;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenRewriteStream;
+import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.runtime.tree.TreeVisitor;
+import org.antlr.runtime.tree.TreeVisitorAction;
+import org.antlr.stringtemplate.StringTemplate;
+import org.antlr.stringtemplate.StringTemplateGroup;
+import org.antlr.stringtemplate.language.DefaultTemplateLexer;
 
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
 import ab.dash.DefineTupleTypes;
+import ab.dash.LLVMCodeGenerator;
+import ab.dash.LLVMIRGenerator;
 import ab.dash.Types;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
-import ab.dash.opt.ConstantFolding;
-import ab.dash.opt.ConstantPropagation;
-import ab.dash.opt.Optimization;
-import ab.dash.opt.Ref;
-import ab.dash.opt.RemoveUnusedVariables;
+import ab.dash.exceptions.LexerException;
+import ab.dash.exceptions.ParserException;
 
 
-public class TestConstantFoldingAndPropagation {
+public class TestLLVMCodeGen {
+
+	private static String SlurpFile(String f)
+	{
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(f));
+			String l;
+
+			while ((l = br.readLine()) != null)
+				sb.append(l + System.getProperty("line.separator"));
+
+			br.close();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+
+		return sb.toString();
+	}
 	
 	public static void parseFile(String name, String file) throws RecognitionException {
 		CharStream input = null;
@@ -57,11 +92,10 @@ public class TestConstantFoldingAndPropagation {
 		nodes.setTokenStream(tokens);
 
 		SymbolTable symtab = new SymbolTable(tokens); // make global scope,
-										              // types
-		
-		Def def = new Def(nodes, symtab, false); // use custom constructor
+														// types
+		Boolean debug = false;
+		Def def = new Def(nodes, symtab, debug); // use custom constructor
 		def.downup(tree); // trigger symtab actions upon certain subtrees
-		
 
 		// RESOLVE SYMBOLS, COMPUTE EXPRESSION TYPES
 		nodes.reset();
@@ -82,9 +116,30 @@ public class TestConstantFoldingAndPropagation {
 		}
 		
 		System.out.println(tree.toStringTree());
+
+		StringBuilder sb;
+		sb = new StringBuilder();
+
+		String[] STGFiles = new String[] {
+				"StringTemplate/LLVM.stg",
+				"StringTemplate/LLVM_Bool.stg",
+				"StringTemplate/LLVM_Char.stg",
+				"StringTemplate/LLVM_Int.stg",
+				"StringTemplate/LLVM_Real.stg"
+				};
 		
-		Optimization opt = new Optimization(nodes, tree, symtab, true);
-		opt.optimize();
+		for (String s : STGFiles)
+			sb.append(SlurpFile(s));
+		
+		StringTemplateGroup stg = new StringTemplateGroup(
+				new StringReader(sb.toString()));
+		
+		LLVMIRGenerator llvm = new LLVMIRGenerator(stg, symtab);
+		llvm.debug_on();
+		nodes.reset();
+    	tokens.reset();
+		llvm.build(tree);
+		System.out.println(llvm);
 	}
 
 
@@ -114,7 +169,12 @@ public class TestConstantFoldingAndPropagation {
 	}
 
 	public static void main(String[] args) throws RecognitionException {
-		File[] files = new File("TestConstantFoldingAndPropagation/").listFiles();
+//		parseFile("simpleMain.db", "TestPrograms/05SimpleMain/simpleMain.db");
+//		parseFile("variableDeclarationInMain.db", "TestPrograms/07VariableDeclarationInMain/variableDeclarationInMain.db");
+		File[] files = new File("TestPrograms/").listFiles();
 		showFiles(files);
+
+		File[] invalid_files = new File("TestInvalidTypePrograms/").listFiles();
+		showFiles(invalid_files);
 	}
 }
