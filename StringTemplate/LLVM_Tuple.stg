@@ -27,3 +27,19 @@ int_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id
 real_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
 real_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id>)
 >>
+
+bool_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
+bool_get_local_tuple_member(<id>, <tuple_id>, <tuple_type>, <index>)
+>>
+
+char_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
+char_get_local_tuple_member(<id>, <tuple_id>, <tuple_type>, <index>)
+>>
+
+int_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
+int_get_local_tuple_member(<id>, <tuple_id>, <tuple_type>, <index>)
+>>
+
+real_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
+real_get_local_tuple_member(<id>, <tuple_id>, <tuple_type>, <index>)
+>>
