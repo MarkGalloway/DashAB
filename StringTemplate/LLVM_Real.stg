@@ -3,7 +3,7 @@ float
 >>
 
 real_literal(id, val) ::= <<
- <vlocal_result(id)> = add float <val>, 0
+ <vlocal_result(sym_id)> = add float <val>, 0
 >>
 
 real_null(id) ::= <<
@@ -30,14 +30,14 @@ real_get_global(id, sym_id) ::= <<
 <vlocal_result(id)> = load float*  <vglobalSymbol(sym_id)>
 >>
 
-real_local_assign(id, expr, expr_id) ::= <<
+real_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store float <vlocal_result(expr_id)>, float* <vlocalSymbol(id)>
+	store float <vlocal_result(expr_id)>, float* <vlocalSymbol(sym_id)>
 >>
 
-real_global_assign(id, expr, expr_id) ::= <<
+real_global_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store float <vlocal_result(expr_id)>, float* <vglobalSymbol(id)>
+	store float <vlocal_result(expr_id)>, float* <vglobalSymbol(sym_id)>
 >>
 
 real_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<

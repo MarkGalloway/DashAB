@@ -30,14 +30,14 @@ char_get_global(id, sym_id) ::= <<
 <vlocal_result(id)> = load i8*  <vglobalSymbol(sym_id)>
 >>
 
-char_local_assign(id, expr, expr_id) ::= <<
+char_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store i8 <vlocal_result(expr_id)>, i8* <vlocalSymbol(id)>
+	store i8 <vlocal_result(expr_id)>, i8* <vlocalSymbol(sym_id)>
 >>
 
-char_global_assign(id, expr, expr_id) ::= <<
+char_global_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store i8 <vlocal_result(expr_id)>, i8* <vglobalSymbol(id)>
+	store i8 <vlocal_result(expr_id)>, i8* <vglobalSymbol(sym_id)>
 >>
 
 char_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<

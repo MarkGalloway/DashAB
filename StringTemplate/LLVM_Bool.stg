@@ -30,14 +30,14 @@ bool_get_global(id, sym_id) ::= <<
 <vlocal_result(id)> = load i1*  <vglobalSymbol(sym_id)>
 >>
 
-bool_local_assign(id, expr, expr_id) ::= <<
+bool_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store i1 <vlocal_result(expr_id)>, i32* <vlocalSymbol(id)>
+	store i1 <vlocal_result(expr_id)>, i32* <vlocalSymbol(sym_id)>
 >>
 
-bool_global_assign(id, expr, expr_id) ::= <<
+bool_global_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store i1 <vlocal_result(expr_id)>, i32* <vglobalSymbol(id)>
+	store i1 <vlocal_result(expr_id)>, i32* <vglobalSymbol(sym_id)>
 >>
 
 bool_and(id, lhs, lhs_id, rhs, rhs_id) ::= <<

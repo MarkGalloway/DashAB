@@ -12,18 +12,18 @@ tuple_init_global(sym_id, type_id) ::= <<
 <vglobalSymbol(sym_id)> = private unnamed_addr global %T<type_id> 0
 >>
 
-bool_local_tuple_assign(id, index, expr, expr_id) ::= <<
-bool_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
+bool_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
+bool_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id>)
 >>
 
-char_local_tuple_assign(id, index, expr, expr_id) ::= <<
-char_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
+char_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
+char_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id>)
 >>
 
-int_local_tuple_assign(id, index, expr, expr_id) ::= <<
-int_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
+int_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
+int_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id>)
 >>
 
-real_local_tuple_assign(id, index, expr, expr_id) ::= <<
-real_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
+real_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
+real_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id>)
 >>

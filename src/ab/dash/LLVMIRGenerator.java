@@ -338,7 +338,9 @@ public class LLVMIRGenerator {
 						template.setAttribute("expr_id", arg_id);
 						template.setAttribute("expr", expr);
 						template.setAttribute("index", i);
-						template.setAttribute("id", tuple.id);
+						template.setAttribute("tuple_type", tuple.tupleTypeIndex);
+						template.setAttribute("tuple_id", tuple.id);
+						template.setAttribute("id", id);
 						
 						temp += template.toString() + "\n";
 					}
@@ -377,7 +379,8 @@ public class LLVMIRGenerator {
 				
 				template.setAttribute("expr_id", arg_id);
 				template.setAttribute("expr", expr);
-				template.setAttribute("id", sym_id);
+				template.setAttribute("sym_id", sym_id);
+				template.setAttribute("id", id);
 				return template;
 			}
 			
@@ -386,6 +389,7 @@ public class LLVMIRGenerator {
 
 		case DashLexer.ASSIGN:
 		{
+			int id = ((DashAST)t).llvmResultID;
 			DashAST node = (DashAST)t.getChild(0).getChild(0);
 			
 			if (node.getType() == DashLexer.DOT) {
@@ -414,7 +418,9 @@ public class LLVMIRGenerator {
 				template.setAttribute("expr_id", arg_id);
 				template.setAttribute("expr", expr);
 				template.setAttribute("index", index);
-				template.setAttribute("id", tuple.id);
+				template.setAttribute("tuple_type", tuple.tupleTypeIndex);
+				template.setAttribute("tuple_id", tuple.id);
+				template.setAttribute("id", id);
 				return template;
 			}
 			
@@ -456,7 +462,8 @@ public class LLVMIRGenerator {
 			
 			template.setAttribute("expr_id", arg_id);
 			template.setAttribute("expr", expr);
-			template.setAttribute("id", sym_id);
+			template.setAttribute("sym_id", sym_id);
+			template.setAttribute("id", id);
 			return template;
 		}
 
