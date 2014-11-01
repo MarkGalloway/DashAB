@@ -16,14 +16,30 @@ bool_local_tuple_assign(id, index, expr, expr_id) ::= <<
 bool_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
 >>
 
+bool_get_local_tuple_assign(id, index, tuple_type, tuple_id) ::= <<
+bool_get_local_tuple_assign(<id>, <index>, <tuple_type>, <tuple_id>)
+>>
+
 char_local_tuple_assign(id, index, expr, expr_id) ::= <<
 char_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
+>>
+
+char_get_local_tuple_assign(id, index, tuple_type, tuple_id) ::= <<
+char_get_local_tuple_assign(<id>, <index>, <tuple_type>, <tuple_id>)
 >>
 
 int_local_tuple_assign(id, index, expr, expr_id) ::= <<
 int_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
 >>
 
+int_get_local_tuple_assign(id, index, tuple_type, tuple_id) ::= <<
+int_get_local_tuple_assign(<id>, <index>, <tuple_type>, <tuple_id>)
+>>
+
 real_local_tuple_assign(id, index, expr, expr_id) ::= <<
 real_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
+>>
+
+real_get_local_tuple_assign(id, index, tuple_type, tuple_id) ::= <<
+real_get_local_tuple_assign(<id>, <index>, <tuple_type>, <tuple_id>)
 >>
