@@ -350,6 +350,15 @@ public class SymbolTable {
         	declID.symbol.type = init.evalType;
         }
         
+        if (declID.symbol.type instanceof TypedefSymbol) {
+        	TypedefSymbol typedef = (TypedefSymbol) declID.symbol.type;
+        	if (typedef.def_type instanceof BuiltInTypeSymbol) {
+        		declID.symbol.type = typedef.def_type;
+        	} else if (typedef.def_type instanceof TupleSymbol) {
+        		// TODO Handle tuples typedef
+        	}
+        }
+        
         int tdecl = declID.symbol.type.getTypeIndex();
         declID.evalType = declID.symbol.type;
         init.promoteToType = promoteFromTo[te][tdecl];
