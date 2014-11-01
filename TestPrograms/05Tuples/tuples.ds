@@ -9,8 +9,10 @@ procedure main() returns integer {
 	t2.1 = 4;
 	t2.2 = 0.4;
 	
-	t -> out;
-	t2 -> out;
+	t.1 -> out;
+	t.2 -> out;
+	t2.1 -> out;
+	t2.2 -> out;
 	
     return 0;
 }
