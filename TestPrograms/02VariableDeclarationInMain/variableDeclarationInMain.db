@@ -1,4 +1,4 @@
-var out = std_output();
+const out = std_output();
 
 procedure main() returns integer {
 	integer i;

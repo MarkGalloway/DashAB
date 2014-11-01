@@ -1,9 +1,19 @@
+const out = std_output();
+
 procedure main() returns integer {
-	integer i = 0;
-	
 	if (true) {
-		i = 1;
+		1 -> out;
 	}
 	
-    return i;
+	if (false) {
+		2 -> out;
+	}
+	
+	if (false) {
+		3 -> out;
+	} else {
+		4 -> out;
+	}
+	
+    return 0;
 }

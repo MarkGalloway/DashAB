@@ -1,8 +1,16 @@
+const out = std_output();
+
 const b = true;
 
 procedure main() returns integer {
 	var i = 0;
 	var r = 0.0;
 	var c = 'a';
+	
+	b -> out;
+	i -> out;
+	r -> out;
+	c -> out;
+	
     return 0;
 }
