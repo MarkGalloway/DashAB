@@ -79,6 +79,20 @@ bool_to_int(id, expr, expr_id) ::= <<
   <vlocal_result(id)> = zext i1 <vlocal_result(expr_id)> to i32
 >>
 
+bool_to_char(id, expr, expr_id) ::= <<
+<expr>
+  br i1 <vlocal_result(expr_id)>, label %bool_to_char_true<id>, label %bool_to_char_false<id>
+
+bool_to_char_true<id>:
+  <vlocal(id)>true = add <char_type()> 31 0
+
+bool_to_char_false<id>:
+  <vlocal(id)>false = add <char_type()> 30 0
+
+bool_to_char_done<id>:
+  <vlocal_result(id)> = phi <char_type()> [<vlocal(id)>true, %bool_to_char_true<id>], [<vlocal(id)>false, %bool_to_char_false<id>]
+>>
+
 bool_print(id, expr, expr_id) ::= <<
 <expr>
   br i1 <vlocal_result(expr_id)>, label %bool_print_true<id>, label %bool_print_false<id>
