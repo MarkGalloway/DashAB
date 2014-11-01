@@ -3,7 +3,7 @@ float
 >>
 
 real_literal(id, val) ::= <<
- <vlocal_result(sym_id)> = add float <val>, 0
+ <vlocal_result(id)> = add float <val>, 0
 >>
 
 real_null(id) ::= <<
