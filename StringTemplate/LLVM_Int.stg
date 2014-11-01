@@ -40,10 +40,6 @@ int_global_assign(id, expr, expr_id) ::= <<
 	store i32 <vlocal_result(expr_id)>, i32* <vglobalSymbol(id)>
 >>
 
-int_local_tuple_assign(id, index, expr, expr_id) ::= <<
-int_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
->>
-
 int_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>

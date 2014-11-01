@@ -40,10 +40,6 @@ real_global_assign(id, expr, expr_id) ::= <<
 	store float <vlocal_result(expr_id)>, float* <vglobalSymbol(id)>
 >>
 
-real_local_tuple_assign(id, index, expr, expr_id) ::= <<
-real_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
->>
-
 real_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>

@@ -40,10 +40,6 @@ bool_global_assign(id, expr, expr_id) ::= <<
 	store i1 <vlocal_result(expr_id)>, i32* <vglobalSymbol(id)>
 >>
 
-bool_local_tuple_assign(id, index, expr, expr_id) ::= <<
-bool_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
->>
-
 bool_and(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>

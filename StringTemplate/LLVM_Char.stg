@@ -40,10 +40,6 @@ char_global_assign(id, expr, expr_id) ::= <<
 	store i8 <vlocal_result(expr_id)>, i8* <vglobalSymbol(id)>
 >>
 
-char_local_tuple_assign(id, index, expr, expr_id) ::= <<
-char_local_tuple_assign(<id>, <index>, <expr>, <expr_id>)
->>
-
 char_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
