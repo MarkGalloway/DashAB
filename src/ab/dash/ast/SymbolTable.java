@@ -47,7 +47,7 @@ public class SymbolTable {
     public static final BuiltInTypeSymbol _real=
         new BuiltInTypeSymbol("real", tREAL);
     public static final BuiltInTypeSymbol _outstream =
-            new BuiltInTypeSymbol("std_out()", tOUTSTREAM);
+            new BuiltInTypeSymbol("std_output()", tOUTSTREAM);
     public static final BuiltInTypeSymbol _instream =
             new BuiltInTypeSymbol("std_input()", tINSTREAM);
     
