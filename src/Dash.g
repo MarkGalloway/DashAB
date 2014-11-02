@@ -36,6 +36,7 @@ tokens {
 
 @members {
   boolean member_access = false;
+  boolean inBlockContext = false;
   
   int error_count = 0;
   StringBuffer errorSB = new StringBuffer();
@@ -149,8 +150,10 @@ parameter
 // END: method
 
 // START: block
-block 
-  : LBRACE statement* RBRACE -> ^(BLOCK statement*)
+block
+@init {inBlockContext = true;}
+@after {inBlockContext = false;}
+  : LBRACE varDeclaration* statement* RBRACE -> ^(BLOCK varDeclaration* statement*)
   ;
 // END: block
 
@@ -214,7 +217,9 @@ typedef
 
 statement
   : block
-  |	varDeclaration
+  |	varDeclaration {if(inBlockContext) 
+                      emitErrorMessage("line " + input.LT(1).getLine() + ": Declarations can only appear at the start of a block."); 
+                   }
   | inputDeclaration
   | streamDeclaration
   | typedef

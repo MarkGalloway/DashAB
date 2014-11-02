@@ -1,0 +1,1 @@
+(PROGRAM (VAR_DECL var int x1) (VAR_DECL var int z1) (BLOCK (= (EXPR x1) (EXPR 3)) (= (EXPR z1) (EXPR 4)) (PRINT out (EXPR x1))) (VAR_DECL var int x (EXPR 3)) (VAR_DECL var int y (EXPR 0)) (VAR_DECL var real z (EXPR 0)) (BLOCK (VAR_DECL var real r (EXPR 7.1)) (= (EXPR z) (EXPR r))) (= (EXPR y) (EXPR x)))

@@ -179,5 +179,20 @@ public class ASTtest extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/16AST_output"), outErrIntercept.toString().trim());
     }
     
+    @Test // Block Statement Parse test
+    public void blockStatementParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/17blockStatementValid.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/17AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // Block Statement invalid parse test
+    public void blockStatementInvalidParseTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 8: Declarations can only appear at the start of a block.");
+        String[] args = new String[] {"TestGrammarPrograms/18blockStatementInvalid.ds"};
+        AstTestMain.main(args);
+    }
+    
     
 }

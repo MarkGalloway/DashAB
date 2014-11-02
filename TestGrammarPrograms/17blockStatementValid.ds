@@ -1,0 +1,24 @@
+int x1;
+int z1;
+
+{ 
+  x1 = 3;
+  z1 = 4;
+  x1 -> out;  /* "\n" -> out; z -> out; "\n" -> out; */ 
+                  // String are not valid until DashPart2
+}
+
+
+int x = 3;
+int y = 0;
+real z = 0;
+
+{
+  real r = 7.1;
+  z = r;
+}
+
+y = x;
+
+
+// After executing this y = 3, and z = 7.1.
