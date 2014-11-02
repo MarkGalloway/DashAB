@@ -1,11 +1,7 @@
 package ab.dash;
 
-import org.antlr.runtime.CommonToken;
-
 import ab.dash.DashLexer;
 import ab.dash.ast.DashAST;
-import ab.dash.ast.SymbolTable;
-import ab.dash.ast.VariableSymbol;
 
 public class CleanAST {
     public CleanAST() {
