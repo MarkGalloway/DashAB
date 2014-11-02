@@ -56,7 +56,7 @@ public class ASTtest extends BaseTest {
     @Test // Block comments must not nest!
     public void nestedCommentTest() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(LexerException.class);
-        expectedEx.expectMessage("Error: Comments cannot be nested.");
+        expectedEx.expectMessage("line 17: comments cannot be nested");
         String[] args = new String[] {"TestGrammarPrograms/03nestedComments.ds"};
         AstTestMain.main(args);
     }
@@ -72,7 +72,7 @@ public class ASTtest extends BaseTest {
     @Test // Block comments must match up
     public void missingStartComment() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(LexerException.class);
-        expectedEx.expectMessage("Error: Missing opening comment '/*'.");
+        expectedEx.expectMessage("line 17: missing opening comment '/*'");
         String[] args = new String[] {"TestGrammarPrograms/03missingStartComment.ds"};
         AstTestMain.main(args);
     }
@@ -94,7 +94,7 @@ public class ASTtest extends BaseTest {
     @Test // Single Element Tuples are invalid
     public void singleElementTupleTestA() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(ParserException.class);
-        expectedEx.expectMessage("Error: Tuples must have more than one element.");
+        expectedEx.expectMessage("line 1: tuples must have more than one element");
         String[] args = new String[] {"TestGrammarPrograms/06singleElementTupleFail_a.ds"};
         AstTestMain.main(args);     
     }
@@ -102,7 +102,7 @@ public class ASTtest extends BaseTest {
     @Test // Single Element Tuples are invalid
     public void singleElementTupleTestB() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(ParserException.class);
-        expectedEx.expectMessage("Error: Tuples must have more than one element.");
+        expectedEx.expectMessage("line 1: tuples must have more than one element");
         String[] args = new String[] {"TestGrammarPrograms/06singleElementTupleFail_b.ds"};
         AstTestMain.main(args);  
     }
@@ -110,7 +110,7 @@ public class ASTtest extends BaseTest {
     @Test // Empty Tuples are invalid
     public void emptyTupleTestA() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(ParserException.class);
-        expectedEx.expectMessage("Error: Tuples cannot be empty.");
+        expectedEx.expectMessage("line 1: tuples cannot be empty");
         String[] args = new String[] {"TestGrammarPrograms/07emptyTupleFail_a.ds"};
         AstTestMain.main(args);     
     }
@@ -118,7 +118,7 @@ public class ASTtest extends BaseTest {
     @Test // Empty Tuples are invalid
     public void emptyTupleTestB() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(ParserException.class);
-        expectedEx.expectMessage("Error: Tuples cannot be empty.");
+        expectedEx.expectMessage("line 1: tuples cannot be empty");
         String[] args = new String[] {"TestGrammarPrograms/07emptyTupleFail_b.ds"};
         AstTestMain.main(args);        
     }
@@ -163,6 +163,13 @@ public class ASTtest extends BaseTest {
         String[] args = new String[] {"TestGrammarPrograms/14typedef.ds"};
         AstTestMain.main(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/14AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // Stream Assign Test
+    public void StreamAssignTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/15testStreamDeclaration.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/15AST_output"), outErrIntercept.toString().trim());
     }
     
     

@@ -148,9 +148,9 @@ block
 tupleType
 	: Tuple LPAREN tupleMember (',' tupleMember)+ RPAREN -> ^(Tuple tupleMember+)
 	| Tuple LPAREN tupleMember RPAREN
-	  { emitErrorMessage("Error: Tuples must have more than one element."); }
+	  { emitErrorMessage("line " + $LPAREN.getLine() + ": tuples must have more than one element"); }
 	| Tuple LPAREN RPAREN
-	  { emitErrorMessage("Error: Tuples cannot be empty."); }
+	  { emitErrorMessage("line " + $LPAREN.getLine() + ": tuples cannot be empty"); }
 	;
 	
 tupleMember
@@ -186,12 +186,12 @@ inputDeclaration
   ;
   
 streamDeclaration throws ParserError
-  : specifier ID ASSIGN STDOUT DELIM -> ^(DECL_OUTSTREAM ID STDOUT)
-  | specifier ID ASSIGN STDIN DELIM -> ^(DECL_INSTREAM ID STDIN)
+  : specifier ID ASSIGN STDOUT DELIM -> ^(DECL_OUTSTREAM specifier ID STDOUT)
+  | specifier ID ASSIGN STDIN DELIM -> ^(DECL_INSTREAM specifier ID STDIN)
   | specifier? type ID ASSIGN STDIN DELIM
-      { emitErrorMessage("line " + $STDIN.getLine() + ": " + "Unexpected type for" + $STDIN.text + "."); }
+      { emitErrorMessage("line " + $STDIN.getLine() + ": " + "unexpected type for " + $STDIN.text); }
   | specifier? type ID ASSIGN STDOUT DELIM
-      { emitErrorMessage("line " + $STDOUT.getLine() + ": " + "Unexpected type for" + $STDOUT.text + "."); }
+      { emitErrorMessage("line " + $STDOUT.getLine() + ": " + "unexpected type for " + $STDOUT.text); }
   ;
 // END: var
 
@@ -353,7 +353,6 @@ Null : 'null';
 
 
 // Lexer Rules
-
 OUTSTREAM : '->';
 INSTREAM : '<-';
 EQUALITY : '==';
@@ -435,7 +434,7 @@ CHARACTER :	'\'' . '\'' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
-SL_COMMENT:   '//' ~('\r'|'\n')* NL {$channel=HIDDEN;};
+SL_COMMENT:   '//' ~('\r'|'\n')* (NL | EOF) {$channel=HIDDEN;};
 MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
 
 fragment
@@ -446,13 +445,24 @@ options {backtrack = false;}
     ( COMMENT_NESTED 
     {
     	if(!$COMMENT_NESTED.getText().equals(""))
-    		emitErrorMessage("Error: Comments cannot be nested.");
+    		emitErrorMessage("line " + $COMMENT_NESTED.getLine() + ": comments cannot be nested");
     		
     }( options {greedy=false;} : . )* )*
-    '*/'
+    MULTILINE_COMMENT_END
   ;
   
-NL : ('\r' '\n' | '\r' | '\n' | EOF) {$channel=HIDDEN;}; //EOF must not be removed here or we break SL_COMMENT
+
+COMMENT_END_ERROR
+  : MULTILINE_COMMENT_END
+    { emitErrorMessage("line " + $MULTILINE_COMMENT_END.getLine() + ": missing opening comment '/*'");}
+  ;
+  
+fragment MULTILINE_COMMENT_END
+  : '*/'
+  ;
+  
+  
+NL : ('\r' '\n' | '\r' | '\n') {$channel=HIDDEN;};
 
 fragment DecimalExponent1 : ('e' | 'E') UNDERSCORE* ('+' | '-') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
 fragment DecimalExponent2 : ('e' | 'E') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
