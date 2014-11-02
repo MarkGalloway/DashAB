@@ -157,6 +157,7 @@ block
 // START: tuple
 tupleType
 	: Tuple LPAREN tupleMember (',' tupleMember)+ RPAREN -> ^(Tuple tupleMember+)
+	| ID  // typedef
 	| Tuple LPAREN tupleMember RPAREN
 	  { emitErrorMessage("line " + $LPAREN.getLine() + ": tuples must have more than one element"); }
 	| Tuple LPAREN RPAREN
