@@ -10,7 +10,6 @@ options {
 
 tokens {
 	PROGRAM;
-	CALL;
 	BLOCK;
 	FUNCTION_DECL;
 	PROCEDURE_DECL;
@@ -76,6 +75,8 @@ tokens {
 	public void emit(Token token) {
 		if (token.getType() == ID) {
     		member_access = true;
+    	} else if (token.getType() == RPAREN) {
+    		member_access = true;
     	} else {
     		member_access = false;
     	}
@@ -96,6 +97,11 @@ line
 	|	statement
 	;
 
+methodType
+	:	tupleType
+	|	primitiveType
+	;
+
 type
 	:	primitiveType
 	|	ID
@@ -111,21 +117,25 @@ primitiveType
     
 // START: method
 methodForwardDeclaration
-	: Function ID LPAREN formalParameters? RPAREN Returns type DELIM
-	    -> ^(FUNCTION_DECL type ID formalParameters?)
-  | Procedure ID LPAREN formalParameters? RPAREN (Returns type)? DELIM
-      -> ^(PROCEDURE_DECL type? ID formalParameters?)
+	: Function ID LPAREN formalParameters? RPAREN Returns methodType DELIM
+	    -> ^(FUNCTION_DECL methodType ID formalParameters?)
+  | Procedure ID LPAREN formalParameters? RPAREN (Returns methodType)? DELIM
+      -> ^(PROCEDURE_DECL methodType? ID formalParameters?)
   ;
 
 methodDeclaration
-  : Function ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
-       -> ^(FUNCTION_DECL type ID formalParameters? expression)
-	| Function ID LPAREN formalParameters? RPAREN Returns type block
-	    -> ^(FUNCTION_DECL type ID formalParameters? block)
-	| Procedure ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
-	    -> ^(PROCEDURE_DECL type ID formalParameters? expression)
-	| Procedure ID LPAREN formalParameters? RPAREN (Returns type)? block
-	    -> ^(PROCEDURE_DECL type? ID formalParameters? block)
+  : Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
+       -> ^(FUNCTION_DECL methodType ID formalParameters? tupleMemberList)
+    | Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
+       -> ^(FUNCTION_DECL methodType ID formalParameters? expression)
+	| Function ID LPAREN formalParameters? RPAREN Returns methodType block
+	    -> ^(FUNCTION_DECL methodType ID formalParameters? block)
+	| Procedure ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
+	    -> ^(PROCEDURE_DECL methodType ID formalParameters? tupleMemberList)
+	| Procedure ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
+	    -> ^(PROCEDURE_DECL methodType ID formalParameters? expression)
+	| Procedure ID LPAREN formalParameters? RPAREN (Returns methodType)? block
+	    -> ^(PROCEDURE_DECL methodType? ID formalParameters? block)
   ;
 
 formalParameters
@@ -158,7 +168,7 @@ tupleMember
 	;
 	
 tupleMemberList
-	: LPAREN expression (',' expression)* RPAREN -> ^(TUPLE_LIST expression+)
+	: LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
 	| Identity -> ^(TUPLE_LIST Identity)
 	| Null -> ^(TUPLE_LIST Null)
 	;
@@ -206,19 +216,15 @@ statement
   | inputDeclaration
   | streamDeclaration
   | typedef
-  | output
   |	If LPAREN expression RPAREN s=statement (Else e=statement)?
   	  -> ^(If expression $s $e?)
+  |	CALL postfixExpression DELIM -> ^(postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
+  | lhs OUTSTREAM ID DELIM -> ^(PRINT ID lhs)
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
   | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
-  ;
-  
-output
-  : expression OUTSTREAM ID DELIM -> ^(PRINT ID expression)
-  | expressionList OUTSTREAM ID DELIM -> ^(PRINT ID expressionList) // Don't know if this is valid
   ;
     
 lhs 
@@ -284,21 +290,23 @@ unaryExpression
 
 // START: call
 postfixExpression
-    : ID DOT (mem=INTEGER | mem=ID) -> ^(DOT ID $mem)
+    : 	ID 
+    (
+    	(	DOT^ (INTEGER | ID)
+    	|	r=LPAREN^ expressionList RPAREN!	
+    	{
+    	$r.setType(CALL);
+    	}
+    	// TODO: Part 2
+    	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
+    	)*
+    )
     |	primary -> primary
- /* TODO: Part1/Part2 */
-//    	(
-//    		(	r=LPAREN^ expressionList RPAREN!	{$r.setType(CALL);}
-//	    	|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
-//    		|	r=DOT^ ID
-//    		)
-//    	)*
     ;
 // END: call
 
 primary
-    : ID
-    | r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
+    : r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
     |	REAL
     |	CHARACTER
     |	True
@@ -309,6 +317,7 @@ primary
     ;
 
 // DashAB reserved words
+CALL : 'call';
 In : 'in';
 By : 'by';
 As : 'as';

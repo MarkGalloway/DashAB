@@ -1,6 +1,10 @@
+const out = std_output();
+
 procedure no_return() {
+	'f' -> out;
 }
 
 procedure main() returns integer {
+	call no_return();
     return 0;
 }
