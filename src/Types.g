@@ -45,8 +45,6 @@ decl
 	      if ( $init!=null && $init.evalType!=null ) {
 	           symtab.declinit($ID, $init);
 	      }
-	      
-	      System.out.println($ID);
       }
   ;
 

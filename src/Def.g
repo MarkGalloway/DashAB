@@ -133,7 +133,6 @@ typeDef
 		debug("line " + $ID.getLine() + ": typedef " + $typeElement.type + " " + $ID.text);
 		Type type = $typeElement.type;
 		if (type != null) {
-			debug(type.getName());
 			TypedefSymbol ts = new TypedefSymbol($ID.text, type);
 			ts.def = $ID;            // track AST location of def's ID
 			$ID.symbol = ts;         // track in AST
