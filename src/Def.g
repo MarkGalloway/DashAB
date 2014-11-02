@@ -230,7 +230,7 @@ varDeclaration // global, parameter, or local variable
 	        
 	        $VAR_DECL.deleteChild(0);
         }
-    | 	^(FIELD_DECL specifier type ID?) //TODO if no ID then find location in parent example 2nd child.
+    | 	^(FIELD_DECL specifier type ID?)
     	{
 	        debug("line "+$FIELD_DECL.getLine()+": def "+ $ID.text);
 	        String name = null;
