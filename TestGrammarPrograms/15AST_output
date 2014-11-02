@@ -1,0 +1,1 @@
+(PROGRAM (DECL_OUTSTREAM const out std_output()) (DECL_INSTREAM var inp std_input()))
