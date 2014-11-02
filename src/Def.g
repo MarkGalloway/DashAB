@@ -87,7 +87,7 @@ tuple_list
 enterMethod
     :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) type ID function_block=.) // match method subtree with 0-or-more args
         {
-        debug("line "+$ID.getLine()+": def method "+$ID.text + " return " + $type.type);
+        debug("line " + $ID.getLine() + ": def method " + $ID.text + " return " + $type.type);
         MethodSymbol ms = new MethodSymbol($ID.text, $type.type, currentScope);
         currentMethod = ms;
         ms.def = $ID;            // track AST location of def's ID
@@ -99,7 +99,7 @@ enterMethod
         } 
     |	^(PROCEDURE_DECL ID .) // match method subtree with 0-or-more args
         {
-        debug("line "+$ID.getLine()+": def method "+$ID.text);
+        debug("line " + $ID.getLine() + ": def method " + $ID.text + " return null" );
         MethodSymbol ms = new MethodSymbol($ID.text, null, currentScope);
         currentMethod = ms;
         ms.def = $ID;            // track AST location of def's ID

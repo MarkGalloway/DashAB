@@ -429,54 +429,6 @@ public class SymbolTable {
 	        }
         }
     }
-    
-    // For the following format: var tuple(type id?, ...)tuple = (arg1, ...);
-    public void declTuple(DashAST declID, ArrayList<DashAST> args, ArrayList<Type> fields) {
-    	if (fields.size() != args.size()) {
-    		error("line " + declID.getLine() + ": Tuple's have mismatched sizes in "+
-                    text((DashAST)declID.getParent()));
-    		return;
-    	}
-    	
-    	for (int i = 0; i < fields.size(); i++) {
-    		Type f = fields.get(i);
-    		Type a = args.get(i).evalType;
-    		
-    		int tf = f.getTypeIndex();
-    		int ta = a.getTypeIndex();
-    		
-    		Type promoteToType = promoteFromTo[ta][tf];
-    		args.get(i).promoteToType = promoteToType;
-    		
-            if ( !canAssignTo(a, f, promoteToType) ) {
-    			error("line " + declID.getLine() + ": Tuple argument at index " + (i+1) +
-    					" has incompatible types in " +
-                        text((DashAST)declID.getParent()));
-    		}
-    	}
-    	
-//    	System.out.println("\nFields:");
-//    	for (Type t : fields)
-//    		System.out.println(t);
-//    	
-//    	System.out.println("\nArgs:");
-//    	for (DashAST n : args)
-//    		System.out.println(n.evalType);
-    }
-    
-    // For the following format: var tuple = (arg1, ...);
-    public void declUndefinedTuple(DashAST declID, ArrayList<DashAST> args) {
-		VariableSymbol var = (VariableSymbol)declID.symbol;
-	    TupleTypeSymbol scope = (TupleTypeSymbol)var.type; // get scope of tuple
-	    
-    	for (int i = 0; i < args.size(); i++) {
-    		Type type = args.get(i).evalType;
-    		
-    		VariableSymbol vs = new VariableSymbol(null, type, _var);
-	        vs.def = null;
-	        scope.define(vs);
-    	}
-    }
 
     public void ret(MethodSymbol ms, DashAST expr) {
         Type retType = ms.type; // promote return expr to function decl type?
