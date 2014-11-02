@@ -172,6 +172,7 @@ tupleMemberList
 	: LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
 	| Identity -> ^(TUPLE_LIST Identity)
 	| Null -> ^(TUPLE_LIST Null)
+	| ID
 	;
 // END: tuple
 
@@ -225,7 +226,7 @@ statement
   | lhs OUTSTREAM ID DELIM -> ^(PRINT ID lhs)
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
-  | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
+  | ID (',' ID)* ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID+ tupleMemberList)
   ;
     
 lhs 

@@ -172,5 +172,12 @@ public class ASTtest extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/15AST_output"), outErrIntercept.toString().trim());
     }
     
+    @Test // Tuples test - unpacking
+    public void tuplesUnpackingTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/16tupleUnpacking.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/16AST_output"), outErrIntercept.toString().trim());
+    }
+    
     
 }
