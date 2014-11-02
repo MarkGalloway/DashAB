@@ -24,6 +24,7 @@ options {
 
 bottomup // match subexpressions innermost to outermost
 	: 	exprRoot
+	|	tuple_list
 	|	decl
 	|	ret
 	|	assignment
@@ -39,20 +40,13 @@ ifstat
 // END: ifstat
 
 decl
-	: ^(VAR_DECL tuple_type ID tuple_list)
-			  {
-			  	symtab.declTuple($ID, $tuple_list.arg_nodes, $tuple_type.field_types);
-			  	$VAR_DECL.deleteChild(0);
-			  }
-	|	^(VAR_DECL ID tuple_list)
-        {
-        	symtab.declUndefinedTuple($ID, $tuple_list.arg_nodes);
-        }
-  // call declinit if we have init expr
-  | ^(VAR_DECL ID (init=.)?) 
+	: ^(VAR_DECL ID (init=.)?) 
       {
-      if ( $init!=null && $init.evalType!=null )
-           symtab.declinit($ID, $init);
+	      if ( $init!=null && $init.evalType!=null ) {
+	           symtab.declinit($ID, $init);
+	      }
+	      
+	      System.out.println($ID);
       }
   ;
 
@@ -101,36 +95,30 @@ expr returns [Type type]
 member returns [Type type]
 	:	^(DOT id=ID m=(ID | INTEGER))	
 		{
-			TupleSymbol st=(TupleSymbol)$id.scope.resolve($id.text);
+			VariableSymbol st = (VariableSymbol)$id.scope.resolve($id.text);
 	        $id.symbol = st; 
 	        
 			$type = symtab.member($id, $m);
 			$start.evalType = $type;
 		}
     ;
-    
-tuple_type returns [ArrayList<Type> field_types]
-@init { $field_types = new ArrayList<Type>(); }
-	:	^(Tuple (tupleMember {$field_types.add($tupleMember.type);})+)
-	;
 	
-tupleMember returns [Type type]
-	: ^(FIELD_DECL . tupleMemberType ID?) {$type = $tupleMemberType.type;}
-	;
-	
-tupleMemberType returns [Type type]
-	:   REAL_TYPE		{$type = SymbolTable._real;}
-    |   INTEGER_TYPE	{$type = SymbolTable._integer;}
-    |	CHARACTER_TYPE	{$type = SymbolTable._character;}
-    |	BOOLEAN_TYPE	{$type = SymbolTable._boolean;}
-	|	ID				{$type = null;}						// TODO TypeDef
-	;
-	
-tuple_list returns [ArrayList<DashAST> arg_nodes]
+tuple_list
 @init { 
-$arg_nodes = new ArrayList<DashAST>();
+ArrayList<DashAST> arg_nodes = new ArrayList<DashAST>();
 }
-	:	^(TUPLE_LIST (^(EXPR expr) {$EXPR.evalType = $expr.type; $arg_nodes.add($EXPR);} )+)
+	:	^(TUPLE_LIST (^(EXPR expr) {$EXPR.evalType = $expr.type; arg_nodes.add($EXPR);} )+)
+	{
+		TupleTypeSymbol ts = (TupleTypeSymbol)$TUPLE_LIST.symbol;
+		
+		for (int i = 0; i < arg_nodes.size(); i++) {
+			DashAST arg = arg_nodes.get(i);
+		    VariableSymbol vs = new VariableSymbol(null, arg.evalType, SymbolTable._const);    	
+		    ts.define(vs);
+	    }
+	    
+	    $TUPLE_LIST.evalType = ts;
+	}
 	;
 
 binaryOps returns [Type type]

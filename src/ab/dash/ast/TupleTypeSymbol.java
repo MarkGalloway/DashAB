@@ -11,17 +11,15 @@ package ab.dash.ast;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class TupleSymbol extends Symbol implements Type, Scope {
+public class TupleTypeSymbol extends Symbol implements Type, Scope {
     Scope enclosingScope;
-    public Specifier specifier;
     public int tupleTypeIndex;
     
     ArrayList<Symbol> fields = new ArrayList<Symbol>();
 
-    public TupleSymbol(String name, Type type, Specifier specifier, Scope enclosingScope) {
-        super(name, type);
+    public TupleTypeSymbol(Scope enclosingScope) {
+        super("tuple");
         this.enclosingScope = enclosingScope;
-        this.specifier = specifier;
     }
     
     /** For a.b, only look in a only to resolve b, not up scope tree */
@@ -92,22 +90,24 @@ public class TupleSymbol extends Symbol implements Type, Scope {
     
     public String getScopeName() { return name; }
     
-    public String toString() {
-    	String out = "tuple(";
+    public String getName() 
+    { 
+    	String out = "(";
     	for (int i = 0; i < fields.size(); i++) {
     		if (i < fields.size() - 1)
     			out += fields.get(i) + ", ";
     		else
     			out += fields.get(i);
     	}
-    	out += ") " + name;
+    	out += ") ";
         return out;
     }
     
-    public int getTypeIndex() 
-	{ 
-		return SymbolTable.tTUPLE; 
-	}
+    public String toString() {
+    	return getName();
+    }
+    
+    public int getTypeIndex() { return SymbolTable.tTUPLE; }
     
     public int getScopeIndex() { return SymbolTable.scTUPLE; }
 }

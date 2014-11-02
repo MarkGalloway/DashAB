@@ -71,12 +71,12 @@ tuple
 	{
 	if ($ID.symbol != null)
 		if ($ID.symbol.type != null) {
-			if ($ID.symbol instanceof TupleSymbol) {
+			if ($ID.symbol.type.getTypeIndex() == SymbolTable.tTUPLE) {
 				
 		    	debug($ID);
 		    	//debug("Fields:");
 		    	
-		    	TupleSymbol tuple = (TupleSymbol) $ID.symbol;
+		    	TupleTypeSymbol tuple = (TupleTypeSymbol) $ID.symbol.type;
 		    	ArrayList<Symbol> fields = (ArrayList<Symbol>) tuple.getDefined();
 		    	ArrayList<Type> field_types = new ArrayList<Type>();
 		    	for (int i = 0; i < fields.size(); i++) {

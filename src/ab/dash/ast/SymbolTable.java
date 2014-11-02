@@ -333,7 +333,8 @@ public class SymbolTable {
                            text((DashAST)id.getParent()));
             return null;
         }
-        TupleSymbol scope = (TupleSymbol)id.symbol;			// get scope of left
+        VariableSymbol var = (VariableSymbol)id.symbol;
+        TupleTypeSymbol scope = (TupleTypeSymbol)var.type;
         Symbol s = scope.resolveMember(field.getText());	// resolve ID in scope
         field.symbol = s;
         return s.type;           // return ID's type
@@ -353,20 +354,60 @@ public class SymbolTable {
         	TypedefSymbol typedef = (TypedefSymbol) declID.symbol.type;
         	if (typedef.def_type instanceof BuiltInTypeSymbol) {
         		declID.symbol.type = typedef.def_type;
-        	} else if (typedef.def_type instanceof TupleSymbol) {
+        	} else if (typedef.def_type instanceof TupleTypeSymbol) {
         		// TODO Handle tuples typedef
         	}
         }
         
-        int tdecl = declID.symbol.type.getTypeIndex();
-        declID.evalType = declID.symbol.type;
-        init.promoteToType = promoteFromTo[te][tdecl];
-        if ( !canAssignTo(init.evalType, declID.symbol.type,
-                          init.promoteToType) ) {
-            error("line " + declID.getLine() + ": " +
-            		text(declID)+", "+
-            		text(init)+" have incompatible types in "+
-            		text((DashAST)declID.getParent()));
+        if (declID.symbol.type.getTypeIndex() == tTUPLE) {
+        	if (init.evalType.getTypeIndex() != tTUPLE) {
+        		error("line " + declID.getLine() + ": " +
+	            		text(declID)+", "+
+	            		text(init)+" have incompatible types in "+
+	            		text((DashAST)declID.getParent()));
+        	}
+        	
+        	TupleTypeSymbol idTuple = (TupleTypeSymbol) declID.symbol.type;
+        	TupleTypeSymbol initTuple = (TupleTypeSymbol) init.evalType;
+        	
+        	if (idTuple.fields.size() != initTuple.fields.size()) {
+        		error("line " + declID.getLine() + ": Tuple's have mismatched sizes in "+
+                        text((DashAST)declID.getParent()));
+        		return;
+        	}
+        	
+        	for (int i = 0; i < idTuple.fields.size(); i++) {
+        		VariableSymbol f_var = (VariableSymbol) idTuple.fields.get(i);
+        		VariableSymbol a_var = (VariableSymbol) initTuple.fields.get(i);
+        		
+        		Type f = f_var.type;
+        		Type a = a_var.type;
+        		
+        		int tf = f.getTypeIndex();
+        		int ta = a.getTypeIndex();
+        		
+        		Type promoteToType = promoteFromTo[ta][tf];
+        		// TODO Promote To
+        		//args.get(i).promoteToType = promoteToType;
+        		
+                if ( !canAssignTo(a, f, promoteToType) ) {
+        			error("line " + declID.getLine() + ": Tuple argument at index " + (i+1) +
+        					" has incompatible types in " +
+                            text((DashAST)declID.getParent()));
+        		}
+        	}
+        	
+        } else {
+	        int tdecl = declID.symbol.type.getTypeIndex();
+	        declID.evalType = declID.symbol.type;
+	        init.promoteToType = promoteFromTo[te][tdecl];
+	        if ( !canAssignTo(init.evalType, declID.symbol.type,
+	                          init.promoteToType) ) {
+	            error("line " + declID.getLine() + ": " +
+	            		text(declID)+", "+
+	            		text(init)+" have incompatible types in "+
+	            		text((DashAST)declID.getParent()));
+	        }
         }
     }
     
@@ -406,10 +447,11 @@ public class SymbolTable {
     
     // For the following format: var tuple = (arg1, ...);
     public void declUndefinedTuple(DashAST declID, ArrayList<DashAST> args) {
+		VariableSymbol var = (VariableSymbol)declID.symbol;
+	    TupleTypeSymbol scope = (TupleTypeSymbol)var.type; // get scope of tuple
+	    
     	for (int i = 0; i < args.size(); i++) {
     		Type type = args.get(i).evalType;
-    		
-    		TupleSymbol scope = (TupleSymbol)declID.symbol;	// get scope of tuple
     		
     		VariableSymbol vs = new VariableSymbol(null, type, _var);
 	        vs.def = null;

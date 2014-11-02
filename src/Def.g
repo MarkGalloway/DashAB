@@ -45,6 +45,7 @@ topdown
     |   enterMethod
     |	typeDef
     |   atoms
+    |	tuple_list
     |   varDeclaration
     |	streamDeclaration
     |   ret
@@ -53,7 +54,6 @@ topdown
 bottomup
     :   exitBlock
     |   exitMethod
-    |   exitTuple
     ;
 
 // S C O P E S
@@ -75,13 +75,13 @@ exitBlock
     
 
 // START: tuple
-exitTuple
-    :   Tuple
-        {
-        debug("fields: "+currentScope);
-        currentScope = currentScope.getEnclosingScope();    // pop scope
-        }
-    ;
+tuple_list
+	:	TUPLE_LIST
+	{
+	    TupleTypeSymbol ts = new TupleTypeSymbol(currentScope);
+		$TUPLE_LIST.symbol = ts;
+    }
+	;
 // END: tuple
 
 enterMethod
@@ -157,13 +157,13 @@ atoms
 //END: atoms
 
 streamDeclaration
-	:	^(DECL_OUTSTREAM ID std_type)
+	:	^(DECL_OUTSTREAM specifier ID std_type)
 	{
 		debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 
-	         " stream ( " + $std_type.type +  " ) ");
-	    BuiltInSpecifierSymbol specifier = (BuiltInSpecifierSymbol) currentScope.resolve("const");
-	    VariableSymbol vs = new VariableSymbol($ID.text, $std_type.type, specifier);
+	         " stream ( " + $std_type.type +  " ) " +
+	         " specifier ( " + $specifier.specifier +  " )");
+	    VariableSymbol vs = new VariableSymbol($ID.text, $std_type.type, $specifier.specifier);
 		vs.def = $ID;            // track AST location of def's ID
 		$ID.symbol = vs;         // track in AST
 		currentScope.define(vs);
@@ -183,41 +183,18 @@ varDeclaration // global, parameter, or local variable
 	         " type ( " + $type.type +  " ) " + 
 	         " specifier ( " + $specifier.specifier +  " )");
 	         if ($type.type != null) {
-		        if ($type.type.getTypeIndex() == SymbolTable.tTUPLE) {
-			        TupleSymbol ts = new TupleSymbol($ID.text, $type.type, $specifier.specifier, currentScope);
-			        ts.def = $ID;
-			        $ID.symbol = ts;
-			        currentScope.define(ts); // def tuple in current scope
-			        currentScope = ts;       // set current tuple to struct scope
-			    } else {
-			        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
-			        vs.def = $ID;            // track AST location of def's ID
-			        $ID.symbol = vs;         // track in AST
-			        currentScope.define(vs);
+		        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
+			    vs.def = $ID;            // track AST location of def's ID
+			    $ID.symbol = vs;         // track in AST
+			    currentScope.define(vs);
 			        
-			        $var_node.deleteChild(0);
-			    }
-			    
+			    $var_node.deleteChild(0);
 			    $var_node.deleteChild(0);
 		    } else {
 		    	// TODO: Throw error type undefined
 		    }
         }
-    |	^(VAR_DECL specifier ID ^(TUPLE_LIST .+))	// Tuple
-        {
-	        debug("line " + $ID.getLine() +
-	         ": def " + $ID.text + 
-	         " type ( tuple ) " + 
-	         " specifier ( " + $specifier.specifier +  " )");
-	        Type type = (Type) currentScope.resolve("tuple"); // return Type
-	        TupleSymbol ts = new TupleSymbol($ID.text, type, $specifier.specifier, currentScope);
-		    ts.def = $ID;
-		    $ID.symbol = ts;
-		    currentScope.define(ts); // def tuple in current scope
-		    
-		    $VAR_DECL.deleteChild(0);
-        }
-    |	^(VAR_DECL specifier ID ^(EXPR .+)) // Buit-in
+    |	^(VAR_DECL specifier ID ( ^(TUPLE_LIST .+) | ^(EXPR .) ) )
         {
 	        debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 
@@ -229,22 +206,6 @@ varDeclaration // global, parameter, or local variable
 	        currentScope.define(vs);
 	        
 	        $VAR_DECL.deleteChild(0);
-        }
-    | 	^(FIELD_DECL specifier type ID?)
-    	{
-	        debug("line "+$FIELD_DECL.getLine()+": def "+ $ID.text);
-	        String name = null;
-	        
-	        if ($ID!= null)
-	        	name = $ID.text;
-	        	
-	        VariableSymbol vs = new VariableSymbol(name, $type.type, $specifier.specifier);
-	        vs.def = $ID;            // track AST location of def's ID
-	        
-	        if ($ID != null)
-	        	$ID.symbol = vs;         // track in AST
-	        	
-	        currentScope.define(vs);
         }
     ;
 // END: field
@@ -266,7 +227,28 @@ specifierElement returns [Specifier specifier]
     ;
 
 type returns [Type type]
-    :	typeElement         
+    :	^(Tuple 
+    {
+    TupleTypeSymbol ts = new TupleTypeSymbol(currentScope);
+	$Tuple.symbol = ts;
+    }
+    (
+    	^(FIELD_DECL field_specifier=specifier field_type=type ID?) 
+    {
+    	String name = null;
+    	if ($ID != null)
+    		name = $ID.getText();
+    		
+    	VariableSymbol vs = new VariableSymbol(name, $field_type.type, $field_specifier.specifier);
+    	((TupleTypeSymbol)$Tuple.symbol).define(vs);
+    } 
+    )+)
+    {
+    TupleTypeSymbol ts = (TupleTypeSymbol)$Tuple.symbol;
+    debug("fields: "+ ts);
+	$type = ts;
+    }
+    |	typeElement         
     {
     $type = $typeElement.type;
     }
@@ -291,7 +273,6 @@ DashAST t = (DashAST)input.LT(1);
     | 	INTEGER_TYPE
     |	CHARACTER_TYPE
     |	BOOLEAN_TYPE
-    |	^(Tuple .+)
     ;
     
 std_type returns [Type type]

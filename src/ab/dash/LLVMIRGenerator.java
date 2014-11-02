@@ -15,8 +15,9 @@ import ab.dash.ast.MethodSymbol;
 import ab.dash.ast.Scope;
 import ab.dash.ast.Symbol;
 import ab.dash.ast.SymbolTable;
-import ab.dash.ast.TupleSymbol;
+import ab.dash.ast.TupleTypeSymbol;
 import ab.dash.ast.Type;
+import ab.dash.ast.VariableSymbol;
 
 
 public class LLVMIRGenerator {
@@ -225,7 +226,7 @@ public class LLVMIRGenerator {
 					valid_symbol = true;
 				} else if (type == SymbolTable.tTUPLE) {
 					template = stg.getInstanceOf("tuple_init_local");
-					template.setAttribute("type_id", ((TupleSymbol)s).tupleTypeIndex);
+					template.setAttribute("type_id", ((TupleTypeSymbol)s.type).tupleTypeIndex);
 					valid_symbol = true;
 				}
 				
@@ -317,7 +318,7 @@ public class LLVMIRGenerator {
 			if (child != null) {
 				// Tuple
 				if (child.getType() == DashLexer.TUPLE_LIST) {
-					TupleSymbol tuple = (TupleSymbol) sym;
+					TupleTypeSymbol tuple = (TupleTypeSymbol) sym.type;
 					String temp = "";
 					for(int i = 0; i < t.getChildCount(); i++) {
 						String expr = exec((DashAST) child.getChild(i)).toString() + "\n";
@@ -396,8 +397,9 @@ public class LLVMIRGenerator {
 				DashAST tupleNode = (DashAST) node.getChild(0);
 				DashAST memberNode = (DashAST) node.getChild(1);
 				
-				TupleSymbol tuple = (TupleSymbol) tupleNode.symbol;
-				int index = tuple.getMemberIndex(memberNode.getText());
+				VariableSymbol tuple = (VariableSymbol) tupleNode.symbol;
+				TupleTypeSymbol tuple_type = (TupleTypeSymbol)tuple.type;
+				int index = tuple_type.getMemberIndex(memberNode.getText());
 				
 				StringTemplate expr = exec((DashAST)t.getChild(1));
 				int arg_id = ((DashAST)t.getChild(1).getChild(0)).llvmResultID;
@@ -418,7 +420,7 @@ public class LLVMIRGenerator {
 				template.setAttribute("expr_id", arg_id);
 				template.setAttribute("expr", expr);
 				template.setAttribute("index", index);
-				template.setAttribute("tuple_type", tuple.tupleTypeIndex);
+				template.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
 				template.setAttribute("tuple_id", tuple.id);
 				template.setAttribute("id", id);
 				return template;
@@ -497,8 +499,9 @@ public class LLVMIRGenerator {
 			DashAST tupleNode = (DashAST) t.getChild(0);
 			DashAST memberNode = (DashAST) t.getChild(1);
 			
-			TupleSymbol tuple = (TupleSymbol) tupleNode.symbol;
-			int index = tuple.getMemberIndex(memberNode.getText());
+			VariableSymbol tuple = (VariableSymbol) tupleNode.symbol;
+			TupleTypeSymbol tuple_type = (TupleTypeSymbol)tuple.type;
+			int index = tuple_type.getMemberIndex(memberNode.getText());
 			
 			int type = t.evalType.getTypeIndex();
 			
@@ -514,7 +517,7 @@ public class LLVMIRGenerator {
 			}
 			
 			template.setAttribute("index", index);
-			template.setAttribute("tuple_type", tuple.tupleTypeIndex);
+			template.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
 			template.setAttribute("tuple_id", tuple.id);
 			template.setAttribute("id", id);
 			return template;
