@@ -298,6 +298,7 @@ postfixExpression
     	|	r=LPAREN^ expressionList RPAREN!	
     	{
     	$r.setType(CALL);
+    	//$r.setText("CALL");
     	}
     	// TODO: Part 2
     	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}

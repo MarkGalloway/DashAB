@@ -80,24 +80,33 @@ expr returns [Type type]
     	Symbol s = (Symbol)$ID.scope.resolve($ID.text);
     	$ID.symbol = s;
     	if (symtab.checkIfDefined($ID)) {
+    		$ID.evalType = s.type;
             $type = s.type;
     	}
     }
     |   ^(UNARY_MINUS a=expr)   {$type=symtab.uminus($a.start);}
     |   ^(Not a=expr) {$type=symtab.unot($a.start);}
     |   member      {$type = $member.type;}
-//    |   call        {$type = $call.type;}
+    |   call        {$type = $call.type;}
     |   binaryOps   {$type = $binaryOps.type;}
     ;
-    
+
+// TODO Handle f().x
 member returns [Type type]
-	:	^(DOT id=ID m=(ID | INTEGER))	
+	:	^(DOT id=expr m=(ID | INTEGER))	
 		{
-			VariableSymbol st = (VariableSymbol)$id.scope.resolve($id.text);
-	        $id.symbol = st; 
-	        
-			$type = symtab.member($id, $m);
+			$type = symtab.member($id.start, $m);
 			$start.evalType = $type;
+		}
+    ;
+
+
+call returns [Type type]
+@init {List args = new ArrayList();}
+	:	^(CALL ID ^(ELIST (expr {args.add($expr.start);})*))
+		{
+		$type = symtab.call($ID, args);
+		$start.evalType = $type;
 		}
     ;
 	

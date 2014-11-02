@@ -10,6 +10,8 @@ package ab.dash.ast;
 ***/
 import org.antlr.runtime.TokenStream;
 
+import ab.dash.DashLexer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -291,7 +293,7 @@ public class SymbolTable {
 //        return t;
 //    }
 
-    public Type call(DashAST id, List args) {
+    public Type call(DashAST id, List<?> args) {
         Symbol s = id.scope.resolve(id.getText());
         if ( s.getClass() != MethodSymbol.class ) {
             error(text(id)+" must be a function or procedure in "+
@@ -326,15 +328,23 @@ public class SymbolTable {
     }
 
     public Type member(DashAST id, DashAST field) {
-        Type type = id.symbol.type;
+    	Type type = null;
+    	if (id.getToken().getType() == DashLexer.ID) {
+			VariableSymbol st = (VariableSymbol)id.scope.resolve(id.getText());
+	        id.symbol = st;
+	        type = st.type;
+    	} else {
+    		type = id.evalType;
+    	}
+    	
         if ( type.getTypeIndex() != tTUPLE ) {
             error("line " + id.getLine() + ": " +
             		text(id)+" must have tuple type in "+
                            text((DashAST)id.getParent()));
             return null;
         }
-        VariableSymbol var = (VariableSymbol)id.symbol;
-        TupleTypeSymbol scope = (TupleTypeSymbol)var.type;
+        
+        TupleTypeSymbol scope = (TupleTypeSymbol) type;
         Symbol s = scope.resolveMember(field.getText());	// resolve ID in scope
         field.symbol = s;
         return s.type;           // return ID's type
@@ -365,6 +375,7 @@ public class SymbolTable {
 	            		text(declID)+", "+
 	            		text(init)+" have incompatible types in "+
 	            		text((DashAST)declID.getParent()));
+        		return;
         	}
         	
         	TupleTypeSymbol idTuple = (TupleTypeSymbol) declID.symbol.type;
@@ -398,6 +409,14 @@ public class SymbolTable {
         	}
         	
         } else {
+        	if (init.evalType.getTypeIndex() == tTUPLE) {
+        		error("line " + declID.getLine() + ": " +
+	            		text(declID)+", "+
+	            		text(init)+" have incompatible types in "+
+	            		text((DashAST)declID.getParent()));
+        		return;
+        	}
+        	
 	        int tdecl = declID.symbol.type.getTypeIndex();
 	        declID.evalType = declID.symbol.type;
 	        init.promoteToType = promoteFromTo[te][tdecl];
