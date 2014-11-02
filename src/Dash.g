@@ -220,7 +220,7 @@ statement
   | typedef
   |	If LPAREN expression RPAREN s=statement (Else e=statement)?
   	  -> ^(If expression $s $e?)
-  |	CALL postfixExpression DELIM -> ^(postfixExpression)
+  |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
   | lhs OUTSTREAM ID DELIM -> ^(PRINT ID lhs)

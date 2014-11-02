@@ -147,7 +147,8 @@ typeDef
 /** Set scope for any identifiers in expressions or assignments */
 atoms
 @init {DashAST t = (DashAST)input.LT(1);}
-    :  {t.hasAncestor(EXPR)||t.hasAncestor(ASSIGN)||t.hasAncestor(PRINT)}? ID
+    :  {t.hasAncestor(EXPR)||t.hasAncestor(ASSIGN)
+    	||t.hasAncestor(PRINT)}? ID
        {
        debug("line " + $ID.getLine() + ": ref " + $ID.text);
        t.scope = currentScope;

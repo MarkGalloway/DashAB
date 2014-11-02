@@ -324,6 +324,7 @@ public class SymbolTable {
                                text((DashAST)id.getParent()));
             }
         }
+        
         return ms.type;
     }
 
