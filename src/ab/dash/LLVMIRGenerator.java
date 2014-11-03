@@ -150,44 +150,63 @@ public class LLVMIRGenerator {
 			int sym_id = sym.id;
 			
 			Type type = sym.type;
-			int type_id = -1;
-			
-			if (type != null)
-				type_id = type.getTypeIndex();
-			
-			StringTemplate code = exec((DashAST)t.getChild(1));
 			
 			if (sym.name.equals("main")) {
+				StringTemplate code = exec((DashAST)t.getChild(1));
 				StringTemplate template = stg.getInstanceOf("function_main");
 				template.setAttribute("code", code);
+				template.setAttribute("id", t.llvmResultID);
 				return template;
 			}
 			
-			// TODO handle generic methods
-			return null;
+			String args = "";
+			for (int i = 1; i < t.getChildCount() - 1; i++) {
+				StringTemplate arg = exec((DashAST) t.getChild(i));
+				args += arg.toString();
+				if (i < t.getChildCount() - 2) {
+					args += ", ";
+				}
+			}
+			
+			StringTemplate code = exec((DashAST)t.getChild(t.getChildCount() - 1));
+			StringTemplate template = stg.getInstanceOf("function");
+			template.setAttribute("code", code);
+			template.setAttribute("return_type", getType(type));
+			template.setAttribute("args", args);
+			template.setAttribute("sym_id", sym_id);
+			template.setAttribute("id", t.llvmResultID);
+			return template;
+		}
+		
+		case DashLexer.ARG_DECL:
+		{
+			DashAST argument_node = ((DashAST) t.getChild(0));
+			VariableSymbol arg = (VariableSymbol)argument_node.symbol;
+			Type arg_type = arg.type;
+			StringTemplate type_template = getType(arg_type);
+			
+			StringTemplate template = stg.getInstanceOf("args");
+			template.setAttribute("sym_id", arg.id);
+			template.setAttribute("sym_type", type_template);
+			template.setAttribute("id", t.llvmResultID);
+			
+			return template;
+		}
+		
+		case DashLexer.CALL:
+		{
+			return new StringTemplate();
 		}
 		
 		case DashLexer.Return:
 		{
 			int id = t.llvmResultID;
-			int type = ((DashAST) t.getChild(0)).evalType.getTypeIndex();
 			
 			StringTemplate return_expression = exec((DashAST)t.getChild(0));
 			int expr_id = ((DashAST) t.getChild(0).getChild(0)).llvmResultID;
 
 			StringTemplate template = stg.getInstanceOf("return");
-			StringTemplate type_template = null;
-			if (type == SymbolTable.tINTEGER) {
-				type_template = stg.getInstanceOf("int_type");
-			} else if (type == SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_type");
-			} else if (type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_type");
-			} else if (type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_type");
-			} else if (type == SymbolTable.tTUPLE) {
-				template = stg.getInstanceOf("tuple_type");
-			}
+			StringTemplate type_template = getType(((DashAST) t.getChild(0)).evalType);
 
 			template.setAttribute("expr_id", expr_id);
 			template.setAttribute("expr", return_expression);
@@ -659,6 +678,26 @@ public class LLVMIRGenerator {
 		template.setAttribute("sym_id", sym_id);
 		template.setAttribute("id", id);
 		return template;
+	}
+	
+	private StringTemplate getType(Type type) {
+		StringTemplate type_template = null;
+		if (type.getTypeIndex() == SymbolTable.tINTEGER) {
+			type_template = stg.getInstanceOf("int_type");
+		} else if (type.getTypeIndex() == SymbolTable.tREAL) {
+			type_template = stg.getInstanceOf("real_type");
+		} else if (type.getTypeIndex() == SymbolTable.tCHARACTER) {
+			type_template = stg.getInstanceOf("char_type");
+		} else if (type.getTypeIndex() == SymbolTable.tBOOLEAN) {
+			type_template = stg.getInstanceOf("bool_type");
+		} else if (type.getTypeIndex() == SymbolTable.tTUPLE) {
+			type_template = stg.getInstanceOf("tuple_type");
+			// TODO handle different tuple types.
+		}  else if (type.getTypeIndex() == SymbolTable.tVOID) {
+			type_template = stg.getInstanceOf("void_type");
+		}
+		
+		return type_template;
 	}
 
 	private StringTemplate operation(DashAST t, LLVMOps op)
