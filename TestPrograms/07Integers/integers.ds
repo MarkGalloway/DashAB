@@ -2,9 +2,9 @@ const out = std_output();
 
 procedure main() returns integer {
 	integer i1;
-	i1 = 0;
 	integer i2 = 145;
 	integer i3 = 1_4_5__;
+	i1 = 0;
 	
 	i1 -> out;
 	i2 -> out;
