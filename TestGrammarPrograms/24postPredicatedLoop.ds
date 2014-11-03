@@ -1,0 +1,19 @@
+/* post-predicated loop */
+
+integer x = 0;
+
+// Print 1 to 10
+loop {
+  x = x + 1;
+  x -> out;
+} while x < 10 
+x = 0; // Should not be caught by the above expr
+
+
+/* bracket-less verison */
+
+loop x = x + 1; while x < 10
+x = 0;
+
+
+
