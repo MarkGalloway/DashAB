@@ -17,15 +17,21 @@ tuple_init_global(sym_id, type_id) ::= <<
 >>
 
 bool_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
-bool_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id>)
+<expr>
+%__<id>_addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+store i1 <vlocal_result(expr_id)>, i1* %__<id>_addr
 >>
 
 char_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
-char_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id>)
+<expr>
+%__<id>_addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+store i8 <vlocal_result(expr_id)>, i8* %__<id>_addr
 >>
 
 int_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
-int_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id>)
+<expr>
+%__<id>_addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+store i32 <vlocal_result(expr_id)>, i32* %__<id>_addr
 >>
 
 real_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
@@ -33,15 +39,18 @@ real_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_i
 >>
 
 bool_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
-bool_get_local_tuple_member(<id>, <tuple_id>, <tuple_type>, <index>)
+%__<id>_addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+<vlocal_result(id)> = load i1* %__<id>_addr
 >>
 
 char_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
-char_get_local_tuple_member(<id>, <tuple_id>, <tuple_type>, <index>)
+%__<id>_addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+<vlocal_result(id)> = load i8* %__<id>_addr
 >>
 
 int_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
-int_get_local_tuple_member(<id>, <tuple_id>, <tuple_type>, <index>)
+%__<id>_addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+<vlocal_result(id)> = load i32* %__<id>_addr
 >>
 
 real_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
