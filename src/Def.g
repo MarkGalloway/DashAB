@@ -114,7 +114,7 @@ enterMethod
     |	^(PROCEDURE_DECL id=ID .+) // need .+ to match 0-or-more args
         {
         debug("line " + $id.getLine() + ": def method " + $id.text + " return null" );
-        MethodSymbol ms = new MethodSymbol($id.text, null, currentScope);
+        MethodSymbol ms = new MethodSymbol($id.text, SymbolTable._void, currentScope);
         currentMethod = ms;
         ms.def = $id;            // track AST location of def's ID
         $id.symbol = ms;         // track in AST

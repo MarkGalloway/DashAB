@@ -28,6 +28,15 @@ public class SymbolTable {
     public static final int sCONST = 0;
     public static final int sVAR = 1;
     
+    
+    /* tVOID is for procedures with no return and should not be added 
+     * to the globals or any array used for type checking. This is 
+     * mostly used for debugging type checking.
+     */
+    public static final int tVOID = -1;		
+    public static final BuiltInTypeSymbol _void =
+            new BuiltInTypeSymbol("void", tVOID);
+    
     // arithmetic types defined in order from narrowest to widest
     public static final int tTUPLE = 0;
     public static final int tBOOLEAN = 1;
@@ -37,7 +46,6 @@ public class SymbolTable {
     public static final int tOUTSTREAM = 5;
     public static final int tINSTREAM = 6;
     
-
     public static final BuiltInTypeSymbol _tuple =
             new BuiltInTypeSymbol("tuple", tTUPLE);
     public static final BuiltInTypeSymbol _boolean =
