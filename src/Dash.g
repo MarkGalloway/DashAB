@@ -130,7 +130,7 @@ methodForwardDeclaration
 methodDeclaration
   : Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
        -> ^(FUNCTION_DECL methodType ID formalParameters? tupleMemberList)
-    | Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
+  | Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
        -> ^(FUNCTION_DECL methodType ID formalParameters? expression)
 	| Function ID LPAREN formalParameters? RPAREN Returns methodType block
 	    -> ^(FUNCTION_DECL methodType ID formalParameters? block)
@@ -346,7 +346,7 @@ postfixExpression
     	|	r=LPAREN^ expressionList RPAREN!	
     	{
     	$r.setType(CALL);
-    	//$r.setText("CALL");
+    	$r.setText("CALL");
     	}
     	// TODO: Part 2
     	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}

@@ -1,0 +1,3 @@
+procedure main() {
+    integer y = f(13);
+}

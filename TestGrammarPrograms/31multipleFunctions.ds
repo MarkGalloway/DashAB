@@ -3,5 +3,5 @@ function squared(real a) returns real {
 }
 
 procedure main() returns real {
-    return squared(5);
+    return 0;
 }
