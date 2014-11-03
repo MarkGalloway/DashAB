@@ -209,5 +209,13 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
     }
     
+    @Test // else Statement invalid parse test
+    public void ifStatementInvalidElseTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 13: else statement missing matching if.");
+        String[] args = new String[] {"TestGrammarPrograms/21ifStatementInvalidElse.ds"};
+        AstTestMain.main(args);
+    }
+    
     
 }

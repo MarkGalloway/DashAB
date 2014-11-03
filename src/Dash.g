@@ -225,6 +225,10 @@ statement
   | typedef
   |	If LPAREN? expression RPAREN? s=statement (Else e=statement)?
   	  -> ^(If expression $s $e?)
+  | Else LPAREN? expression RPAREN?  // Catch danging else statements missing corresponding if.
+    {
+      emitErrorMessage("line " + $Else.getLine() + ": else statement missing matching if."); 
+    }
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
