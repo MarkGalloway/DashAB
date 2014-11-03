@@ -353,10 +353,18 @@ public class ASTtest extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/39AST_output"), outErrIntercept.toString().trim());
     }
     
-    @Test // continue break statements
-    public void anotherTupleTest() throws RecognitionException, LexerException, ParserException {
-        String[] args = new String[] {"TestGrammarPrograms/40tuples.ds"};
+    @Test // stream decl at start of block
+    public void streamDeclTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/40streamDecl.ds"};
         AstTestMain.main(args);
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/39AST_output"), outErrIntercept.toString().trim());
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/40AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // block statements nested
+    public void streamDeclInvalidTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 13: Declarations can only appear at the start of a block.");
+        String[] args = new String[] {"TestGrammarPrograms/41streamDeclInvalid.ds"};
+        AstTestMain.main(args);
     }
 }

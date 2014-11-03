@@ -77,7 +77,7 @@ public class DefTest extends BaseTest {
 
     @Test // Test with procedures
     public void procedures() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
-        String[] args = new String[] {"TestPrograms/08Procedures/procedureWithNoReturnType.ds"};
+        String[] args = new String[] {"TestPrograms/08ProcedureWithNoReturnType/procedureWithNoReturnType.ds"};
         SymbolTable symtab = DefTestMain.main(args);
         base_globals.add("main");
         base_globals.add("out");
@@ -87,7 +87,7 @@ public class DefTest extends BaseTest {
     
     @Test // Test with procedures with args
     public void proceduresWithArgs() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
-        String[] args = new String[] {"TestPrograms/08Procedures/procedureWithArgs.ds"};
+        String[] args = new String[] {"TestPrograms/12ProcedureWithArgs/procedureWithArgs.ds"};
         SymbolTable symtab = DefTestMain.main(args);
         base_globals.add("main");
         base_globals.add("out");
@@ -105,9 +105,9 @@ public class DefTest extends BaseTest {
         assertEquals(base_globals, symtab.globals.keys());    
     }
     
-    @Test // Test with calling function
-    public void callFunction() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
-        String[] args = new String[] {"TestPrograms/10Functions/callFunction.ds"};
+    @Test // Test with main using a function
+    public void useFunction() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+        String[] args = new String[] {"TestPrograms/11UseFunction/UseFunction.ds"};
         SymbolTable symtab = DefTestMain.main(args);
         base_globals.add("main");
         base_globals.add("squared");
@@ -116,7 +116,7 @@ public class DefTest extends BaseTest {
     
     @Test // Test with multiple functions
     public void functionWithArgs() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
-        String[] args = new String[] {"TestPrograms/10Functions/functionWithArgs.ds"};
+        String[] args = new String[] {"TestPrograms/10FunctionWithArgs/functionWithArgs.ds"};
         SymbolTable symtab = DefTestMain.main(args);
         base_globals.add("main");
         base_globals.add("squared");
