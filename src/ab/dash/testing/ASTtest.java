@@ -252,5 +252,13 @@ public class ASTtest extends BaseTest {
         String[] args = new String[] {"TestGrammarPrograms/26breakInvalid.ds"};
         AstTestMain.main(args);
     }
+    
+    @Test // nested break statements
+    public void nestedBreakStatementTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/27nestedBreak.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/27AST_output"), outErrIntercept.toString().trim());
+    }
+    
       
 }

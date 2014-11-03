@@ -40,6 +40,7 @@ tokens {
   boolean member_access = false;
   boolean blockContext = false;
   boolean loopContext = false;
+  int loopDepth = 0;
   
   int error_count = 0;
   StringBuffer errorSB = new StringBuffer();
@@ -237,6 +238,9 @@ statement
   | Loop {loopContext = true;} While LPAREN? expression RPAREN? statement {loopContext = false;} -> ^(WHILE expression statement)
   | Loop {loopContext = true;} statement While LPAREN? expression RPAREN? {loopContext = false;} -> ^(DOWHILE expression statement)
   | Loop {loopContext = true;} statement {loopContext = false;} -> ^(Loop statement) // infinite loop
+  | Loop {loopDepth++;} While LPAREN? expression RPAREN? statement {loopDepth--;} -> ^(WHILE expression statement)
+  | Loop {loopDepth++;} statement While LPAREN? expression RPAREN? {loopDepth--;} -> ^(DOWHILE expression statement)
+  | Loop {loopDepth++;} statement {loopDepth--;} -> ^(Loop statement) // infinite loop
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
@@ -247,6 +251,7 @@ statement
   | Break DELIM!
     {
       if(!loopContext) 
+      if(loopDepth == 0) 
           emitErrorMessage("line " + $Break.getLine() + ": Break statements can only be used within loops."); 
     }
   ;
