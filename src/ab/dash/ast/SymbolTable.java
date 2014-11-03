@@ -157,6 +157,8 @@ public class SymbolTable {
     
     private int error_count;
 	private int warnings_count;
+    private StringBuffer errorSB;
+    private StringBuffer warningSB;
 
     /** Need to have token buffer to print out expressions, errors */
     TokenStream tokens;
@@ -166,6 +168,8 @@ public class SymbolTable {
         
         this.error_count = 0;
         this.warnings_count = 0;
+        this.errorSB = new StringBuffer();
+        this.warningSB = new StringBuffer();
         
         this.tuples = new ArrayList<ArrayList<Type>>();
         
@@ -189,15 +193,20 @@ public class SymbolTable {
 	public int getErrorCount() {
 		return this.error_count;
 	}
-    
+	
+	public String getErrors() { return this.errorSB.toString(); }
+	public String getWarnings() { return this.warningSB.toString(); }
+	
     private void warning(String msg) {
 		this.warnings_count++;
 		this.listener.info(msg);
+		this.warningSB.append(msg);
 	}
 	
 	private void error(String msg) {
 		this.error_count++;
 		this.listener.error(msg);
+		this.errorSB.append(msg);
 	}
 	
 	public boolean checkIfDefined(DashAST a) {

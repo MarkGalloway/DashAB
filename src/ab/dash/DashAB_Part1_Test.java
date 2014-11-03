@@ -11,11 +11,14 @@ import org.antlr.runtime.TokenRewriteStream;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
+import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.runtime.tree.TreeAdaptor;
 
 import ab.dash.ast.DashAST;
 import ab.dash.ast.DashErrorNode;
+import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
+import ab.dash.exceptions.SymbolTableException;
 
 public class DashAB_Part1_Test {
 
@@ -45,6 +48,20 @@ public class DashAB_Part1_Test {
         }
         
         CommonTree ast = (CommonTree) entry.getTree();
+        
+        CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
+        nodes.setTokenStream(tokens);
+
+        // make global scope, types
+        SymbolTable symtab = new SymbolTable(tokens); 
+        
+        // make global scope, types
+        Def def = new Def(nodes, symtab, true);
+        def.downup(ast); 
+        
+        if (symtab.getErrorCount() > 0) {
+            System.exit(1);
+        }
         
         /** TESTING FEATURE: REMOVE ON RELEASE */
         if(args.length > 1 && args[1].equals("astDebug")) {

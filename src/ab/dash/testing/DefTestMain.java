@@ -16,10 +16,11 @@ import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
+import ab.dash.exceptions.SymbolTableException;
 
 public class DefTestMain {
     
-    public static SymbolTable main(String[] args) throws LexerException, ParserException, RecognitionException {
+    public static SymbolTable main(String[] args) throws LexerException, ParserException, RecognitionException, SymbolTableException {
         ANTLRFileStream input = null;
         try {
             input = new ANTLRFileStream(args[0]);
@@ -53,6 +54,11 @@ public class DefTestMain {
         // make global scope, types
         Def def = new Def(nodes, symtab, debug);
         def.downup(tree); 
+        
+        if (symtab.getErrorCount() > 0) {
+            throw new SymbolTableException(symtab.getErrors());
+        }
+        
         return symtab;
     }
 

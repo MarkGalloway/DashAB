@@ -1,7 +1,0 @@
-function squared(real a) returns real {
-    return a*a;
-}
-
-procedure main() returns real {
-    return squared(5);
-}

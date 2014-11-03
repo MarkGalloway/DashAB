@@ -1,3 +1,4 @@
 procedure main() {
     integer y = f(13);
+    return 0;
 }
