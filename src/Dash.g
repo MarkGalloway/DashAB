@@ -275,6 +275,11 @@ statement
       if(loopDepth == 0) 
           emitErrorMessage("line " + $Break.getLine() + ": Break statements can only be used within loops."); 
     }
+  | Continue DELIM!
+    {
+      if(loopDepth == 0) 
+          emitErrorMessage("line " + $Continue.getLine() + ": Continue statements can only be used within loops."); 
+    }
   ;
     
 lhs 

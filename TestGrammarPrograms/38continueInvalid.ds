@@ -1,0 +1,15 @@
+/* infinite loop */
+
+integer x = 0;
+
+// Print 1 to 10
+loop {
+  x = x + 1;
+  x -> out;
+} while x < 10 
+x = 0; // Should not be caught by the above conditional
+
+continue; // Should throw an exception. Break stats must only exist in loops.
+
+if (x < 10)
+  integer xyz = 0;

@@ -330,5 +330,26 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/34AST_output"), outErrIntercept.toString().trim());
     }
-      
+    
+    @Test // continue statement parse test
+    public void continueTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/37continue.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/37AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // continue statement outside of loop (invalid)
+    public void continueStatementOutsideOfLoopTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 12: Continue statements can only be used within loops.");
+        String[] args = new String[] {"TestGrammarPrograms/38continueInvalid.ds"};
+        AstTestMain.main(args);
+    }
+    
+    @Test // continue break statements
+    public void nestedContinueStatementTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/39nestedContinue.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/39AST_output"), outErrIntercept.toString().trim());
+    }
 }
