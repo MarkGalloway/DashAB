@@ -2,6 +2,9 @@ package ab.dash.testing;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,6 +16,7 @@ public class BaseTest {
     protected PrintStream out_backup;
     protected PrintStream err_backup;
     protected ByteArrayOutputStream outErrIntercept;
+    public Set<String> base_globals;
 
     @Before
     public void setUp() throws Exception {
@@ -21,7 +25,18 @@ public class BaseTest {
         
         outErrIntercept = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outErrIntercept));
-        System.setErr(new PrintStream(outErrIntercept));     
+        System.setErr(new PrintStream(outErrIntercept));
+        
+        base_globals = new HashSet<String>();
+        base_globals.add("boolean");
+        base_globals.add("character");
+        base_globals.add("const");
+        base_globals.add("integer");
+        base_globals.add("real");
+        base_globals.add("std_output()");
+        base_globals.add("std_input()");
+        base_globals.add("tuple");
+        base_globals.add("var");
     }
 
     @After

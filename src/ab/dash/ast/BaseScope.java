@@ -8,9 +8,12 @@ package ab.dash.ast;
  * We make no guarantees that this code is fit for any purpose. 
  * Visit http://www.pragmaticprogrammer.com/titles/tpdsl for more book information.
 ***/
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class BaseScope implements Scope {
 	Scope enclosingScope; // null if global (outermost) scope
@@ -34,6 +37,13 @@ public abstract class BaseScope implements Scope {
     public Scope getEnclosingScope() { return enclosingScope; }
 
 	public String toString() { return symbols.keySet().toString(); }
+	
+	public Set<String> keys() {
+	    //ArrayList<String> list = new ArrayList<String>(symbols.keySet());
+	    //Collections.sort(list);
+	    //return list;
+	    return symbols.keySet();
+	}
 	
 	public Collection<Symbol> getDefined() { return symbols.values(); }
 }

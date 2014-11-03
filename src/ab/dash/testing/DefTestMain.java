@@ -3,19 +3,23 @@ package ab.dash.testing;
 import java.io.IOException;
 
 import org.antlr.runtime.ANTLRFileStream;
+import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenRewriteStream;
 import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.tree.CommonTreeNodeStream;
 
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
+import ab.dash.Def;
 import ab.dash.ast.DashAST;
+import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 
-public class AstTestMain {
-
-    public static void main(String[] args) throws LexerException, ParserException, RecognitionException {
+public class DefTestMain {
+    
+    public static SymbolTable main(String[] args) throws LexerException, ParserException, RecognitionException {
         ANTLRFileStream input = null;
         try {
             input = new ANTLRFileStream(args[0]);
@@ -30,17 +34,26 @@ public class AstTestMain {
         DashParser.program_return entry = parser.program();
         
         if (lexer.getErrorCount() > 0) {
-        	throw new LexerException(lexer.getErrors());
+            throw new LexerException(lexer.getErrors());
         }
         
         if (parser.getErrorCount() > 0) {
-        	throw new ParserException(parser.getErrors());
+            throw new ParserException(parser.getErrors());
         }
   
-        CommonTree ast = (CommonTree) entry.getTree();
+        DashAST tree = (DashAST)entry.getTree();
+        System.out.println(tree.toStringTree());
+        CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
+        nodes.setTokenStream(tokens);
+
+        // make global scope, types
+        SymbolTable symtab = new SymbolTable(tokens); 
+        Boolean debug = true;
         
-        // Print the tree for testing
-        System.out.println(ast.toStringTree());
+        // make global scope, types
+        Def def = new Def(nodes, symtab, debug);
+        def.downup(tree); 
+        return symtab;
     }
 
 }

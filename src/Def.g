@@ -18,6 +18,8 @@ options {
     Scope currentScope;
     MethodSymbol currentMethod;
     boolean debug_mode;
+    int error_count = 0;
+    StringBuffer errorSB = new StringBuffer();
     
     public Def(TreeNodeStream input, SymbolTable symtab) {
         this(input);
@@ -37,18 +39,29 @@ options {
     	if (debug_mode)
     		System.out.println(msg);
     }
+    
+
+	  @Override
+	  public void emitErrorMessage(String msg) {
+	    System.err.println(msg);
+	    error_count++;
+	    errorSB.append(msg);
+	  }
+  
+	  public int getErrorCount() { return error_count; }
+	  public String getErrors() { return errorSB.toString(); }
 }
 // END: header
 
 topdown
-    :   enterBlock
-    |   enterMethod
+    : enterBlock
+    | enterMethod
     |	typeDef
-    |   atoms
+    | atoms
     |	tuple_list
-    |   varDeclaration
+    | varDeclaration
     |	streamDeclaration
-    |   ret
+    | ret
     ;
 
 bottomup
@@ -143,7 +156,6 @@ typeDef
 	}
 	;
 
-// START: atoms
 /** Set scope for any identifiers in expressions or assignments */
 atoms
 @init {DashAST t = (DashAST)input.LT(1);}
@@ -154,7 +166,6 @@ atoms
        t.scope = currentScope;
        }
     ;
-//END: atoms
 
 streamDeclaration
 	:	^(DECL_OUTSTREAM specifier ID std_type)
