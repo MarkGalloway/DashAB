@@ -223,7 +223,7 @@ statement
   | inputDeclaration
   | streamDeclaration
   | typedef
-  |	If LPAREN expression RPAREN s=statement (Else e=statement)?
+  |	If LPAREN? expression RPAREN? s=statement (Else e=statement)?
   	  -> ^(If expression $s $e?)
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)

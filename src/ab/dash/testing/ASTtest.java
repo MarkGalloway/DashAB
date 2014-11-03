@@ -194,5 +194,20 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
     }
     
+    @Test // If/else Statement parse test
+    public void ifStatementTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/19ifStatement.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/19AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // if Statement invalid parse test
+    public void ifStatementInvalidDeclTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 10: Declarations can only appear at the start of a block.");
+        String[] args = new String[] {"TestGrammarPrograms/20ifStatementInvalidDecl.ds"};
+        AstTestMain.main(args);
+    }
+    
     
 }
