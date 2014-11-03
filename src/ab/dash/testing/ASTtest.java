@@ -223,5 +223,49 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/22AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // pre-predicated loop parse test
+    public void prePredicatedLoopTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/23prePredicatedLoop.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/23AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // post-predicated loop parse test
+    public void postPredicatedLoopTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/24postPredicatedLoop.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/24AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // break statement parse test
+    public void breakTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/25break.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/25AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // break statement outside of loop (invalid)
+    public void breakStatementOutsideOfLoopTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 12: Break statements can only be used within loops.");
+        String[] args = new String[] {"TestGrammarPrograms/26breakInvalid.ds"};
+        AstTestMain.main(args);
+    }
+    
+    @Test // nested break statements
+    public void nestedBreakStatementTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/27nestedBreak.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/27AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // block statements nested
+    public void nestedBlockStatementTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 9: Declarations can only appear at the start of a block.");
+        String[] args = new String[] {"TestGrammarPrograms/28nestedBlockStatements.ds"};
+        AstTestMain.main(args);
+    }
       
 }

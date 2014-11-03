@@ -24,6 +24,8 @@ tokens {
   DECL_INSTREAM;
   PRINT;
   TYPEDEF;
+  WHILE;
+  DOWHILE;
 }
 
 // Parser Rules
@@ -36,7 +38,8 @@ tokens {
 
 @members {
   boolean member_access = false;
-  boolean inBlockContext = false;
+  Stack<Boolean> varDeclConstraint = new Stack<Boolean>();
+  int loopDepth = 0;
   
   int error_count = 0;
   StringBuffer errorSB = new StringBuffer();
@@ -151,8 +154,8 @@ parameter
 
 // START: block
 block
-@init {inBlockContext = true;}
-@after {inBlockContext = false;}
+@init {varDeclConstraint.push(true);}
+@after {varDeclConstraint.pop();}
   : LBRACE varDeclaration* statement* RBRACE -> ^(BLOCK varDeclaration* statement*)
   ;
 // END: block
@@ -217,9 +220,11 @@ typedef
 
 statement
   : block
-  |	varDeclaration {if(inBlockContext) 
-                      emitErrorMessage("line " + input.LT(1).getLine() + ": Declarations can only appear at the start of a block."); 
-                   }
+  |	varDeclaration 
+    {  
+      if(varDeclConstraint.size() > 0 && varDeclConstraint.peek()) 
+          emitErrorMessage("line " + input.LT(1).getLine() + ": Declarations can only appear at the start of a block."); 
+    }
   | inputDeclaration
   | streamDeclaration
   | typedef
@@ -229,7 +234,9 @@ statement
     {
       emitErrorMessage("line " + $Else.getLine() + ": else statement missing matching if."); 
     }
-  | Loop statement -> ^(Loop statement) // infinite loop
+  | Loop {loopDepth++;} While LPAREN? expression RPAREN? statement {loopDepth--;} -> ^(WHILE expression statement)
+  | Loop {loopDepth++;} statement While LPAREN? expression RPAREN? {loopDepth--;} -> ^(DOWHILE expression statement)
+  | Loop {loopDepth++;} statement {loopDepth--;} -> ^(Loop statement) // infinite loop
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
@@ -237,6 +244,11 @@ statement
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
   | ID (',' ID)* ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID+ tupleMemberList)
+  | Break DELIM!
+    {
+      if(loopDepth == 0) 
+          emitErrorMessage("line " + $Break.getLine() + ": Break statements can only be used within loops."); 
+    }
   ;
     
 lhs 

@@ -1,0 +1,8 @@
+
+/* nested loop with break */
+loop {
+  loop {
+    x = x + 1;
+  }
+  break;  // valid
+}

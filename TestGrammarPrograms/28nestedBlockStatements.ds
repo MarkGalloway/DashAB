@@ -1,0 +1,9 @@
+{
+  integer x = 0; //valid 
+  
+  {
+    x = x - 1;
+  }
+  
+  real r = 1.0; // Should not be valid
+}
