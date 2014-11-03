@@ -38,7 +38,8 @@ tokens {
 
 @members {
   boolean member_access = false;
-  boolean inBlockContext = false;
+  boolean blockContext = false;
+  boolean loopContext = false;
   
   int error_count = 0;
   StringBuffer errorSB = new StringBuffer();
@@ -153,8 +154,8 @@ parameter
 
 // START: block
 block
-@init {inBlockContext = true;}
-@after {inBlockContext = false;}
+@init {blockContext = true;}
+@after {blockContext = false;}
   : LBRACE varDeclaration* statement* RBRACE -> ^(BLOCK varDeclaration* statement*)
   ;
 // END: block
@@ -219,9 +220,11 @@ typedef
 
 statement
   : block
-  |	varDeclaration {if(inBlockContext) 
-                      emitErrorMessage("line " + input.LT(1).getLine() + ": Declarations can only appear at the start of a block."); 
-                   }
+  |	varDeclaration 
+    {  
+      if(blockContext) 
+          emitErrorMessage("line " + input.LT(1).getLine() + ": Declarations can only appear at the start of a block."); 
+    }
   | inputDeclaration
   | streamDeclaration
   | typedef
@@ -231,9 +234,9 @@ statement
     {
       emitErrorMessage("line " + $Else.getLine() + ": else statement missing matching if."); 
     }
-  | Loop While LPAREN? expression RPAREN? statement -> ^(WHILE expression statement)
-  | Loop statement While LPAREN? expression RPAREN? -> ^(DOWHILE expression statement)
-  | Loop statement -> ^(Loop statement) // infinite loop
+  | Loop {loopContext = true;} While LPAREN? expression RPAREN? statement {loopContext = false;} -> ^(WHILE expression statement)
+  | Loop {loopContext = true;} statement While LPAREN? expression RPAREN? {loopContext = false;} -> ^(DOWHILE expression statement)
+  | Loop {loopContext = true;} statement {loopContext = false;} -> ^(Loop statement) // infinite loop
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
@@ -242,6 +245,10 @@ statement
   		-> ^(EXPR postfixExpression)
   | ID (',' ID)* ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID+ tupleMemberList)
   | Break DELIM!
+    {
+      if(!loopContext) 
+          emitErrorMessage("line " + $Break.getLine() + ": Break statements can only be used within loops."); 
+    }
   ;
     
 lhs 

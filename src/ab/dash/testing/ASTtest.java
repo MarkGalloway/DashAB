@@ -244,5 +244,13 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/25AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // break statement outside of loop (invalid)
+    public void breakStatementOutsideOfLoopTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 12: Break statements can only be used within loops.");
+        String[] args = new String[] {"TestGrammarPrograms/26breakInvalid.ds"};
+        AstTestMain.main(args);
+    }
       
 }
