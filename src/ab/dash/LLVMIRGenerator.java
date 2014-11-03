@@ -1,16 +1,12 @@
 package ab.dash;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import ab.dash.DashLexer;
-import ab.dash.ast.BuiltInTypeSymbol;
 import ab.dash.ast.DashAST;
-import ab.dash.ast.LocalScope;
 import ab.dash.ast.MethodSymbol;
 import ab.dash.ast.Scope;
 import ab.dash.ast.Symbol;
