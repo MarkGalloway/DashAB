@@ -24,7 +24,7 @@ public class LLVMIRGenerator {
 	private boolean debug_mode = false;
 	
 	public enum LLVMOps {
-	    MINUS, ADD, SUB, MULT, DIV, EQ, NE, LT, GT
+	    ADD, SUB, MULT, DIV, EQ, NE, LT, GT
 	}
 	
 	public LLVMIRGenerator(StringTemplateGroup stg, SymbolTable symtab) {		
