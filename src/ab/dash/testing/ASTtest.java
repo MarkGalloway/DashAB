@@ -237,5 +237,12 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/24AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // break statement parse test
+    public void breakTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/25break.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/25AST_output"), outErrIntercept.toString().trim());
+    }
       
 }
