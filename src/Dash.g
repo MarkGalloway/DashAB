@@ -195,6 +195,8 @@ varDeclaration
   |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
   |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
   | specifier ID ASSIGN tupleMemberList DELIM -> ^(VAR_DECL specifier ID tupleMemberList)
+  | inputDeclaration
+  | streamDeclaration
 	;
 	
 inputDeclaration
@@ -225,8 +227,6 @@ statement
       if(varDeclConstraint.size() > 0 && varDeclConstraint.peek()) 
           emitErrorMessage("line " + input.LT(1).getLine() + ": Declarations can only appear at the start of a block."); 
     }
-  | inputDeclaration
-  | streamDeclaration
   | typedef
   |	If LPAREN expression RPAREN s=statement (Else e=statement)? -> ^(If expression $s $e?)
   | If LPAREN expression statement (Else statement)?
