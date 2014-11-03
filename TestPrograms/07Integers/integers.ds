@@ -7,8 +7,11 @@ procedure main() returns integer {
 	i1 = 0;
 	
 	i1 -> out;
+	'\n' -> out;
 	i2 -> out;
+	'\n' -> out;
 	i3 -> out;
+	'\n' -> out;
 	
     return 0;
 }

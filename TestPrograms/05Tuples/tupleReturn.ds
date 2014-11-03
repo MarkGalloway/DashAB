@@ -5,6 +5,7 @@ procedure main() returns integer {
     var t = f();
     
     f().2 -> out;
+    '\n' -> out;
     t.1 -> out;
     
     return 0;

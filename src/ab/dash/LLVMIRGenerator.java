@@ -531,7 +531,42 @@ public class LLVMIRGenerator {
 		case DashLexer.CHARACTER:
 		{
 			int id = ((DashAST)t).llvmResultID;
-			char val = t.getText().charAt(1);
+			String character = t.getText();
+			character = character.replaceAll("'", "");
+			
+			/*
+			 * Bell 	\a
+			 * Backspace 	\b
+			 * Line Feed 	\n
+			 * Carriage Return 	\r
+			 * Tab 	\t
+			 * Backslash 	\\
+			 * Apostrophe 	\'
+			 * Quotation Mark 	\"
+			 * Null 	\0
+			 */
+			char val = 0;
+			if(character.equals("\\a")) {
+				val = 7;
+			} else if(character.equals("\\b")) {
+				val = '\b';
+			} else if(character.equals("\\n")) {
+				val = '\n';
+			} else if(character.equals("\\r")) {
+				val = '\r';
+			} else if(character.equals("\\t")) {
+				val = '\t';
+			} else if(character.equals("\\\\")) {
+				val = '\\';
+			} else if(character.equals("\\'")) {
+				val = '\'';
+			} else if(character.equals("\\\"")) {
+				val = '\"';
+			} else if(character.equals("\\0")) {
+				val = '\0';
+			} else {
+				val = character.charAt(0);
+			}
 			
 			StringTemplate template = stg.getInstanceOf("char_literal");
 			template.setAttribute("val", val);

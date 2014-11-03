@@ -495,7 +495,7 @@ REAL
 		) (DecimalExponent1 | DecimalExponent2)? FloatTypeSuffix?
 	;
 	
-CHARACTER :	'\'' . '\'' ;
+CHARACTER :	'\'' '\\'? . '\'' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
