@@ -267,5 +267,37 @@ public class ASTtest extends BaseTest {
         String[] args = new String[] {"TestGrammarPrograms/28nestedBlockStatements.ds"};
         AstTestMain.main(args);
     }
+    
+    @Test // if condition missing left paren
+    public void ifStatMissingLparenTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 3: Missing left parenthesis.");
+        String[] args = new String[] {"TestGrammarPrograms/29IfStatMissingLparen.ds"};
+        AstTestMain.main(args);
+    }
+    
+    @Test // if condition missing right paren
+    public void ifStatMissingRparenTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 3: Missing right parenthesis.");
+        String[] args = new String[] {"TestGrammarPrograms/30IfStatMissingRparen.ds"};
+        AstTestMain.main(args);
+    }
+    
+    @Test // if condition missing left paren
+    public void prePredLoopMissingLparenTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 3: Missing left parenthesis.");
+        String[] args = new String[] {"TestGrammarPrograms/32prePredLoopmissingLparen.ds"};
+        AstTestMain.main(args);
+    }
+    
+    @Test // if condition missing right paren
+    public void prePredLoopMissingRparenTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 3: Missing right parenthesis.");
+        String[] args = new String[] {"TestGrammarPrograms/33prePredLoopmissingRparen.ds"};
+        AstTestMain.main(args);
+    }
       
 }

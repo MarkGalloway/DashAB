@@ -10,7 +10,7 @@ if (x == 3) {
 
 boolean tamaraHasCavities = true;
 
-else x == 0 {
+else {
   y = 32;
 }
 

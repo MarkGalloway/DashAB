@@ -228,14 +228,40 @@ statement
   | inputDeclaration
   | streamDeclaration
   | typedef
-  |	If LPAREN? expression RPAREN? s=statement (Else e=statement)?
-  	  -> ^(If expression $s $e?)
-  | Else LPAREN? expression RPAREN?  // Catch danging else statements missing corresponding if.
+  |	If LPAREN expression RPAREN s=statement (Else e=statement)? -> ^(If expression $s $e?)
+  | If LPAREN expression statement (Else statement)?
+    {
+      emitErrorMessage("line " + $If.getLine() + ": Missing right parenthesis."); 
+    }
+  | If expression RPAREN statement (Else statement)?
+    {
+      emitErrorMessage("line " + $If.getLine() + ": Missing left parenthesis."); 
+    }
+  | If expression s=statement (Else e=statement)? -> ^(If expression $s $e?)
+  | Else // Catch danging else statements missing corresponding if.
     {
       emitErrorMessage("line " + $Else.getLine() + ": else statement missing matching if."); 
     }
-  | Loop {loopDepth++;} While LPAREN? expression RPAREN? statement {loopDepth--;} -> ^(WHILE expression statement)
-  | Loop {loopDepth++;} statement While LPAREN? expression RPAREN? {loopDepth--;} -> ^(DOWHILE expression statement)
+  | Loop {loopDepth++;} While LPAREN expression RPAREN statement {loopDepth--;} -> ^(WHILE expression statement)
+  | Loop While LPAREN expression statement
+    {
+      emitErrorMessage("line " + $Loop.getLine() + ": Missing right parenthesis."); 
+    }
+  | Loop While expression RPAREN statement
+    {
+      emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); 
+    } 
+  | Loop {loopDepth++;} While expression statement {loopDepth--;} -> ^(WHILE expression statement)
+  | Loop {loopDepth++;} statement While LPAREN expression RPAREN {loopDepth--;} -> ^(DOWHILE expression statement)
+  | Loop statement While LPAREN expression
+    {
+      emitErrorMessage("line " + $Loop.getLine() + ": Missing right parenthesis."); 
+    }
+  | Loop statement While expression RPAREN
+    {
+      emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); 
+    } 
+  | Loop {loopDepth++;} statement While expression {loopDepth--;} -> ^(DOWHILE expression statement)
   | Loop {loopDepth++;} statement {loopDepth--;} -> ^(Loop statement) // infinite loop
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
