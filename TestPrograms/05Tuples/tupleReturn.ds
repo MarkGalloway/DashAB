@@ -2,9 +2,9 @@ function f() returns tuple(character, character) = ('a', 'b');
 
 procedure main() returns integer {
     var out = std_output();
-    f().2 -> out;
-    
     var t = f();
+    
+    f().2 -> out;
     t.1 -> out;
     
     return 0;
