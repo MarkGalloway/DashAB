@@ -260,5 +260,12 @@ public class ASTtest extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/27AST_output"), outErrIntercept.toString().trim());
     }
     
+    @Test // block statements nested
+    public void nestedBlockStatementTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 9: Declarations can only appear at the start of a block.");
+        String[] args = new String[] {"TestGrammarPrograms/28nestedBlockStatements.ds"};
+        AstTestMain.main(args);
+    }
       
 }

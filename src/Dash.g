@@ -38,8 +38,7 @@ tokens {
 
 @members {
   boolean member_access = false;
-  boolean blockContext = false;
-  boolean loopContext = false;
+  Stack<Boolean> varDeclConstraint = new Stack<Boolean>();
   int loopDepth = 0;
   
   int error_count = 0;
@@ -155,8 +154,8 @@ parameter
 
 // START: block
 block
-@init {blockContext = true;}
-@after {blockContext = false;}
+@init {varDeclConstraint.push(true);}
+@after {varDeclConstraint.pop();}
   : LBRACE varDeclaration* statement* RBRACE -> ^(BLOCK varDeclaration* statement*)
   ;
 // END: block
@@ -223,7 +222,7 @@ statement
   : block
   |	varDeclaration 
     {  
-      if(blockContext) 
+      if(varDeclConstraint.size() > 0 && varDeclConstraint.peek()) 
           emitErrorMessage("line " + input.LT(1).getLine() + ": Declarations can only appear at the start of a block."); 
     }
   | inputDeclaration
@@ -235,9 +234,6 @@ statement
     {
       emitErrorMessage("line " + $Else.getLine() + ": else statement missing matching if."); 
     }
-  | Loop {loopContext = true;} While LPAREN? expression RPAREN? statement {loopContext = false;} -> ^(WHILE expression statement)
-  | Loop {loopContext = true;} statement While LPAREN? expression RPAREN? {loopContext = false;} -> ^(DOWHILE expression statement)
-  | Loop {loopContext = true;} statement {loopContext = false;} -> ^(Loop statement) // infinite loop
   | Loop {loopDepth++;} While LPAREN? expression RPAREN? statement {loopDepth--;} -> ^(WHILE expression statement)
   | Loop {loopDepth++;} statement While LPAREN? expression RPAREN? {loopDepth--;} -> ^(DOWHILE expression statement)
   | Loop {loopDepth++;} statement {loopDepth--;} -> ^(Loop statement) // infinite loop
@@ -250,7 +246,6 @@ statement
   | ID (',' ID)* ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID+ tupleMemberList)
   | Break DELIM!
     {
-      if(!loopContext) 
       if(loopDepth == 0) 
           emitErrorMessage("line " + $Break.getLine() + ": Break statements can only be used within loops."); 
     }
