@@ -3,8 +3,8 @@ const out = std_output();
 const b = true;
 
 procedure main() returns integer {
-	var i = 0;
-	var r = 0.0;
+	var i = 1;
+	var r = 0.5;
 	var c = 'a';
 	
 	b -> out;

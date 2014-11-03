@@ -61,8 +61,17 @@ public class LLVMIRGenerator {
 		{	
 			// Generate Code
 			String code = "";
-			for(int i = 0; i < t.getChildCount(); i++)
-				code += exec((DashAST)t.getChild(i)).toString() + "\n";
+			String global_code = "";
+			for(int i = 0; i < t.getChildCount(); i++) {
+				if (!(t.getChild(i).hasAncestor(DashLexer.PROCEDURE_DECL) ||
+						t.getChild(i).hasAncestor(DashLexer.FUNCTION_DECL)) && 
+						t.getChild(i).getType() == DashLexer.VAR_DECL) {
+					global_code += exec((DashAST)t.getChild(i)).toString() + "\n";
+				} else {
+					code += exec((DashAST)t.getChild(i)).toString() + "\n";
+					
+				}
+			}
 			
 			// Generate Globals
 			debug("\n\nCreated Globals:");
@@ -136,7 +145,9 @@ public class LLVMIRGenerator {
 			StringTemplate template = stg.getInstanceOf("program");
 			template.setAttribute("type_defs", type_vars);
 			template.setAttribute("globals", global_vars);
+			template.setAttribute("global_code", global_code);
 			template.setAttribute("code", code);
+			
 			return template;
 		}
 		
@@ -711,9 +722,11 @@ public class LLVMIRGenerator {
 		{
 			int id = ((DashAST)t).llvmResultID;
 			float val = Float.parseFloat(t.getText().replaceAll("_", ""));
+			String hex_val = Integer.toHexString(Float.floatToIntBits(val));
+			hex_val = "0x" + hex_val.toUpperCase();
 			
 			StringTemplate template = stg.getInstanceOf("real_literal");
-			template.setAttribute("val", val);
+			template.setAttribute("val", hex_val);
 			template.setAttribute("id", id);
 			return template;
 		}

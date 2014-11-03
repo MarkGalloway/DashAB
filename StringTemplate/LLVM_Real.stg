@@ -3,15 +3,15 @@ float
 >>
 
 real_literal(id, val) ::= <<
- <vlocal_result(id)> = add float <val>, 0
+ <vlocal_result(id)> = fadd float <val>, 0x00000000
 >>
 
 real_null(id) ::= <<
- <vlocal_result(id)> = add float 0, 0
+ <vlocal_result(id)> = fadd float 0.0, 0.0
 >>
 
 real_identity(id) ::= <<
- <vlocal_result(id)> = add float 1, 0
+ <vlocal_result(id)> = fadd float 1.0, 0.0
 >>
 
 real_init_local(sym_id) ::= <<
