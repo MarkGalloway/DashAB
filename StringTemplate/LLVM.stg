@@ -22,9 +22,14 @@ target triple = "x86_64-unknown-linux-gnu"
 
 >>
 
+void_type() ::= <<
+void
+>>
+
 vglobalSymbol(id) ::= <<
 @__<id>_symbol
 >>
+
 vlocal(id) ::= <<
 %__<id>_
 >>
@@ -33,6 +38,9 @@ vlocal_result(id) ::= <<
 >>
 vlocalSymbol(id) ::= <<
 %__<id>_symbol
+>>
+vlocalArgument(id) ::= <<
+%__<id>_argument
 >>
 fglobal(id) ::= <<
 @___func<id>
@@ -71,21 +79,46 @@ string_constants() ::= <<
 utils() ::= <<
 >>
 
-function_main(code) ::= <<
+function_main(id, code) ::= <<
 define i32 @main() nounwind uwtable {
 <code; separator="\n">
 }
 >>
 
-function(id, return_type, args, code) ::= <<
-define <return_type> <fglobal(id)>(<args>) {
+function(id, sym_id, return_type, args, arg_init, code) ::= <<
+define <return_type> <fglobal(sym_id)>(<args>) {
+<arg_init>
 <code; separator="\n">
 }
 >>
 
+args(id, arg_id, arg_type) ::= <<
+<arg_type> <vlocalArgument(arg_id)>
+>>
+
+arg_init(id, arg_id, arg_type) ::= <<
+<vlocalSymbol(arg_id)> = alloca <arg_type>
+store <arg_type> <vlocalArgument(arg_id)>, <arg_type>* <vlocalSymbol(arg_id)>
+>>
+
+args_call(id, arg_id, arg_type) ::= <<
+<arg_type> <vlocal_result(arg_id)>
+>>
+
+
 return(id, expr, expr_id, type) ::= <<
 <expr>
   ret <type> <vlocal_result(expr_id)>
+>>
+
+call_void(id, function_id, args, code) ::= <<
+<code>
+	call void <fglobal(function_id)>(<args>)
+>>
+
+call(id, function_id, return_type, args, code) ::= <<
+<code>
+	<vlocal_result(id)> = call <return_type> <fglobal(function_id)>(<args>)
 >>
 
 if(id, expr, expr_id, block) ::= <<

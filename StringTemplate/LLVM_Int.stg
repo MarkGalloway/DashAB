@@ -116,3 +116,7 @@ int_to_real(id, expr, expr_id) ::= <<
 <expr>
   <vlocal_result(id)> = sitofp i32 <vlocal_result(expr_id)> to <real_type()>
 >>
+
+int_symbol_to_real(id, sym_id) ::= <<
+  <vlocal_result(id)> = sitofp i32 <vlocalSymbol(sym_id)> to <real_type()>
+>>

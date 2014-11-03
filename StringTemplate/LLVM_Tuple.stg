@@ -4,6 +4,10 @@ tuple(id, types) ::= <<
 }
 >>
 
+tuple_type(type_id) ::= <<
+%T<type_id>
+>>
+
 tuple_init_local(sym_id, type_id) ::= <<
 <vlocalSymbol(sym_id)> = alloca %T<type_id>
 >>
