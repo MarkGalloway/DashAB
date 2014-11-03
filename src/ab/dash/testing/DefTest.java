@@ -84,7 +84,17 @@ public class DefTest extends BaseTest {
         base_globals.add("no_return");
         assertEquals(base_globals, symtab.globals.keys());    
     }
-
+    
+    @Test // Test with procedures with args
+    public void proceduresWithArgs() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+        String[] args = new String[] {"TestPrograms/08Procedures/procedureWithArgs.ds"};
+        SymbolTable symtab = DefTestMain.main(args);
+        base_globals.add("main");
+        base_globals.add("out");
+        base_globals.add("no_return");
+        assertEquals(base_globals, symtab.globals.keys());    
+    }
+    
     @Test // Test with typedefs
     public void typedef() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/09Typedef/typedef.ds"};
@@ -95,17 +105,21 @@ public class DefTest extends BaseTest {
         assertEquals(base_globals, symtab.globals.keys());    
     }
     
-    @Test // Test with multiple functions
-    public void multipleFunctions() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+    @Test // Test with calling function
+    public void callFunction() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/10Functions/callFunction.ds"};
         SymbolTable symtab = DefTestMain.main(args);
         base_globals.add("main");
-        base_globals.add("add");
         base_globals.add("squared");
         assertEquals(base_globals, symtab.globals.keys());    
     }
-
-     // Test multiple functions
-     // Test empty program
-
+    
+    @Test // Test with multiple functions
+    public void functionWithArgs() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+        String[] args = new String[] {"TestPrograms/10Functions/functionWithArgs.ds"};
+        SymbolTable symtab = DefTestMain.main(args);
+        base_globals.add("main");
+        base_globals.add("squared");
+        assertEquals(base_globals, symtab.globals.keys());    
+    }
 }

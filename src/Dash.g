@@ -148,7 +148,7 @@ formalParameters
     
 parameter
 	:	specifier type ID -> ^(ARG_DECL specifier type ID)
-	|	type ID -> ^(ARG_DECL Const type ID)
+	|	type ID -> ^(ARG_DECL Const["const"] type ID)
 	;
 // END: method
 

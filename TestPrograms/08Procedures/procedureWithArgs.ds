@@ -1,0 +1,10 @@
+const out = std_output();
+
+procedure no_return(integer a) {
+	a -> out;
+}
+
+procedure main() returns integer {
+	call no_return(1);
+    return 0;
+}

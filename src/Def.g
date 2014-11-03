@@ -98,7 +98,8 @@ tuple_list
 // END: tuple
 
 enterMethod
-    :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) type ID function_block=.) // match method subtree with 0-or-more args
+    // it's alright that alternative 2 is disabled by antlr in this case, that's what we want
+    :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) type ID .+) // need .+ to match 0-or-more args
         {
         debug("line " + $ID.getLine() + ": def method " + $ID.text + " return " + $type.type);
         MethodSymbol ms = new MethodSymbol($ID.text, $type.type, currentScope);
@@ -110,13 +111,13 @@ enterMethod
         
         $method_node.deleteChild(0);
         } 
-    |	^(PROCEDURE_DECL ID .) // match method subtree with 0-or-more args
+    |	^(PROCEDURE_DECL id=ID .+) // need .+ to match 0-or-more args
         {
-        debug("line " + $ID.getLine() + ": def method " + $ID.text + " return null" );
-        MethodSymbol ms = new MethodSymbol($ID.text, null, currentScope);
+        debug("line " + $id.getLine() + ": def method " + $id.text + " return null" );
+        MethodSymbol ms = new MethodSymbol($id.text, null, currentScope);
         currentMethod = ms;
-        ms.def = $ID;            // track AST location of def's ID
-        $ID.symbol = ms;         // track in AST
+        ms.def = $id;            // track AST location of def's ID
+        $id.symbol = ms;         // track in AST
         currentScope.define(ms); // def method in globals
         currentScope = ms;       // set current scope to method scope
         }
@@ -133,7 +134,7 @@ ret :   ^(Return .)
 exitMethod
     :   (FUNCTION_DECL | PROCEDURE_DECL)
         {
-        currentScope = currentScope.getEnclosingScope();    // pop method scope
+        currentScope = currentScope.getEnclosingScope();
         }
     ;
     
@@ -192,13 +193,13 @@ varDeclaration // global, parameter, or local variable
 	         debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 
 	         " type ( " + $type.type +  " ) " + 
-	         " specifier ( " + $specifier.specifier +  " )");
+	         " specifier ( " + $specifier.specifier +  " )" +
+	         " scope: " + currentScope.toString());
 	         if ($type.type != null) {
 		        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
 			    vs.def = $ID;            // track AST location of def's ID
 			    $ID.symbol = vs;         // track in AST
 			    currentScope.define(vs);
-			        
 			    $var_node.deleteChild(0);
 			    $var_node.deleteChild(0);
 		    } else {
