@@ -229,6 +229,7 @@ statement
     {
       emitErrorMessage("line " + $Else.getLine() + ": else statement missing matching if."); 
     }
+  | Loop statement -> ^(Loop statement) // infinite loop
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)

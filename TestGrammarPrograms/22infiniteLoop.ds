@@ -1,0 +1,15 @@
+/* Blockless infinite loop */
+// infinite counter
+integer x = 0;
+loop x = x + 1;
+
+
+/* Block infinite loop */
+// infinite counter
+integer n = 0;
+
+loop {
+  n -> out; 
+  n = n + 1;
+}
+

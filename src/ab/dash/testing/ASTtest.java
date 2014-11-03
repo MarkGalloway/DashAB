@@ -217,5 +217,11 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
     }
     
-    
+    @Test // infinite loop parse test
+    public void infiniteLoopTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/22infiniteLoop.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/22AST_output"), outErrIntercept.toString().trim());
+    }
+      
 }
