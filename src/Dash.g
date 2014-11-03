@@ -24,6 +24,7 @@ tokens {
   DECL_INSTREAM;
   PRINT;
   TYPEDEF;
+  WHILE;
 }
 
 // Parser Rules
@@ -229,6 +230,7 @@ statement
     {
       emitErrorMessage("line " + $Else.getLine() + ": else statement missing matching if."); 
     }
+  | Loop While LPAREN? expression RPAREN? statement -> ^(WHILE expression statement)
   | Loop statement -> ^(Loop statement) // infinite loop
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)

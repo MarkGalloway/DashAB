@@ -223,5 +223,19 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/22AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // pre-predicated loop parse test
+    public void prePredicatedLoopTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/23prePredicatedLoop.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/23AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // post-predicated loop parse test
+    public void postPredicatedLoopTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/24postPredicatedLoop.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/24AST_output"), outErrIntercept.toString().trim());
+    }
       
 }
