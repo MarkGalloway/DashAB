@@ -91,7 +91,6 @@ expr returns [Type type]
     |   binaryOps   {$type = $binaryOps.type;}
     ;
 
-// TODO Handle f().x
 member returns [Type type]
 	:	^(DOT id=expr m=(ID | INTEGER))	
 		{
