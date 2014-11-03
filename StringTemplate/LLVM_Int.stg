@@ -40,6 +40,11 @@ int_global_assign(id, sym_id, expr, expr_id) ::= <<
 	store i32 <vlocal_result(expr_id)>, i32* <vglobalSymbol(sym_id)>
 >>
 
+int_minus(id, expr, expr_id) ::= <<
+<expr>
+  <vlocal_result(id)> = sub i32 0, <vlocal_result(expr_id)>
+>>
+
 int_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>

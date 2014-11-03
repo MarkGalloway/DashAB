@@ -24,7 +24,7 @@ public class LLVMIRGenerator {
 	private boolean debug_mode = false;
 	
 	public enum LLVMOps {
-	    ADD, SUB, MULT, DIV, EQ, NE, LT, GT
+	    MINUS, ADD, SUB, MULT, DIV, EQ, NE, LT, GT
 	}
 	
 	public LLVMIRGenerator(StringTemplateGroup stg, SymbolTable symtab) {		
@@ -331,9 +331,16 @@ public class LLVMIRGenerator {
 			int expr_id = ((DashAST)t.getChild(0).getChild(0)).llvmResultID;
 			
 			StringTemplate block = exec((DashAST)t.getChild(1));
-			
-			StringTemplate template = stg.getInstanceOf("if");
-			
+			StringTemplate template = null;
+			if (t.getChildCount() > 2) {
+				StringTemplate block2 = exec((DashAST)t.getChild(2));
+				
+				template = stg.getInstanceOf("if_else");
+				template.setAttribute("block2", block2);
+			} else {
+				template = stg.getInstanceOf("if");
+			}
+						
 			template.setAttribute("block", block);
 			template.setAttribute("expr_id", expr_id);
 			template.setAttribute("expr", expr);
@@ -550,6 +557,28 @@ public class LLVMIRGenerator {
 			template.setAttribute("expr", expr);
 			template.setAttribute("sym_id", sym_id);
 			template.setAttribute("id", id);
+			return template;
+		}
+		
+		case DashLexer.UNARY_MINUS:
+		{
+			String id = Integer.toString(((DashAST)t).llvmResultID);
+			int type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
+			
+			StringTemplate expr = exec((DashAST)t.getChild(0));
+			String expr_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
+			
+			StringTemplate template = null;
+			if (type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("int_minus");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_minus");
+			}
+			
+			template.setAttribute("expr_id", expr_id);
+			template.setAttribute("expr", expr);
+			template.setAttribute("id", id);
+			
 			return template;
 		}
 

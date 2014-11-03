@@ -132,3 +132,19 @@ if.body<id>:
 if.done<id>:
 
 >>
+
+if_else(id, expr, expr_id, block, block2) ::= <<
+  <expr>
+  br i1 <vlocal_result(expr_id)>, label %if.body<id>, label %if.else<id>
+
+if.body<id>:
+  <block>
+  br label %if.done<id>
+
+if.else<id>:
+  <block2>
+  br label %if.done<id>
+  
+if.done<id>:
+
+>>

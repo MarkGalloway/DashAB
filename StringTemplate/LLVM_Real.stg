@@ -40,6 +40,11 @@ real_global_assign(id, sym_id, expr, expr_id) ::= <<
 	store float <vlocal_result(expr_id)>, float* <vglobalSymbol(sym_id)>
 >>
 
+real_minus(id, expr, expr_id) ::= <<
+<expr>
+  <vlocal_result(id)> = fsub float 0, <vlocal_result(expr_id)>
+>>
+
 real_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
