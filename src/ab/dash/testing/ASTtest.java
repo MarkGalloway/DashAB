@@ -7,6 +7,7 @@ import java.io.File;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
+import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 
@@ -298,6 +299,13 @@ public class ASTtest extends BaseTest {
         expectedEx.expectMessage("line 3: Missing right parenthesis.");
         String[] args = new String[] {"TestGrammarPrograms/33prePredLoopmissingRparen.ds"};
         AstTestMain.main(args);
+    }
+
+    @Test // Test with multiple functions
+    public void multipleFunctions() throws RecognitionException, LexerException, ParserException {        
+        String[] args = new String[] {"TestGrammarPrograms/31multipleFunctions.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/31AST_output"), outErrIntercept.toString().trim());
     }
       
 }
