@@ -1,0 +1,16 @@
+const blah = std_output();
+
+function squared(integer a) returns integer {
+    return a*a;
+}
+
+function squaredPlus1(integer a) returns integer {
+    integer c = squared(a);
+    return c + 1;
+}
+
+procedure main() returns integer {
+    integer c = squaredPlus1(5);
+    c -> blah;
+    return 0;
+}

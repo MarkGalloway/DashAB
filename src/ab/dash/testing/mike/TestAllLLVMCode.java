@@ -1,4 +1,4 @@
-package ab.dash.testing;
+package ab.dash.testing.mike;
 
 import java.io.File;
 import java.util.Arrays;

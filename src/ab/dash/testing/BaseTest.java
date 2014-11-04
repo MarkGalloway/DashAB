@@ -1,3 +1,6 @@
+/** Base Test for Project Junit Test Classes. 
+ *  Performs Setup/Teardown. Inherit from this for new Test Classes. **/
+
 package ab.dash.testing;
 
 import java.io.ByteArrayOutputStream;
