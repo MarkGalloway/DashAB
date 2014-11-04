@@ -26,7 +26,7 @@ public class LLVMIRGenerator {
 	private boolean debug_mode = false;
 	
 	public enum LLVMOps {
-	    AND, OR, XOR, ADD, SUB, MULT, DIV, EQ, NE, LT, LE, GT, GE
+	    AND, OR, XOR, ADD, SUB, MULT, DIV, MOD, POWER, EQ, NE, LT, LE, GT, GE
 	}
 	
 	public LLVMIRGenerator(StringTemplateGroup stg, SymbolTable symtab) {		
@@ -725,6 +725,12 @@ public class LLVMIRGenerator {
 		case DashLexer.DIVIDE:
 			return operation(t, LLVMOps.DIV);
 			
+		case DashLexer.MODULAR:
+			return operation(t, LLVMOps.MOD);
+			
+		case DashLexer.POWER:
+			return operation(t, LLVMOps.POWER);
+			
 		case DashLexer.DOT:
 		{
 			int id = ((DashAST)t).llvmResultID;
@@ -1038,10 +1044,6 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("int_add");
 			} else if (type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_add");
-			} else if (type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_add");
-			} else if (type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_add");
 			}
 			break;
 		case SUB:
@@ -1049,10 +1051,6 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("int_sub");
 			} else if (type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_sub");
-			} else if (type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_sub");
-			} else if (type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_sub");
 			}
 			break;
 		case MULT:
@@ -1060,10 +1058,6 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("int_mul");
 			} else if (type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_mul");
-			} else if (type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_mul");
-			} else if (type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_mul");
 			}
 			break;
 		case DIV:
@@ -1071,10 +1065,20 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("int_div");
 			} else if (type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_div");
-			} else if (type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_div");
-			} else if (type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_div");
+			}
+			break;
+		case MOD:
+			if (type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("int_mod");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_mod");
+			}
+			break;
+		case POWER:
+			if (type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("int_pow");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_pow");
 			}
 			break;
 		}

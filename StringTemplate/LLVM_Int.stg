@@ -75,6 +75,12 @@ int_mod(id, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal_result(id)> = srem i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
+int_pow(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal_result(id)> = srem i32 <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+>>
+
 int_eq(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
