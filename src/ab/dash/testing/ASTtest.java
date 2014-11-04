@@ -402,7 +402,7 @@ public class ASTtest extends BaseTest {
     public void globalTupleConstTest() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(ParserException.class);
         expectedEx.expectMessage("line 1: Global variables must be declared with the const specifier.");
-        String[] args = new String[] {"TestGrammarPrograms/47globalTuplesConst.ds"};
+        String[] args = new String[] {"TestGrammarPrograms/46globalTuplesConst.ds"};
         AstTestMain.main(args);
     }
     
@@ -411,6 +411,14 @@ public class ASTtest extends BaseTest {
         expectedEx.expect(ParserException.class);
         expectedEx.expectMessage("line 1: Global variables must be declared with the const specifier.");
         String[] args = new String[] {"TestGrammarPrograms/47globalTuplesConst.ds"};
+        AstTestMain.main(args);
+    }
+    
+    @Test // typedef that is not global must throw exception
+    public void globalTypedefExceptionTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 4: Typedef must only be declared in global scope.");
+        String[] args = new String[] {"TestGrammarPrograms/48localTypedef.ds"};
         AstTestMain.main(args);
     }
 }

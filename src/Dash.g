@@ -232,8 +232,12 @@ streamDeclaration throws ParserError
 // END: var
 
 typedef
-  : Typedef primitiveType ID DELIM -> ^(TYPEDEF primitiveType ID)
-  | Typedef tupleType ID DELIM -> ^(TYPEDEF tupleType ID)
+  : Typedef primitiveType ID DELIM 
+    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
+      -> ^(TYPEDEF primitiveType ID)
+  | Typedef tupleType ID DELIM 
+    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
+      -> ^(TYPEDEF tupleType ID)
   ;
 
 statement
