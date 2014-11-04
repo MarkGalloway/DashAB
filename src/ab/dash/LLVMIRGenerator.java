@@ -249,22 +249,16 @@ public class LLVMIRGenerator {
 			StringTemplate template = null;
 			if (method_type.getTypeIndex() == SymbolTable.tVOID) {
 				template = stg.getInstanceOf("call_void");
-				template.setAttribute("code", code);
-				template.setAttribute("args", args);
-				template.setAttribute("function_id", method.id);
-				template.setAttribute("id", t.llvmResultID);
-				
-				return template;
 			} else {
 				template = stg.getInstanceOf("call");
-				template.setAttribute("code", code);
-				template.setAttribute("args", args);
 				template.setAttribute("return_type", getType(method_type));
-				template.setAttribute("function_id", method.id);
-				template.setAttribute("id", t.llvmResultID);
 				
-				return template;
 			}
+			template.setAttribute("code", code);
+			template.setAttribute("args", args);
+			template.setAttribute("function_id", method.id);
+			template.setAttribute("id", t.llvmResultID);
+			return template;
 		}
 		
 		case DashLexer.Return:
