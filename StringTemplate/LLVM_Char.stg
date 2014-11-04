@@ -15,7 +15,7 @@ char_identity(id) ::= <<
 >>
 
 char_init_local(sym_id) ::= <<
-<vlocalSymbol(sym_id)> = alloca i8
+<vlocal_symbol(sym_id)> = alloca i8
 >>
 
 char_init_global(sym_id) ::= <<
@@ -23,7 +23,7 @@ char_init_global(sym_id) ::= <<
 >>
 
 char_get_local(id, sym_id) ::= <<
-<vlocal_result(id)> = load i8*  <vlocalSymbol(sym_id)>
+<vlocal_result(id)> = load i8*  <vlocal_symbol(sym_id)>
 >>
 
 char_get_global(id, sym_id) ::= <<
@@ -32,7 +32,7 @@ char_get_global(id, sym_id) ::= <<
 
 char_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store i8 <vlocal_result(expr_id)>, i8* <vlocalSymbol(sym_id)>
+	store i8 <vlocal_result(expr_id)>, i8* <vlocal_symbol(sym_id)>
 >>
 
 char_global_assign(id, sym_id, expr, expr_id) ::= <<

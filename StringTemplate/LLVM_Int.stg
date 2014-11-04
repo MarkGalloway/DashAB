@@ -15,7 +15,7 @@ int_identity(id) ::= <<
 >>
 
 int_init_local(sym_id) ::= <<
-<vlocalSymbol(sym_id)> = alloca i32
+<vlocal_symbol(sym_id)> = alloca i32
 >>
 
 int_init_global(sym_id) ::= <<
@@ -23,7 +23,7 @@ int_init_global(sym_id) ::= <<
 >>
 
 int_get_local(id, sym_id) ::= <<
-<vlocal_result(id)> = load i32*  <vlocalSymbol(sym_id)>
+<vlocal_result(id)> = load i32*  <vlocal_symbol(sym_id)>
 >>
 
 int_get_global(id, sym_id) ::= <<
@@ -32,7 +32,7 @@ int_get_global(id, sym_id) ::= <<
 
 int_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store i32 <vlocal_result(expr_id)>, i32* <vlocalSymbol(sym_id)>
+	store i32 <vlocal_result(expr_id)>, i32* <vlocal_symbol(sym_id)>
 >>
 
 int_global_assign(id, sym_id, expr, expr_id) ::= <<
@@ -123,5 +123,5 @@ int_to_real(id, expr, expr_id) ::= <<
 >>
 
 int_symbol_to_real(id, sym_id) ::= <<
-  <vlocal_result(id)> = sitofp i32 <vlocalSymbol(sym_id)> to <real_type()>
+  <vlocal_result(id)> = sitofp i32 <vlocal_symbol(sym_id)> to <real_type()>
 >>

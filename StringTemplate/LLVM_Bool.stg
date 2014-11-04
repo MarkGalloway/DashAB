@@ -15,7 +15,7 @@ bool_identity(id) ::= <<
 >>
 
 bool_init_local(sym_id) ::= <<
-<vlocalSymbol(sym_id)> = alloca i1
+<vlocal_symbol(sym_id)> = alloca i1
 >>
 
 bool_init_global(sym_id) ::= <<
@@ -23,7 +23,7 @@ bool_init_global(sym_id) ::= <<
 >>
 
 bool_get_local(id, sym_id) ::= <<
-<vlocal_result(id)> = load i1*  <vlocalSymbol(sym_id)>
+<vlocal_result(id)> = load i1*  <vlocal_symbol(sym_id)>
 >>
 
 bool_get_global(id, sym_id) ::= <<
@@ -32,7 +32,7 @@ bool_get_global(id, sym_id) ::= <<
 
 bool_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store i1 <vlocal_result(expr_id)>, i1* <vlocalSymbol(sym_id)>
+	store i1 <vlocal_result(expr_id)>, i1* <vlocal_symbol(sym_id)>
 >>
 
 bool_global_assign(id, sym_id, expr, expr_id) ::= <<

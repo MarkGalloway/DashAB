@@ -41,7 +41,7 @@ vlocal(id) ::= <<
 vlocal_result(id) ::= <<
 %__<id>_result
 >>
-vlocalSymbol(id) ::= <<
+vlocal_symbol(id) ::= <<
 %__<id>_symbol
 >>
 vlocalArgument(id) ::= <<
@@ -103,8 +103,8 @@ args(id, arg_id, arg_type) ::= <<
 >>
 
 arg_init(id, arg_id, arg_type) ::= <<
-<vlocalSymbol(arg_id)> = alloca <arg_type>
-store <arg_type> <vlocalArgument(arg_id)>, <arg_type>* <vlocalSymbol(arg_id)>
+<vlocal_symbol(arg_id)> = alloca <arg_type>
+store <arg_type> <vlocalArgument(arg_id)>, <arg_type>* <vlocal_symbol(arg_id)>
 >>
 
 args_call(id, arg_id, arg_type) ::= <<
