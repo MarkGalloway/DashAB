@@ -390,4 +390,20 @@ public class ASTtest extends BaseTest {
         AstTestMain.main(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/44AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // globals must be declared const
+    public void globalTupleConstTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 1: Global variables must be declared with the const specifier.");
+        String[] args = new String[] {"TestGrammarPrograms/47globalTuplesConst.ds"};
+        AstTestMain.main(args);
+    }
+    
+    @Test // globals must be declared const
+    public void globalTupleConstTestB() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 1: Global variables must be declared with the const specifier.");
+        String[] args = new String[] {"TestGrammarPrograms/47globalTuplesConst.ds"};
+        AstTestMain.main(args);
+    }
 }
