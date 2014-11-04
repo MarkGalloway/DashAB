@@ -288,6 +288,21 @@ public class LLVMIRGenerator {
 		
 		case DashLexer.TUPLE_LIST:
 		{
+			int id = t.llvmResultID;
+			
+			TupleTypeSymbol tuple = (TupleTypeSymbol)t.evalType;
+			
+			String expressions = "";
+			ArrayList<Integer> expression_ids = new ArrayList<Integer>();
+			for (int i = 0; i < t.getChildCount(); i++) {
+				StringTemplate expression = exec((DashAST)t.getChild(i));
+				int expression_id = ((DashAST) t.getChild(i).getChild(0)).llvmResultID;
+				
+				expressions += expression + "\n";
+				expression_ids.add(new Integer(expression_id));
+			}
+			
+			
 			return new StringTemplate();
 		}
 			
