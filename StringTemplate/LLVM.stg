@@ -51,6 +51,16 @@ fglobal(id) ::= <<
 @___func<id>
 >>
 
+vloop_entry(id) ::= <<
+loop.entry_<id>_
+>>
+vloop_body(id) ::= <<
+loop.body_<id>_
+>>
+vloop_done(id) ::= <<
+loop.done_<id>_
+>>
+
 externs() ::= <<
 declare i32 @puts(i8* nocapture) nounwind
 declare i32 @printf(i8*, ...)
@@ -156,50 +166,50 @@ if.done<id>:
 >>
 
 while(id, expr, expr_id, block) ::= <<
-br label %loop<id>
+br label %<vloop_entry(id)>
 
-loop<id>:
+<vloop_entry(id)>:
   <expr>
-  br i1 <vlocal_result(expr_id)>, label %loop.body<id>, label %loop.done<id>
+  br i1 <vlocal_result(expr_id)>, label %<vloop_body(id)>, label %<vloop_done(id)>
 
-loop.body<id>:
+<vloop_body(id)>:
   <block>
-  br label %loop<id>
-  
-loop.done<id>:
+  br label %<vloop_entry(id)>
+
+<vloop_done(id)>:
 
 >>
 
 dowhile(id, expr, expr_id, block) ::= <<
-br label %loop<id>
+br label %<vloop_entry(id)>
 
-loop<id>:
+<vloop_entry(id)>:
   <block>
   
   <expr>
-  br i1 <vlocal_result(expr_id)>, label %loop<id>, label %loop.done<id>
+  br i1 <vlocal_result(expr_id)>, label %<vloop_entry(id)>, label %<vloop_done(id)>
   
-loop.done<id>:
+<vloop_done(id)>:
 
 >>
 
 loop(id, block) ::= <<
-br label %loop<id>
+br label %<vloop_entry(id)>
 
-loop<id>:
+<vloop_entry(id)>:
   <block>
   
-  br label %loop<id>
+  br label %<vloop_entry(id)>
   
-loop.done<id>:
+<vloop_done(id)>:
 
 >>
 
 break(id, loop_id) ::= <<
-	br label %loop.done<loop_id>
+	br label %<vloop_done(loop_id)>
 >>
 
 continue(id, loop_id) ::= <<
-	br label %loop<loop_id>
+	br label %<vloop_entry(loop_id)>
 >>
 
