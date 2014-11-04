@@ -1,0 +1,14 @@
+const real r = 1.0;
+const integer x = as<integer>(r);
+const real r2 = as<real>(42);
+const character c = 'a';
+const boolean b = as<boolean>(c);
+const tuple(integer, integer) t =  as<tuple(integer,integer)>((1.3,2.7));
+const tuple(integer, integer) z;
+z = as<tuple(integer,integer)>((1.3,2.7));
+z = as<tuple(integer,integer)>(t);
+
+if(as<integer>(b) != 0) {
+  var character c2 = as<character>(40);
+}
+

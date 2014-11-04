@@ -27,6 +27,7 @@ tokens {
   WHILE;
   DOWHILE;
   UNPACK;
+  TYPECAST;
 }
 
 // Parser Rules
@@ -177,6 +178,7 @@ tupleMember
 	
 tupleMemberList
 	: LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
+	| As LESS tupleType GREATER LPAREN tupleMemberList RPAREN -> ^(TYPECAST tupleType tupleMemberList)
 	| Identity -> ^(TUPLE_LIST Identity)
 	| Null -> ^(TUPLE_LIST Null)
 	| ID
@@ -378,6 +380,7 @@ primary
     | Identity
     | Null
     | LPAREN expression RPAREN -> expression
+    | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     ;
 
 // DashAB reserved words
