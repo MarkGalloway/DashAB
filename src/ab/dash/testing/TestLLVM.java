@@ -242,7 +242,42 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         
-        sb.append("a\n");	// c0 -> out; '\n' -> out;		// a
+        sb.append("-5\n");	// i0 -> out; '\n' -> out;		// -5
+        sb.append("7\n");	// i1 -> out; '\n' -> out;		// 7
+        sb.append("3\n");	// i2 -> out; '\n' -> out;		// 3
+        sb.append("10\n");	// i3 -> out; '\n' -> out;		// 10
+        sb.append("5\n");	// i4 -> out; '\n' -> out;		// 5
+        sb.append("1\n");	// i5 -> out; '\n' -> out;		// 1
+        sb.append("8\n");	// i6 -> out; '\n' -> out;		// 8
+
+        sb.append("11\n");	// e0 -> out; '\n' -> out;		// 11
+        sb.append("15\n");	// e1 -> out; '\n' -> out;		// 15
+        sb.append("20\n");	// e2 -> out; '\n' -> out;		// 20
+
+        sb.append("T\n");	// b0 -> out; '\n' -> out;		// true;
+        sb.append("F\n");	// b1 -> out; '\n' -> out;		// false
+
+        sb.append("F\n");	// b2 -> out; '\n' -> out;		// false
+        sb.append("T\n");	// b3 -> out; '\n' -> out;		// true
+
+        sb.append("T\n");	// b4 -> out; '\n' -> out;		// true
+        sb.append("F\n");	// b5 -> out; '\n' -> out;		// false
+        sb.append("F\n");	// b6 -> out; '\n' -> out;		// false
+
+        sb.append("F\n");	// b7 -> out; '\n' -> out;		// false
+    	sb.append("F\n");	// b8 -> out; '\n' -> out;		// false
+    	sb.append("T\n");	// b9 -> out; '\n' -> out;		// true
+
+    	sb.append("T\n");	// b10 -> out; '\n' -> out;		// true
+    	sb.append("T\n");	// b11 -> out; '\n' -> out;		// true
+    	sb.append("F\n");	// b12 -> out; '\n' -> out;		// false
+
+    	sb.append("F\n");	// b13 -> out; '\n' -> out;		// false
+    	sb.append("T\n");	// b14 -> out; '\n' -> out;		// true
+    	sb.append("T\n");	// b15 -> out; '\n' -> out;		// true
+    	
+    	sb.append("25\n");	// l1 -> out; '\n' -> out;		// 25
+    	sb.append("30\n");	// l2 -> out; '\n' -> out;		// 30
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
