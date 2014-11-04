@@ -1,0 +1,4 @@
+procedure main() returns integer {
+	tuple(real j, integer k, integer m) t2 = (0.0);
+	return 0;
+}
