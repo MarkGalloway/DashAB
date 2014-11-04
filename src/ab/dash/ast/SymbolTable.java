@@ -235,10 +235,6 @@ public class SymbolTable {
     }
 
     public Type getResultType(Type[][] typeTable, DashAST a, DashAST b) {
-        if (a.symbol == null || a.symbol.type == null ) {
-            return _void;
-        }
-        
         int ta = a.evalType.getTypeIndex(); // type index of left operand
         int tb = b.evalType.getTypeIndex(); // type index of right operand
         Type result = typeTable[ta][tb];    // operation result type
@@ -260,9 +256,7 @@ public class SymbolTable {
     }
     
     public Type lop(DashAST a, DashAST b) {
-        getResultType(logicResultType, a, b);
-        
-        return _boolean;
+        return getResultType(logicResultType, a, b);
     }
     
     public Type relop(DashAST a, DashAST b) {
