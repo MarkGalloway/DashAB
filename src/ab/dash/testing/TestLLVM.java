@@ -151,5 +151,51 @@ public class TestLLVM extends BaseTest {
             if (i!=7) { sb.append(i + "\n");  }
         }
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
-    }    
+    }
+    
+    @Test 
+    public void booleans() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/19Booleans/booleans.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("T\n");	// b0 -> out;	'\n' -> out;	// true
+        sb.append("F\n");	// b1 -> out;	'\n' -> out;	// false
+        
+        sb.append("F\n");	// b2 -> out;	'\n' -> out;	// false
+        sb.append("T\n");	// b3 -> out;	'\n' -> out;	// true
+        
+        sb.append("T\n");	// b4 -> out;	'\n' -> out;	// true
+        sb.append("F\n");	// b5 -> out;	'\n' -> out;	// false
+        sb.append("F\n");	// b6 -> out;	'\n' -> out;	// false
+        sb.append("T\n");	// b7 -> out;	'\n' -> out;	// true
+    	
+    	
+        sb.append("F\n");	// b8 -> out;	'\n' -> out;	// false
+        sb.append("T\n");	// b9 -> out;	'\n' -> out;	// true
+        sb.append("T\n");	// b10 -> out;	'\n' -> out;	// true
+        sb.append("F\n");	// b11 -> out;	'\n' -> out;	// false
+    	
+        sb.append("F\n");	// b12 -> out;	'\n' -> out;	// false
+    	sb.append("F\n");	// b13 -> out;	'\n' -> out;	// false
+    	sb.append("F\n");	// b14 -> out;	'\n' -> out;	// false
+    	sb.append("T\n");	// b15 -> out;	'\n' -> out;	// true
+    	
+    	sb.append("F\n");	// b16 -> out;	'\n' -> out;	// false
+    	sb.append("T\n");	// b17 -> out;	'\n' -> out;	// true
+    	sb.append("T\n");	// b18 -> out;	'\n' -> out;	// true
+    	sb.append("F\n");	// b19 -> out;	'\n' -> out;	// true
+    	
+    	sb.append("F\n");	// b20 -> out;	'\n' -> out;	// false
+    	sb.append("T\n");	// b21 -> out;	'\n' -> out;	// true
+    	sb.append("T\n");	// b22 -> out;	'\n' -> out;	// true
+    	sb.append("F\n");	// b23 -> out;	'\n' -> out;	// false
+    	
+    	sb.append("T\n");	// b24 -> out;	'\n' -> out;	// true
+    	sb.append("F\n");	// b25 -> out;	'\n' -> out;	// false
+    	
+    	sb.append("T\n");	// l1 -> out;	'\n' -> out;	// true
+    	sb.append("T\n");	// l2 -> out;	'\n' -> out;	// true
+    	
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }   
 }
