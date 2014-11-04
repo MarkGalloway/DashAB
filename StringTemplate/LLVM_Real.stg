@@ -3,7 +3,8 @@ float
 >>
 
 real_literal(id, val) ::= <<
- <vlocal_result(id)> = fadd float <val>, 0x00000000
+  <vlocal(id)>dbl = fadd double <val>, 0x0000000000000000
+  <vlocal_result(id)> = fptrunc double <vlocal(id)>dbl to float
 >>
 
 real_null(id) ::= <<
@@ -32,12 +33,12 @@ real_get_global(id, sym_id) ::= <<
 
 real_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store float <vlocal_result(expr_id)>, float* <vlocal_symbol(sym_id)>
+  store float <vlocal_result(expr_id)>, float* <vlocal_symbol(sym_id)>
 >>
 
 real_global_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store float <vlocal_result(expr_id)>, float* <vglobalSymbol(sym_id)>
+  store float <vlocal_result(expr_id)>, float* <vglobalSymbol(sym_id)>
 >>
 
 real_minus(id, expr, expr_id) ::= <<
@@ -114,5 +115,6 @@ real_ge(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 real_print(id, expr, expr_id) ::= <<
 <expr>
   <vlocal(id)> = getelementptr [3 x i8]* @.str.fmt.float, i32 0, i32 0
-  call i32 (i8*, ...)* @printf(i8* <vlocal(id)>, float <vlocal_result(expr_id)>)
+  <vlocal(id)>dbl = fpext float <vlocal_result(expr_id)> to double
+  call i32 (i8*, ...)* @printf(i8* <vlocal(id)>, double )
 >>

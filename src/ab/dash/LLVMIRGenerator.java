@@ -795,7 +795,7 @@ public class LLVMIRGenerator {
 		{
 			int id = ((DashAST)t).llvmResultID;
 			float val = Float.parseFloat(t.getText().replaceAll("_", ""));
-			String hex_val = Integer.toHexString(Float.floatToIntBits(val));
+			String hex_val = Long.toHexString(Double.doubleToLongBits(val));
 			hex_val = "0x" + hex_val.toUpperCase();
 			
 			StringTemplate template = stg.getInstanceOf("real_literal");

@@ -1,6 +1,6 @@
 tuple(id, types) ::= <<
 %T<id> = type {
-	<types>
+  <types>
 }
 >>
 
