@@ -6,6 +6,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    ASTtest.class,
    DefTest.class,
+   TypeTest.class
 })
 
 public class FullTestSuite {   

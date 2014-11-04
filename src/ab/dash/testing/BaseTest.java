@@ -2,7 +2,6 @@ package ab.dash.testing;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 

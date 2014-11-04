@@ -3,15 +3,9 @@ package ab.dash.testing;
 import java.io.IOException;
 
 import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenRewriteStream;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.antlr.runtime.tree.TreeVisitor;
-import org.antlr.runtime.tree.TreeVisitorAction;
 
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
@@ -48,13 +42,12 @@ public class TypesTestMain {
         }
   
         DashAST tree = (DashAST)entry.getTree();
-        System.out.println(tree.toStringTree());
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
 
         // make global scope, types
         SymbolTable symtab = new SymbolTable(tokens); 
-        Boolean debug = true;
+        Boolean debug = false;
         
         // make global scope, types
         Def def = new Def(nodes, symtab, debug);
@@ -69,42 +62,11 @@ public class TypesTestMain {
 		Types typeComp = new Types(nodes, symtab);
 		typeComp.downup(tree); // trigger resolve/type computation actions
 
-		System.err.flush();
-		System.out.flush();
+        if (symtab.getErrorCount() > 0) {
+            throw new SymbolTableException(symtab.getErrors());
+        }
+        
+        return;
     }
-    
-	static void showTypesAndPromotions(DashAST t, TokenRewriteStream tokens) {
-		if (t.evalType != null && t.getType() != DashParser.EXPR) {
-			System.out.printf(
-					"%-17s",
-					tokens.toString(t.getTokenStartIndex(),
-							t.getTokenStopIndex()));
-			String ts = t.evalType.toString();
-			System.out.printf(" type %-8s", ts);
-			if (t.promoteToType != null) {
-				System.out.print(" promoted to " + t.promoteToType);
-			}
-			System.out.println();
-		}
-	}
-	
-	/** Insert a cast before tokens from which this node was created. */
-	static void insertCast(DashAST t, TokenRewriteStream tokens) {
-		String cast = "(" + t.promoteToType + ")";
-		int left = t.getTokenStartIndex(); // location in token buffer
-		int right = t.getTokenStopIndex();
-		CommonToken tok = (CommonToken) t.token; // tok is node's token payload
-		if (tok.getType() == DashParser.EXPR) {
-			tok = (CommonToken) ((DashAST) t.getChild(0)).token;
-		}
-		if (left == right) {
-			// it's a single atom
-			// or a[i]
-			tokens.insertBefore(left, cast);
-		} else { // need parens
-			String original = tokens.toString(left, right);
-			tokens.replace(left, right, cast + "(" + original + ")");
-		}
-	}
 
 }

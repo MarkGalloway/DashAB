@@ -8,13 +8,12 @@ package ab.dash.ast;
  * We make no guarantees that this code is fit for any purpose. 
  * Visit http://www.pragmaticprogrammer.com/titles/tpdsl for more book information.
 ***/
+import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.runtime.TokenStream;
 
 import ab.dash.DashLexer;
-import ab.dash.exceptions.SymbolTableException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SymbolTable {
 	private static int ID_COUNTER = 0;

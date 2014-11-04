@@ -1,4 +1,4 @@
 procedure main() returns integer {
-	tuple(real, integer i) t1 = (0.0, 0, 1);
+	tuple(real m) t2 = (2);
     return 0;
 }
