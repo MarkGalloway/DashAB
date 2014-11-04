@@ -1,7 +1,11 @@
+const out = std_output();
+
 function squared(real a) returns real {
     return a*a;
 }
 
-procedure main() returns real {
-    return squared(5);
+procedure main() returns integer {
+    real c = squared(5); 
+    c -> out;
+    return 0;
 }

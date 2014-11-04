@@ -1,16 +1,10 @@
+/** Def.g Unit Tests. Compares symbol table globals to expected globals. **/
+/** TODO: Add Error Tests **/
 package ab.dash.testing;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.PrintStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.antlr.runtime.RecognitionException;
-import org.junit.Before;
 import org.junit.Test;
 
 import ab.dash.ast.SymbolTable;
@@ -18,12 +12,12 @@ import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
 
-public class DefTest extends BaseTest {
+public class TestDef extends BaseTest {
     
     @Test // Check that the globals are what we expect for a program that just defines main
     public void simpleMain() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/01SimpleMain/simpleMain.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         assertEquals(base_globals, symtab.globals.keys());
     }
@@ -32,7 +26,7 @@ public class DefTest extends BaseTest {
     @Test // Check that the globals are declared correctly when local variables are added
     public void localVariables() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/02VariableDeclarationInMain/variableDeclarationInMain.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("out");
         assertEquals(base_globals, symtab.globals.keys());
@@ -41,7 +35,7 @@ public class DefTest extends BaseTest {
     @Test // Test with if statements
     public void ifStatement() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/04SimpleIfStatement/simpleIfStatement.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("out");
         assertEquals(base_globals, symtab.globals.keys());    
@@ -50,7 +44,7 @@ public class DefTest extends BaseTest {
     @Test // Test with tuples
     public void tuples() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/05Tuples/tuples.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("out");
         assertEquals(base_globals, symtab.globals.keys());    
@@ -59,7 +53,7 @@ public class DefTest extends BaseTest {
     @Test // Test with type inference
     public void typeInference() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/06TypeInference/typeInference.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("out");
         base_globals.add("b");
@@ -68,8 +62,8 @@ public class DefTest extends BaseTest {
     
     @Test // Test with integers
     public void integers() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
-        String[] args = new String[] {"TestPrograms/07Integers/integers.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        String[] args = new String[] {"TestPrograms/07IntegersTokens/integersTokens.ds"};
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("out");
         assertEquals(base_globals, symtab.globals.keys());    
@@ -78,7 +72,7 @@ public class DefTest extends BaseTest {
     @Test // Test with procedures
     public void procedures() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/08ProcedureWithNoReturnType/procedureWithNoReturnType.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("out");
         base_globals.add("no_return");
@@ -88,7 +82,7 @@ public class DefTest extends BaseTest {
     @Test // Test with procedures with args
     public void proceduresWithArgs() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/12ProcedureWithArgs/procedureWithArgs.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("out");
         base_globals.add("no_return");
@@ -98,7 +92,7 @@ public class DefTest extends BaseTest {
     @Test // Test with typedefs
     public void typedef() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/09Typedef/typedef.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("out");
         base_globals.add("x");
@@ -106,19 +100,22 @@ public class DefTest extends BaseTest {
     }
     
     @Test // Test with main using a function
-    public void useFunction() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
-        String[] args = new String[] {"TestPrograms/11UseFunction/UseFunction.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+    public void multiFunction() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+        String[] args = new String[] {"TestPrograms/11MultiFunction/multiFunction.ds"};
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("squared");
+        base_globals.add("squaredPlus1");
+        base_globals.add("blah");
         assertEquals(base_globals, symtab.globals.keys());    
     }
     
     @Test // Test with multiple functions
     public void functionWithArgs() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         String[] args = new String[] {"TestPrograms/10FunctionWithArgs/functionWithArgs.ds"};
-        SymbolTable symtab = DefTestMain.main(args);
+        SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
+        base_globals.add("out");
         base_globals.add("squared");
         assertEquals(base_globals, symtab.globals.keys());    
     }

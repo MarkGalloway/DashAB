@@ -8,12 +8,12 @@ package ab.dash.ast;
  * We make no guarantees that this code is fit for any purpose. 
  * Visit http://www.pragmaticprogrammer.com/titles/tpdsl for more book information.
 ***/
+import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.runtime.TokenStream;
 
 import ab.dash.DashLexer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SymbolTable {
 	private static int ID_COUNTER = 0;
@@ -30,10 +30,10 @@ public class SymbolTable {
     
     
     /* tVOID is for procedures with no return and should not be added 
-     * to the globals or any array used for type checking. This is 
+     * to the globals. This is 
      * mostly used for debugging type checking.
      */
-    public static final int tVOID = -1;		
+    public static final int tVOID = 7;		
     public static final BuiltInTypeSymbol _void =
             new BuiltInTypeSymbol("void", tVOID);
     
@@ -85,58 +85,63 @@ public class SymbolTable {
 
     /** Map t1 op t2 to result type (null implies illegal) */
     public static final Type[][] arithmeticResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
-        /*boolean*/ 	{null,		null,    	null,   	null,   	null, 	null, 	null},
-        /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null},
-        /*integer*/     {null,		null,  		null,    	_integer,   _real,	null,	null},
-        /*real*/   		{null,		null,  		null,    	_real,   	_real,	null,	null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  void*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null,         null},
+        /*boolean*/ 	{null,		null,    	null,   	null,   	null, 	null, 	null,         null},
+        /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null},
+        /*integer*/     {null,		null,  		null,    	_integer,   _real,	null,	null,         null},
+        /*real*/   		{null,		null,  		null,    	_real,   	_real,	null,	null,         null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,         null},
+        /*void*/        {null,      null,       null,       null,       null,   null,   null,         null}
     };
     
     public static final Type[][] logicResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
-        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null},
-        /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null},
-        /*integer*/     {null,		null,  		null,    	null,   	null,	null,	null},
-        /*real*/   		{null,		null,  		null,    	null,   	null,	null,	null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  void*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null,         null},
+        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null,         null},
+        /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null},
+        /*integer*/     {null,		null,  		null,    	null,   	null,	null,	null,         null},
+        /*real*/   		{null,		null,  		null,    	null,   	null,	null,	null,         null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,         null},
+        /*void*/        {null,      null,       null,       null,       null,   null,   null,         null}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
-        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	null,	null},
-        /*character*/   {null,		null,  		_boolean,   null,   	null,	null,	null},
-        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean,	null,	null},
-        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  void*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,       null,	null,     null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    null,	null,     null},
+        /*character*/   {null,		null,  		_boolean,   null,   	null,	    null,	null,     null},
+        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean,	null,	null,     null},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,     null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,     null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,     null},
+        /*void*/        {null,      null,       null,       null,       null,       null,   null,     null}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
-    	/*tuple*/		{_boolean,	null,    	null,   	null,   	null,	null,	null},
-        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	null,	null},
-        /*character*/   {null,		null,  		_boolean,   null,   	null,	null,	null},
-        /*integer*/     {null,		null,  		null,    	_boolean,	_boolean,	null,	null},
-        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream void*/
+    	/*tuple*/		{_boolean,	null,    	null,   	null,   	null,	    null,	null,    null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    null,	null,    null},
+        /*character*/   {null,		null,  		_boolean,   null,   	null,	    null,	null,    null},
+        /*integer*/     {null,		null,  		null,    	_boolean,	_boolean,	null,	null,    null},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,    null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,    null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,    null},
+        /*void*/        {null,      null,       null,       null,       null,       null,   null,    null}
     };
     
     public static final Type[][] castResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
-    	/*tuple*/		{_tuple,	null,    	null,   	null,   	null,	null,	null},
-        /*boolean*/ 	{null,		_boolean,  _character, _integer,   	_real,	null,	null},
-        /*character*/   {null,		_boolean,  _character,	_integer,   _real,	null,	null},
-        /*integer*/     {null,		_boolean,  _character, _integer,   	_real,	null,	null},
-        /*real*/   		{null,		null,  		null,    	_integer,   _real,	null,	null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream void*/
+    	/*tuple*/		{_tuple,	null,    	null,   	null,   	null,	null,	null,        null},
+        /*boolean*/ 	{null,		_boolean,  _character, _integer,   	_real,	null,	null,        null},
+        /*character*/   {null,		_boolean,  _character,	_integer,   _real,	null,	null,        null},
+        /*integer*/     {null,		_boolean,  _character, _integer,   	_real,	null,	null,        null},
+        /*real*/   		{null,		null,  		null,    	_integer,   _real,	null,	null,        null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,        null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,        null},
+        /*void*/        {null,      null,       null,       null,       null,   null,   null,        null}
    };
 
     /** Indicate whether a type needs a promotion to a wider type.
@@ -145,14 +150,15 @@ public class SymbolTable {
      *  arithmetic, equality, and relational operators in Dash.
      */
     public static final Type[][] promoteFromTo = new Type[][] {
-        /*          	tuple		boolean  	character 	integer 	real	outstream	instream*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null},
-        /*boolean*/ 	{null,		null,    	null,   	null,   	null,	null,	null},
-        /*character*/   {null,		null,  		null,    	null,   	null,	null,	null},
-        /*integer*/     {null,		null,  		null,    	null,   	_real,	null,	null},
-        /*real*/   		{null,		null,  		null,    	null,   	null, 	null, null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null}
+        /*          	tuple		boolean  	character 	integer 	real	outstream	instream   void*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	    null,      null},
+        /*boolean*/ 	{null,		null,    	null,   	null,   	null,	null,	    null,      null},
+        /*character*/   {null,		null,  		null,    	null,   	null,	null,	    null,      null},
+        /*integer*/     {null,		null,  		null,    	null,   	_real,	null,	    null,      null},
+        /*real*/   		{null,		null,  		null,    	null,   	null, 	null,       null,      null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	    null,      null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	    null,      null},
+        /*void*/        {null,      null,       null,       null,       null,   null,       null,      null}
     };
 
     public static int getID() {
@@ -218,14 +224,13 @@ public class SymbolTable {
 	}
 	
 	public boolean checkIfDefined(DashAST a) {
-		if (a.symbol != null) {
-	        if ( a.symbol.type != null ) {
-	            return true;
-	        }
+		if (a.symbol != null && a.symbol.type != null ) {
+		    return true;
 		}
 		
 		error("line " + a.getLine() + ": " +
    			 text(a)+ " is not defined in the program.");
+		//throw new SymbolTableException("Undefined Type");
         return false;
     }
 
@@ -373,6 +378,10 @@ public class SymbolTable {
     public void declinit(DashAST declID, DashAST init) {
         int te = init.evalType.getTypeIndex(); // promote expr to decl type?
         
+//if(te == tVOID) {
+//    return;
+//}
+        
         // Check for Type Inference
         if (declID.symbol.type == null) {
         	declID.symbol.type = init.evalType;
@@ -400,7 +409,7 @@ public class SymbolTable {
         	TupleTypeSymbol initTuple = (TupleTypeSymbol) init.evalType;
         	
         	if (idTuple.fields.size() != initTuple.fields.size()) {
-        		error("line " + declID.getLine() + ": Tuple's have mismatched sizes in "+
+        		error("line " + declID.getLine() + ": Tuples have mismatched sizes in "+
                         text((DashAST)declID.getParent()));
         		return;
         	}

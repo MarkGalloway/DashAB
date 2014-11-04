@@ -1,3 +1,3 @@
-tuple(integer, real r, integer i) tuple_var = null;
-tuple(integer, real r) tuple_var2;
+const tuple(integer, real r, integer i) tuple_var = null;
+const tuple(integer, real r) tuple_var2;
 tuple_var2 = null;

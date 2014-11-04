@@ -1,0 +1,61 @@
+const out = std_output();
+
+const character c0 = 'a';
+const character c1 = 'b';
+
+const boolean b0 = 'a' == 'a';
+const boolean b1 = 'a' == 'b';
+
+const boolean b2 = 'a' != 'a';
+const boolean b3 = 'a' != 'b';
+
+const boolean b4 = 'a' < 'b';
+const boolean b5 = 'b' < 'b';
+const boolean b6 = 'c' < 'b';
+
+const boolean b7 = 'a' > 'b';
+const boolean b8 = 'b' > 'b';
+const boolean b9 = 'c' > 'b';
+
+const boolean b10 = 'a' <= 'b';
+const boolean b11 = 'b' <= 'b';
+const boolean b12 = 'c' <= 'b';
+
+const boolean b13 = 'a' >= 'b';
+const boolean b14 = 'b' >= 'b';
+const boolean b15 = 'c' >= 'b';
+
+procedure main() returns integer {
+	boolean l1 = c0 < 'b';
+	boolean l2 = l1 and true;
+	
+	c0 -> out; '\n' -> out;		// a
+	c1 -> out; '\n' -> out;		// b
+	
+	b0 -> out; '\n' -> out;		// true
+	b1 -> out; '\n' -> out;		// false
+
+	b2 -> out; '\n' -> out;		// false
+	b3 -> out; '\n' -> out;		// true
+	
+	b4 -> out; '\n' -> out;		// true
+	b5 -> out; '\n' -> out;		// false
+	b6 -> out; '\n' -> out;		// false
+	
+	b7 -> out; '\n' -> out;		// false
+	b8 -> out; '\n' -> out;		// false
+	b9 -> out; '\n' -> out;		// true
+	
+	b10 -> out; '\n' -> out;	// true
+	b11 -> out; '\n' -> out;	// true
+	b12 -> out; '\n' -> out;	// false
+	
+	b13 -> out; '\n' -> out;	// false
+	b14 -> out; '\n' -> out;	// true
+	b15 -> out; '\n' -> out;	// true
+	
+	l1 -> out; '\n' -> out;		// true
+	l2 -> out; '\n' -> out;		// true
+	
+    return 0;
+}

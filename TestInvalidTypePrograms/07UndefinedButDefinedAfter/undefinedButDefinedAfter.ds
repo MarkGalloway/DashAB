@@ -1,0 +1,5 @@
+procedure main() returns integer {
+	real my_real = e2 + 5.0;
+	real e2 = 5;
+    return 0;
+}

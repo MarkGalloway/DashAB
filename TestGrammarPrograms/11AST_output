@@ -1,1 +1,1 @@
-(PROGRAM (VAR_DECL var my_tuple (TUPLE_LIST (EXPR x) (EXPR false) (EXPR 5))) (VAR_DECL const my_tuple (TUPLE_LIST (EXPR x) (EXPR false) (EXPR 5))))
+(PROGRAM (VAR_DECL const my_tuple (TUPLE_LIST (EXPR x) (EXPR false) (EXPR 5))) (VAR_DECL const my_tuple (TUPLE_LIST (EXPR x) (EXPR false) (EXPR 5))))
