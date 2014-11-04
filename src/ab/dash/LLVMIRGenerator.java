@@ -178,7 +178,14 @@ public class LLVMIRGenerator {
 				Type arg_type = arg_var.type;
 				StringTemplate type_template = getType(arg_type);
 				
-				StringTemplate arg = stg.getInstanceOf("args");
+				String argTemplate = null;
+				if (t.getToken().getType() == DashLexer.PROCEDURE_DECL &&
+						arg_var.specifier.getSpecifierIndex() == SymbolTable.sVAR)
+					argTemplate = "pass_by_reference_args";
+				else
+					argTemplate = "args";
+
+				StringTemplate arg = stg.getInstanceOf(argTemplate);
 				arg.setAttribute("arg_id", arg_var.id);
 				arg.setAttribute("arg_type", type_template);
 				arg.setAttribute("id", argument_node.llvmResultID);
@@ -193,13 +200,16 @@ public class LLVMIRGenerator {
 				VariableSymbol arg_var = (VariableSymbol)argument_node.symbol;
 				Type arg_type = arg_var.type;
 				StringTemplate type_template = getType(arg_type);
-				
-				StringTemplate arg = stg.getInstanceOf("arg_init");
-				arg.setAttribute("arg_type", type_template);
-				arg.setAttribute("arg_id", arg_var.id);
-				arg.setAttribute("id", argument_node.llvmResultID);
-				
-				arg_init += arg.toString();
+
+				if (t.getToken().getType() != DashLexer.PROCEDURE_DECL ||
+						arg_var.specifier.getSpecifierIndex() != SymbolTable.sVAR) {
+					StringTemplate arg = stg.getInstanceOf("arg_init");
+					arg.setAttribute("arg_type", type_template);
+					arg.setAttribute("arg_id", arg_var.id);
+					arg.setAttribute("id", argument_node.llvmResultID);
+
+					arg_init += arg.toString();
+				}
 			}
 
 			StringTemplate code = exec((DashAST)t.getChild(t.getChildCount() - 1));
