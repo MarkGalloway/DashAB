@@ -26,7 +26,7 @@ public class LLVMIRGenerator {
 	private boolean debug_mode = false;
 	
 	public enum LLVMOps {
-	    ADD, SUB, MULT, DIV, EQ, NE, LT, GT
+	    AND, OR, XOR, ADD, SUB, MULT, DIV, EQ, NE, LT, GT
 	}
 	
 	public LLVMIRGenerator(StringTemplateGroup stg, SymbolTable symtab) {		
@@ -665,6 +665,35 @@ public class LLVMIRGenerator {
 			
 			return template;
 		}
+		
+		case DashLexer.Not:
+		{
+			String id = Integer.toString(((DashAST)t).llvmResultID);
+			int type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
+			
+			StringTemplate expr = exec((DashAST)t.getChild(0));
+			String expr_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
+			
+			StringTemplate template = null;
+			if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_not");
+			}
+			
+			template.setAttribute("expr_id", expr_id);
+			template.setAttribute("expr", expr);
+			template.setAttribute("id", id);
+			
+			return template;
+		}
+		
+		case DashLexer.And:
+			return operation(t, LLVMOps.AND);
+			
+		case DashLexer.Or:
+			return operation(t, LLVMOps.OR);
+			
+		case DashLexer.Xor:
+			return operation(t, LLVMOps.XOR);
 
 		case DashLexer.EQUALITY:
 			return operation(t, LLVMOps.EQ);
@@ -910,6 +939,24 @@ public class LLVMIRGenerator {
 		
 		StringTemplate template = null;
 		switch (op) {
+		case AND: {
+			if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_and");
+			}
+			break;
+		}
+		case OR: {
+			if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_or");
+			}
+			break;
+		}
+		case XOR: {
+			if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_xor");
+			}
+			break;
+		}
 		case EQ:
 			if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_eq");

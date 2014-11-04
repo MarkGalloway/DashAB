@@ -183,7 +183,7 @@ public class TestLLVM extends BaseTest {
     	sb.append("F\n");	// b16 -> out;	'\n' -> out;	// false
     	sb.append("T\n");	// b17 -> out;	'\n' -> out;	// true
     	sb.append("T\n");	// b18 -> out;	'\n' -> out;	// true
-    	sb.append("F\n");	// b19 -> out;	'\n' -> out;	// true
+    	sb.append("T\n");	// b19 -> out;	'\n' -> out;	// true
     	
     	sb.append("F\n");	// b20 -> out;	'\n' -> out;	// false
     	sb.append("T\n");	// b21 -> out;	'\n' -> out;	// true
