@@ -68,6 +68,7 @@ declare i8* @malloc(i32)
 declare i8* @calloc(i32, i32)
 declare void @free(i8*)
 declare void @exit(i32)
+declare float @llvm.pow.f32(float, float) nounwind readonly
 >>
 
 string_constants() ::= <<
