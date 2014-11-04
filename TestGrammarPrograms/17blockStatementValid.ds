@@ -1,5 +1,5 @@
-int x1;
-int z1;
+const integer x1;
+const integer z1;
 
 { 
   x1 = 3;
@@ -9,9 +9,9 @@ int z1;
 }
 
 
-int x = 3;
-int y = 0;
-real z = 0;
+const integer x = 3;
+const integer y = 0;
+const real z = 0;
 
 {
   real r = 7.1;

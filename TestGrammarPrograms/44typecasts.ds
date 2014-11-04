@@ -1,0 +1,9 @@
+const real r = 1.0;
+const integer x = as<integer>(r);
+const real r2 = as<real>(42);
+const character c = 'a';
+const boolean b = as<boolean>(c);
+
+if(as<integer>(b) != 0) {
+  var character c2 = as<character>(40);
+}

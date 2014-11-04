@@ -1,0 +1,12 @@
+const out = std_output();
+
+procedure main() returns integer {
+	integer n = 0;
+	
+	loop {
+	    n -> out; '\n' -> out;
+	    n = n + 1;
+	} while (n < 10)
+	
+	return 0;
+}

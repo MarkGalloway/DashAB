@@ -4,7 +4,7 @@ typeInitMap ::= [
     default:   "null"
 ]
 
-program(type_defs, globals, code) ::= <<
+program(type_defs, globals, global_code, code) ::= <<
 target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v64:64:64-v128:128:128-a0:0:64-s0:64:64-f80:128:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
@@ -16,23 +16,36 @@ target triple = "x86_64-unknown-linux-gnu"
 
 <globals>
 
+define void @initGlobals() {
+<global_code>
+	ret void;
+}
+
 <code>
 
 <utils()>
 
 >>
 
+void_type() ::= <<
+void
+>>
+
 vglobalSymbol(id) ::= <<
 @__<id>_symbol
 >>
+
 vlocal(id) ::= <<
 %__<id>_
 >>
 vlocal_result(id) ::= <<
 %__<id>_result
 >>
-vlocalSymbol(id) ::= <<
+vlocal_symbol(id) ::= <<
 %__<id>_symbol
+>>
+vlocal_argument(id) ::= <<
+%__<id>_argument
 >>
 fglobal(id) ::= <<
 @___func<id>
@@ -63,29 +76,55 @@ string_constants() ::= <<
 @.str.fmt.int = private unnamed_addr constant [3 x i8] c"%d\00", align 1
 @.str.fmt.int.newline = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
 @.str.fmt.int.lspace = private unnamed_addr constant [4 x i8] c" %d\00", align 1
-@.str.fmt.float = private unnamed_addr constant [3 x i8] c"%g\00", align 1
-@.str.fmt.float.newline = private unnamed_addr constant [4 x i8] c"%g\0A\00", align 1
-@.str.fmt.float.lspace = private unnamed_addr constant [4 x i8] c" %g\00", align 1
+@.str.fmt.float = private unnamed_addr constant [3 x i8] c"%f\00", align 1
+@.str.fmt.float.newline = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@.str.fmt.float.lspace = private unnamed_addr constant [4 x i8] c" %f\00", align 1
 >>
 
 utils() ::= <<
 >>
 
-function_main(code) ::= <<
+function_main(id, code) ::= <<
 define i32 @main() nounwind uwtable {
+call void @initGlobals()
 <code; separator="\n">
 }
 >>
 
-function(id, return_type, args, code) ::= <<
-define <return_type> <fglobal(id)>(<args>) {
+function(id, sym_id, return_type, args, arg_init, code) ::= <<
+define <return_type> <fglobal(sym_id)>(<args>) {
+<arg_init>
 <code; separator="\n">
 }
 >>
+
+args(id, arg_id, arg_type) ::= <<
+<arg_type> <vlocal_argument(arg_id)>
+>>
+
+arg_init(id, arg_id, arg_type) ::= <<
+<vlocal_symbol(arg_id)> = alloca <arg_type>
+store <arg_type> <vlocal_argument(arg_id)>, <arg_type>* <vlocal_symbol(arg_id)>
+>>
+
+args_call(id, arg_id, arg_type) ::= <<
+<arg_type> <vlocal_result(arg_id)>
+>>
+
 
 return(id, expr, expr_id, type) ::= <<
 <expr>
   ret <type> <vlocal_result(expr_id)>
+>>
+
+call_void(id, function_id, args, code) ::= <<
+<code>
+	call void <fglobal(function_id)>(<args>)
+>>
+
+call(id, function_id, return_type, args, code) ::= <<
+<code>
+	<vlocal_result(id)> = call <return_type> <fglobal(function_id)>(<args>)
 >>
 
 if(id, expr, expr_id, block) ::= <<
@@ -99,3 +138,68 @@ if.body<id>:
 if.done<id>:
 
 >>
+
+if_else(id, expr, expr_id, block, block2) ::= <<
+  <expr>
+  br i1 <vlocal_result(expr_id)>, label %if.body<id>, label %if.else<id>
+
+if.body<id>:
+  <block>
+  br label %if.done<id>
+
+if.else<id>:
+  <block2>
+  br label %if.done<id>
+  
+if.done<id>:
+
+>>
+
+while(id, expr, expr_id, block) ::= <<
+br label %loop<id>
+
+loop<id>:
+  <expr>
+  br i1 <vlocal_result(expr_id)>, label %loop.body<id>, label %loop.done<id>
+
+loop.body<id>:
+  <block>
+  br label %loop<id>
+  
+loop.done<id>:
+
+>>
+
+dowhile(id, expr, expr_id, block) ::= <<
+br label %loop<id>
+
+loop<id>:
+  <block>
+  
+  <expr>
+  br i1 <vlocal_result(expr_id)>, label %loop<id>, label %loop.done<id>
+  
+loop.done<id>:
+
+>>
+
+loop(id, block) ::= <<
+br label %loop<id>
+
+loop<id>:
+  <block>
+  
+  br label %loop<id>
+  
+loop.done<id>:
+
+>>
+
+break(id, loop_id) ::= <<
+	br label %loop.done<loop_id>
+>>
+
+continue(id, loop_id) ::= <<
+	br label %loop<loop_id>
+>>
+

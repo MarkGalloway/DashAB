@@ -367,4 +367,27 @@ public class ASTtest extends BaseTest {
         String[] args = new String[] {"TestGrammarPrograms/41streamDeclInvalid.ds"};
         AstTestMain.main(args);
     }
+    
+    @Test // globals must be declared const
+    public void globalConstTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 1: Global variables must be declared with the const specifier.");
+        String[] args = new String[] {"TestGrammarPrograms/42globalMissingConst.ds"};
+        AstTestMain.main(args);
+    }
+    
+    @Test // globals must be declared const
+    public void globalConstTestB() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 1: Global variables must be declared with the const specifier.");
+        String[] args = new String[] {"TestGrammarPrograms/43globalMissingConstB.ds"};
+        AstTestMain.main(args);
+    }
+    
+    @Test // typecast parse test
+    public void typecastParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/44typecasts.ds"};
+        AstTestMain.main(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/44AST_output"), outErrIntercept.toString().trim());
+    }
 }

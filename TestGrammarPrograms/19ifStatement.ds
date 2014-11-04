@@ -1,6 +1,6 @@
-integer x = 0;
-integer y = 0;
-integer z = 0;
+const integer x = 0;
+const integer y = 0;
+const integer z = 0;
 
 /* Block if Statement with parenthesized conditional */
 

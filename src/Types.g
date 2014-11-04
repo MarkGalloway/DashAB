@@ -29,6 +29,7 @@ bottomup // match subexpressions innermost to outermost
 	|	ret
 	|	assignment
 	|	ifstat
+	|	loopstat
 	|	print
 	;
 
@@ -38,6 +39,11 @@ bottomup // match subexpressions innermost to outermost
 ifstat 
   : ^(If cond=. s=. e=.?) {symtab.ifstat($cond);} ;
 // END: ifstat
+
+loopstat 
+  : ^(Loop s=.)
+  | ^(WHILE cond=. s=.) {symtab.loopstat($cond);} 
+  | ^(DOWHILE cond=. s=.) {symtab.loopstat($cond);} ;
 
 decl
 	: ^(VAR_DECL ID (init=.)?) 
@@ -91,7 +97,6 @@ expr returns [Type type]
     |   binaryOps   {$type = $binaryOps.type;}
     ;
 
-// TODO Handle f().x
 member returns [Type type]
 	:	^(DOT id=expr m=(ID | INTEGER))	
 		{

@@ -1,1 +1,1 @@
-(PROGRAM (VAR_DECL var integer x (EXPR 0)) (loop (BLOCK (= (EXPR x) (EXPR (+ x 1))) (if (EXPR (> x 10)) break))))
+(PROGRAM (VAR_DECL const integer x (EXPR 0)) (loop (BLOCK (= (EXPR x) (EXPR (+ x 1))) (if (EXPR (> x 10)) break))))

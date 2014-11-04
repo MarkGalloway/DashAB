@@ -1,15 +1,15 @@
-boolean b1 = null;
-boolean b2;
+const boolean b1 = null;
+const boolean b2;
 b2 = null;
 
-integer i1 = null;
-integer i2;
+const integer i1 = null;
+const integer i2;
 i2 = null + 1;
 
-real r1 = null;
-real r2;
+const real r1 = null;
+const real r2;
 r2 = 1.0 + null;
 
-character c1 = null;
-character c2;
+const character c1 = null;
+const character c2;
 c2 = null;
