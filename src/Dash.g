@@ -26,6 +26,7 @@ tokens {
   TYPEDEF;
   WHILE;
   DOWHILE;
+  UNPACK;
 }
 
 // Parser Rules
