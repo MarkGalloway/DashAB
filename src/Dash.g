@@ -270,6 +270,8 @@ statement
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
   | ID (',' ID)* ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID+ tupleMemberList)
+  | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
+  | ID (',' ID)+ ASSIGN tupleMemberList DELIM -> ^(UNPACK ID+ tupleMemberList)
   | Break DELIM!
     {
       if(loopDepth == 0) 

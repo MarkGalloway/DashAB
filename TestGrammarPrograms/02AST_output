@@ -1,1 +1,1 @@
-(PROGRAM (VAR_DECL var x (EXPR 1)) (VAR_DECL var z (EXPR 4)))
+(PROGRAM (VAR_DECL const x (EXPR 1)) (VAR_DECL const z (EXPR 4)))

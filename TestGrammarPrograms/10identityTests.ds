@@ -1,15 +1,15 @@
-boolean b1 = identity;
-boolean b2;
+const boolean b1 = identity;
+const boolean b2;
 b2 = identity;
 
-integer i1 = identity;
-integer i2;
+const integer i1 = identity;
+const integer i2;
 i2 = identity + 1;
 
-real r1 = identity;
-real r2;
+const real r1 = identity;
+const real r2;
 r2 = 1.0 + identity;
 
-character c1 = identity;
-character c2;
+const character c1 = identity;
+const character c2;
 c2 = identity;

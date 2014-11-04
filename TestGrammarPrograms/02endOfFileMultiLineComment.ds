@@ -1,4 +1,4 @@
-var x = 1; // var y = 2;
+const x = 1; // var y = 2;
 
 
 /* var z = 42; */
