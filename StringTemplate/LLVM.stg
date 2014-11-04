@@ -68,6 +68,7 @@ declare i8* @malloc(i32)
 declare i8* @calloc(i32, i32)
 declare void @free(i8*)
 declare void @exit(i32)
+declare float @llvm.pow.f32(float, float) nounwind readonly
 >>
 
 string_constants() ::= <<
@@ -92,6 +93,44 @@ string_constants() ::= <<
 >>
 
 utils() ::= <<
+; Function Attrs: nounwind readnone uwtable
+define i32 @powi(i32 %a, i32 %n) #0 {
+entry:
+  %cmp10 = icmp sgt i32 %n, 0
+  br i1 %cmp10, label %while.body.preheader, label %while.end
+
+while.body.preheader:                             ; preds = %entry
+  br label %while.body
+
+while.body:                                       ; preds = %if.end, %while.body.preheader
+  %value.013 = phi i32 [ %rem2, %if.end ], [ %a, %while.body.preheader ]
+  %power.012 = phi i32 [ %shr, %if.end ], [ %n, %while.body.preheader ]
+  %result.011 = phi i32 [ %result.1, %if.end ], [ 1, %while.body.preheader ]
+  %and = and i32 %power.012, 1
+  %tobool = icmp eq i32 %and, 0
+  br i1 %tobool, label %if.end, label %if.then
+
+if.then:                                          ; preds = %while.body
+  %mul = mul nsw i32 %value.013, %result.011
+  %rem = srem i32 %mul, 1000000007
+  br label %if.end
+
+if.end:                                           ; preds = %if.then, %while.body
+  %result.1 = phi i32 [ %rem, %if.then ], [ %result.011, %while.body ]
+  %mul1 = mul nsw i32 %value.013, %value.013
+  %rem2 = urem i32 %mul1, 1000000007
+  %shr = ashr i32 %power.012, 1
+  %cmp = icmp sgt i32 %shr, 0
+  br i1 %cmp, label %while.body, label %while.end.loopexit
+
+while.end.loopexit:                               ; preds = %if.end
+  %result.1.lcssa = phi i32 [ %result.1, %if.end ]
+  br label %while.end
+
+while.end:                                        ; preds = %while.end.loopexit, %entry
+  %result.0.lcssa = phi i32 [ 1, %entry ], [ %result.1.lcssa, %while.end.loopexit ]
+  ret i32 %result.0.lcssa
+}
 >>
 
 function_main(id, code) ::= <<

@@ -20,7 +20,7 @@ real_init_local(sym_id) ::= <<
 >>
 
 real_init_global(sym_id) ::= <<
-<vglobalSymbol(sym_id)> = private unnamed_addr global float 0
+<vglobalSymbol(sym_id)> = private unnamed_addr global float 0.0
 >>
 
 real_get_local(id, sym_id) ::= <<
@@ -43,7 +43,7 @@ real_global_assign(id, sym_id, expr, expr_id) ::= <<
 
 real_minus(id, expr, expr_id) ::= <<
 <expr>
-  <vlocal_result(id)> = fsub float 0, <vlocal_result(expr_id)>
+  <vlocal_result(id)> = fsub float 0.0, <vlocal_result(expr_id)>
 >>
 
 real_add(id, lhs, lhs_id, rhs, rhs_id) ::= <<
@@ -79,46 +79,43 @@ real_mod(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 real_pow(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
-  <vlocal(id)>lhs = fext float <vlocal_result(lhs_id)> to double
-  <vlocal(id)>rhs = fext float <vlocal_result(rhs_id)> to double
-  <vlocal(id)>dblresult = call double(double, double) @pow(double <vlocal(id)>lhs, double <vlocal(id)>rhs)
-  <vlocal_result(id)> = ftrunc double <vlocal(id)>dblresult to float
+  <vlocal_result(id)> = call float @llvm.pow.f32(float <vlocal_result(lhs_id)>, float <vlocal_result(rhs_id)>)
 >>
 
 real_eq(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
-  <vlocal_result(id)> = fcmp eq float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+  <vlocal_result(id)> = fcmp oeq float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
 real_ne(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
-  <vlocal_result(id)> = fcmp ne float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+  <vlocal_result(id)> = fcmp one float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
 real_lt(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
-  <vlocal_result(id)> = fcmp slt float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+  <vlocal_result(id)> = fcmp olt float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
 real_le(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
-  <vlocal_result(id)> = fcmp sle float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+  <vlocal_result(id)> = fcmp ole float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
 real_gt(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
-  <vlocal_result(id)> = fcmp sgt float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+  <vlocal_result(id)> = fcmp ogt float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
 real_ge(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
-  <vlocal_result(id)> = fcmp sge float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
+  <vlocal_result(id)> = fcmp oge float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
 real_print(id, expr, expr_id) ::= <<
