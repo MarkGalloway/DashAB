@@ -102,7 +102,7 @@ call void @initGlobals()
 >>
 
 function(id, sym_id, return_type, args, arg_init, code) ::= <<
-define <return_type> <fglobal(sym_id)>(<args>) {
+define <return_type> <fglobal(sym_id)>(<args; separator=", ">) {
 <arg_init>
 <code; separator="\n">
 }

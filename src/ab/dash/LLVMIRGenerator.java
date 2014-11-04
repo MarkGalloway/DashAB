@@ -171,7 +171,7 @@ public class LLVMIRGenerator {
 				return template;
 			}
 			
-			String args = "";
+			List<StringTemplate> args = new ArrayList<StringTemplate>();
 			for (int i = 1; i < t.getChildCount() - 1; i++) {
 				DashAST argument_node = ((DashAST) t.getChild(i).getChild(0));
 				VariableSymbol arg_var = (VariableSymbol)argument_node.symbol;
@@ -183,10 +183,7 @@ public class LLVMIRGenerator {
 				arg.setAttribute("arg_type", type_template);
 				arg.setAttribute("id", argument_node.llvmResultID);
 				
-				args += arg.toString();
-				if (i < t.getChildCount() - 2) {
-					args += ", ";
-				}
+				args.add(arg);
 			}
 			
 			String arg_init = "";
