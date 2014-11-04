@@ -100,11 +100,13 @@ public class TestDef extends BaseTest {
     }
     
     @Test // Test with main using a function
-    public void useFunction() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
-        String[] args = new String[] {"TestPrograms/11UseFunction/useFunction.ds"};
+    public void multiFunction() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+        String[] args = new String[] {"TestPrograms/11MultiFunction/multiFunction.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("squared");
+        base_globals.add("squaredPlus1");
+        base_globals.add("blah");
         assertEquals(base_globals, symtab.globals.keys());    
     }
     
@@ -113,6 +115,7 @@ public class TestDef extends BaseTest {
         String[] args = new String[] {"TestPrograms/10FunctionWithArgs/functionWithArgs.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
+        base_globals.add("out");
         base_globals.add("squared");
         assertEquals(base_globals, symtab.globals.keys());    
     }
