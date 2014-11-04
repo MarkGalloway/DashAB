@@ -49,7 +49,7 @@ public class TestLLVM extends BaseTest {
     public void tuples() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestPrograms/05Tuples/tuples.ds"};
         Runner.llvmMain(args);
-        assertEquals("T\na\n2", outErrIntercept.toString().trim());
+        assertEquals("T\na\n2\n3.5", outErrIntercept.toString().trim());
     }
     
     @Test 
@@ -324,6 +324,19 @@ public class TestLLVM extends BaseTest {
     	
     	sb.append("29.75\n");	// l1 -> out; '\n' -> out;		// 29.75
     	sb.append("35.25\n");	// l2 -> out; '\n' -> out;		// 35.25
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void realTokens() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/23RealTokens/realTokens.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("0.42\n");
+        sb.append("42\n");
+        sb.append("4.2e+11\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }

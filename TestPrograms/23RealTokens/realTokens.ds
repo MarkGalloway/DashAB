@@ -1,0 +1,9 @@
+const out = std_output();
+
+procedure main() returns integer {
+	._____42___ -> out; '\n' -> out;
+	4_2_._0_ -> out; '\n' -> out;
+	4_2_e_+_10_ -> out; '\n' -> out;
+	
+	return 0;
+}
