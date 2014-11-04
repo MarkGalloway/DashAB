@@ -86,9 +86,9 @@ string_constants() ::= <<
 @.str.fmt.int = private unnamed_addr constant [3 x i8] c"%d\00", align 1
 @.str.fmt.int.newline = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
 @.str.fmt.int.lspace = private unnamed_addr constant [4 x i8] c" %d\00", align 1
-@.str.fmt.float = private unnamed_addr constant [3 x i8] c"%f\00", align 1
-@.str.fmt.float.newline = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
-@.str.fmt.float.lspace = private unnamed_addr constant [4 x i8] c" %f\00", align 1
+@.str.fmt.float = private unnamed_addr constant [3 x i8] c"%g\00", align 1
+@.str.fmt.float.newline = private unnamed_addr constant [4 x i8] c"%g\0A\00", align 1
+@.str.fmt.float.lspace = private unnamed_addr constant [4 x i8] c" %g\00", align 1
 >>
 
 utils() ::= <<

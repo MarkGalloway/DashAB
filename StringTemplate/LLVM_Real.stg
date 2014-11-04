@@ -116,5 +116,5 @@ real_print(id, expr, expr_id) ::= <<
 <expr>
   <vlocal(id)> = getelementptr [3 x i8]* @.str.fmt.float, i32 0, i32 0
   <vlocal(id)>dbl = fpext float <vlocal_result(expr_id)> to double
-  call i32 (i8*, ...)* @printf(i8* <vlocal(id)>, double )
+  call i32 (i8*, ...)* @printf(i8* <vlocal(id)>, double <vlocal(id)>dbl)
 >>
