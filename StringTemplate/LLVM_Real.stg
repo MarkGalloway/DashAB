@@ -15,7 +15,7 @@ real_identity(id) ::= <<
 >>
 
 real_init_local(sym_id) ::= <<
-<vlocalSymbol(sym_id)> = alloca float
+<vlocal_symbol(sym_id)> = alloca float
 >>
 
 real_init_global(sym_id) ::= <<
@@ -23,7 +23,7 @@ real_init_global(sym_id) ::= <<
 >>
 
 real_get_local(id, sym_id) ::= <<
-<vlocal_result(id)> = load float*  <vlocalSymbol(sym_id)>
+<vlocal_result(id)> = load float*  <vlocal_symbol(sym_id)>
 >>
 
 real_get_global(id, sym_id) ::= <<
@@ -32,7 +32,7 @@ real_get_global(id, sym_id) ::= <<
 
 real_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store float <vlocal_result(expr_id)>, float* <vlocalSymbol(sym_id)>
+	store float <vlocal_result(expr_id)>, float* <vlocal_symbol(sym_id)>
 >>
 
 real_global_assign(id, sym_id, expr, expr_id) ::= <<
