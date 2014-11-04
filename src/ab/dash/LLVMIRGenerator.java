@@ -1,6 +1,7 @@
 package ab.dash;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import org.antlr.stringtemplate.StringTemplate;
@@ -223,14 +224,13 @@ public class LLVMIRGenerator {
 		case DashLexer.CALL:
 		{
 			// Arguments
-			String code = "";
-			String args = "";
+			List<StringTemplate> code = new ArrayList<StringTemplate>();
+			List<StringTemplate> args = new ArrayList<StringTemplate>();
 			DashAST argument_list = (DashAST) t.getChild(1);
 			for (int i = 0; i < argument_list.getChildCount(); i++) {
 				DashAST arg = (DashAST)argument_list.getChild(i);
 				
-				StringTemplate arg_exec = exec(arg);
-				code += arg_exec + "\n";
+				code.add(exec(arg));
 				
 				Type arg_type = arg.evalType;
 				StringTemplate type_template = getType(arg_type);
@@ -240,10 +240,7 @@ public class LLVMIRGenerator {
 				arg_template.setAttribute("arg_type", type_template);
 				arg_template.setAttribute("id", arg.llvmResultID);
 				
-				args += arg_template;
-				if (i < argument_list.getChildCount() - 1) {
-					args += ", ";
-				}
+				args.add(arg_template);
 			}
 			DashAST method_node = (DashAST) t.getChild(0);
 			MethodSymbol method = (MethodSymbol)method_node.symbol;

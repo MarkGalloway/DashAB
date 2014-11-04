@@ -128,13 +128,13 @@ return(id, expr, expr_id, type) ::= <<
 >>
 
 call_void(id, function_id, args, code) ::= <<
-<code>
-  call void <fglobal(function_id)>(<args>)
+<code; separator="\n">
+  call void <fglobal(function_id)>(<args; separator=", ">)
 >>
 
 call(id, function_id, return_type, args, code) ::= <<
-<code>
-  <vlocal_result(id)> = call <return_type> <fglobal(function_id)>(<args>)
+<code; separator="\n">
+  <vlocal_result(id)> = call <return_type> <fglobal(function_id)>(<args; separator=", ">)
 >>
 
 if(id, expr, expr_id, block) ::= <<
