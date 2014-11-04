@@ -438,6 +438,19 @@ public class LLVMIRGenerator {
 			return template;
 		}
 
+		case DashLexer.Continue:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			
+			Integer loop_id = loop_stack.peek();
+			
+			StringTemplate template = stg.getInstanceOf("continue");
+			
+			template.setAttribute("loop_id", loop_id.intValue());
+			template.setAttribute("id", id);
+			return template;
+		}
+		
 		case DashLexer.PRINT:
 		{
 			StringTemplate expr = exec((DashAST)t.getChild(0));
