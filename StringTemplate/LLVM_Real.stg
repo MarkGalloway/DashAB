@@ -33,12 +33,12 @@ real_get_global(id, sym_id) ::= <<
 
 real_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store float <vlocal_result(expr_id)>, float* <vlocal_symbol(sym_id)>
+  store float <vlocal_result(expr_id)>, float* <vlocal_symbol(sym_id)>
 >>
 
 real_global_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
-	store float <vlocal_result(expr_id)>, float* <vglobalSymbol(sym_id)>
+  store float <vlocal_result(expr_id)>, float* <vglobalSymbol(sym_id)>
 >>
 
 real_minus(id, expr, expr_id) ::= <<

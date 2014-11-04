@@ -18,7 +18,7 @@ target triple = "x86_64-unknown-linux-gnu"
 
 define void @initGlobals() {
 <global_code>
-	ret void;
+  ret void;
 }
 
 <code>
@@ -129,12 +129,12 @@ return(id, expr, expr_id, type) ::= <<
 
 call_void(id, function_id, args, code) ::= <<
 <code>
-	call void <fglobal(function_id)>(<args>)
+  call void <fglobal(function_id)>(<args>)
 >>
 
 call(id, function_id, return_type, args, code) ::= <<
 <code>
-	<vlocal_result(id)> = call <return_type> <fglobal(function_id)>(<args>)
+  <vlocal_result(id)> = call <return_type> <fglobal(function_id)>(<args>)
 >>
 
 if(id, expr, expr_id, block) ::= <<
@@ -206,10 +206,10 @@ br label %<vloop_entry(id)>
 >>
 
 break(id, loop_id) ::= <<
-	br label %<vloop_done(loop_id)>
+  br label %<vloop_done(loop_id)>
 >>
 
 continue(id, loop_id) ::= <<
-	br label %<vloop_entry(loop_id)>
+  br label %<vloop_entry(loop_id)>
 >>
 
