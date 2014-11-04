@@ -389,11 +389,7 @@ public class SymbolTable {
         
         if (declID.symbol.type instanceof TypedefSymbol) {
         	TypedefSymbol typedef = (TypedefSymbol) declID.symbol.type;
-        	if (typedef.def_type instanceof BuiltInTypeSymbol) {
-        		declID.symbol.type = typedef.def_type;
-        	} else if (typedef.def_type instanceof TupleTypeSymbol) {
-        		// TODO Handle tuples typedef
-        	}
+        	declID.symbol.type = typedef.def_type;
         }
         
         if (declID.symbol.type.getTypeIndex() == tTUPLE) {
@@ -470,8 +466,50 @@ public class SymbolTable {
             		text((DashAST)expr.getParent()));
         }
     }
+    
+    private boolean isConstantVariable(DashAST t) {
+    	switch (t.token.getType()) {
+    	case DashLexer.ID: {
+    		if (t.symbol != null) {
+    			if (t.symbol instanceof VariableSymbol) {
+    				VariableSymbol vs = (VariableSymbol)t.symbol;
+    				return vs.specifier.getSpecifierIndex() == sCONST;
+    			}
+    		}
+    	}
+    	case DashLexer.DOT: {
+    		DashAST id = (DashAST) t.getChild(0);
+    		DashAST field = (DashAST) t.getChild(1);
+    		if (id.getToken().getType() == DashLexer.ID) {
+    			VariableSymbol st = (VariableSymbol)id.scope.resolve(id.getText());
+    			if (st.specifier.getSpecifierIndex() == sCONST) {
+    				return true;
+    			}
+    			
+    			TupleTypeSymbol scope = (TupleTypeSymbol) st.type;
+    			VariableSymbol s = (VariableSymbol)scope.resolveMember(field.getText());
+    			
+    			return s.specifier.getSpecifierIndex() == sCONST;
+        	}
+    	}
+    	}
+    	
+    	for (int i = 0; i < t.getChildCount(); i++) {
+    		if (isConstantVariable((DashAST) t.getChild(i)))
+    			return true;
+    	}
+    	
+    	return false;
+    }
 
     public void assign(DashAST lhs, DashAST rhs) {
+    	if (isConstantVariable(lhs)) {
+			error("line " + lhs.getLine() + ": " +
+        			"The specifier for " + text(lhs) + 
+        			" is constant and can not be reassigned in "+
+                    text((DashAST)lhs.getParent()));
+			return;
+		}
         int tlhs = lhs.evalType.getTypeIndex(); // promote right to left type?
         int trhs = rhs.evalType.getTypeIndex();
         rhs.promoteToType = promoteFromTo[trhs][tlhs];
