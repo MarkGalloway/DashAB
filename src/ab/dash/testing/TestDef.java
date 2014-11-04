@@ -62,7 +62,7 @@ public class TestDef extends BaseTest {
     
     @Test // Test with integers
     public void integers() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
-        String[] args = new String[] {"TestPrograms/07Integers/integers.ds"};
+        String[] args = new String[] {"TestPrograms/07IntegersTokens/integersTokens.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
         base_globals.add("main");
         base_globals.add("out");
