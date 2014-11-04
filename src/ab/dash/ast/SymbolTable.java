@@ -260,7 +260,9 @@ public class SymbolTable {
     }
     
     public Type lop(DashAST a, DashAST b) {
-        return getResultType(logicResultType, a, b);
+        getResultType(logicResultType, a, b);
+        
+        return _boolean;
     }
     
     public Type relop(DashAST a, DashAST b) {
