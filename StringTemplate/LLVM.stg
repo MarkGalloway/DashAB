@@ -152,7 +152,7 @@ args(id, arg_id, arg_type) ::= <<
 >>
 
 pass_by_reference_args(id, arg_id, arg_type) ::= <<
-<arg_type> <vlocal_symbol(arg_id)>
+<arg_type>* <vlocal_symbol(arg_id)>
 >>
 
 arg_init(id, arg_id, arg_type) ::= <<
