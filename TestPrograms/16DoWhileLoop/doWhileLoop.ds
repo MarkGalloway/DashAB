@@ -6,7 +6,7 @@ procedure main() returns integer {
 	loop {
 	    n -> out; '\n' -> out;
 	    n = n + 1;
-	} while (n > 10)
+	} while (n < 10)
 	
 	return 0;
 }

@@ -1,6 +1,7 @@
 package ab.dash;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
@@ -20,6 +21,7 @@ public class LLVMIRGenerator {
 	private StringTemplateGroup stg;
 	private StringTemplate template;
 	private SymbolTable symtab;
+	private Stack<Integer> loop_stack;
 	
 	private boolean debug_mode = false;
 	
@@ -30,6 +32,7 @@ public class LLVMIRGenerator {
 	public LLVMIRGenerator(StringTemplateGroup stg, SymbolTable symtab) {		
 		this.stg = stg;
 		this.symtab = symtab;
+		this.loop_stack = new Stack<Integer>();
 	}
 	
 	public String toString() {
@@ -359,24 +362,81 @@ public class LLVMIRGenerator {
 			
 			return template;
 		}
-//
-//		case DashLexer.LOOP:
-//		{
-//			int id = ((DashAST)t).llvmResultID;
-//			
-//			StringTemplate expr = exec((DashAST)t.getChild(0));
-//			int expr_id = ((DashAST)t.getChild(0).getChild(0)).llvmResultID;
-//			
-//			StringTemplate block = exec((DashAST)t.getChild(1));
-//			
-//			StringTemplate template = stg.getInstanceOf("loop");
-//			
-//			template.setAttribute("block", block);
-//			template.setAttribute("expr_id", expr_id);
-//			template.setAttribute("expr", expr);
-//			template.setAttribute("id", id);
-//			return template;
-//		}
+
+		case DashLexer.WHILE:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			
+			StringTemplate expr = exec((DashAST)t.getChild(0));
+			int expr_id = ((DashAST)t.getChild(0).getChild(0)).llvmResultID;
+			
+			loop_stack.push(new Integer(id));
+			
+			StringTemplate block = exec((DashAST)t.getChild(1));
+			
+			loop_stack.pop();
+			
+			StringTemplate template = stg.getInstanceOf("while");
+			
+			template.setAttribute("block", block);
+			template.setAttribute("expr_id", expr_id);
+			template.setAttribute("expr", expr);
+			template.setAttribute("id", id);
+			return template;
+		}
+		
+		case DashLexer.DOWHILE:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			
+			StringTemplate expr = exec((DashAST)t.getChild(0));
+			int expr_id = ((DashAST)t.getChild(0).getChild(0)).llvmResultID;
+			
+			loop_stack.push(new Integer(id));
+			
+			StringTemplate block = exec((DashAST)t.getChild(1));
+			
+			loop_stack.pop();
+			
+			StringTemplate template = stg.getInstanceOf("dowhile");
+			
+			template.setAttribute("block", block);
+			template.setAttribute("expr_id", expr_id);
+			template.setAttribute("expr", expr);
+			template.setAttribute("id", id);
+			return template;
+		}
+		
+		case DashLexer.Loop:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			
+			
+			loop_stack.push(new Integer(id));
+			
+			StringTemplate block = exec((DashAST)t.getChild(0));
+			
+			loop_stack.pop();
+			
+			StringTemplate template = stg.getInstanceOf("loop");
+			
+			template.setAttribute("block", block);
+			template.setAttribute("id", id);
+			return template;
+		}
+		
+		case DashLexer.Break:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			
+			Integer loop_id = loop_stack.peek();
+			
+			StringTemplate template = stg.getInstanceOf("break");
+			
+			template.setAttribute("loop_id", loop_id.intValue());
+			template.setAttribute("id", id);
+			return template;
+		}
 
 		case DashLexer.PRINT:
 		{

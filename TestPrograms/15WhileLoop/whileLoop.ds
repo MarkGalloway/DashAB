@@ -3,7 +3,7 @@ const out = std_output();
 procedure main() returns integer {
 	integer n = 0;
 	
-	loop while (n > 10) {
+	loop while (n < 10) {
 	    n -> out; '\n' -> out;
 	    n = n + 1;
 	}
