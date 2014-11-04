@@ -374,6 +374,13 @@ public class ASTtest extends BaseTest {
         expectedEx.expectMessage("line 1: Global variables must be declared with the const specifier.");
         String[] args = new String[] {"TestGrammarPrograms/42globalMissingConst.ds"};
         AstTestMain.main(args);
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/40AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // globals must be declared const
+    public void globalConstTestB() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 1: Global variables must be declared with the const specifier.");
+        String[] args = new String[] {"TestGrammarPrograms/43globalMissingConstB.ds"};
+        AstTestMain.main(args);
     }
 }
