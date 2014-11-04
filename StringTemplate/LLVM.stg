@@ -160,12 +160,11 @@ br label %loop<id>
 
 loop<id>:
   <expr>
-  %loop<id>.cmp = icmp eq i32 %id<expr_id>_result, 1
-  br i1 %loop<id>.cmp, label %loop.body<id>, label %loop.done<id>
+  br i1 <vlocal_result(expr_id)>, label %loop.body<id>, label %loop.done<id>
 
 loop.body<id>:
   <block>
-  br label %while.loop<id>
+  br label %loop<id>
   
 loop.done<id>:
 
@@ -178,8 +177,7 @@ loop<id>:
   <block>
   
   <expr>
-  %loop<id>.cmp = icmp eq i32 %id<expr_id>_result, 1
-  br i1 %loop<id>.cmp, label %loop<id>, label %loop.done<id>
+  br i1 <vlocal_result(expr_id)>, label %loop<id>, label %loop.done<id>
   
 loop.done<id>:
 
@@ -204,3 +202,4 @@ break(id, loop_id) ::= <<
 continue(id, loop_id) ::= <<
 	br label %loop<loop_id>
 >>
+
