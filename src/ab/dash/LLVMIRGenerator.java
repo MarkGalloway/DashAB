@@ -1,6 +1,7 @@
 package ab.dash;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import org.antlr.stringtemplate.StringTemplate;
@@ -170,22 +171,26 @@ public class LLVMIRGenerator {
 				return template;
 			}
 			
-			String args = "";
+			List<StringTemplate> args = new ArrayList<StringTemplate>();
 			for (int i = 1; i < t.getChildCount() - 1; i++) {
 				DashAST argument_node = ((DashAST) t.getChild(i).getChild(0));
 				VariableSymbol arg_var = (VariableSymbol)argument_node.symbol;
 				Type arg_type = arg_var.type;
 				StringTemplate type_template = getType(arg_type);
 				
-				StringTemplate arg = stg.getInstanceOf("args");
+				String argTemplate = null;
+				if (t.getToken().getType() == DashLexer.PROCEDURE_DECL &&
+						arg_var.specifier.getSpecifierIndex() == SymbolTable.sVAR)
+					argTemplate = "pass_by_reference_args";
+				else
+					argTemplate = "args";
+
+				StringTemplate arg = stg.getInstanceOf(argTemplate);
 				arg.setAttribute("arg_id", arg_var.id);
 				arg.setAttribute("arg_type", type_template);
 				arg.setAttribute("id", argument_node.llvmResultID);
 				
-				args += arg.toString();
-				if (i < t.getChildCount() - 2) {
-					args += ", ";
-				}
+				args.add(arg);
 			}
 			
 			String arg_init = "";
@@ -195,13 +200,16 @@ public class LLVMIRGenerator {
 				VariableSymbol arg_var = (VariableSymbol)argument_node.symbol;
 				Type arg_type = arg_var.type;
 				StringTemplate type_template = getType(arg_type);
-				
-				StringTemplate arg = stg.getInstanceOf("arg_init");
-				arg.setAttribute("arg_type", type_template);
-				arg.setAttribute("arg_id", arg_var.id);
-				arg.setAttribute("id", argument_node.llvmResultID);
-				
-				arg_init += arg.toString();
+
+				if (t.getToken().getType() != DashLexer.PROCEDURE_DECL ||
+						arg_var.specifier.getSpecifierIndex() != SymbolTable.sVAR) {
+					StringTemplate arg = stg.getInstanceOf("arg_init");
+					arg.setAttribute("arg_type", type_template);
+					arg.setAttribute("arg_id", arg_var.id);
+					arg.setAttribute("id", argument_node.llvmResultID);
+
+					arg_init += arg.toString();
+				}
 			}
 
 			StringTemplate code = exec((DashAST)t.getChild(t.getChildCount() - 1));
@@ -223,14 +231,13 @@ public class LLVMIRGenerator {
 		case DashLexer.CALL:
 		{
 			// Arguments
-			String code = "";
-			String args = "";
+			List<StringTemplate> code = new ArrayList<StringTemplate>();
+			List<StringTemplate> args = new ArrayList<StringTemplate>();
 			DashAST argument_list = (DashAST) t.getChild(1);
 			for (int i = 0; i < argument_list.getChildCount(); i++) {
 				DashAST arg = (DashAST)argument_list.getChild(i);
 				
-				StringTemplate arg_exec = exec(arg);
-				code += arg_exec + "\n";
+				code.add(exec(arg));
 				
 				Type arg_type = arg.evalType;
 				StringTemplate type_template = getType(arg_type);
@@ -240,10 +247,7 @@ public class LLVMIRGenerator {
 				arg_template.setAttribute("arg_type", type_template);
 				arg_template.setAttribute("id", arg.llvmResultID);
 				
-				args += arg_template;
-				if (i < argument_list.getChildCount() - 1) {
-					args += ", ";
-				}
+				args.add(arg_template);
 			}
 			DashAST method_node = (DashAST) t.getChild(0);
 			MethodSymbol method = (MethodSymbol)method_node.symbol;
@@ -252,22 +256,16 @@ public class LLVMIRGenerator {
 			StringTemplate template = null;
 			if (method_type.getTypeIndex() == SymbolTable.tVOID) {
 				template = stg.getInstanceOf("call_void");
-				template.setAttribute("code", code);
-				template.setAttribute("args", args);
-				template.setAttribute("function_id", method.id);
-				template.setAttribute("id", t.llvmResultID);
-				
-				return template;
 			} else {
 				template = stg.getInstanceOf("call");
-				template.setAttribute("code", code);
-				template.setAttribute("args", args);
 				template.setAttribute("return_type", getType(method_type));
-				template.setAttribute("function_id", method.id);
-				template.setAttribute("id", t.llvmResultID);
 				
-				return template;
 			}
+			template.setAttribute("code", code);
+			template.setAttribute("args", args);
+			template.setAttribute("function_id", method.id);
+			template.setAttribute("id", t.llvmResultID);
+			return template;
 		}
 		
 		case DashLexer.Return:
