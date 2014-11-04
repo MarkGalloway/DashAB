@@ -152,7 +152,7 @@ args(id, arg_id, arg_type) ::= <<
 >>
 
 arg_init(id, arg_id, arg_type) ::= <<
-<vlocal_symbol(arg_id)> = alloca <arg_type>
+  <vlocal_symbol(arg_id)> = alloca <arg_type>
   store <arg_type> <vlocal_argument(arg_id)>, <arg_type>* <vlocal_symbol(arg_id)>
 >>
 
