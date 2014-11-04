@@ -60,8 +60,8 @@ public class TestLLVM extends BaseTest {
     }
     
     @Test 
-    public void integers() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/07Integers/integers.ds"};
+    public void integersTokens() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/07IntegersTokens/integersTokens.ds"};
         Runner.llvmMain(args);
         assertEquals("0\n145\n145", outErrIntercept.toString().trim());
     }
