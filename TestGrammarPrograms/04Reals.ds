@@ -4,6 +4,6 @@ const real r3 = 42e-10;
 const real r4 = 42e10;
 const real r5 = 42.e-10;
 const real r6 = 42.e+10;
-var real r7 = ._____42___;
+const real r7 = ._____42___;
 const real r8 = 4_2_._0_;
 const real r9 = 4_2_e_+_10_;
