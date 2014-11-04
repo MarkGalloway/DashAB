@@ -26,7 +26,7 @@ public class LLVMIRGenerator {
 	private boolean debug_mode = false;
 	
 	public enum LLVMOps {
-	    AND, OR, XOR, ADD, SUB, MULT, DIV, EQ, NE, LT, GT
+	    AND, OR, XOR, ADD, SUB, MULT, DIV, EQ, NE, LT, LE, GT, GE
 	}
 	
 	public LLVMIRGenerator(StringTemplateGroup stg, SymbolTable symtab) {		
@@ -703,9 +703,15 @@ public class LLVMIRGenerator {
 
 		case DashLexer.LESS:
 			return operation(t, LLVMOps.LT);
+			
+		case DashLexer.LESS_EQUAL:
+			return operation(t, LLVMOps.LE);
 
 		case DashLexer.GREATER:
 			return operation(t, LLVMOps.GT);
+			
+		case DashLexer.GREATER_EQUAL:
+			return operation(t, LLVMOps.GE);
 
 		case DashLexer.ADD:
 			return operation(t, LLVMOps.ADD);
@@ -992,8 +998,17 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("char_lt");
 			} else if (type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_lt");
-			} else if (type == SymbolTable.tTUPLE) {
-				template = stg.getInstanceOf("tuple_lt");
+			}
+			break;
+		case LE:
+			if (type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("int_le");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_le");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_le");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_le");
 			}
 			break;
 		case GT:
@@ -1005,8 +1020,17 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("char_gt");
 			} else if (type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_gt");
-			} else if (type == SymbolTable.tTUPLE) {
-				template = stg.getInstanceOf("tuple_gt");
+			}
+			break;
+		case GE:
+			if (type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("int_ge");
+			} else if (type == SymbolTable.tREAL) {
+				template = stg.getInstanceOf("real_ge");
+			} else if (type == SymbolTable.tCHARACTER) {
+				template = stg.getInstanceOf("char_ge");
+			} else if (type == SymbolTable.tBOOLEAN) {
+				template = stg.getInstanceOf("bool_ge");
 			}
 			break;
 		case ADD:

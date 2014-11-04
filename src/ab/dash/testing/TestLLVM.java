@@ -197,5 +197,42 @@ public class TestLLVM extends BaseTest {
     	sb.append("T\n");	// l2 -> out;	'\n' -> out;	// true
     	
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
-    }   
+    }  
+    
+    @Test 
+    public void characters() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/20Characters/characters.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("a\n");	// c0 -> out; '\n' -> out;		// a
+        sb.append("b\n");	// c1 -> out; '\n' -> out;		// b
+    	
+        sb.append("T\n");	// b0 -> out; '\n' -> out;		// true
+        sb.append("F\n");	// b1 -> out; '\n' -> out;		// false
+
+        sb.append("F\n");	// b2 -> out; '\n' -> out;		// false
+        sb.append("T\n");	// b3 -> out; '\n' -> out;		// true
+    	
+        sb.append("T\n");	// b4 -> out; '\n' -> out;		// true
+        sb.append("F\n");	// b5 -> out; '\n' -> out;		// false
+        sb.append("F\n");	// b6 -> out; '\n' -> out;		// false
+    	
+        sb.append("F\n");	// b7 -> out; '\n' -> out;		// false
+        sb.append("F\n");	// b8 -> out; '\n' -> out;		// false
+        sb.append("T\n");	// b9 -> out; '\n' -> out;		// true
+    	
+        sb.append("T\n");	// b10 -> out; '\n' -> out;		// true
+        sb.append("T\n");	// b11 -> out; '\n' -> out;		// true
+        sb.append("F\n");	// b12 -> out; '\n' -> out;		// false
+    	
+        sb.append("F\n");	// b13 -> out; '\n' -> out;		// false
+        sb.append("T\n");	// b14 -> out; '\n' -> out;		// true
+        sb.append("T\n");	// b15 -> out; '\n' -> out;		// true
+    	
+        sb.append("T\n");	// l1 -> out; '\n' -> out;		// true
+        sb.append("T\n");	// l2 -> out; '\n' -> out;		// true
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
