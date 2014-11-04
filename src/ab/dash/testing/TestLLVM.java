@@ -235,4 +235,15 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void integers() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/21Integers/integers.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("a\n");	// c0 -> out; '\n' -> out;		// a
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
