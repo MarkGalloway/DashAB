@@ -1,0 +1,16 @@
+const out = std_output();
+
+procedure main() returns integer {
+	integer n = 0;
+	
+	loop {
+	    n -> out; '\n' -> out;
+	    
+	    if (n > 10)
+	    	break;
+	    
+	    n = n + 1;
+	}
+	
+	return 0;
+}
