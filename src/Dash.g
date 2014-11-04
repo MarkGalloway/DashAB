@@ -156,9 +156,8 @@ parameter
 
 // START: block
 block
-@init {varDeclConstraint.push(true);}
 @after {varDeclConstraint.pop();}
-  : LBRACE varDeclaration* statement* RBRACE -> ^(BLOCK varDeclaration* statement*)
+  : LBRACE {varDeclConstraint.push(true);} varDeclaration* statement* RBRACE -> ^(BLOCK varDeclaration* statement*)
   ;
 // END: block
 
@@ -193,13 +192,13 @@ specifier
 
 varDeclaration
 	: type ID (ASSIGN expression)? DELIM 
-	  { if(varDeclConstraint.size() == 0) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
+	  { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
 	    -> ^(VAR_DECL Var["var"] type ID expression?)
   | specifier type ID (ASSIGN expression)? DELIM  
-    { if($specifier.text.equals("var") && varDeclConstraint.size() == 0) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL specifier type ID expression?)
   | specifier ID ASSIGN expression DELIM 
-    {if($specifier.text.equals("var") && varDeclConstraint.size() == 0) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+    {if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL specifier ID expression)
   |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
   |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
@@ -233,8 +232,8 @@ statement
   : block
   |	varDeclaration 
     {  
-      if(varDeclConstraint.size() > 0 && varDeclConstraint.peek()) 
-          emitErrorMessage("line " + input.LT(1).getLine() + ": Declarations can only appear at the start of a block."); 
+      if(!varDeclConstraint.empty() && varDeclConstraint.peek()) 
+          emitErrorMessage("line " + input.LT(1).getLine()  + ": Declarations can only appear at the start of a block."); 
     }
   | typedef
   |	If LPAREN expression RPAREN s=statement (Else e=statement)? -> ^(If expression $s $e?)
