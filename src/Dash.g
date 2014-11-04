@@ -27,6 +27,7 @@ tokens {
   WHILE;
   DOWHILE;
   UNPACK;
+  TYPECAST;
 }
 
 // Parser Rules
@@ -378,6 +379,7 @@ primary
     | Identity
     | Null
     | LPAREN expression RPAREN -> expression
+    | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     ;
 
 // DashAB reserved words
