@@ -178,6 +178,7 @@ tupleMember
 	
 tupleMemberList
 	: LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
+	| As LESS tupleType GREATER LPAREN tupleMemberList RPAREN -> ^(TYPECAST tupleType tupleMemberList)
 	| Identity -> ^(TUPLE_LIST Identity)
 	| Null -> ^(TUPLE_LIST Null)
 	| ID
