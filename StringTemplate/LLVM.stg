@@ -93,60 +93,43 @@ string_constants() ::= <<
 >>
 
 utils() ::= <<
-; Function Attrs: nounwind uwtable
+; Function Attrs: nounwind readnone uwtable
 define i32 @powi(i32 %a, i32 %n) #0 {
 entry:
-  %a.addr = alloca i32, align 4
-  %n.addr = alloca i32, align 4
-  %result = alloca i32, align 4
-  %power = alloca i32, align 4
-  %value = alloca i32, align 4
-  store i32 %a, i32* %a.addr, align 4
-  store i32 %n, i32* %n.addr, align 4
-  store i32 1, i32* %result, align 4
-  %0 = load i32* %n.addr, align 4
-  store i32 %0, i32* %power, align 4
-  %1 = load i32* %a.addr, align 4
-  store i32 %1, i32* %value, align 4
-  br label %while.cond
+  %cmp10 = icmp sgt i32 %n, 0
+  br i1 %cmp10, label %while.body.preheader, label %while.end
 
-while.cond:                                       ; preds = %if.end, %entry
-  %2 = load i32* %power, align 4
-  %cmp = icmp sgt i32 %2, 0
-  br i1 %cmp, label %while.body, label %while.end
+while.body.preheader:                             ; preds = %entry
+  br label %while.body
 
-while.body:                                       ; preds = %while.cond
-  %3 = load i32* %power, align 4
-  %and = and i32 %3, 1
-  %tobool = icmp ne i32 %and, 0
-  br i1 %tobool, label %if.then, label %if.end
+while.body:                                       ; preds = %if.end, %while.body.preheader
+  %value.013 = phi i32 [ %rem2, %if.end ], [ %a, %while.body.preheader ]
+  %power.012 = phi i32 [ %shr, %if.end ], [ %n, %while.body.preheader ]
+  %result.011 = phi i32 [ %result.1, %if.end ], [ 1, %while.body.preheader ]
+  %and = and i32 %power.012, 1
+  %tobool = icmp eq i32 %and, 0
+  br i1 %tobool, label %if.end, label %if.then
 
 if.then:                                          ; preds = %while.body
-  %4 = load i32* %result, align 4
-  %5 = load i32* %value, align 4
-  %mul = mul nsw i32 %4, %5
-  store i32 %mul, i32* %result, align 4
-  %6 = load i32* %result, align 4
-  %rem = srem i32 %6, 1000000007
-  store i32 %rem, i32* %result, align 4
+  %mul = mul nsw i32 %value.013, %result.011
+  %rem = srem i32 %mul, 1000000007
   br label %if.end
 
 if.end:                                           ; preds = %if.then, %while.body
-  %7 = load i32* %value, align 4
-  %8 = load i32* %value, align 4
-  %mul1 = mul nsw i32 %7, %8
-  store i32 %mul1, i32* %value, align 4
-  %9 = load i32* %value, align 4
-  %rem2 = srem i32 %9, 1000000007
-  store i32 %rem2, i32* %value, align 4
-  %10 = load i32* %power, align 4
-  %shr = ashr i32 %10, 1
-  store i32 %shr, i32* %power, align 4
-  br label %while.cond
+  %result.1 = phi i32 [ %rem, %if.then ], [ %result.011, %while.body ]
+  %mul1 = mul nsw i32 %value.013, %value.013
+  %rem2 = urem i32 %mul1, 1000000007
+  %shr = ashr i32 %power.012, 1
+  %cmp = icmp sgt i32 %shr, 0
+  br i1 %cmp, label %while.body, label %while.end.loopexit
 
-while.end:                                        ; preds = %while.cond
-  %11 = load i32* %result, align 4
-  ret i32 %11
+while.end.loopexit:                               ; preds = %if.end
+  %result.1.lcssa = phi i32 [ %result.1, %if.end ]
+  br label %while.end
+
+while.end:                                        ; preds = %while.end.loopexit, %entry
+  %result.0.lcssa = phi i32 [ 1, %entry ], [ %result.1.lcssa, %while.end.loopexit ]
+  ret i32 %result.0.lcssa
 }
 >>
 
