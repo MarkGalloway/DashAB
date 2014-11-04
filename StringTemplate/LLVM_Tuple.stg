@@ -35,7 +35,9 @@ store i32 <vlocal_result(expr_id)>, i32* <vlocal(id)>addr
 >>
 
 real_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
-real_local_tuple_assign(<id>, <tuple_id>, <tuple_type>, <index>, <expr>, <expr_id>)
+<expr>
+<vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+store float <vlocal_result(expr_id)>, float* <vlocal(id)>addr
 >>
 
 bool_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
