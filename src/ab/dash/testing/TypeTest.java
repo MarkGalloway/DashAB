@@ -68,4 +68,24 @@ public class TypeTest extends BaseTest {
         TypesTestMain.main(args);
     }
     
+    // TODO: Fix this!
+    @Test 
+    public void doubleDeclaration() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+        expectedEx.expect(SymbolTableException.class);
+        expectedEx.expectMessage("");
+        String[] args = new String[] {"TestInvalidTypePrograms/08DoubleDeclaration/doubleDeclaration.ds"};
+        TypesTestMain.main(args);
+    }
+    
+    // TODO: Fix this!
+    @Test 
+    public void referToValueInInitialization() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+        expectedEx.expect(SymbolTableException.class);
+        expectedEx.expectMessage("");
+        String[] args = new String[] {"TestInvalidTypePrograms/09ReferToValueInInitialization/referToValueInInitialization.ds"};
+        TypesTestMain.main(args);
+    }
+    
+    
+    
 }
