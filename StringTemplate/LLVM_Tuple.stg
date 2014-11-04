@@ -18,44 +18,44 @@ tuple_init_global(sym_id, type_id) ::= <<
 
 bool_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
 <expr>
-<vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
-store i1 <vlocal_result(expr_id)>, i1* <vlocal(id)>addr
+  <vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+  store i1 <vlocal_result(expr_id)>, i1* <vlocal(id)>addr
 >>
 
 char_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
 <expr>
-<vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
-store i8 <vlocal_result(expr_id)>, i8* <vlocal(id)>addr
+  <vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+  store i8 <vlocal_result(expr_id)>, i8* <vlocal(id)>addr
 >>
 
 int_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
 <expr>
-<vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
-store i32 <vlocal_result(expr_id)>, i32* <vlocal(id)>addr
+  <vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+  store i32 <vlocal_result(expr_id)>, i32* <vlocal(id)>addr
 >>
 
 real_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
 <expr>
-<vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
-store float <vlocal_result(expr_id)>, float* <vlocal(id)>addr
+  <vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+  store float <vlocal_result(expr_id)>, float* <vlocal(id)>addr
 >>
 
 bool_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
-<vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
-<vlocal_result(id)> = load i1* <vlocal(id)>addr
+  <vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+  <vlocal_result(id)> = load i1* <vlocal(id)>addr
 >>
 
 char_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
-<vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
-<vlocal_result(id)> = load i8* <vlocal(id)>addr
+  <vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+  <vlocal_result(id)> = load i8* <vlocal(id)>addr
 >>
 
 int_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
-<vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
-<vlocal_result(id)> = load i32* <vlocal(id)>addr
+  <vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+  <vlocal_result(id)> = load i32* <vlocal(id)>addr
 >>
 
 real_get_local_tuple_member(id,  tuple_id, tuple_type, index) ::= <<
-<vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
-<vlocal_result(id)> = load float* <vlocal(id)>addr
+  <vlocal(id)>addr = getelementptr %T<tuple_type>* <vlocalSymbol(tuple_id)>, i32 0, i32 <index>
+  <vlocal_result(id)> = load float* <vlocal(id)>addr
 >>
