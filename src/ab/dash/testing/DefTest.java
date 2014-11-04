@@ -2,15 +2,7 @@ package ab.dash.testing;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.PrintStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.antlr.runtime.RecognitionException;
-import org.junit.Before;
 import org.junit.Test;
 
 import ab.dash.ast.SymbolTable;
@@ -107,7 +99,7 @@ public class DefTest extends BaseTest {
     
     @Test // Test with main using a function
     public void useFunction() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
-        String[] args = new String[] {"TestPrograms/11UseFunction/UseFunction.ds"};
+        String[] args = new String[] {"TestPrograms/11UseFunction/useFunction.ds"};
         SymbolTable symtab = DefTestMain.main(args);
         base_globals.add("main");
         base_globals.add("squared");

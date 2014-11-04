@@ -177,6 +177,8 @@ tupleMember
 	
 tupleMemberList
 	: LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
+	| LPAREN expression RPAREN
+    { emitErrorMessage("line " + $LPAREN.getLine() + ": tuple lists must have more than one element"); }
 	| As LESS tupleType GREATER LPAREN tupleMemberList RPAREN -> ^(TYPECAST tupleType tupleMemberList)
 	| Identity -> ^(TUPLE_LIST Identity)
 	| Null -> ^(TUPLE_LIST Null)

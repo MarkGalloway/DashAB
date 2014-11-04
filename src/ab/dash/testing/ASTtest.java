@@ -7,7 +7,6 @@ import java.io.File;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
-import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 
@@ -389,6 +388,14 @@ public class ASTtest extends BaseTest {
         String[] args = new String[] {"TestGrammarPrograms/44typecasts.ds"};
         AstTestMain.main(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/44AST_output"), outErrIntercept.toString().trim());
+    }
+
+    @Test // tuple lists must be more than one element
+    public void invalidTupleSize() throws RecognitionException, LexerException, ParserException {        
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 2: tuple lists must have more than one element");
+        String[] args = new String[] {"TestGrammarPrograms/45tupleSize.ds"};
+        AstTestMain.main(args);
     }
     
     @Test // globals must be declared const
