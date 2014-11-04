@@ -520,6 +520,15 @@ public class SymbolTable {
                            text((DashAST)cond.getParent()));
         }
     }
+    
+    public void loopstat(DashAST cond) {
+        if ( cond.evalType != _boolean ) {
+            error("line " + cond.getLine() + ": " +
+            		"loop condition "+text(cond)+
+                           " must have boolean type in "+
+                           text((DashAST)cond.getParent()));
+        }
+    }
 
     //TODO: prevent reassignment to input/output streams
     public boolean canAssignTo(Type valueType,Type destType,Type promotion) {
