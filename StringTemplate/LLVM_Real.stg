@@ -76,6 +76,15 @@ real_mod(id, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal_result(id)> = frem float <vlocal_result(lhs_id)>, <vlocal_result(rhs_id)>
 >>
 
+real_pow(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<lhs>
+<rhs>
+  <vlocal(id)>lhs = fext float <vlocal_result(lhs_id)> to double
+  <vlocal(id)>rhs = fext float <vlocal_result(rhs_id)> to double
+  <vlocal(id)>dblresult = call double(double, double) @pow(double <vlocal(id)>lhs, double <vlocal(id)>rhs)
+  <vlocal_result(id)> = ftrunc double <vlocal(id)>dblresult to float
+>>
+
 real_eq(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 <lhs>
 <rhs>
