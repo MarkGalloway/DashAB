@@ -1,0 +1,10 @@
+const out = std_output();
+
+procedure main() returns integer {
+	const a = 0;
+	a = 1;		// Should throw an error
+	
+	a -> out;
+	
+	return 0;
+}

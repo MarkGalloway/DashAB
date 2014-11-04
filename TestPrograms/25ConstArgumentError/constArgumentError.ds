@@ -1,0 +1,9 @@
+procedure f(const integer a) returns integer {
+	a = 5;
+	return a;
+}
+
+procedure main() returns integer {
+	var integer a = 0;
+	return f(a);
+}

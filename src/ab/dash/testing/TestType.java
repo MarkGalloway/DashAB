@@ -89,6 +89,21 @@ public class TestType extends BaseTest {
         Runner.typesTestMain(args);
     }
     
+
+    @Test 
+    public void constError() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+        expectedEx.expect(SymbolTableException.class);
+        expectedEx.expectMessage("line 5: The specifier for a:<integer> is constant and can not be reassigned in a = 1;");
+        String[] args = new String[] {"TestPrograms/24ConstError/constError.ds"};
+        Runner.typesTestMain(args);
+    }
     
+    @Test 
+    public void constArgumentError() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
+        expectedEx.expect(SymbolTableException.class);
+        expectedEx.expectMessage("line 2: The specifier for a:<integer> is constant and can not be reassigned in a = 5;");
+        String[] args = new String[] {"TestPrograms/25ConstArgumentError/constArgumentError.ds"};
+        Runner.typesTestMain(args);
+    }
     
 }
