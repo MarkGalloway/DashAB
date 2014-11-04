@@ -1,1 +1,1 @@
-(PROGRAM (VAR_DECL var integer x (EXPR 0)) (loop (= (EXPR x) (EXPR (+ x 1)))) (VAR_DECL var integer n (EXPR 0)) (loop (BLOCK (PRINT out (EXPR n)) (= (EXPR n) (EXPR (+ n 1))))))
+(PROGRAM (VAR_DECL const integer x (EXPR 0)) (loop (= (EXPR x) (EXPR (+ x 1)))) (VAR_DECL const integer n (EXPR 0)) (loop (BLOCK (PRINT out (EXPR n)) (= (EXPR n) (EXPR (+ n 1))))))

@@ -26,6 +26,7 @@ tokens {
   TYPEDEF;
   WHILE;
   DOWHILE;
+  UNPACK;
 }
 
 // Parser Rules
@@ -189,9 +190,15 @@ specifier
 	;
 
 varDeclaration
-	: type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL Var["var"] type ID expression?)
-  | specifier type ID (ASSIGN expression)? DELIM -> ^(VAR_DECL specifier type ID expression?)
-  | specifier ID ASSIGN expression DELIM -> ^(VAR_DECL specifier ID expression)
+	: type ID (ASSIGN expression)? DELIM 
+	  { if(varDeclConstraint.size() == 0) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
+	    -> ^(VAR_DECL Var["var"] type ID expression?)
+  | specifier type ID (ASSIGN expression)? DELIM  
+    { if($specifier.text.equals("var") && varDeclConstraint.size() == 0) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier type ID expression?)
+  | specifier ID ASSIGN expression DELIM 
+    {if($specifier.text.equals("var") && varDeclConstraint.size() == 0) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier ID expression)
   |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
   |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
   | specifier ID ASSIGN tupleMemberList DELIM -> ^(VAR_DECL specifier ID tupleMemberList)
@@ -269,7 +276,8 @@ statement
   | lhs OUTSTREAM ID DELIM -> ^(PRINT ID lhs)
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
-  | ID (',' ID)* ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID+ tupleMemberList)
+  | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
+  | ID (',' ID)+ ASSIGN tupleMemberList DELIM -> ^(UNPACK ID+ tupleMemberList)
   | Break DELIM!
     {
       if(loopDepth == 0) 

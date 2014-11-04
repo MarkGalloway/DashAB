@@ -1,1 +1,1 @@
-(PROGRAM (VAR_DECL var integer x (EXPR 0)) (DOWHILE (EXPR (< x 10)) (BLOCK (= (EXPR x) (EXPR (+ x 1))) (PRINT out (EXPR x)))) (= (EXPR x) (EXPR 0)) (DOWHILE (EXPR (< x 10)) (= (EXPR x) (EXPR (+ x 1)))) (= (EXPR x) (EXPR 0)))
+(PROGRAM (VAR_DECL const integer x (EXPR 0)) (DOWHILE (EXPR (< x 10)) (BLOCK (= (EXPR x) (EXPR (+ x 1))) (PRINT out (EXPR x)))) (= (EXPR x) (EXPR 0)) (DOWHILE (EXPR (< x 10)) (= (EXPR x) (EXPR (+ x 1)))) (= (EXPR x) (EXPR 0)))

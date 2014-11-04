@@ -1,6 +1,6 @@
 /* pre-predicated loop */
 
-integer x = 0;
+const integer x = 0;
 
 // Print 1 to 10
 loop while (x < 10) {
