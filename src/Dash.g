@@ -202,9 +202,15 @@ varDeclaration
   | specifier ID ASSIGN expression DELIM 
     {if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL specifier ID expression)
-  |	tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
-  |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
-  | specifier ID ASSIGN tupleMemberList DELIM -> ^(VAR_DECL specifier ID tupleMemberList)
+  |	tupleType ID (ASSIGN tupleMemberList)? DELIM 
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
+      -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
+  |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
+  | specifier ID ASSIGN tupleMemberList DELIM 
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier ID tupleMemberList)
   | inputDeclaration
   | streamDeclaration
 	;
@@ -226,8 +232,12 @@ streamDeclaration throws ParserError
 // END: var
 
 typedef
-  : Typedef primitiveType ID DELIM -> ^(TYPEDEF primitiveType ID)
-  | Typedef tupleType ID DELIM -> ^(TYPEDEF tupleType ID)
+  : Typedef primitiveType ID DELIM 
+    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
+      -> ^(TYPEDEF primitiveType ID)
+  | Typedef tupleType ID DELIM 
+    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
+      -> ^(TYPEDEF tupleType ID)
   ;
 
 statement
