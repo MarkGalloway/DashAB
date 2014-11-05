@@ -279,9 +279,11 @@ public class LLVMIRGenerator {
 			int expr_id = ((DashAST)t.getChild(0).getChild(0)).llvmResultID;
 
 			StringTemplate expr_template = exec(expr);
-			if (expr.evalType.getTypeIndex() == SymbolTable.scTUPLE) {
+			StringTemplate template = null;
+
+			if (expr.evalType.getTypeIndex() == SymbolTable.tTUPLE) {
 				TupleTypeSymbol tuple_type = (TupleTypeSymbol)expr.evalType;
-				StringTemplate template = stg.getInstanceOf("return_tuple");
+				template = stg.getInstanceOf("return_tuple");
 				template.setAttribute("id", id);
 				template.setAttribute("type_id", tuple_type.tupleTypeIndex);
 
@@ -333,7 +335,7 @@ public class LLVMIRGenerator {
 				template.setAttribute("assign_code", assignmentTemplate);
 			}
 			else {
-				StringTemplate template = stg.getInstanceOf("return");
+				template = stg.getInstanceOf("return");
 				StringTemplate type_template = getType(((DashAST) t.getChild(0)).evalType);
 
 				template.setAttribute("expr_id", expr_id);
