@@ -39,6 +39,8 @@ public class TupleTypeSymbol extends Symbol implements Type, Scope {
     						return s;
     			}
     		}
+    	} catch (IndexOutOfBoundsException e) {
+    	    return null;
     	}
     	
     	return null;

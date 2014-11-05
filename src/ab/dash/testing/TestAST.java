@@ -15,18 +15,6 @@ import ab.dash.exceptions.SymbolTableException;
 
 public class TestAST extends BaseTest {
 
-
-    @Test // Dummy Test
-    public void dummyTest() throws RecognitionException, LexerException, ParserException {
-        SampleFileWriter.createFile("Tests/00dummytest.ds", "");
-        
-        String[] args = new String[] {"Tests/00dummytest.ds"};
-        Runner.astTestMain(args);
-        
-        assertEquals("PROGRAM", outErrIntercept.toString().trim());
-        SampleFileWriter.destroy("Tests/00dummytest.ds");
-    }
-    
     @Test // Variable Declaration
     public void datatypeDeclarationTest() throws RecognitionException, LexerException, ParserException {        
         String[] args = new String[] {"TestGrammarPrograms/01datatypeDeclarationTest.ds"};
@@ -427,7 +415,7 @@ public class TestAST extends BaseTest {
     
     @Test 
     public void functionExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/27FunctionExpression/functionExpression.ds"};
+        String[] args = new String[] {"TestPrograms/25FunctionExpression/functionExpression.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/49aAST_output"), outErrIntercept.toString().trim());
     }

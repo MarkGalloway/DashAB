@@ -9,6 +9,7 @@ import org.junit.runners.Suite;
    TestDef.class,
    TestType.class,
    TestLLVM.class,
+   TestInvalidLLVM.class,
 })
 
 public class FullTestSuite {   

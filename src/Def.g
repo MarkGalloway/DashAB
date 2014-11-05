@@ -60,6 +60,7 @@ topdown
     | atoms
     |	tuple_list
     | varDeclaration
+    | tupleMembers
     |	streamDeclaration
     | ret
     ;
@@ -275,6 +276,27 @@ type returns [Type type]
 	    $type = s;
 	    }
     ;   
+    
+tupleMembers
+    // check that t.member or t.index (t.1 ... t.n) is defined
+    : ^(DOT id=ID m=(ID|INTEGER)) 
+       {
+         // check that the tuple is defined first
+         Symbol tuple = currentScope.resolve($id.text);
+         if(tuple == null) { symtab.error("line " + $DOT.getLine() + ": unknown variable " + $id.text); }
+         
+         else {
+            // check that the member variable is defined
+            Symbol member = ((TupleTypeSymbol)tuple.type).resolveMember($m.text);
+            if(member == null) {
+              if ($m.token.getType() == ID)
+                symtab.error("line " + $DOT.getLine() + ": unknown member '" + $m.text +  "' for tuple " + $id.text);
+              else
+                symtab.error("line " + $DOT.getLine() + ": invalid index for tuple " + $id.text);
+            }
+         }
+       }
+    ;
         
 typeElement returns [Type type]
 @init {
