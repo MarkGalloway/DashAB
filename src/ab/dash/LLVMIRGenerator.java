@@ -291,22 +291,43 @@ public class LLVMIRGenerator {
 		
 		case DashLexer.TUPLE_LIST:
 		{
-			int id = t.llvmResultID;
-			
 			TupleTypeSymbol tuple = (TupleTypeSymbol)t.evalType;
-			
-			String expressions = "";
-			ArrayList<Integer> expression_ids = new ArrayList<Integer>();
+
+			StringTemplate template = stg.getInstanceOf("tuple_init_literal");
+			template.setAttribute("id", t.llvmResultID);
+			template.setAttribute("type_id", tuple.tupleTypeIndex);
+
+			List<StringTemplate> element_exprs = new ArrayList<StringTemplate>();
+			//ArrayList<Integer> expression_ids = new ArrayList<Integer>();
+
 			for (int i = 0; i < t.getChildCount(); i++) {
-				StringTemplate expression = exec((DashAST)t.getChild(i));
-				int expression_id = ((DashAST) t.getChild(i).getChild(0)).llvmResultID;
-				
-				expressions += expression + "\n";
-				expression_ids.add(new Integer(expression_id));
+				DashAST element_node = (DashAST)t.getChild(i);
+				int element_expr_id = ((DashAST)element_node.getChild(0)).llvmResultID;
+
+				StringTemplate memberAssign = null;
+
+				int type = element_node.evalType.getTypeIndex();
+				if (type == SymbolTable.tINTEGER)
+					memberAssign = stg.getInstanceOf("int_tuple_assign");
+				else if (type == SymbolTable.tREAL)
+					memberAssign = stg.getInstanceOf("real_tuple_assign");
+				else if (type == SymbolTable.tCHARACTER)
+					memberAssign = stg.getInstanceOf("char_tuple_assign");
+				else if (type == SymbolTable.tBOOLEAN)
+					memberAssign = stg.getInstanceOf("bool_tuple_assign");
+
+				memberAssign.setAttribute("id", DashAST.getUniqueId());
+				memberAssign.setAttribute("tuple_expr_id", t.llvmResultID);
+				memberAssign.setAttribute("tuple_type", tuple.tupleTypeIndex);
+				memberAssign.setAttribute("index", i);
+				memberAssign.setAttribute("expr", exec(element_node));
+				memberAssign.setAttribute("expr_id", element_expr_id);
+
+				element_exprs.add(memberAssign);
 			}
-			
-			
-			return new StringTemplate();
+			template.setAttribute("element_exprs", element_exprs);
+
+			return template;
 		}
 			
 		case DashLexer.EXPR:
@@ -560,36 +581,36 @@ public class LLVMIRGenerator {
 			DashAST child = (DashAST)t.getChild(1);
 			if (child != null) {
 				// Tuple
-				if (child.getType() == DashLexer.TUPLE_LIST) {
-					TupleTypeSymbol tuple = (TupleTypeSymbol) sym.type;
-					String temp = "";
-					for(int i = 0; i < t.getChildCount(); i++) {
-						String expr = exec((DashAST) child.getChild(i)).toString() + "\n";
-						int arg_id = ((DashAST)child.getChild(i).getChild(0)).llvmResultID;
-						int type_l = ((DashAST)child.getChild(i)).evalType.getTypeIndex();
-								
-						StringTemplate template = null;
-						if (type_l == SymbolTable.tINTEGER) {
-							template = stg.getInstanceOf("int_local_tuple_assign");
-						}  else if (type_l == SymbolTable.tREAL) {
-							template = stg.getInstanceOf("real_local_tuple_assign");
-						} else if (type_l == SymbolTable.tCHARACTER) {
-							template = stg.getInstanceOf("char_local_tuple_assign");
-						} else if (type_l == SymbolTable.tBOOLEAN) {
-							template = stg.getInstanceOf("bool_local_tuple_assign");
-						}
-						
-						template.setAttribute("expr_id", arg_id);
-						template.setAttribute("expr", expr);
-						template.setAttribute("index", i);
-						template.setAttribute("tuple_type", tuple.tupleTypeIndex);
-						template.setAttribute("tuple_id", tuple.id);
-						template.setAttribute("id", id);
-						
-						temp += template.toString() + "\n";
-					}
-					return new StringTemplate(temp);
-				}
+				//if (child.getType() == DashLexer.TUPLE_LIST) {
+				//	TupleTypeSymbol tuple = (TupleTypeSymbol) sym.type;
+				//	String temp = "";
+				//	for(int i = 0; i < t.getChildCount(); i++) {
+				//		String expr = exec((DashAST) child.getChild(i)).toString() + "\n";
+				//		int arg_id = ((DashAST)child.getChild(i).getChild(0)).llvmResultID;
+				//		int type_l = ((DashAST)child.getChild(i)).evalType.getTypeIndex();
+				//				
+				//		StringTemplate template = null;
+				//		if (type_l == SymbolTable.tINTEGER) {
+				//			template = stg.getInstanceOf("int_local_tuple_assign");
+				//		}  else if (type_l == SymbolTable.tREAL) {
+				//			template = stg.getInstanceOf("real_local_tuple_assign");
+				//		} else if (type_l == SymbolTable.tCHARACTER) {
+				//			template = stg.getInstanceOf("char_local_tuple_assign");
+				//		} else if (type_l == SymbolTable.tBOOLEAN) {
+				//			template = stg.getInstanceOf("bool_local_tuple_assign");
+				//		}
+				//		
+				//		template.setAttribute("expr_id", arg_id);
+				//		template.setAttribute("expr", expr);
+				//		template.setAttribute("index", i);
+				//		template.setAttribute("tuple_type", tuple.tupleTypeIndex);
+				//		template.setAttribute("tuple_id", tuple.id);
+				//		template.setAttribute("id", id);
+				//		
+				//		temp += template.toString() + "\n";
+				//	}
+				//	return new StringTemplate(temp);
+				//}
 				
 				StringTemplate expr = exec(child);
 				int arg_id = ((DashAST)child.getChild(0)).llvmResultID;
@@ -653,20 +674,26 @@ public class LLVMIRGenerator {
 				
 				StringTemplate template = null;
 				if (type == SymbolTable.tINTEGER) {
-					template = stg.getInstanceOf("int_local_tuple_assign");
+					template = stg.getInstanceOf("int_tuple_assign");
 				}  else if (type == SymbolTable.tREAL) {
-					template = stg.getInstanceOf("real_local_tuple_assign");
+					template = stg.getInstanceOf("real_tuple_assign");
 				} else if (type == SymbolTable.tCHARACTER) {
-					template = stg.getInstanceOf("char_local_tuple_assign");
+					template = stg.getInstanceOf("char_tuple_assign");
 				} else if (type == SymbolTable.tBOOLEAN) {
-					template = stg.getInstanceOf("bool_local_tuple_assign");
+					template = stg.getInstanceOf("bool_tuple_assign");
 				}
+				
+				StringTemplate getLocalTuple = stg.getInstanceOf("tuple_get_local");
+				getLocalTuple.setAttribute("id", DashAST.getUniqueId());
+				getLocalTuple.setAttribute("sym_id", tuple.id);
+				getLocalTuple.setAttribute("type_id", tuple_type.tupleTypeIndex);
 				
 				template.setAttribute("expr_id", arg_id);
 				template.setAttribute("expr", expr);
 				template.setAttribute("index", index);
 				template.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
-				template.setAttribute("tuple_id", tuple.id);
+				template.setAttribute("tuple_expr", getLocalTuple);
+				template.setAttribute("tuple_expr_id", getLocalTuple.getAttribute("id"));
 				template.setAttribute("id", id);
 				return template;
 			}

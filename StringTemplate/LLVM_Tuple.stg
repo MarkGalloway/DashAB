@@ -12,8 +12,9 @@ tuple_init_local(sym_id, type_id) ::= <<
 <vlocal_symbol(sym_id)> = alloca <tuple_type(type_id)>
 >>
 
-tuple_init_literal(id, type_id) ::= <<
+tuple_init_literal(id, type_id, element_exprs) ::= <<
   %<vlocal_result(id)> = alloca <tuple_type(type_id)>
+<element_exprs; separator="\n">
 >>
 
 tuple_init_global(sym_id, type_id) ::= <<
@@ -28,27 +29,31 @@ tuple_get_global(id, type_id, sym_id) ::= <<
   <vlocal_result(id)> = add <tuple_type(type_id)>* <vglobalSymbol(sym_id)>, 0
 >>
 
-bool_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
+bool_tuple_assign(id, tuple_expr, tuple_expr_id, tuple_type, index, expr, expr_id) ::= <<
 <expr>
-  <vlocal(id)>addr = getelementptr <tuple_type(tuple_type)>* <vlocal_symbol(tuple_id)>, i32 0, i32 <index>
+<tuple_expr>
+  <vlocal(id)>addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(tuple_expr_id)>, i32 0, i32 <index>
   store i1 <vlocal_result(expr_id)>, i1* <vlocal(id)>addr
 >>
 
-char_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
+char_tuple_assign(id, tuple_expr, tuple_expr_id, tuple_type, index, expr, expr_id) ::= <<
 <expr>
-  <vlocal(id)>addr = getelementptr <tuple_type(tuple_type)>* <vlocal_symbol(tuple_id)>, i32 0, i32 <index>
+<tuple_expr>
+  <vlocal(id)>addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(tuple_expr_id)>, i32 0, i32 <index>
   store i8 <vlocal_result(expr_id)>, i8* <vlocal(id)>addr
 >>
 
-int_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
+int_tuple_assign(id, tuple_expr, tuple_expr_id, tuple_type, index, expr, expr_id) ::= <<
 <expr>
-  <vlocal(id)>addr = getelementptr <tuple_type(tuple_type)>* <vlocal_symbol(tuple_id)>, i32 0, i32 <index>
+<tuple_expr>
+  <vlocal(id)>addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(tuple_expr_id)>, i32 0, i32 <index>
   store i32 <vlocal_result(expr_id)>, i32* <vlocal(id)>addr
 >>
 
-real_local_tuple_assign(id, tuple_id, tuple_type, index, expr, expr_id) ::= <<
+real_tuple_assign(id, tuple_expr, tuple_expr_id, tuple_type, index, expr, expr_id) ::= <<
 <expr>
-  <vlocal(id)>addr = getelementptr <tuple_type(tuple_type)>* <vlocal_symbol(tuple_id)>, i32 0, i32 <index>
+<tuple_expr>
+  <vlocal(id)>addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(tuple_expr_id)>, i32 0, i32 <index>
   store float <vlocal_result(expr_id)>, float* <vlocal(id)>addr
 >>
 
