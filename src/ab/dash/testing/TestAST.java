@@ -432,4 +432,11 @@ public class TestAST extends BaseTest {
         StringBuffer sb = new StringBuffer();
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test // function parse test
+    public void functionParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/49functions.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/49AST_output"), outErrIntercept.toString().trim());
+    }
 }
