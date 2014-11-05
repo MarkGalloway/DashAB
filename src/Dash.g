@@ -140,12 +140,12 @@ methodForwardDeclaration
 methodDeclaration
   : Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
     { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
-       -> ^(FUNCTION_DECL methodType ID formalParameters? expression)    
+       -> ^(FUNCTION_DECL methodType ID formalParameters? ^(Return expression))    
 	| Function ID LPAREN formalParameters? RPAREN Returns methodType block
 	  { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
 	    -> ^(FUNCTION_DECL methodType ID formalParameters? block)
 	| Procedure ID LPAREN informalParameters? RPAREN Returns methodType ASSIGN expression DELIM
-	    -> ^(PROCEDURE_DECL methodType ID informalParameters? expression)
+	    -> ^(PROCEDURE_DECL methodType ID informalParameters? ^(Return expression))
 	| Procedure ID LPAREN informalParameters? RPAREN (Returns methodType)? block
 	    -> ^(PROCEDURE_DECL methodType? ID informalParameters? block)
   ;
@@ -394,7 +394,7 @@ primary
     |	False
     | Identity
     | Null
-    | LPAREN expression RPAREN -> expression
+    | LPAREN expr RPAREN -> expr
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
     | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)

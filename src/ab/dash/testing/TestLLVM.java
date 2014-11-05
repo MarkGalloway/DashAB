@@ -360,6 +360,10 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/25FunctionExpression/functionExpression.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
+        
+        sb.append("1\n");
+        sb.append("2.82843\n");
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
