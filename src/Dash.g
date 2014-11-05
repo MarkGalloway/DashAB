@@ -309,7 +309,7 @@ statement
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
-  | lhs OUTSTREAM ID DELIM -> ^(PRINT ID lhs)
+  | expression OUTSTREAM ID DELIM -> ^(PRINT ID expression)
   | lhs INSTREAM ID DELIM -> ^(INPUT ID lhs)
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)

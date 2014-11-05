@@ -35,12 +35,13 @@ public class TestAllLLVMCode {
 	}
 
 	public static void main(String[] args) throws RecognitionException {
-//		parseFile("simpleMain.db", "TestPrograms/05SimpleMain/simpleMain.db");
-//		parseFile("variableDeclarationInMain.db", "TestPrograms/07VariableDeclarationInMain/variableDeclarationInMain.db");
-		File[] files = new File("TestPrograms/").listFiles();
-		showFiles(files);
-
-		File[] invalid_files = new File("TestInvalidTypePrograms/").listFiles();
-		showFiles(invalid_files);
+		String out = TestLLVMCodeGen.parseFile("tupleCompareEquals.ds", "TestPrograms/31TupleCompareEquals/tupleCompareEquals.ds");
+		System.out.println("Out:");
+        System.out.println(out);
+//		File[] files = new File("TestPrograms/").listFiles();
+//		showFiles(files);
+//
+//		File[] invalid_files = new File("TestInvalidTypePrograms/").listFiles();
+//		showFiles(invalid_files);
 	}
 }
