@@ -10,7 +10,6 @@ function squaredPlus1(integer a) returns integer {
 }
 
 procedure testme(var integer x) returns integer {
-	x = 2;
 	return x + 3;
 }
 

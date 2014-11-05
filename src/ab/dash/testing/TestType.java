@@ -118,4 +118,12 @@ public class TestType extends BaseTest {
         StringBuffer sb = new StringBuffer();
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void invalidOutputTypes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        expectedEx.expect(SymbolTableException.class);
+        expectedEx.expectMessage("line 20: invalid type (<tuple.a:boolean>, <tuple.b:boolean>) sent to outstream");
+        String[] args = new String[] {"TestInvalidTypePrograms/10InvalidOutputTypes/invalidOutputTypes"};
+        Runner.typesTestMain(args);
+    }
 }

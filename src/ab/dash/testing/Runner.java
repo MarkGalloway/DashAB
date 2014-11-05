@@ -185,22 +185,34 @@ public class Runner {
     }
     
     // used by LLVMtest
-    public static void llvmMain(String[] args) throws LexerException, ParserException, RecognitionException, SymbolTableException, IOException, InterruptedException {
+    public static void llvmMain(String[] args) throws IOException, InterruptedException {
         
         // build the AST
         
         ANTLRFileStream input = getInputStream(args);
-        DashAST tree = runLexerParser(input);
         
+
+        DashAST tree;
+        try {
+            tree = runLexerParser(input);
+        } catch (LexerException | ParserException | RecognitionException e) {
+            return;
+        }
+
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
         SymbolTable symtab = new SymbolTable(tokens);
         
         // run tree walker passes
         
-        runDef(nodes, symtab, tree);
-        runTypes(nodes, symtab, tree);
-        runDefineTupleTypes(nodes, symtab, tree);
+        try {
+            runDef(nodes, symtab, tree);
+            runTypes(nodes, symtab, tree);
+            runDefineTupleTypes(nodes, symtab, tree);
+        } catch (SymbolTableException e) {
+            return;
+        }
+;
         
         // generate llvm
         

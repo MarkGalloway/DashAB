@@ -392,6 +392,7 @@ primary
     | Null
     | LPAREN expression RPAREN -> expression
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
+    | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
     ;
 
 // DashAB reserved words
@@ -518,6 +519,8 @@ REAL
 	;
 	
 CHARACTER :	'\'' '\\'? . '\'' ;
+
+INVALID_CHARACTER : '"' '\\'? . '"' ;
 
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 

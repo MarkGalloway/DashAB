@@ -377,11 +377,7 @@ public class SymbolTable {
     
     public void declinit(DashAST declID, DashAST init) {
         int te = init.evalType.getTypeIndex(); // promote expr to decl type?
-        
-//if(te == tVOID) {
-//    return;
-//}
-        
+              
         // Check for Type Inference
         if (declID.symbol.type == null) {
         	declID.symbol.type = init.evalType;
@@ -530,10 +526,17 @@ public class SymbolTable {
     	}
     	
     	DashAST stream = (DashAST) print.getChild(0);
-    	
+    	DashAST lhs = (DashAST) print.getChild(1);
+
     	VariableSymbol s = (VariableSymbol)stream.scope.resolve(stream.getText());
     	stream.symbol = s;
     	
+        //String s = super.toString();
+        if ( lhs.evalType != _boolean &&
+                lhs.evalType != _integer && lhs.evalType != _real && lhs.evalType!= _character) {
+            error("line " + print.getLine() + ": invalid type " + lhs.evalType + "sent to outstream");
+        }
+        
     	if (s.type != null) {
     		if (s.type.getTypeIndex() != SymbolTable.tOUTSTREAM) {
     			error("line " + print.getLine() + ": " +
