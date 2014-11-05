@@ -5,7 +5,10 @@ function squared(real a) returns real {
 }
 
 procedure main() returns integer {
-    real c = squared(5.0); 
-    c -> out;
+    integer c = 5;
+    
+    squared(5) -> out; '\n' -> out;
+    squared(c) -> out ; '\n' -> out;
+    
     return 0;
 }
