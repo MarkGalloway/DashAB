@@ -975,25 +975,14 @@ public class LLVMIRGenerator {
 			int type_index = s.type.getTypeIndex();
 			
 			StringTemplate template_cmp = null;
-			if (op == LLVMOps.EQ) {
-				if (type_index == SymbolTable.tBOOLEAN)
-					template_cmp = stg.getInstanceOf("bool_tuple_eq_member");
-				else if (type_index == SymbolTable.tCHARACTER)
-					template_cmp = stg.getInstanceOf("char_tuple_eq_member");
-				else if (type_index == SymbolTable.tINTEGER)
-					template_cmp = stg.getInstanceOf("int_tuple_eq_member");
-				else if (type_index == SymbolTable.tREAL)
-					template_cmp = stg.getInstanceOf("real_tuple_eq_member");
-			} else if (op == LLVMOps.NE) {
-				if (type_index == SymbolTable.tBOOLEAN)
-					template_cmp = stg.getInstanceOf("bool_tuple_ne_member");
-				else if (type_index == SymbolTable.tCHARACTER)
-					template_cmp = stg.getInstanceOf("char_tuple_ne_member");
-				else if (type_index == SymbolTable.tINTEGER)
-					template_cmp = stg.getInstanceOf("int_tuple_ne_member");
-				else if (type_index == SymbolTable.tREAL)
-					template_cmp = stg.getInstanceOf("real_tuple_ne_member");
-			}
+			if (type_index == SymbolTable.tBOOLEAN)
+				template_cmp = stg.getInstanceOf("bool_tuple_eq_member");
+			else if (type_index == SymbolTable.tCHARACTER)
+				template_cmp = stg.getInstanceOf("char_tuple_eq_member");
+			else if (type_index == SymbolTable.tINTEGER)
+				template_cmp = stg.getInstanceOf("int_tuple_eq_member");
+			else if (type_index == SymbolTable.tREAL)
+				template_cmp = stg.getInstanceOf("real_tuple_eq_member");
 			
 			template_cmp.setAttribute("lhs_expr_id", lhs_id);
 			template_cmp.setAttribute("rhs_expr_id", rhs_id);
@@ -1005,7 +994,12 @@ public class LLVMIRGenerator {
 		}
 		
 		StringTemplate template_result = null;
-		template_result = stg.getInstanceOf("tuple_cmp_result");
+		if (op == LLVMOps.EQ) {
+			template_result = stg.getInstanceOf("tuple_cmp_eq_result");
+		} else if (op == LLVMOps.NE) {
+			template_result = stg.getInstanceOf("tuple_cmp_ne_result");
+		}
+		
 		template_result.setAttribute("id", id);
 		
 		code += template_result.toString() + "\n";

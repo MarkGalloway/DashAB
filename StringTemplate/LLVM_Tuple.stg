@@ -133,7 +133,7 @@ real_tuple_eq_member(id, lhs_expr_id, rhs_expr_id, tuple_type, index) ::= <<
   tuple.eq.continue.<index>.<id>:
 >>
 
-tuple_cmp_result(id) ::= <<
+tuple_cmp_eq_result(id) ::= <<
 	
 	br label %tuple.cmp.true.<id>
 	tuple.cmp.true.<id>:
@@ -144,5 +144,18 @@ tuple_cmp_result(id) ::= <<
 	
 	tuple.cmp.done.<id>:
 	<vlocal_result(id)> = phi i1 [ 1, %tuple.cmp.true.<id> ], [ 0, %tuple.cmp.false.<id> ]
+>>
+
+tuple_cmp_ne_result(id) ::= <<
+	
+	br label %tuple.cmp.true.<id>
+	tuple.cmp.true.<id>:
+	br label %tuple.cmp.done.<id>
+	
+	tuple.cmp.false.<id>:
+	br label %tuple.cmp.done.<id>
+	
+	tuple.cmp.done.<id>:
+	<vlocal_result(id)> = phi i1 [ 0, %tuple.cmp.true.<id> ], [ 1, %tuple.cmp.false.<id> ]
 >>
 

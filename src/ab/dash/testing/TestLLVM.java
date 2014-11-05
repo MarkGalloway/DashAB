@@ -418,5 +418,18 @@ public class TestLLVM extends BaseTest {
         sb.append("F\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void tupleCompareNotEquals() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/32TupleCompareNotEquals/tupleCompareNotEquals.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("F\n");
+        sb.append("T\n");
+        sb.append("T\n");
+        sb.append("T\n");
+        sb.append("T\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 
 }
