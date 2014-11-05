@@ -138,22 +138,32 @@ methodDeclaration
        -> ^(FUNCTION_DECL methodType ID formalParameters? expression)
 	| Function ID LPAREN formalParameters? RPAREN Returns methodType block
 	    -> ^(FUNCTION_DECL methodType ID formalParameters? block)
-	| Procedure ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
-	    -> ^(PROCEDURE_DECL methodType ID formalParameters? tupleMemberList)
-	| Procedure ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
-	    -> ^(PROCEDURE_DECL methodType ID formalParameters? expression)
-	| Procedure ID LPAREN formalParameters? RPAREN (Returns methodType)? block
-	    -> ^(PROCEDURE_DECL methodType? ID formalParameters? block)
+	| Procedure ID LPAREN informalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
+	    -> ^(PROCEDURE_DECL methodType ID informalParameters? tupleMemberList)
+	| Procedure ID LPAREN informalParameters? RPAREN Returns methodType ASSIGN expression DELIM
+	    -> ^(PROCEDURE_DECL methodType ID informalParameters? expression)
+	| Procedure ID LPAREN informalParameters? RPAREN (Returns methodType)? block
+	    -> ^(PROCEDURE_DECL methodType? ID informalParameters? block)
   ;
 
 formalParameters
-   : parameter (',' parameter)* -> parameter+
+   : functionParameter (',' functionParameter)* -> functionParameter+
    ;
+   
+informalParameters
+  : procedureParameter (',' procedureParameter)* -> procedureParameter+
+  ;
     
-parameter
+functionParameter
 	:	specifier? type ID -> ^(ARG_DECL Const["const"] type ID)
 	| specifier? tupleType ID -> ^(ARG_DECL Const["const"] tupleType ID)
 	;
+	
+procedureParameter
+  : specifier (a=type|b=tupleType) ID -> ^(ARG_DECL specifier $a* $b* ID)
+  | (c=type|d=tupleType) ID -> ^(ARG_DECL Const["const"] $c* $d* ID)
+  ;
+	
 // END: method
 
 // START: block
@@ -533,7 +543,6 @@ INVALID_CHARACTER : '"' '\\'? . '"' ;
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
 SL_COMMENT:   '//' ~('\r'|'\n')* (NL | EOF) {$channel=HIDDEN;};
-MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
 MULTILINE_COMMENT : {inComment = true;} COMMENT_NESTED { $channel=HIDDEN; inComment = false; };
 
 fragment

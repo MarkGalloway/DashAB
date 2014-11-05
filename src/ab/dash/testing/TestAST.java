@@ -445,4 +445,18 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/52AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // forward decl parse test
+    public void forwardDeclTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/51forwardDecl.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/51AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // procedure parse test
+    public void procedureParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/50procedures.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/50AST_output"), outErrIntercept.toString().trim());
+    }
 }
