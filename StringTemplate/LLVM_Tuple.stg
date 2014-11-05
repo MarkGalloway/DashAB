@@ -12,6 +12,10 @@ tuple_init_local(sym_id, type_id) ::= <<
 <vlocal_symbol(sym_id)> = alloca <tuple_type(type_id)>
 >>
 
+tuple_init_literal(id, type_id) ::= <<
+  %<vlocal_result(id)> = alloca %T<type_id>
+>>
+
 tuple_init_global(sym_id, type_id) ::= <<
 <vglobalSymbol(sym_id)> = private unnamed_addr global <tuple_type(type_id)> 0
 >>

@@ -170,46 +170,21 @@ public class LLVMIRGenerator {
 				template.setAttribute("id", t.llvmResultID);
 				return template;
 			}
-			
+
 			List<StringTemplate> args = new ArrayList<StringTemplate>();
 			for (int i = 1; i < t.getChildCount() - 1; i++) {
 				DashAST argument_node = ((DashAST) t.getChild(i).getChild(0));
 				VariableSymbol arg_var = (VariableSymbol)argument_node.symbol;
 				Type arg_type = arg_var.type;
 				StringTemplate type_template = getType(arg_type);
-				
-				String argTemplate = null;
-				if (t.getToken().getType() == DashLexer.PROCEDURE_DECL &&
-						arg_var.specifier.getSpecifierIndex() == SymbolTable.sVAR)
-					argTemplate = "pass_by_reference_args";
-				else
-					argTemplate = "args";
 
+				String argTemplate = "declare_argument";
 				StringTemplate arg = stg.getInstanceOf(argTemplate);
 				arg.setAttribute("arg_id", arg_var.id);
 				arg.setAttribute("arg_type", type_template);
 				arg.setAttribute("id", argument_node.llvmResultID);
-				
+
 				args.add(arg);
-			}
-			
-			String arg_init = "";
-			for (int i = 1; i < t.getChildCount() - 1; i++) {
-				DashAST argument_node = ((DashAST) t.getChild(i).getChild(0));
-				
-				VariableSymbol arg_var = (VariableSymbol)argument_node.symbol;
-				Type arg_type = arg_var.type;
-				StringTemplate type_template = getType(arg_type);
-
-				if (t.getToken().getType() != DashLexer.PROCEDURE_DECL ||
-						arg_var.specifier.getSpecifierIndex() != SymbolTable.sVAR) {
-					StringTemplate arg = stg.getInstanceOf("arg_init");
-					arg.setAttribute("arg_type", type_template);
-					arg.setAttribute("arg_id", arg_var.id);
-					arg.setAttribute("id", argument_node.llvmResultID);
-
-					arg_init += arg.toString();
-				}
 			}
 
 			StringTemplate code = exec((DashAST)t.getChild(t.getChildCount() - 1));
@@ -222,7 +197,6 @@ public class LLVMIRGenerator {
 			template.setAttribute("code", code_s);
 			template.setAttribute("return_type", getType(type));
 			template.setAttribute("args", args);
-			template.setAttribute("arg_init", arg_init);
 			template.setAttribute("sym_id", sym_id);
 			template.setAttribute("id", t.llvmResultID);
 			return template;
@@ -230,29 +204,49 @@ public class LLVMIRGenerator {
 		
 		case DashLexer.CALL:
 		{
+			DashAST method_node = (DashAST) t.getChild(0);
+			MethodSymbol method = (MethodSymbol)method_node.symbol;
+			Type method_type = method.type;
+
 			// Arguments
 			List<StringTemplate> code = new ArrayList<StringTemplate>();
 			List<StringTemplate> args = new ArrayList<StringTemplate>();
 			DashAST argument_list = (DashAST) t.getChild(1);
+
 			for (int i = 0; i < argument_list.getChildCount(); i++) {
 				DashAST arg = (DashAST)argument_list.getChild(i);
-				
-				code.add(exec(arg));
-				
 				Type arg_type = arg.evalType;
-				StringTemplate type_template = getType(arg_type);
-				
-				StringTemplate arg_template = stg.getInstanceOf("args_call");
-				arg_template.setAttribute("arg_id", arg.llvmResultID);
-				arg_template.setAttribute("arg_type", type_template);
+				StringTemplate llvm_arg_type = getType(arg_type);
+
+				StringTemplate arg_template = null;
+				if (arg.symbol instanceof VariableSymbol) {
+					VariableSymbol var_sym = (VariableSymbol)arg.symbol;
+					arg_template = stg.getInstanceOf("pass_variable_by_reference");
+					arg_template.setAttribute("var_id", var_sym.id);
+				} else {
+					if (code.isEmpty()) {
+						StringTemplate stackSave = stg.getInstanceOf("save_stack");
+						stackSave.setAttribute("call_id", method.id);
+						code.add(stackSave);
+					}
+
+					code.add(exec(arg));
+
+					StringTemplate toStack = stg.getInstanceOf("expr_result_to_stack");
+					toStack.setAttribute("expr_id", arg.llvmResultID);
+					toStack.setAttribute("expr_type", llvm_arg_type);
+					code.add(toStack);
+
+					arg_template = stg.getInstanceOf("pass_expr_by_reference");
+					arg_template.setAttribute("arg_expr_id", arg.llvmResultID);
+				}
+
+				arg_template.setAttribute("arg_type", llvm_arg_type);
 				arg_template.setAttribute("id", arg.llvmResultID);
-				
+
 				args.add(arg_template);
 			}
-			DashAST method_node = (DashAST) t.getChild(0);
-			MethodSymbol method = (MethodSymbol)method_node.symbol;
-			Type method_type = method.type;
-			
+
 			StringTemplate template = null;
 			if (method_type.getTypeIndex() == SymbolTable.tVOID) {
 				template = stg.getInstanceOf("call_void");
@@ -261,6 +255,13 @@ public class LLVMIRGenerator {
 				template.setAttribute("return_type", getType(method_type));
 				
 			}
+
+			if (!code.isEmpty()) {
+				StringTemplate stackRestore = stg.getInstanceOf("restore_stack");
+				stackRestore.setAttribute("call_id", method.id);
+				template.setAttribute("postcode", stackRestore);
+			}
+
 			template.setAttribute("code", code);
 			template.setAttribute("args", args);
 			template.setAttribute("function_id", method.id);
