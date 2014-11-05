@@ -215,12 +215,13 @@ public class LLVMIRGenerator {
 
 			for (int i = 0; i < argument_list.getChildCount(); i++) {
 				DashAST arg = (DashAST)argument_list.getChild(i);
+				DashAST arg_child = (DashAST)arg.getChild(0);
 				Type arg_type = arg.evalType;
 				StringTemplate llvm_arg_type = getType(arg_type);
 
 				StringTemplate arg_template = null;
-				if (arg.symbol instanceof VariableSymbol) {
-					VariableSymbol var_sym = (VariableSymbol)arg.symbol;
+				if (arg_child.symbol instanceof VariableSymbol) {
+					VariableSymbol var_sym = (VariableSymbol)arg_child.symbol;
 					arg_template = stg.getInstanceOf("pass_variable_by_reference");
 					arg_template.setAttribute("var_id", var_sym.id);
 				} else {
@@ -233,16 +234,16 @@ public class LLVMIRGenerator {
 					code.add(exec(arg));
 
 					StringTemplate toStack = stg.getInstanceOf("expr_result_to_stack");
-					toStack.setAttribute("expr_id", arg.llvmResultID);
+					toStack.setAttribute("expr_id", arg_child.llvmResultID);
 					toStack.setAttribute("expr_type", llvm_arg_type);
 					code.add(toStack);
 
 					arg_template = stg.getInstanceOf("pass_expr_by_reference");
-					arg_template.setAttribute("arg_expr_id", arg.llvmResultID);
+					arg_template.setAttribute("arg_expr_id", arg_child.llvmResultID);
 				}
 
 				arg_template.setAttribute("arg_type", llvm_arg_type);
-				arg_template.setAttribute("id", arg.llvmResultID);
+				arg_template.setAttribute("id", arg_child.llvmResultID);
 
 				args.add(arg_template);
 			}

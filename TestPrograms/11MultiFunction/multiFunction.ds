@@ -9,14 +9,8 @@ function squaredPlus1(integer a) returns integer {
     return c + 1;
 }
 
-procedure testme(var integer x) returns integer {
-	return x + 3;
-}
-
 procedure main() returns integer {
     integer c = squaredPlus1(5);
-    integer z = 0;
-    z = testme(c);
     c -> blah;
     return 0;
 }

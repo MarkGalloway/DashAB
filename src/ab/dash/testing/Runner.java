@@ -244,6 +244,10 @@ public class Runner {
         // generate llvm
         
         deleteNoLongerNeeded(nodes, tree);
+        String ast = tree.toStringTree();
+        String ast_file = "LLVMIROutput/" + args[0].substring((args[0].lastIndexOf('/')+1)) + ".ast";
+        SampleFileWriter.createFile(ast_file, ast);
+
         String llvm = runLLVMIRgenerator(nodes, symtab, tree, tokens);
         String llvm_file = "LLVMIROutput/" + args[0].substring((args[0].lastIndexOf('/')+1)) + ".ll";
         SampleFileWriter.createFile(llvm_file, llvm);
