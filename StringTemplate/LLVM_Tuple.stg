@@ -1,5 +1,5 @@
 tuple(id, types) ::= <<
-%T<id> = type {
+<tuple_type(id)> = type {
   <types>
 }
 >>
@@ -13,7 +13,7 @@ tuple_init_local(sym_id, type_id) ::= <<
 >>
 
 tuple_init_literal(id, type_id) ::= <<
-  %<vlocal_result(id)> = alloca %T<type_id>
+  %<vlocal_result(id)> = alloca <tuple_type(type_id)>
 >>
 
 tuple_init_global(sym_id, type_id) ::= <<

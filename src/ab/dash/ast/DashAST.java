@@ -24,10 +24,14 @@ public class DashAST extends CommonTree {
         super(t); 
         init();
     }
+    
+    public static int getUniqueId() {
+       LLVMIR_ID_COUNTER++;
+       return LLVMIR_ID_COUNTER;
+    }
 
    private void init() {
-       LLVMIR_ID_COUNTER++;
-       llvmResultID = LLVMIR_ID_COUNTER;
+       llvmResultID = getUniqueId();
    }
 
     public String toString() {
