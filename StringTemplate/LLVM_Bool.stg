@@ -110,3 +110,8 @@ bool_print_output<id>:
   <vlocal(id)>2 = phi i8* [<vlocal(id)>0, %bool_print_true<id>], [<vlocal(id)>1, %bool_print_false<id>]
   call i32 (i8*, ...)* @printf(i8* <vlocal(id)>2)
 >>
+
+bool_input(id, sym_id) ::= <<
+  <vlocal_result(id)> = call i1 @readBool()
+  store i1 <vlocal_result(id)>, i1* <vlocal_symbol(sym_id)>
+>>

@@ -28,6 +28,7 @@ import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
 
 public class Runner {
+	
     // needed to return tokens from lexer/parser pass
     private static TokenRewriteStream tokens;
 
@@ -222,8 +223,23 @@ public class Runner {
         SampleFileWriter.createFile(llvm_file, llvm);
         
         // execute llvm and print it in stdout/stderr
+    	Process p = null;
+    	if (args.length > 1) {
+    		String[] cmd = {
+    				"/bin/sh",
+    				"-c",
+    				"cat " + args[1] + " | lli " + llvm_file
+    				};
+    		p = Runtime.getRuntime().exec(cmd);
+        } else {
+        	String[] cmd = {
+        			"/bin/sh",
+    				"-c",
+    				"lli " + llvm_file
+    				};
+        	p = Runtime.getRuntime().exec(cmd);
+        }
         
-        Process p = Runtime.getRuntime().exec("lli " + llvm_file);
         p.waitFor();
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));

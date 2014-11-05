@@ -111,3 +111,8 @@ char_print(id, expr, expr_id) ::= <<
   <vlocal(id)> = getelementptr [3 x i8]* @.str.fmt.char, i32 0, i32 0
   call i32 (i8*, ...)* @printf(i8* <vlocal(id)>, i8 <vlocal_result(expr_id)>)
 >>
+
+char_input(id, sym_id) ::= <<
+  <vlocal_result(id)> = call i8 @readChar()
+  store i8 <vlocal_result(id)>, i8* <vlocal_symbol(sym_id)>
+>>

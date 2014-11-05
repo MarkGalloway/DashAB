@@ -124,3 +124,8 @@ real_print(id, expr, expr_id) ::= <<
   <vlocal(id)>dbl = fpext float <vlocal_result(expr_id)> to double
   call i32 (i8*, ...)* @printf(i8* <vlocal(id)>, double <vlocal(id)>dbl)
 >>
+
+real_input(id, sym_id) ::= <<
+  <vlocal_result(id)> = call float @readFloat()
+  store float <vlocal_result(id)>, float* <vlocal_symbol(sym_id)>
+>>

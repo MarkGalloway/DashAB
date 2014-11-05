@@ -123,6 +123,11 @@ int_print(id, expr, expr_id) ::= <<
   call i32 (i8*, ...)* @printf(i8* <vlocal(id)>, i32 <vlocal_result(expr_id)>)
 >>
 
+int_input(id, sym_id) ::= <<
+  <vlocal_result(id)> = call i32 @readInt()
+  store i32 <vlocal_result(id)>, i32* <vlocal_symbol(sym_id)>
+>>
+
 int_to_real(id, expr, expr_id) ::= <<
 <expr>
   <vlocal_result(id)> = sitofp i32 <vlocal_result(expr_id)> to <real_type()>
