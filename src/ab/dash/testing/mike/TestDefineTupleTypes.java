@@ -111,9 +111,9 @@ public class TestDefineTupleTypes {
 		
 		System.out.println("\nDefine Tuple Types:");
 		nodes.reset();
-		DefineTupleTypes tupleTypeComp = new DefineTupleTypes(nodes, symtab);
+		DefineTupleTypes tupleTypeComp = new DefineTupleTypes(symtab);
 		tupleTypeComp.debug_on();
-		tupleTypeComp.downup(tree); // trigger resolve/type computation actions
+		tupleTypeComp.define(tree); // trigger resolve/type computation actions
 		
 		System.out.println("\nCode:");
 		System.out.println(tokens);

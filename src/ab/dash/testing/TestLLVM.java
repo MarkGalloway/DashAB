@@ -369,4 +369,16 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         assertEquals("T", outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void literalTuple() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/29LiteralTuple/literalTuple.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("0.5\n");
+        sb.append("5\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

@@ -55,6 +55,9 @@ public class Runner {
         DashParser.program_return entry = parser.program();
         
         // lexer errors are constructed after parser.program() executes
+        if(lexer.inComment) {
+            throw new LexerException("Error: Missing closing comment '*/'.");
+        }
         if (lexer.getErrorCount() > 0) {
             throw new LexerException(lexer.getErrors());
         }
@@ -89,9 +92,9 @@ public class Runner {
     // runs Types.g DefineTupleTypes.g treewalker, aborts if errors are found
     private static void runDefineTupleTypes(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
         nodes.reset();
-        DefineTupleTypes tupleTypeComp = new DefineTupleTypes(nodes, symtab);
+        DefineTupleTypes tupleTypeComp = new DefineTupleTypes(symtab);
         tupleTypeComp.debug_off();
-        tupleTypeComp.downup(tree);
+        tupleTypeComp.define(tree);
         
         if (symtab.getErrorCount() > 0) {
             throw new SymbolTableException(symtab.getErrors());
@@ -196,7 +199,11 @@ public class Runner {
         DashAST tree;
         try {
             tree = runLexerParser(input);
-        } catch (LexerException | ParserException | RecognitionException e) {
+        } catch (LexerException e) {
+        	return;
+        } catch (ParserException e) {
+        	return;
+        } catch (RecognitionException e) {
             return;
         }
 

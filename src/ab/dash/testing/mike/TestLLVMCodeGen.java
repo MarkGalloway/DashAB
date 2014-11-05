@@ -133,9 +133,9 @@ public class TestLLVMCodeGen {
 		}
 		
 		nodes.reset();
-		DefineTupleTypes tupleTypeComp = new DefineTupleTypes(nodes, symtab);
+		DefineTupleTypes tupleTypeComp = new DefineTupleTypes(symtab);
 		tupleTypeComp.debug_off();
-		tupleTypeComp.downup(tree); // trigger resolve/type computation actions
+		tupleTypeComp.define(tree); // trigger resolve/type computation actions
 		
 		if (symtab.getErrorCount() > 0) {
 			return "";

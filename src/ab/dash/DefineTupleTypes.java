@@ -1,24 +1,19 @@
-tree grammar DefineTupleTypes;
+package ab.dash;
 
-options {
-  language = Java;
-  tokenVocab = Dash;
-  ASTLabelType = DashAST;
-  filter = true;
-  backtrack=true; 
-}
+import java.util.ArrayList;
 
-@header {
-  package ab.dash;
-  import ab.dash.ast.*; 
-}
+import ab.dash.ast.DashAST;
+import ab.dash.ast.Symbol;
+import ab.dash.ast.SymbolTable;
+import ab.dash.ast.TupleTypeSymbol;
+import ab.dash.ast.Type;
 
-@members {
-	boolean debug_mode = false;
+public class DefineTupleTypes {
+	
+boolean debug_mode = false;
 	
     SymbolTable symtab;
-    public DefineTupleTypes(TreeNodeStream input, SymbolTable symtab) {
-        this(input);
+    public DefineTupleTypes(SymbolTable symtab) {
         this.symtab = symtab;
     }
     
@@ -60,23 +55,32 @@ options {
     	
     	return -1;
     }
-}
 
-bottomup
-    :   tuple
-    ;
-    
-tuple
-	:	ID 
-	{
-	if ($ID.symbol != null)
-		if ($ID.symbol.type != null) {
-			if ($ID.symbol.type.getTypeIndex() == SymbolTable.tTUPLE) {
-				
-		    	debug($ID);
+
+	public void define(DashAST t) {
+		TupleTypeSymbol tuple = null;
+		
+		if (t.symbol != null) {
+			if (t.symbol.type != null) {
+				if (t.symbol.type.getTypeIndex() == SymbolTable.tTUPLE) {
+					tuple = (TupleTypeSymbol) t.symbol.type;
+				}
+			}
+		}
+		
+		if (tuple == null) {
+			if (t.evalType != null) {
+				if (t.evalType.getTypeIndex() == SymbolTable.tTUPLE) {
+					tuple = (TupleTypeSymbol) t.evalType;
+				}
+			}
+		}
+		
+		if (tuple != null) {
+		    	debug(t);
 		    	//debug("Fields:");
 		    	
-		    	TupleTypeSymbol tuple = (TupleTypeSymbol) $ID.symbol.type;
+		    	
 		    	ArrayList<Symbol> fields = (ArrayList<Symbol>) tuple.getDefined();
 		    	ArrayList<Type> field_types = new ArrayList<Type>();
 		    	for (int i = 0; i < fields.size(); i++) {
@@ -102,6 +106,10 @@ tuple
 //		    		debug(field_types.get(i));
 //		    	}
 		    }
+		
+		for (int i = 0; i < t.getChildCount(); i++) {
+			define((DashAST) t.getChild(i));
 		}
 	}
-	;
+	
+}

@@ -1,0 +1,25 @@
+procedure times_two(integer x) returns integer = 2 * x;
+
+procedure f() returns integer = 1;
+
+
+procedure change_first(var tuple(integer, integer) t) {
+    t.1 = 7;
+}
+
+procedure increment(var integer x) {
+    x = x + 1;
+}
+
+procedure main() returns integer {
+    
+    
+    var tuple(integer,integer) myTup = (5,5);
+    integer x = 13;
+
+    /* Calls */
+    call change_first(myTup); /* myTup == (7,5) */
+    call increment(x); /* x == 14 */
+
+    return 0;
+}
