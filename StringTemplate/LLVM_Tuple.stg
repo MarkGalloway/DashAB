@@ -13,7 +13,7 @@ tuple_init_local(sym_id, type_id) ::= <<
 >>
 
 tuple_init_literal(id, type_id, element_exprs) ::= <<
-  %<vlocal_result(id)> = alloca <tuple_type(type_id)>
+  <vlocal_result(id)> = alloca <tuple_type(type_id)>
 <element_exprs; separator="\n">
 >>
 
@@ -27,6 +27,12 @@ tuple_get_local(id, type_id, sym_id) ::= <<
 
 tuple_get_global(id, type_id, sym_id) ::= <<
   <vlocal_result(id)> = add <tuple_type(type_id)>* <vglobalSymbol(sym_id)>, 0
+>>
+
+tuple_assign(id, lhs_expr, rhs_expr, element_assigns) ::= <<
+<rhs_expr; separator="\n">
+<lhs_expr; separator="\n">
+<element_assigns; separator="\n">
 >>
 
 bool_tuple_assign(id, tuple_expr, tuple_expr_id, tuple_type, index, expr, expr_id) ::= <<

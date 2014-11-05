@@ -298,7 +298,6 @@ public class LLVMIRGenerator {
 			template.setAttribute("type_id", tuple.tupleTypeIndex);
 
 			List<StringTemplate> element_exprs = new ArrayList<StringTemplate>();
-			//ArrayList<Integer> expression_ids = new ArrayList<Integer>();
 
 			for (int i = 0; i < t.getChildCount(); i++) {
 				DashAST element_node = (DashAST)t.getChild(i);
@@ -580,40 +579,8 @@ public class LLVMIRGenerator {
 			int type = sym.type.getTypeIndex();
 			DashAST child = (DashAST)t.getChild(1);
 			if (child != null) {
-				// Tuple
-				//if (child.getType() == DashLexer.TUPLE_LIST) {
-				//	TupleTypeSymbol tuple = (TupleTypeSymbol) sym.type;
-				//	String temp = "";
-				//	for(int i = 0; i < t.getChildCount(); i++) {
-				//		String expr = exec((DashAST) child.getChild(i)).toString() + "\n";
-				//		int arg_id = ((DashAST)child.getChild(i).getChild(0)).llvmResultID;
-				//		int type_l = ((DashAST)child.getChild(i)).evalType.getTypeIndex();
-				//				
-				//		StringTemplate template = null;
-				//		if (type_l == SymbolTable.tINTEGER) {
-				//			template = stg.getInstanceOf("int_local_tuple_assign");
-				//		}  else if (type_l == SymbolTable.tREAL) {
-				//			template = stg.getInstanceOf("real_local_tuple_assign");
-				//		} else if (type_l == SymbolTable.tCHARACTER) {
-				//			template = stg.getInstanceOf("char_local_tuple_assign");
-				//		} else if (type_l == SymbolTable.tBOOLEAN) {
-				//			template = stg.getInstanceOf("bool_local_tuple_assign");
-				//		}
-				//		
-				//		template.setAttribute("expr_id", arg_id);
-				//		template.setAttribute("expr", expr);
-				//		template.setAttribute("index", i);
-				//		template.setAttribute("tuple_type", tuple.tupleTypeIndex);
-				//		template.setAttribute("tuple_id", tuple.id);
-				//		template.setAttribute("id", id);
-				//		
-				//		temp += template.toString() + "\n";
-				//	}
-				//	return new StringTemplate(temp);
-				//}
-				
 				StringTemplate expr = exec(child);
-				int arg_id = ((DashAST)child.getChild(0)).llvmResultID;
+				int expr_id = ((DashAST)child.getChild(0)).llvmResultID;
 				
 				StringTemplate template = null;
 				if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
@@ -639,12 +606,61 @@ public class LLVMIRGenerator {
 					} else if (type == SymbolTable.tBOOLEAN) {
 						template = stg.getInstanceOf("bool_local_assign");
 					} else if (type == SymbolTable.tTUPLE) {
-						//template = stg.getInstanceOf("tuple_local_assign");
-						template = new StringTemplate();
+						TupleTypeSymbol tuple_type = (TupleTypeSymbol) sym.type;
+						template = stg.getInstanceOf("tuple_assign");
+                        List<StringTemplate> element_assigns = new ArrayList<StringTemplate>();
+                        
+                        StringTemplate getLocalTuple = stg.getInstanceOf("tuple_get_local");
+                        getLocalTuple.setAttribute("id", DashAST.getUniqueId());
+                        getLocalTuple.setAttribute("type_id", tuple_type.tupleTypeIndex);
+                        getLocalTuple.setAttribute("sym_id", sym.id);
+
+                        List<Symbol> fields = tuple_type.fields;
+						for (int i = 0; i <	fields.size(); i++) {
+							StringTemplate memberAssign = null;
+							StringTemplate getMember = null;
+
+							int field_type = fields.get(i).type.getTypeIndex();
+							if (field_type == SymbolTable.tINTEGER) {
+								getMember = stg.getInstanceOf("int_get_tuple_member");
+								memberAssign = stg.getInstanceOf("int_tuple_assign");
+							}
+							else if (field_type == SymbolTable.tREAL) {
+								getMember = stg.getInstanceOf("real_get_tuple_member");
+								memberAssign = stg.getInstanceOf("real_tuple_assign");
+							}
+							else if (field_type == SymbolTable.tCHARACTER) {
+								getMember = stg.getInstanceOf("char_get_tuple_member");
+								memberAssign = stg.getInstanceOf("char_tuple_assign");
+							}
+							else if (field_type == SymbolTable.tBOOLEAN) {
+								getMember = stg.getInstanceOf("bool_get_tuple_member");
+								memberAssign = stg.getInstanceOf("bool_tuple_assign");
+							}
+
+							getMember.setAttribute("id", DashAST.getUniqueId());
+							getMember.setAttribute("tuple_expr_id", child.llvmResultID);
+							getMember.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
+							getMember.setAttribute("index", i);
+
+							memberAssign.setAttribute("id", DashAST.getUniqueId());
+							memberAssign.setAttribute("tuple_expr_id", getLocalTuple.getAttribute("id"));
+							memberAssign.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
+							memberAssign.setAttribute("index", i);
+							memberAssign.setAttribute("expr", getMember);
+							memberAssign.setAttribute("expr_id", getMember.getAttribute("id"));
+
+							element_assigns.add(memberAssign);
+						}
+						
+						template.setAttribute("lhs_expr", getLocalTuple);
+						template.setAttribute("rhs_expr", expr);
+						template.setAttribute("element_assigns", element_assigns);
+						return template;
 					}
 				}
 				
-				template.setAttribute("expr_id", arg_id);
+				template.setAttribute("expr_id", expr_id);
 				template.setAttribute("expr", expr);
 				template.setAttribute("sym_id", sym_id);
 				template.setAttribute("id", id);
