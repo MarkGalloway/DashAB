@@ -639,7 +639,7 @@ public class LLVMIRGenerator {
 							}
 
 							getMember.setAttribute("id", DashAST.getUniqueId());
-							getMember.setAttribute("tuple_expr_id", child.llvmResultID);
+							getMember.setAttribute("tuple_expr_id", expr_id);
 							getMember.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
 							getMember.setAttribute("index", i);
 
