@@ -199,7 +199,7 @@ tupleMember
 	;
 	
 tupleMemberList
-	: LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
+	: LPAREN expression (',' expression)+ RPAREN -> ^(EXPR ^(TUPLE_LIST expression+))
 	| LPAREN expression RPAREN
     { emitErrorMessage("line " + $LPAREN.getLine() + ": tuple lists must have more than one element"); }
 	| As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN tupleMemberList RPAREN -> ^(EXPR ^(TYPECAST primitiveType+ tupleMemberList)) 
@@ -313,8 +313,9 @@ statement
   | lhs INSTREAM ID DELIM -> ^(INPUT ID lhs)
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
-  | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
-  | ID (',' ID)+ ASSIGN tupleMemberList DELIM -> ^(UNPACK ID+ tupleMemberList)
+  //| ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
+  //| ID (',' ID)+ ASSIGN tupleMemberList DELIM -> ^(UNPACK ID+ tupleMemberList)
+  | ID (',' ID)+ ASSIGN expression DELIM -> ^(UNPACK ID+ expression)
   | Break DELIM!
     {
       if(loopDepth == 0) 
@@ -420,6 +421,7 @@ primary
     | Identity
     | Null
     | LPAREN expression RPAREN -> expression
+    | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
     ;
