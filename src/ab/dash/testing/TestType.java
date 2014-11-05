@@ -3,9 +3,14 @@
  *  when encountering undefined or invalid types. **/
 package ab.dash.testing;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
+import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
@@ -31,7 +36,7 @@ public class TestType extends BaseTest {
     @Test 
     public void undefined() throws RecognitionException, LexerException, ParserException, SymbolTableException {
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("line 2: e2 is not defined in the program.");
+        expectedEx.expectMessage("line 2: unknown variable e2");
         String[] args = new String[] {"TestInvalidTypePrograms/03Undefined/undefined.ds"};
         Runner.typesTestMain(args);
     }
@@ -66,7 +71,7 @@ public class TestType extends BaseTest {
     @Test 
     public void invalidUndefinedButDefinedAfter() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("line 2: reference to undefined variable");
+        expectedEx.expectMessage("line 2: unknown variable e2");
         String[] args = new String[] {"TestInvalidTypePrograms/07UndefinedButDefinedAfter/undefinedButDefinedAfter.ds"};
         Runner.typesTestMain(args);
     }
@@ -106,4 +111,19 @@ public class TestType extends BaseTest {
         Runner.typesTestMain(args);
     }
     
+    @Test 
+    public void promoteTupleTypes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/28PromoteTupleTypes/promoteTupleTypes.ds"};
+        Runner.typesTestMain(args);
+        StringBuffer sb = new StringBuffer();
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void invalidOutputTypes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        expectedEx.expect(SymbolTableException.class);
+        expectedEx.expectMessage("line 20: invalid type (<tuple.a:boolean>, <tuple.b:boolean>) sent to outstream");
+        String[] args = new String[] {"TestInvalidTypePrograms/10InvalidOutputTypes/invalidOutputTypes"};
+        Runner.typesTestMain(args);
+    }
 }

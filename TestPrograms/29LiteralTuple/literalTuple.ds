@@ -1,0 +1,11 @@
+const out = std_output();
+
+procedure main() returns integer {
+	tuple(real, integer) t = (0.0, 5);
+	t.1 = 0.5;
+	
+	t.1 -> out; '\n' -> out;
+	t.2 -> out; '\n' -> out;
+	
+    return 0;
+}

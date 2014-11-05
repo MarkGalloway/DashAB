@@ -4,12 +4,14 @@ package ab.dash.testing;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
+import ab.dash.exceptions.SymbolTableException;
 
 public class TestAST extends BaseTest {
 
@@ -421,5 +423,40 @@ public class TestAST extends BaseTest {
         expectedEx.expectMessage("line 4: Typedef must only be declared in global scope.");
         String[] args = new String[] {"TestGrammarPrograms/48localTypedef.ds"};
         Runner.astTestMain(args);
+    }
+    
+    @Test 
+    public void functionExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/27FunctionExpression/functionExpression.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/49aAST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // function parse test
+    public void functionParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/49functions.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/49AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // function parse test
+    public void functionCallMultiTypeTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/52functionsArgOrdering.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/52AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // forward decl parse test
+    public void forwardDeclTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/51forwardDecl.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/51AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // procedure parse test
+    public void procedureParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/50procedures.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/50AST_output"), outErrIntercept.toString().trim());
     }
 }

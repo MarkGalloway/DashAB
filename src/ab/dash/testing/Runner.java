@@ -28,7 +28,10 @@ import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
 
 public class Runner {
-    
+	
+    // needed to return tokens from lexer/parser pass
+    private static TokenRewriteStream tokens;
+
     // grabs the input file name from args
     private static ANTLRFileStream getInputStream(String[] args) {
         ANTLRFileStream input = null;
@@ -42,23 +45,22 @@ public class Runner {
         return input;
     }
     
-    // gets tokens from the lexer, aborts if errors are found
-    private static TokenRewriteStream runLexer(ANTLRFileStream input) throws LexerException, RecognitionException {
+    // builds the AST in the lexer/parser, aborts if errors are found
+    private static DashAST runLexerParser(ANTLRFileStream input) throws LexerException, ParserException, RecognitionException {
+        
         DashLexer lexer = new DashLexer(input);
-        final TokenRewriteStream tokens = new TokenRewriteStream(lexer);
-        
-        if (lexer.getErrorCount() > 0) {
-            throw new LexerException(lexer.getErrors());
-        }
-        
-        return tokens;
-    }
-    
-    // builds the AST in the parser, aborts if errors are found
-    private static DashAST runParser(TokenRewriteStream tokens) throws ParserException, RecognitionException {
+        tokens = new TokenRewriteStream(lexer);
         DashParser parser = new DashParser(tokens);
         parser.setTreeAdaptor(DashAST.dashAdaptor);
         DashParser.program_return entry = parser.program();
+        
+        // lexer errors are constructed after parser.program() executes
+        if(lexer.inComment) {
+            throw new LexerException("Error: Missing closing comment '*/'.");
+        }
+        if (lexer.getErrorCount() > 0) {
+            throw new LexerException(lexer.getErrors());
+        }
         
         if (parser.getErrorCount() > 0) {
             throw new ParserException(parser.getErrors());
@@ -90,9 +92,9 @@ public class Runner {
     // runs Types.g DefineTupleTypes.g treewalker, aborts if errors are found
     private static void runDefineTupleTypes(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
         nodes.reset();
-        DefineTupleTypes tupleTypeComp = new DefineTupleTypes(nodes, symtab);
+        DefineTupleTypes tupleTypeComp = new DefineTupleTypes(symtab);
         tupleTypeComp.debug_off();
-        tupleTypeComp.downup(tree);
+        tupleTypeComp.define(tree);
         
         if (symtab.getErrorCount() > 0) {
             throw new SymbolTableException(symtab.getErrors());
@@ -157,16 +159,14 @@ public class Runner {
     // used by ASTtest
     public static void astTestMain(String[] args) throws LexerException, ParserException, RecognitionException {
         ANTLRFileStream input = getInputStream(args);
-        TokenRewriteStream tokens = runLexer(input);
-        DashAST tree = runParser(tokens);
+        DashAST tree = runLexerParser(input);
         System.out.println(tree.toStringTree());
     }
     
     // used by DefTest
     public static SymbolTable defTestMain(String[] args) throws LexerException, ParserException, RecognitionException, SymbolTableException {
         ANTLRFileStream input = getInputStream(args);
-        TokenRewriteStream tokens = runLexer(input);
-        DashAST tree = runParser(tokens);
+        DashAST tree = runLexerParser(input);
         
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
@@ -178,34 +178,49 @@ public class Runner {
     // used by TypeTest
     public static void typesTestMain(String[] args) throws LexerException, ParserException, RecognitionException, SymbolTableException {
         ANTLRFileStream input = getInputStream(args);
-        TokenRewriteStream tokens = runLexer(input);
-        DashAST tree = runParser(tokens);
+        DashAST tree = runLexerParser(input);
         
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
         SymbolTable symtab = new SymbolTable(tokens); 
         runDef(nodes, symtab, tree);
         runTypes(nodes, symtab, tree);
+        runDefineTupleTypes(nodes, symtab, tree);
     }
     
     // used by LLVMtest
-    public static void llvmMain(String[] args) throws LexerException, ParserException, RecognitionException, SymbolTableException, IOException, InterruptedException {
+    public static void llvmMain(String[] args) throws IOException, InterruptedException {
         
         // build the AST
         
         ANTLRFileStream input = getInputStream(args);
-        TokenRewriteStream tokens = runLexer(input);
-        DashAST tree = runParser(tokens);
         
+
+        DashAST tree;
+        try {
+            tree = runLexerParser(input);
+        } catch (LexerException e) {
+        	return;
+        } catch (ParserException e) {
+        	return;
+        } catch (RecognitionException e) {
+            return;
+        }
+
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
         SymbolTable symtab = new SymbolTable(tokens);
         
         // run tree walker passes
         
-        runDef(nodes, symtab, tree);
-        runTypes(nodes, symtab, tree);
-        runDefineTupleTypes(nodes, symtab, tree);
+        try {
+            runDef(nodes, symtab, tree);
+            runTypes(nodes, symtab, tree);
+            runDefineTupleTypes(nodes, symtab, tree);
+        } catch (SymbolTableException e) {
+            return;
+        }
+;
         
         // generate llvm
         
@@ -215,8 +230,23 @@ public class Runner {
         SampleFileWriter.createFile(llvm_file, llvm);
         
         // execute llvm and print it in stdout/stderr
+    	Process p = null;
+    	if (args.length > 1) {
+    		String[] cmd = {
+    				"/bin/sh",
+    				"-c",
+    				"cat " + args[1] + " | lli " + llvm_file
+    				};
+    		p = Runtime.getRuntime().exec(cmd);
+        } else {
+        	String[] cmd = {
+        			"/bin/sh",
+    				"-c",
+    				"lli " + llvm_file
+    				};
+        	p = Runtime.getRuntime().exec(cmd);
+        }
         
-        Process p = Runtime.getRuntime().exec("lli " + llvm_file);
         p.waitFor();
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));

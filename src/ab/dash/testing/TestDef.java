@@ -4,6 +4,8 @@ package ab.dash.testing;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
@@ -107,6 +109,7 @@ public class TestDef extends BaseTest {
         base_globals.add("squared");
         base_globals.add("squaredPlus1");
         base_globals.add("blah");
+        base_globals.add("testme");
         assertEquals(base_globals, symtab.globals.keys());    
     }
     

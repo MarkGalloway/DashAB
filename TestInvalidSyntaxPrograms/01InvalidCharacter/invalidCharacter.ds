@@ -1,0 +1,7 @@
+const out = std_output();
+
+procedure main() returns integer {
+	// shouldn't use double quotes
+	character c = "\n";
+    return 0;
+}

@@ -31,6 +31,7 @@ bottomup // match subexpressions innermost to outermost
 	|	ifstat
 	|	loopstat
 	|	print
+	|	input
 	;
 
 // promotion and type checking
@@ -65,6 +66,13 @@ print
 	: ^(PRINT ID .)
 	{
     	symtab.checkOutput($PRINT);
+	}
+	;
+	
+input
+	: ^(INPUT ID .)
+	{
+    	symtab.checkInput($INPUT);
 	}
 	;
 
@@ -108,7 +116,7 @@ member returns [Type type]
 
 call returns [Type type]
 @init {List args = new ArrayList();}
-	:	^(CALL ID ^(ELIST (expr {args.add($expr.start);})*))
+	:	^(CALL ID ^(ELIST (^(EXPR expr {args.add($expr.start);}))*))
 		{
 		$type = symtab.call($ID, args);
 		$start.evalType = $type;

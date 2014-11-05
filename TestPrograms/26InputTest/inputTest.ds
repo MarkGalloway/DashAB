@@ -1,0 +1,21 @@
+const out = std_output();
+const inp = std_input();
+
+procedure main() returns integer {
+	boolean b;
+	character c;
+	integer i;
+	real r;
+	
+	b <- inp;
+	c <- inp;
+	i <- inp;
+	r <- inp;
+	
+	b -> out; '\n' -> out;
+	c -> out; '\n' -> out;
+	i -> out; '\n' -> out;
+	r -> out; '\n' -> out;
+
+	return 0;
+}

@@ -217,7 +217,7 @@ public class SymbolTable {
 		this.warningSB.append(msg);
 	}
 	
-	private void error(String msg) {
+	public void error(String msg) {
 		this.error_count++;
 		this.listener.error(msg);
 		this.errorSB.append(msg);
@@ -377,11 +377,7 @@ public class SymbolTable {
     
     public void declinit(DashAST declID, DashAST init) {
         int te = init.evalType.getTypeIndex(); // promote expr to decl type?
-        
-//if(te == tVOID) {
-//    return;
-//}
-        
+              
         // Check for Type Inference
         if (declID.symbol.type == null) {
         	declID.symbol.type = init.evalType;
@@ -530,10 +526,17 @@ public class SymbolTable {
     	}
     	
     	DashAST stream = (DashAST) print.getChild(0);
-    	
+    	DashAST lhs = (DashAST) print.getChild(1);
+
     	VariableSymbol s = (VariableSymbol)stream.scope.resolve(stream.getText());
     	stream.symbol = s;
     	
+        //String s = super.toString();
+        if ( lhs.evalType != _boolean &&
+                lhs.evalType != _integer && lhs.evalType != _real && lhs.evalType!= _character) {
+            error("line " + print.getLine() + ": invalid type " + lhs.evalType + "sent to outstream");
+        }
+        
     	if (s.type != null) {
     		if (s.type.getTypeIndex() != SymbolTable.tOUTSTREAM) {
     			error("line " + print.getLine() + ": " +
@@ -553,10 +556,36 @@ public class SymbolTable {
     	print.deleteChild(0);
     }
 
-    //TODO: This should evaluate whether it receives a valid input stream
-    // on the RHS
-    public void input(DashAST lhs, DashAST inputStream) {
+    public void checkInput(DashAST input) {
+    	if (input.getChildCount() != 2) {
+			error("line " + input.getLine() + ": "
+					+ " not enough arguments in " + text(input));
+			return;
+		}
 
+		DashAST stream = (DashAST) input.getChild(0);
+
+		VariableSymbol s = (VariableSymbol) stream.scope.resolve(stream
+				.getText());
+		stream.symbol = s;
+
+		if (s.type != null) {
+			if (s.type.getTypeIndex() != SymbolTable.tINSTREAM) {
+				error("line " + input.getLine() + ": "
+						+ " the input stream is not a valid stream in "
+						+ text(input) + ", the stream needst to be of "
+						+ "type std_input(). Currently, it is type " + s);
+				return;
+			}
+		} else {
+			error("line " + input.getLine() + ": "
+					+ "the input stream is currently undefined in "
+					+ text(input));
+			return;
+		}
+
+		// Remove output stream since it is not needed after this point
+		input.deleteChild(0);
     }
 
     public void ifstat(DashAST cond) {

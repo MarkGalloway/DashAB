@@ -340,4 +340,45 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void inputTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/26InputTest/inputTest.ds", "TestPrograms/26InputTest/input.in"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("T\n");
+        sb.append("a\n");
+        sb.append("125\n");
+        sb.append("1.25\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
+    @Test 
+    public void functionExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/27FunctionExpression/functionExpression.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void promoteTupleTypes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/28PromoteTupleTypes/promoteTupleTypes.ds"};
+        Runner.llvmMain(args);
+        assertEquals("T", outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void literalTuple() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/29LiteralTuple/literalTuple.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("0.5\n");
+        sb.append("5\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

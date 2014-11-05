@@ -23,6 +23,7 @@ tokens {
 	DECL_OUTSTREAM;
   DECL_INSTREAM;
   PRINT;
+  INPUT;
   TYPEDEF;
   WHILE;
   DOWHILE;
@@ -63,6 +64,7 @@ tokens {
 
 @lexer::members {
 	boolean member_access = false;
+	public boolean inComment = false;
 	
 	int error_count = 0;
   StringBuffer errorSB = new StringBuffer();
@@ -136,22 +138,32 @@ methodDeclaration
        -> ^(FUNCTION_DECL methodType ID formalParameters? expression)
 	| Function ID LPAREN formalParameters? RPAREN Returns methodType block
 	    -> ^(FUNCTION_DECL methodType ID formalParameters? block)
-	| Procedure ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
-	    -> ^(PROCEDURE_DECL methodType ID formalParameters? tupleMemberList)
-	| Procedure ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
-	    -> ^(PROCEDURE_DECL methodType ID formalParameters? expression)
-	| Procedure ID LPAREN formalParameters? RPAREN (Returns methodType)? block
-	    -> ^(PROCEDURE_DECL methodType? ID formalParameters? block)
+	| Procedure ID LPAREN informalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
+	    -> ^(PROCEDURE_DECL methodType ID informalParameters? tupleMemberList)
+	| Procedure ID LPAREN informalParameters? RPAREN Returns methodType ASSIGN expression DELIM
+	    -> ^(PROCEDURE_DECL methodType ID informalParameters? expression)
+	| Procedure ID LPAREN informalParameters? RPAREN (Returns methodType)? block
+	    -> ^(PROCEDURE_DECL methodType? ID informalParameters? block)
   ;
 
 formalParameters
-   : parameter (',' parameter)* -> parameter+
+   : functionParameter (',' functionParameter)* -> functionParameter+
    ;
+   
+informalParameters
+  : procedureParameter (',' procedureParameter)* -> procedureParameter+
+  ;
     
-parameter
-	:	specifier type ID -> ^(ARG_DECL specifier type ID)
-	|	type ID -> ^(ARG_DECL Const["const"] type ID)
+functionParameter
+	:	specifier? type ID -> ^(ARG_DECL Const["const"] type ID)
+	| specifier? tupleType ID -> ^(ARG_DECL Const["const"] tupleType ID)
 	;
+	
+procedureParameter
+  : specifier (a=type|b=tupleType) ID -> ^(ARG_DECL specifier $a* $b* ID)
+  | (c=type|d=tupleType) ID -> ^(ARG_DECL Const["const"] $c* $d* ID)
+  ;
+	
 // END: method
 
 // START: block
@@ -287,6 +299,7 @@ statement
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
   | lhs OUTSTREAM ID DELIM -> ^(PRINT ID lhs)
+  | lhs INSTREAM ID DELIM -> ^(INPUT ID lhs)
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
   | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
@@ -308,9 +321,14 @@ lhs
 	;
 
 expressionList
-    : expr (',' expr)* -> ^(ELIST expr+)
+    : arg (',' arg)* -> ^(ELIST arg+)
     | -> ELIST
     ;
+
+arg // hack for ELIST function parameter ordering ... find a better way?
+  : expression
+  | tupleMemberList
+  ;
     
 expression
     : expr -> ^(EXPR expr)
@@ -392,6 +410,7 @@ primary
     | Null
     | LPAREN expression RPAREN -> expression
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
+    | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
     ;
 
 // DashAB reserved words
@@ -519,10 +538,12 @@ REAL
 	
 CHARACTER :	'\'' '\\'? . '\'' ;
 
+INVALID_CHARACTER : '"' '\\'? . '"' ;
+
 WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
 SL_COMMENT:   '//' ~('\r'|'\n')* (NL | EOF) {$channel=HIDDEN;};
-MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
+MULTILINE_COMMENT : {inComment = true;} COMMENT_NESTED { $channel=HIDDEN; inComment = false; };
 
 fragment
 COMMENT_NESTED

@@ -1,0 +1,23 @@
+const out = std_output();
+
+procedure main() returns integer {
+	integer a = 1;
+	real b = 2.0;
+	character c = '\n';
+	boolean d = true;
+	tuple (boolean a, boolean b) e = (true, false);
+	
+	a -> out;
+	b -> out;
+	c -> out;
+	d -> out;
+	e.a -> out;
+	e.b -> out;
+	e.1 -> out;
+	e.2 -> out;
+	
+	// invalid, can't send tuple to output
+	e-> out;
+	
+    return 0;
+}
