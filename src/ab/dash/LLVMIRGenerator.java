@@ -843,6 +843,13 @@ public class LLVMIRGenerator {
 			template.setAttribute("id", id);
 			return template;
 		}
+		
+		case DashLexer.TYPECAST:
+		{
+			Type castTo = t.evalType;
+			Type castFrom = ((DashAST)t.getChild(0)).evalType;
+			return null;
+		}
 
 		case DashLexer.ID:
 		{

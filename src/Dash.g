@@ -202,7 +202,7 @@ tupleMemberList
 	: LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
 	| LPAREN expression RPAREN
     { emitErrorMessage("line " + $LPAREN.getLine() + ": tuple lists must have more than one element"); }
-	| As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN tupleMemberList RPAREN -> ^(TYPECAST primitiveType+ tupleMemberList)
+	| As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN tupleMemberList RPAREN -> ^(EXPR ^(TYPECAST primitiveType+ tupleMemberList)) 
 	| Identity -> ^(TUPLE_LIST Identity)
 	| Null -> ^(TUPLE_LIST Null)
 	| ID

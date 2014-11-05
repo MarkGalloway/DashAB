@@ -5,6 +5,7 @@ options {
   tokenVocab = Dash;
   ASTLabelType = DashAST;
   filter = true;
+  output = AST;
 }
 
 @header {
@@ -22,10 +23,7 @@ options {
     StringBuffer errorSB = new StringBuffer();
     
     public Def(TreeNodeStream input, SymbolTable symtab) {
-        this(input);
-        this.symtab = symtab;
-        this.currentScope = symtab.globals;
-        this.debug_mode = false;
+    	this(input, symtab, false);
     }
     
     public Def(TreeNodeStream input, SymbolTable symtab, Boolean debug) {
@@ -33,6 +31,8 @@ options {
         this.symtab = symtab;
         this.currentScope = symtab.globals;
         this.debug_mode = debug;
+        
+        setTreeAdaptor(DashAST.dashAdaptor);
     }
     
     private void debug(String msg) {
@@ -56,6 +56,7 @@ options {
 topdown
     : enterBlock
     | enterMethod
+    | typecast
     |	typeDef
     | atoms
     |	tuple_list
@@ -140,6 +141,40 @@ exitMethod
         }
     ;
     
+    
+typecast
+@init 
+{
+ArrayList<Type> types = new ArrayList<Type>();
+}
+	: ^(node=TYPECAST 
+	(typeElement
+	{
+		types.add($typeElement.type);
+	}
+	)+ e=.)
+	{
+		if (types.size() == 1) {
+			$node.evalType = types.get(0);
+			debug("Typecast: " + $node);
+		} else {
+			TupleTypeSymbol ts = new TupleTypeSymbol(currentScope);
+			for (int i = 0; i < types.size(); i++) {
+				Type type = types.get(i);
+				VariableSymbol vs = new VariableSymbol(null, type, SymbolTable._const);
+				ts.define(vs);
+			}
+			
+			$node.evalType = ts;
+			debug("Typecast: " + $node);
+		}
+		
+		for (int i = $node.getChildCount() - 2; i >= 0; i--) {
+			$node.deleteChild(i);
+		}
+			
+	}
+	;
 
 // D e f i n e  s y m b o l s
 
