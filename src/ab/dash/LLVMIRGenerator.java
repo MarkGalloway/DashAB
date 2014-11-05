@@ -230,6 +230,10 @@ public class LLVMIRGenerator {
 		
 		case DashLexer.CALL:
 		{
+			DashAST method_node = (DashAST) t.getChild(0);
+			MethodSymbol method = (MethodSymbol)method_node.symbol;
+			Type method_type = method.type;
+
 			// Arguments
 			List<StringTemplate> code = new ArrayList<StringTemplate>();
 			List<StringTemplate> args = new ArrayList<StringTemplate>();
@@ -249,10 +253,6 @@ public class LLVMIRGenerator {
 				
 				args.add(arg_template);
 			}
-			DashAST method_node = (DashAST) t.getChild(0);
-			MethodSymbol method = (MethodSymbol)method_node.symbol;
-			Type method_type = method.type;
-			
 			StringTemplate template = null;
 			if (method_type.getTypeIndex() == SymbolTable.tVOID) {
 				template = stg.getInstanceOf("call_void");
