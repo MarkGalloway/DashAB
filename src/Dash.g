@@ -46,6 +46,7 @@ tokens {
   
   int error_count = 0;
   StringBuffer errorSB = new StringBuffer();
+  StringBuffer antlrErrorsSB = new StringBuffer();
   @Override
   public void emitErrorMessage(String msg) {
     System.err.println(msg);
@@ -53,8 +54,13 @@ tokens {
     errorSB.append(msg);
   }
   
+  public void displayRecognitionError(String[] tokenNames,RecognitionException e) {
+        antlrErrorsSB.append(getErrorHeader(e));
+  }
+  
   public int getErrorCount() { return error_count; }
   public String getErrors() { return errorSB.toString(); }
+  public String getAntlrErrors() { return antlrErrorsSB.toString(); }
 }
 
 
@@ -133,10 +139,15 @@ methodForwardDeclaration
 
 methodDeclaration
   : Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
+    { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
        -> ^(FUNCTION_DECL methodType ID formalParameters? tupleMemberList)
+       
   | Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
+    { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
        -> ^(FUNCTION_DECL methodType ID formalParameters? expression)
+       
 	| Function ID LPAREN formalParameters? RPAREN Returns methodType block
+	  { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
 	    -> ^(FUNCTION_DECL methodType ID formalParameters? block)
 	| Procedure ID LPAREN informalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
 	    -> ^(PROCEDURE_DECL methodType ID informalParameters? tupleMemberList)

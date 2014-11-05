@@ -1,0 +1,8 @@
+const integer main = 0;
+
+procedure bar() returns integer {
+	return 0;
+}
+
+
+

@@ -1,1 +1,1 @@
-(PROGRAM (FUNCTION_DECL real squared (ARG_DECL const real a) (BLOCK (return (EXPR (* a a))))) (PROCEDURE_DECL real main (BLOCK (return (EXPR 0)))))
+(PROGRAM (FUNCTION_DECL real squared (ARG_DECL const real a) (BLOCK (return (EXPR (* a a))))) (PROCEDURE_DECL integer main (BLOCK (return (EXPR 0)))))

@@ -23,6 +23,8 @@ import ab.dash.LLVMIRGenerator;
 import ab.dash.Types;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
+import ab.dash.ast.Symbol;
+import ab.dash.ast.MethodSymbol;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
@@ -56,7 +58,7 @@ public class Runner {
         
         // lexer errors are constructed after parser.program() executes
         if(lexer.inComment) {
-            throw new LexerException("Error: Missing closing comment '*/'.");
+            throw new LexerException("error: Missing closing comment '*/'.");
         }
         if (lexer.getErrorCount() > 0) {
             throw new LexerException(lexer.getErrors());
@@ -64,6 +66,10 @@ public class Runner {
         
         if (parser.getErrorCount() > 0) {
             throw new ParserException(parser.getErrors());
+        }
+        
+        if (!parser.getAntlrErrors().isEmpty()) {
+            throw new ParserException(parser.getAntlrErrors());
         }
   
         return (DashAST)entry.getTree();
@@ -73,6 +79,19 @@ public class Runner {
     private static void runDef(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
         Def def = new Def(nodes, symtab, false);
         def.downup(tree); 
+        
+        //TODO: This can probably be moved somewhere better
+        Symbol main = symtab.globals.resolve("main");
+        if (main == null || !(main instanceof MethodSymbol)) {
+            symtab.error("error: missing main procedure");
+        }
+        else if (main.type != symtab._integer) {
+            symtab.error("line " + main.def.getLine() + ": main procedure must return an integer");
+        }
+        else if (((MethodSymbol)main).getMembers().size() > 0) {
+            symtab.error("line " + main.def.getLine() + ": main procedure takes no arguments");
+        }
+
         if (symtab.getErrorCount() > 0) {
             throw new SymbolTableException(symtab.getErrors());
         }

@@ -1,0 +1,21 @@
+const x = 1; // var y = 2;
+
+procedure main() returns integer {
+  /* var z = 42; */
+  integer x = 300_000;
+  /* This is a block comment
+ * and 
+ 
+ var y = 3;
+ 
+ * should not display
+ada faf */
+
+  const z = 4;
+  return x;
+}
+
+
+
+ /* end of line comment should not throw parser error
+*/

@@ -64,6 +64,4 @@ public class TestType extends BaseTest {
         String[] args = new String[] {"TestInvalidTypePrograms/06InvalidOutputTypes/invalidOutputTypes"};
         Runner.typesTestMain(args);
     }
-    
-
 }

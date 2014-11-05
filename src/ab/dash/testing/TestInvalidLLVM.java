@@ -11,14 +11,13 @@ import java.io.IOException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
-import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
 
 public class TestInvalidLLVM extends BaseTest {
     
-    // Programs with Invalid Syntax
+    // Programs with Invalid Syntax: Put TestInvalidSyntaxPrograms Here
     
     @Test 
     public void invalidCharacter() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
@@ -44,7 +43,61 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals("line 2: tuple lists must have more than one element", outErrIntercept.toString().trim());
     }
     
-    // Programs with undeclared variables
+    @Test 
+    public void missingEndOfComment() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {        
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/04MissingEndOfComment/missingEndOfComment.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("Error: Missing closing comment '*/'.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void missingStartOfComment() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {        
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/05MissingStartOfComment/missingStartOfComment.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: missing opening comment '/*'");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void missingMainProcedure() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {        
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/06MissingMainProcedure/missingMainProcedure.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("error: missing main procedure");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void mainDeclaredAsFunction() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {        
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/07MainDeclaredAsFunction/mainDeclaredAsFunction.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("error: main must be a procedure not a function");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void mainWithArguments() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {        
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/08MainWithArguments/mainWithArguments.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: main procedure takes no arguments");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void mainReturnsNonInteger() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/09MainReturnsNonInteger/mainReturnsNonInteger.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: main procedure must return an integer");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    // Programs with undeclared variables: Put TestUndefinedVariablePrograms Here
     
     @Test 
     public void undefined() throws RecognitionException, LexerException, ParserException, SymbolTableException, IOException, InterruptedException {
@@ -104,7 +157,7 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals("line 7: invalid index for tuple t", outErrIntercept.toString().trim());
     }
     
-    // Programs with invalid types
+    // Programs with invalid types: Put TestInvalidTypePrograms Here
     
     @Test 
     public void invalidTupleSmallerMemberList() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {

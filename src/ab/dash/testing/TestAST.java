@@ -55,7 +55,7 @@ public class TestAST extends BaseTest {
     @Test  // Block comments must match up
     public void missingEndComment() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(LexerException.class);
-        expectedEx.expectMessage("Error: Missing closing comment '*/'.");
+        expectedEx.expectMessage("error: Missing closing comment '*/'.");
         String[] args = new String[] {"TestGrammarPrograms/03missingEndComment.ds"};
         Runner.astTestMain(args);
     }

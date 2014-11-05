@@ -381,4 +381,29 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void dataTypeDeclarationTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/28DataTypeDeclarationTest/datatypeDeclarationTest.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void endOfFileMultiLineComment() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/29EndOfFileMultiLineComment/endOfFileMultiLineComment.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void endOfFileSingleLineComment() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/30EndOfFileSingleLineComment/endOfFileSingleLineComment.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
 }

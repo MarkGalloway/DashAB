@@ -2,6 +2,6 @@ function squared(real a) returns real {
     return a*a;
 }
 
-procedure main() returns real {
+procedure main() returns integer {
     return 0;
 }

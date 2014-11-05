@@ -101,13 +101,13 @@ tuple_list
 
 enterMethod
     // it's alright that alternative 2 is disabled by antlr in this case, that's what we want
-    :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) type ID .+) // need .+ to match 0-or-more args
+    :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) type id=ID .+) // need .+ to match 0-or-more args
         {
-        debug("line " + $ID.getLine() + ": def method " + $ID.text + " return " + $type.type);
-        MethodSymbol ms = new MethodSymbol($ID.text, $type.type, currentScope);
+        debug("line " + $id.getLine() + ": def method " + $id.text + " return " + $type.type);
+        MethodSymbol ms = new MethodSymbol($id.text, $type.type, currentScope);
         currentMethod = ms;
-        ms.def = $ID;            // track AST location of def's ID
-        $ID.symbol = ms;         // track in AST
+        ms.def = $id;            // track AST location of def's ID
+        $id.symbol = ms;         // track in AST
         currentScope.define(ms); // def method in globals
         currentScope = ms;       // set current scope to method scope
         

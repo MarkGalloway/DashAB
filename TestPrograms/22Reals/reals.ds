@@ -34,7 +34,7 @@ const boolean b13 = 4.5 >= 5.5;
 const boolean b14 = 5.5 >= 5.5;
 const boolean b15 = 6.5 >= 5.5;
 
-procedure main() returns real {
+procedure main() returns integer {
 	real l1 = e2 + 5.5;
 	real l2 = l1 + 5.5;
 	

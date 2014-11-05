@@ -1,0 +1,6 @@
+procedure main(real a) returns integer {
+	return 0;
+}
+
+
+
