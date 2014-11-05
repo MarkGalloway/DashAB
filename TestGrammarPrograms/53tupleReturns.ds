@@ -1,0 +1,19 @@
+function f() returns tuple(character, character) = ('a', 'b');
+
+
+const integer x = y;
+const tuple(character,character) t = z;
+
+procedure main() returns integer {
+    var out = std_output();
+    var tuple(character,character) t = f();
+    var integer x = f();
+
+    
+    
+    f().2 -> out;
+    '\n' -> out;
+    t.1 -> out;
+    
+    return 0;
+}

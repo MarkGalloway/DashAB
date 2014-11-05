@@ -360,6 +360,10 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/25FunctionExpression/functionExpression.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
+        
+        sb.append("1\n");
+        sb.append("2.82843\n");
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
@@ -473,6 +477,18 @@ public class TestLLVM extends BaseTest {
         
         sb.append("1\n");
         sb.append("2\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void promoteFunctionArguments() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/35PromoteFunctionArguments/promoteFunctionArguments.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("25\n");
+        sb.append("25\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }

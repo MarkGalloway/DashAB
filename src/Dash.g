@@ -133,26 +133,19 @@ primitiveType
 methodForwardDeclaration
 	: Function ID LPAREN formalParameters? RPAREN Returns methodType DELIM
 	    -> ^(FUNCTION_DECL methodType ID formalParameters?)
-  | Procedure ID LPAREN formalParameters? RPAREN (Returns methodType)? DELIM
-      -> ^(PROCEDURE_DECL methodType? ID formalParameters?)
+  | Procedure ID LPAREN informalParameters? RPAREN (Returns methodType)? DELIM
+      -> ^(PROCEDURE_DECL methodType? ID informalParameters?)
   ;
 
 methodDeclaration
-  : Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
+  : Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
     { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
-       -> ^(FUNCTION_DECL methodType ID formalParameters? tupleMemberList)
-       
-  | Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
-    { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
-       -> ^(FUNCTION_DECL methodType ID formalParameters? expression)
-       
+       -> ^(FUNCTION_DECL methodType ID formalParameters? ^(Return expression))    
 	| Function ID LPAREN formalParameters? RPAREN Returns methodType block
 	  { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
 	    -> ^(FUNCTION_DECL methodType ID formalParameters? block)
-	| Procedure ID LPAREN informalParameters? RPAREN Returns methodType ASSIGN tupleMemberList DELIM
-	    -> ^(PROCEDURE_DECL methodType ID informalParameters? tupleMemberList)
 	| Procedure ID LPAREN informalParameters? RPAREN Returns methodType ASSIGN expression DELIM
-	    -> ^(PROCEDURE_DECL methodType ID informalParameters? expression)
+	    -> ^(PROCEDURE_DECL methodType ID informalParameters? ^(Return expression))
 	| Procedure ID LPAREN informalParameters? RPAREN (Returns methodType)? block
 	    -> ^(PROCEDURE_DECL methodType? ID informalParameters? block)
   ;
@@ -197,16 +190,6 @@ tupleType
 tupleMember
 	:	type ID? -> ^(FIELD_DECL Var["var"] type ID?)
 	;
-	
-tupleMemberList
-	: LPAREN expression (',' expression)+ RPAREN -> ^(EXPR ^(TUPLE_LIST expression+))
-	| LPAREN expression RPAREN
-    { emitErrorMessage("line " + $LPAREN.getLine() + ": tuple lists must have more than one element"); }
-	| As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN tupleMemberList RPAREN -> ^(EXPR ^(TYPECAST primitiveType+ tupleMemberList)) 
-	| Identity -> ^(TUPLE_LIST Identity)
-	| Null -> ^(TUPLE_LIST Null)
-	| ID
-	;
 // END: tuple
 
 // START: var
@@ -225,15 +208,15 @@ varDeclaration
   | specifier ID ASSIGN expression DELIM 
     {if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL specifier ID expression)
-  |	tupleType ID (ASSIGN tupleMemberList)? DELIM 
+  |	tupleType ID (ASSIGN expression)? DELIM 
     { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
-      -> ^(VAR_DECL Var["var"] tupleType ID tupleMemberList?)
-  |	specifier tupleType ID (ASSIGN tupleMemberList)? DELIM
+      -> ^(VAR_DECL Var["var"] tupleType ID expression?)
+  |	specifier tupleType ID (ASSIGN expression)? DELIM
     { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
-      -> ^(VAR_DECL specifier tupleType ID tupleMemberList?)
-  | specifier ID ASSIGN tupleMemberList DELIM 
+      -> ^(VAR_DECL specifier tupleType ID expression?)
+  | specifier ID ASSIGN expression DELIM 
     { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
-      -> ^(VAR_DECL specifier ID tupleMemberList)
+      -> ^(VAR_DECL specifier ID expression)
   | inputDeclaration
   | streamDeclaration
 	;
@@ -333,15 +316,10 @@ lhs
 	;
 
 expressionList
-    : arg (',' arg)* -> ^(ELIST arg+)
+    : expression (',' expression)* -> ^(ELIST expression+)
     | -> ELIST
     ;
 
-arg // hack for ELIST function parameter ordering ... find a better way?
-  : expression
-  | tupleMemberList
-  ;
-    
 expression
     : expr -> ^(EXPR expr)
     ;
@@ -399,11 +377,7 @@ postfixExpression
     : 	ID 
     (
     	(	DOT^ (INTEGER | ID)
-    	|	r=LPAREN^ expressionList RPAREN!	
-    	{
-    	$r.setType(CALL);
-    	$r.setText("CALL");
-    	}
+    	|	r=LPAREN^ expressionList RPAREN!	{ $r.setType(CALL); $r.setText("CALL"); }
     	// TODO: Part 2
     	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
     	)*
@@ -420,11 +394,13 @@ primary
     |	False
     | Identity
     | Null
-    | LPAREN expression RPAREN -> expression
+    | LPAREN expr RPAREN -> expr
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
+    | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
     ;
+    
 
 // DashAB reserved words
 CALL : 'call';

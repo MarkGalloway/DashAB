@@ -24,7 +24,6 @@ options {
 
 bottomup // match subexpressions innermost to outermost
 	: 	exprRoot
-	|	tuple_list
 	|	decl
 	|	ret
 	|	assignment
@@ -83,6 +82,7 @@ exprRoot // invoke type computation rule after matching EXPR
     ;
 
 expr returns [Type type]
+//@init { System.out.println($start); }
 @after { $start.evalType = $type; }
     :   True      	{$type = SymbolTable._boolean;}
     |   False    	{$type = SymbolTable._boolean;}
@@ -100,6 +100,7 @@ expr returns [Type type]
     }
     |   ^(UNARY_MINUS a=expr)   {$type=symtab.uminus($a.start);}
     |   ^(Not a=expr) {$type=symtab.unot($a.start);}
+    |	tuple_list	{$type = $tuple_list.type;}
     |	typecast	{$type = $typecast.type;}
     |   member      {$type = $member.type;}
     |   call        {$type = $call.type;}
@@ -132,7 +133,7 @@ call returns [Type type]
 		}
     ;
 	
-tuple_list
+tuple_list returns [Type type]
 @init { 
 ArrayList<DashAST> arg_nodes = new ArrayList<DashAST>();
 }
@@ -146,7 +147,7 @@ ArrayList<DashAST> arg_nodes = new ArrayList<DashAST>();
 		    ts.define(vs);
 	    }
 	    
-	    $TUPLE_LIST.evalType = ts;
+	    $type = ts;
 	}
 	;
 

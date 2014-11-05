@@ -218,6 +218,11 @@ public class LLVMIRGenerator {
 				DashAST arg = (DashAST)argument_list.getChild(i);
 				DashAST arg_child = (DashAST)arg.getChild(0);
 				Type arg_type = arg.evalType;
+				
+				if (((DashAST)arg.getChild(0)).promoteToType != null) {
+					arg_type = ((DashAST)arg.getChild(0)).promoteToType;
+				}
+				
 				StringTemplate llvm_arg_type = getType(arg_type);
 
 				StringTemplate arg_template = null;
@@ -255,7 +260,6 @@ public class LLVMIRGenerator {
 			} else {
 				template = stg.getInstanceOf("call");
 				template.setAttribute("return_type", getType(method_type));
-				
 			}
 
 			if (!code.isEmpty()) {
@@ -381,6 +385,7 @@ public class LLVMIRGenerator {
 
 				element_exprs.add(memberAssign);
 			}
+			
 			template.setAttribute("element_exprs", element_exprs);
 
 			return template;
@@ -1055,10 +1060,27 @@ public class LLVMIRGenerator {
 		case DashLexer.INTEGER:
 		{
 			int id = ((DashAST)t).llvmResultID;
-			int val = Integer.parseInt(t.getText().replaceAll("_", ""));
+			StringTemplate template = null;
+			if (t.promoteToType != null) {
+				if (t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+					int val = Integer.parseInt(t.getText().replaceAll("_", ""));
+					
+					float fval = (float)val;
+					String hex_val = Long.toHexString(Double.doubleToLongBits(fval));
+					hex_val = "0x" + hex_val.toUpperCase();
+					
+					template = stg.getInstanceOf("real_literal");
+					template.setAttribute("val", hex_val);
+				} else {
+					// ERROR
+				}
+			} else {
+				int val = Integer.parseInt(t.getText().replaceAll("_", ""));
+				
+				template = stg.getInstanceOf("int_literal");
+				template.setAttribute("val", val);
+			}
 			
-			StringTemplate template = stg.getInstanceOf("int_literal");
-			template.setAttribute("val", val);
 			template.setAttribute("id", id);
 			return template;
 		}
@@ -1235,14 +1257,6 @@ public class LLVMIRGenerator {
 		
 		StringTemplate rhs = exec((DashAST)t.getChild(1));
 		String rhs_id = Integer.toString(((DashAST)t.getChild(1)).llvmResultID);
-		
-		Type lhs_promotion_type = ((DashAST)t.getChild(0)).promoteToType;
-		Type rhs_promotion_type = ((DashAST)t.getChild(1)).promoteToType;
-		if (lhs_promotion_type != null) {
-			
-		} else if (rhs_promotion_type != null) {
-			
-		}
 		
 		StringTemplate template = null;
 		switch (op) {
