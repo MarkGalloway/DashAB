@@ -369,7 +369,7 @@ postfixExpression
     : 	ID 
     (
     	(	DOT^ (INTEGER | ID)
-    	|	r=LPAREN^ expressionList RPAREN!	
+    	|	r=LPAREN^ (expressionList|tupleMemberList) RPAREN!	
     	{
     	$r.setType(CALL);
     	$r.setText("CALL");
