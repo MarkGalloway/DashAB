@@ -64,6 +64,7 @@ tokens {
 
 @lexer::members {
 	boolean member_access = false;
+	public boolean inComment = false;
 	
 	int error_count = 0;
   StringBuffer errorSB = new StringBuffer();
@@ -533,6 +534,7 @@ WS : (' ' | '\t' | '\f')+ {$channel=HIDDEN;};
 
 SL_COMMENT:   '//' ~('\r'|'\n')* (NL | EOF) {$channel=HIDDEN;};
 MULTILINE_COMMENT : COMMENT_NESTED { $channel=HIDDEN; };
+MULTILINE_COMMENT : {inComment = true;} COMMENT_NESTED { $channel=HIDDEN; inComment = false; };
 
 fragment
 COMMENT_NESTED

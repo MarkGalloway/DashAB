@@ -18,11 +18,12 @@ import ab.dash.ast.DashAST;
 import ab.dash.ast.DashErrorNode;
 import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
+import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
 
 public class DashAB_Part1_Test {
 
-    public static void main(String[] args) throws RecognitionException {
+    public static void main(String[] args) throws RecognitionException, LexerException, ParserException {
 
         //TODO: add command line rejection
         
@@ -42,9 +43,17 @@ public class DashAB_Part1_Test {
         parser.setTreeAdaptor(DashAST.dashAdaptor);
         DashParser.program_return entry = parser.program();
         
-        // exit if we find lexer errors
-        if (lexer.getErrorCount() > 0 || parser.getErrorCount() > 0) {
-        	System.exit(1);
+        // lexer errors are constructed after parser.program() executes
+        if(lexer.inComment) {
+            throw new LexerException("Error: Missing closing comment '*/'.");
+        }
+        
+        if (lexer.getErrorCount() > 0) {
+            throw new LexerException(lexer.getErrors());
+        }
+        
+        if (parser.getErrorCount() > 0) {
+            throw new ParserException(parser.getErrors());
         }
         
         CommonTree ast = (CommonTree) entry.getTree();

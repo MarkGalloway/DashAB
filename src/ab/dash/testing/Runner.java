@@ -55,6 +55,9 @@ public class Runner {
         DashParser.program_return entry = parser.program();
         
         // lexer errors are constructed after parser.program() executes
+        if(lexer.inComment) {
+            throw new LexerException("Error: Missing closing comment '*/'.");
+        }
         if (lexer.getErrorCount() > 0) {
             throw new LexerException(lexer.getErrors());
         }
