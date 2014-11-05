@@ -161,7 +161,7 @@ typeDef
 atoms
 @init {DashAST t = (DashAST)input.LT(1);}
     :  {t.hasAncestor(EXPR)||t.hasAncestor(ASSIGN)
-    	||t.hasAncestor(PRINT)}? ID
+    	||t.hasAncestor(PRINT)||t.hasAncestor(INPUT)}? ID
        {
        debug("line " + $ID.getLine() + ": ref " + $ID.text);
        t.scope = currentScope;
@@ -169,7 +169,7 @@ atoms
     ;
 
 streamDeclaration
-	:	^(DECL_OUTSTREAM specifier ID std_type)
+	:	^((DECL_OUTSTREAM | DECL_INSTREAM) specifier ID std_type)
 	{
 		debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 

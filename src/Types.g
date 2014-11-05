@@ -31,6 +31,7 @@ bottomup // match subexpressions innermost to outermost
 	|	ifstat
 	|	loopstat
 	|	print
+	|	input
 	;
 
 // promotion and type checking
@@ -65,6 +66,13 @@ print
 	: ^(PRINT ID .)
 	{
     	symtab.checkOutput($PRINT);
+	}
+	;
+	
+input
+	: ^(INPUT ID .)
+	{
+    	symtab.checkInput($INPUT);
 	}
 	;
 

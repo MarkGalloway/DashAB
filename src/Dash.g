@@ -23,6 +23,7 @@ tokens {
 	DECL_OUTSTREAM;
   DECL_INSTREAM;
   PRINT;
+  INPUT;
   TYPEDEF;
   WHILE;
   DOWHILE;
@@ -287,6 +288,7 @@ statement
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
   | lhs OUTSTREAM ID DELIM -> ^(PRINT ID lhs)
+  | lhs INSTREAM ID DELIM -> ^(INPUT ID lhs)
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
   | ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
