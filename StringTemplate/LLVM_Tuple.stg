@@ -22,7 +22,7 @@ tuple_init_global(sym_id, type_id) ::= <<
 >>
 
 tuple_get_local(id, type_id, sym_id) ::= <<
- <vlocal_result(id)> = bitcast <tuple_type(type_id)>* <vlocal_symbol(sym_id)> to <tuple_type(type_id)>*
+  <vlocal_result(id)> = bitcast <tuple_type(type_id)>* <vlocal_symbol(sym_id)> to <tuple_type(type_id)>*
 >>
 
 tuple_get_global(id, type_id, sym_id) ::= <<
