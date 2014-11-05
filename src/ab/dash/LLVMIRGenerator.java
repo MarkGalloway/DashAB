@@ -344,7 +344,7 @@ public class LLVMIRGenerator {
 					element_assigns.add(memberAssign);
 				}
 
-				assignmentTemplate.setAttribute("rhs_expr", expr);
+				assignmentTemplate.setAttribute("rhs_expr", expr_template);
 				assignmentTemplate.setAttribute("element_assigns", element_assigns);
 
 				template.setAttribute("assign_code", assignmentTemplate);
