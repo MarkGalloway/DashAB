@@ -108,7 +108,6 @@ public class TestDef extends BaseTest {
         base_globals.add("squared");
         base_globals.add("squaredPlus1");
         base_globals.add("blah");
-        base_globals.add("testme");
         assertEquals(base_globals, symtab.globals.keys());    
     }
     
