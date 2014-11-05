@@ -228,7 +228,7 @@ define <return_type> <fglobal(sym_id)>(<args; separator=", ">) {
 >>
 
 function_returning_tuple(id, sym_id, type_id, args, code) ::= <<
-define void <fglobal(sym_id)>(<args; separator=", "> <if(args)>, <endif><tuple_type(type_id)>* %tuple_return) {
+define void <fglobal(sym_id)>(<args; separator=", "><if(args)>, <endif><tuple_type(type_id)>* %tuple_return) {
 <code; separator="\n">
 }
 >>

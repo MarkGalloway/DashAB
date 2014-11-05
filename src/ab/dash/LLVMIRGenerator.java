@@ -194,9 +194,16 @@ public class LLVMIRGenerator {
 				code_s += "\nret void\n";
 			}
 			
-			StringTemplate template = stg.getInstanceOf("function");
+			StringTemplate template = null;
+			if (type.getTypeIndex() == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("function_returning_tuple");
+				template.setAttribute("type_id", ((TupleTypeSymbol)type).tupleTypeIndex);
+			}
+			else {
+				template = stg.getInstanceOf("function");
+				template.setAttribute("return_type", getType(type));
+			}
 			template.setAttribute("code", code_s);
-			template.setAttribute("return_type", getType(type));
 			template.setAttribute("args", args);
 			template.setAttribute("sym_id", sym_id);
 			template.setAttribute("id", t.llvmResultID);
@@ -257,6 +264,10 @@ public class LLVMIRGenerator {
 			StringTemplate template = null;
 			if (method_type.getTypeIndex() == SymbolTable.tVOID) {
 				template = stg.getInstanceOf("call_void");
+			}
+			else if (method_type.getTypeIndex() == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("call_returning_tuple");
+				template.setAttribute("type_id", ((TupleTypeSymbol)method_type).tupleTypeIndex);
 			} else {
 				template = stg.getInstanceOf("call");
 				template.setAttribute("return_type", getType(method_type));
