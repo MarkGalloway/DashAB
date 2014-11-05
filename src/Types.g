@@ -100,9 +100,18 @@ expr returns [Type type]
     }
     |   ^(UNARY_MINUS a=expr)   {$type=symtab.uminus($a.start);}
     |   ^(Not a=expr) {$type=symtab.unot($a.start);}
+    |	typecast	{$type = $typecast.type;}
     |   member      {$type = $member.type;}
     |   call        {$type = $call.type;}
     |   binaryOps   {$type = $binaryOps.type;}
+    ;
+
+typecast returns [Type type]
+	:	^(TYPECAST e=.)	
+		{
+			//symtab.typeCast($TYPECAST, $e);
+			$type = $TYPECAST.evalType;
+		}
     ;
 
 member returns [Type type]

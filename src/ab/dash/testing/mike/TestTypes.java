@@ -177,7 +177,7 @@ public class TestTypes {
 
 	public static void main(String[] args) throws RecognitionException {
 //		parseFile("tuples.ds", "TestPrograms/05Tuples/tuples.ds");
-		parseFile("tupleCompareEquals.ds", "TestPrograms/31TupleCompareEquals/tupleCompareEquals.ds");
+		parseFile("typeCast.ds", "TestPrograms/33TypeCast/typeCast.ds");
 //		File[] files = new File("TestPrograms/").listFiles();
 //		showFiles(files);
 //

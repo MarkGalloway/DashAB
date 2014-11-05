@@ -1,0 +1,37 @@
+const out = std_output();
+
+procedure main() returns integer {
+	tuple(integer, integer) tup = 
+		as<(integer,integer)>((1.3,2.7));
+		
+	as<boolean>(true) -> out; '\n' -> out;			// T
+	as<boolean>(false) -> out; '\n' -> out;			// F
+	as<boolean>('a') -> out; '\n' -> out;			// T
+	as<boolean>(0) -> out; '\n' -> out;				// F
+	as<boolean>(5) -> out; '\n' -> out;				// T
+	
+	//as<character>(true) -> out;  '\n' -> out;		// 1
+	//as<character>(false) -> out;  '\n' -> out;	// 0
+	as<character>('b') -> out;  '\n' -> out;		// b
+	as<character>(97) -> out;  '\n' -> out;			// a
+	as<character>(355) -> out;  '\n' -> out;		// c
+	
+	as<integer>(true) -> out;  '\n' -> out;			// 1
+	as<integer>(false) -> out;  '\n' -> out;		// 0
+	as<integer>('b') -> out;  '\n' -> out;			// 98
+	as<integer>(1024) -> out;  '\n' -> out;			// 1024
+	as<integer>(1.7) -> out;  '\n' -> out;			// 1
+	as<integer>(52.2) -> out;  '\n' -> out;			// 52
+	
+	as<real>(true) -> out;  '\n' -> out;			// 1
+	as<real>(false) -> out;  '\n' -> out;			// 0
+	as<real>('b') -> out;  '\n' -> out;				// 98
+	as<real>(1024) -> out;  '\n' -> out;			// 1024
+	as<real>(1.7) -> out;  '\n' -> out;				// 1.7
+	as<real>(52.2) -> out;  '\n' -> out;			// 52.2
+	
+	tup.1  -> out; '\n' -> out;						// 1
+	tup.2  -> out; '\n' -> out;						// 2
+	
+	return 0;
+}

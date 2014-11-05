@@ -431,5 +431,41 @@ public class TestLLVM extends BaseTest {
         sb.append("T\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void typeCast() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/33TypeCast/typeCast.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("T\n");		// as<boolean>(true) -> out; '\n' -> out;		\\ T
+        sb.append("F\n");		// as<boolean>(false) -> out; '\n' -> out;		\\ F
+        sb.append("T\n");		// as<boolean>('a') -> out; '\n' -> out;		\\ T
+        sb.append("F\n");		// as<boolean>(0) -> out; '\n' -> out;			\\ F
+        sb.append("T\n");		// as<boolean>(5) -> out; '\n' -> out;			\\ T
+    	
+        sb.append("b\n");		// as<character>('b') -> out;  '\n' -> out;		\\ b
+        sb.append("a\n");		// as<character>(97) -> out;  '\n' -> out;		\\ a
+        sb.append("c\n");		// as<character>(355) -> out;  '\n' -> out;		\\ c
+    	
+        sb.append("1\n");		// as<integer>(true) -> out;  '\n' -> out;		\\ 1
+        sb.append("0\n");		// as<integer>(false) -> out;  '\n' -> out;		\\ 0
+        sb.append("98\n");		// as<integer>('b') -> out;  '\n' -> out;		\\ 98
+        sb.append("1024\n");	// as<integer>(1024) -> out;  '\n' -> out;		\\ 1024
+        sb.append("1\n");		// as<integer>(1.7) -> out;  '\n' -> out;		\\ 1
+        sb.append("52\n");		// as<integer>(52.2) -> out;  '\n' -> out;		\\ 52
+    	
+        sb.append("1\n");		// as<real>(true) -> out;  '\n' -> out;			\\ 1
+        sb.append("0\n");		// as<real>(false) -> out;  '\n' -> out;		\\ 0
+        sb.append("98\n");		// as<real>('b') -> out;  '\n' -> out;			\\ 98
+        sb.append("1024\n");	// as<real>(1024) -> out;  '\n' -> out;			\\ 1024
+        sb.append("1.7\n");		// as<real>(1.7) -> out;  '\n' -> out;			\\ 1.7
+        sb.append("52.2\n");	// as<real>(52.2) -> out;  '\n' -> out;			\\ 52.2
+
+    	sb.append("1\n");		// tup.1  -> out; '\n' -> out;					\\ 1
+    	sb.append("2\n");		// tup.2  -> out; '\n' -> out;					\\ 2
+    	
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 
 }
