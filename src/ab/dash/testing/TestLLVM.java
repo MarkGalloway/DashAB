@@ -461,10 +461,19 @@ public class TestLLVM extends BaseTest {
         sb.append("1024\n");	// as<real>(1024) -> out;  '\n' -> out;			\\ 1024
         sb.append("1.7\n");		// as<real>(1.7) -> out;  '\n' -> out;			\\ 1.7
         sb.append("52.2\n");	// as<real>(52.2) -> out;  '\n' -> out;			\\ 52.2
-
-    	sb.append("1\n");		// tup.1  -> out; '\n' -> out;					\\ 1
-    	sb.append("2\n");		// tup.2  -> out; '\n' -> out;					\\ 2
     	
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void tupleTypeCast() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/34TupleTypeCast/tupleTypeCast.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("1\n");
+        sb.append("2\n");
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 

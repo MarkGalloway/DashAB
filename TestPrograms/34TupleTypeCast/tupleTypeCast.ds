@@ -1,0 +1,11 @@
+const out = std_output();
+
+procedure main() returns integer {	
+	tuple(integer, integer) tup = 
+		as<(integer,integer)>((1.3,2.7));
+		
+	tup.1 -> out; '\n' -> out;	// 1
+	tup.2 -> out; '\n' -> out;	// 2
+		
+	return 0;
+}

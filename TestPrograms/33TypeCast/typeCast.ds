@@ -1,9 +1,6 @@
 const out = std_output();
 
-procedure main() returns integer {
-	tuple(integer, integer) tup = 
-		as<(integer,integer)>((1.3,2.7));
-		
+procedure main() returns integer {		
 	as<boolean>(true) -> out; '\n' -> out;			// T
 	as<boolean>(false) -> out; '\n' -> out;			// F
 	as<boolean>('a') -> out; '\n' -> out;			// T
@@ -29,9 +26,6 @@ procedure main() returns integer {
 	as<real>(1024) -> out;  '\n' -> out;			// 1024
 	as<real>(1.7) -> out;  '\n' -> out;				// 1.7
 	as<real>(52.2) -> out;  '\n' -> out;			// 52.2
-	
-	tup.1  -> out; '\n' -> out;						// 1
-	tup.2  -> out; '\n' -> out;						// 2
 	
 	return 0;
 }

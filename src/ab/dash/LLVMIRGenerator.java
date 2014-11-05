@@ -889,9 +889,59 @@ public class LLVMIRGenerator {
 		
 		case DashLexer.TYPECAST:
 		{
+			int id = ((DashAST)t).llvmResultID;
+			DashAST child = (DashAST)t.getChild(0);
+			
 			Type castTo = t.evalType;
-			Type castFrom = ((DashAST)t.getChild(0)).evalType;
-			return null;
+			Type castFrom = child.evalType;
+			
+			StringTemplate expr = exec(child);
+			int expr_id = ((DashAST)child.getChild(0)).llvmResultID;
+			
+			StringTemplate template = null;
+			if (castFrom.getTypeIndex() == SymbolTable.tBOOLEAN) {
+				if (castTo.getTypeIndex() == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_to_bool");
+				} else if (castTo.getTypeIndex() == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("bool_to_char");
+				} else if (castTo.getTypeIndex() == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("bool_to_int");
+				} else if (castTo.getTypeIndex() == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("bool_to_real");
+				}
+			} else if (castFrom.getTypeIndex() == SymbolTable.tCHARACTER) {
+				if (castTo.getTypeIndex() == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("char_to_bool");
+				} else if (castTo.getTypeIndex() == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("char_to_char");
+				} else if (castTo.getTypeIndex() == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("char_to_int");
+				} else if (castTo.getTypeIndex() == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("char_to_real");
+				}
+			} else if (castFrom.getTypeIndex() == SymbolTable.tINTEGER) {
+				if (castTo.getTypeIndex() == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("int_to_bool");
+				} else if (castTo.getTypeIndex() == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("int_to_char");
+				} else if (castTo.getTypeIndex() == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_to_int");
+				} else if (castTo.getTypeIndex() == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("int_to_real");
+				}
+			} else if (castFrom.getTypeIndex() == SymbolTable.tREAL) {
+				if (castTo.getTypeIndex() == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("real_to_int");
+				} else if (castTo.getTypeIndex() == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_to_real");
+				}
+			}
+			
+			template.setAttribute("expr_id", expr_id);
+			template.setAttribute("expr", expr);
+			template.setAttribute("id", id);
+			
+			return template;
 		}
 
 		case DashLexer.ID:

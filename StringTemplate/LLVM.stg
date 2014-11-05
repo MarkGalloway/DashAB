@@ -74,6 +74,7 @@ declare i8* @calloc(i32, i32)
 declare void @free(i8*)
 declare void @exit(i32)
 declare float @llvm.pow.f32(float, float) nounwind readonly
+declare float @llvm.floor.f32(float)
 declare i8* @llvm.stacksave()
 declare void @llvm.stackrestore(i8* %ptr)
 declare i32 @feof(%struct._IO_FILE* nocapture) #1
