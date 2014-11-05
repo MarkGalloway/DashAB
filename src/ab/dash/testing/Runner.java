@@ -181,6 +181,7 @@ public class Runner {
         SymbolTable symtab = new SymbolTable(tokens); 
         runDef(nodes, symtab, tree);
         runTypes(nodes, symtab, tree);
+        runDefineTupleTypes(nodes, symtab, tree);
     }
     
     // used by LLVMtest

@@ -4,6 +4,8 @@ package ab.dash.testing;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 

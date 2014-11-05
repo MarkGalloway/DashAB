@@ -348,4 +348,11 @@ public class TestLLVM extends BaseTest {
         StringBuffer sb = new StringBuffer();
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void promoteTupleTypes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/28PromoteTupleTypes/promoteTupleTypes.ds"};
+        Runner.llvmMain(args);
+        assertEquals("T", outErrIntercept.toString().trim());
+    }
 }
