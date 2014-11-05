@@ -1,1 +1,1 @@
-(PROGRAM (PROCEDURE_DECL main (BLOCK (VAR_DECL var integer y (EXPR (CALL f (ELIST 13)))))))
+(PROGRAM (PROCEDURE_DECL main (BLOCK (VAR_DECL var integer y (EXPR (CALL f (ELIST (EXPR 13))))))))

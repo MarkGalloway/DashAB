@@ -313,7 +313,7 @@ expressionList
     ;
 
 arg // hack for ELIST function parameter ordering ... find a better way?
-  : expr
+  : expression
   | tupleMemberList
   ;
     
