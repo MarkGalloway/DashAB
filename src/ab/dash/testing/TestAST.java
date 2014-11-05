@@ -4,12 +4,14 @@ package ab.dash.testing;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
+import ab.dash.exceptions.SymbolTableException;
 
 public class TestAST extends BaseTest {
 
@@ -421,5 +423,13 @@ public class TestAST extends BaseTest {
         expectedEx.expectMessage("line 4: Typedef must only be declared in global scope.");
         String[] args = new String[] {"TestGrammarPrograms/48localTypedef.ds"};
         Runner.astTestMain(args);
+    }
+    
+    @Test 
+    public void functionExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/27FunctionExpression/functionExpression.ds"};
+        Runner.astTestMain(args);
+        StringBuffer sb = new StringBuffer();
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }
