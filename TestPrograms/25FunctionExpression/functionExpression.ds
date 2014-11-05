@@ -1,12 +1,17 @@
+const out = std_output();
+
 /* A function with no arguments */
 function f() returns integer = 1;
 
 /* A function with two arguments */
-function pythag(real a, real b) returns real = (a^2 + b^2)^(1/2);
+function pythag(real a, real b) returns real = (a^2 + b^2)^(0.5);
 
 /* A function with different types of arguments */
 function get(tuple(integer, real) a, integer i) returns real = a.1;
 
 procedure main() returns integer {
+	f() -> out; '\n' -> out;
+	pythag(2.0, 2.0) -> out; '\n' -> out;
+	get((1, 2.0), 3) -> out; '\n' -> out;
     return 0;
 }

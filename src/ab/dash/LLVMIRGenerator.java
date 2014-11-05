@@ -260,7 +260,6 @@ public class LLVMIRGenerator {
 			} else {
 				template = stg.getInstanceOf("call");
 				template.setAttribute("return_type", getType(method_type));
-				
 			}
 
 			if (!code.isEmpty()) {
