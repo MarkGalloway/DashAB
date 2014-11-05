@@ -322,13 +322,12 @@ tupleMembers
          
          else {
             // check that the member variable is defined
-            Symbol member = ((TupleTypeSymbol)tuple.type).resolveMember($m.text);
-            if(member == null) {
-              if ($m.token.getType() == ID)
-                symtab.error("line " + $DOT.getLine() + ": unknown member '" + $m.text +  "' for tuple " + $id.text);
-              else
-                symtab.error("line " + $DOT.getLine() + ": invalid index for tuple " + $id.text);
-            }
+            if ($m.token.getType() == ID) {
+            	Symbol member = ((TupleTypeSymbol)tuple.type).resolveMember($m.text);
+	            if(member == null) {
+	              symtab.error("line " + $DOT.getLine() + ": unknown member '" + $m.text +  "' for tuple " + $id.text);
+	            }
+	        }
          }
        }
     ;
