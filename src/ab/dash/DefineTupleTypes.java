@@ -58,13 +58,29 @@ boolean debug_mode = false;
 
 
 	public void define(DashAST t) {
-		if (t.evalType != null) {
-			if (t.evalType.getTypeIndex() == SymbolTable.tTUPLE) {
-				
+		TupleTypeSymbol tuple = null;
+		
+		if (t.symbol != null) {
+			if (t.symbol.type != null) {
+				if (t.symbol.type.getTypeIndex() == SymbolTable.tTUPLE) {
+					tuple = (TupleTypeSymbol) t.symbol.type;
+				}
+			}
+		}
+		
+		if (tuple == null) {
+			if (t.evalType != null) {
+				if (t.evalType.getTypeIndex() == SymbolTable.tTUPLE) {
+					tuple = (TupleTypeSymbol) t.evalType;
+				}
+			}
+		}
+		
+		if (tuple != null) {
 		    	debug(t);
 		    	//debug("Fields:");
 		    	
-		    	TupleTypeSymbol tuple = (TupleTypeSymbol) t.evalType;
+		    	
 		    	ArrayList<Symbol> fields = (ArrayList<Symbol>) tuple.getDefined();
 		    	ArrayList<Type> field_types = new ArrayList<Type>();
 		    	for (int i = 0; i < fields.size(); i++) {
@@ -90,7 +106,6 @@ boolean debug_mode = false;
 //		    		debug(field_types.get(i));
 //		    	}
 		    }
-		}
 		
 		for (int i = 0; i < t.getChildCount(); i++) {
 			define((DashAST) t.getChild(i));
