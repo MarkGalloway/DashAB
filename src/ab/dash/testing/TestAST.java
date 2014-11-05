@@ -447,4 +447,11 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/50AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // tuple return parse test
+    public void tupleReturnTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/53tupleReturns.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/53AST_output"), outErrIntercept.toString().trim());
+    }
 }
