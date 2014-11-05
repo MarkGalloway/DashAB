@@ -1,0 +1,22 @@
+const out = std_output();
+
+procedure main() returns integer {
+	tuple(boolean b, character, integer i, real r) t;
+
+	t.1 = true;
+	t.2 = 'a';
+	t.i = 2;
+	t.r = 3.5;
+	// j does not exist
+	t.j = 3;
+	
+	t.b -> out;
+	'\n' -> out;
+	t.2 -> out;
+	'\n' -> out;
+	t.3 -> out;
+	'\n' -> out;
+	t.4 -> out;
+	
+    return 0;
+}

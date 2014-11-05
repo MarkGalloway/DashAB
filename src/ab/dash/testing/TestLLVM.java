@@ -343,7 +343,7 @@ public class TestLLVM extends BaseTest {
     
     @Test 
     public void inputTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/26InputTest/inputTest.ds", "TestPrograms/26InputTest/input.in"};
+        String[] args = new String[] {"TestPrograms/24InputTest/inputTest.ds", "TestPrograms/24InputTest/input.in"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         
@@ -357,7 +357,7 @@ public class TestLLVM extends BaseTest {
 
     @Test 
     public void functionExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/27FunctionExpression/functionExpression.ds"};
+        String[] args = new String[] {"TestPrograms/25FunctionExpression/functionExpression.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
@@ -365,14 +365,14 @@ public class TestLLVM extends BaseTest {
     
     @Test 
     public void promoteTupleTypes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/28PromoteTupleTypes/promoteTupleTypes.ds"};
+        String[] args = new String[] {"TestPrograms/26PromoteTupleTypes/promoteTupleTypes.ds"};
         Runner.llvmMain(args);
         assertEquals("T", outErrIntercept.toString().trim());
     }
     
     @Test 
     public void literalTuple() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/29LiteralTuple/literalTuple.ds"};
+        String[] args = new String[] {"TestPrograms/27LiteralTuple/literalTuple.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         

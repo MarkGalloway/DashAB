@@ -1,0 +1,10 @@
+const out = std_output();
+
+procedure main() returns integer {
+	tuple(boolean b, character, integer i, real r) t;
+
+	// not a declared tuple, should fail
+	k.b = true;
+	
+    return 0;
+}
