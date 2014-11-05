@@ -110,7 +110,7 @@ expr returns [Type type]
 typecast returns [Type type]
 	:	^(TYPECAST e=.)	
 		{
-			//symtab.typeCast($TYPECAST, $e);
+			symtab.typeCast($TYPECAST, $e);
 			$type = $TYPECAST.evalType;
 		}
     ;

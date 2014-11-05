@@ -11,6 +11,7 @@ package ab.dash.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.TokenStream;
 
 import ab.dash.DashLexer;
@@ -605,9 +606,67 @@ public class SymbolTable {
                            text((DashAST)cond.getParent()));
         }
     }
+    
+    public Type typeCast(DashAST typecast, DashAST expr) {
+    	
+    	if (typecast.evalType.getTypeIndex() == tTUPLE) {
+    		TupleTypeSymbol tuple = (TupleTypeSymbol) typecast.evalType;
+    		
+    		DashAST list = (DashAST)expr.getChild(0);
+    		ArrayList<DashAST> nodes = new ArrayList<DashAST>();
+    		if (list.getType() == DashLexer.TUPLE_LIST) {
+    			for (int i = 0; i < tuple.fields.size(); i++) {
+        			VariableSymbol var = (VariableSymbol) tuple.fields.get(i);
+        			Type type = var.type;
+        			
+        			DashAST type_cast = new DashAST(new CommonToken(DashLexer.TYPECAST));
+        			type_cast.addChild(list.getChild(0));
+        			list.deleteChild(0);
+        			
+        			nodes.add(type_cast);
+        		}
+    			
+    			for (int i = 0; i < nodes.size(); i++) {
+    				list.addChild(nodes.get(i));
+    			}
+    		}	
+    	}
+    	
+    	return typecast.evalType;
+    }
 
     //TODO: prevent reassignment to input/output streams
     public boolean canAssignTo(Type valueType,Type destType,Type promotion) {
+    	if (valueType.getTypeIndex() == tTUPLE  && destType.getTypeIndex() == tTUPLE) {
+    		TupleTypeSymbol valueTuple = (TupleTypeSymbol)valueType;
+    		TupleTypeSymbol destTuple = (TupleTypeSymbol)destType;
+    		
+    		if (valueTuple.fields.size() != destTuple.fields.size()) {
+        		return false;
+        	}
+        	
+        	for (int i = 0; i < valueTuple.fields.size(); i++) {
+        		VariableSymbol f_var = (VariableSymbol) valueTuple.fields.get(i);
+        		VariableSymbol a_var = (VariableSymbol) destTuple.fields.get(i);
+        		
+        		Type f = f_var.type;
+        		Type a = a_var.type;
+        		
+        		int tf = f.getTypeIndex();
+        		int ta = a.getTypeIndex();
+        		
+        		Type promoteToType = promoteFromTo[ta][tf];
+        		// TODO Promote To
+        		//args.get(i).promoteToType = promoteToType;
+        		
+                if ( !canAssignTo(a, f, promoteToType) ) {
+        			return false;
+        		}
+        	}
+        	
+        	return true;
+    	}
+    	
         // either types are same or value was successfully promoted
         return valueType==destType || promotion==destType;
     }
