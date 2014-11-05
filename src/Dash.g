@@ -150,6 +150,7 @@ formalParameters
     
 parameter
 	:	specifier? type ID -> ^(ARG_DECL Const["const"] type ID)
+	| specifier? tupleType ID -> ^(ARG_DECL Const["const"] tupleType ID)
 	;
 // END: method
 

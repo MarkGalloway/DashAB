@@ -1,0 +1,1 @@
+(PROGRAM (FUNCTION_DECL integer f (EXPR 1)) (FUNCTION_DECL real pythag (ARG_DECL const real a) (ARG_DECL const real b) (EXPR (^ (EXPR (+ (^ a 2) (^ b 2))) (EXPR (/ 1 2))))) (FUNCTION_DECL real get (ARG_DECL const (tuple (FIELD_DECL var integer) (FIELD_DECL var real)) a) (ARG_DECL const integer i) (EXPR (. a 1))) (PROCEDURE_DECL integer main (BLOCK (return (EXPR 0)))))

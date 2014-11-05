@@ -429,8 +429,7 @@ public class TestAST extends BaseTest {
     public void functionExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestPrograms/27FunctionExpression/functionExpression.ds"};
         Runner.astTestMain(args);
-        StringBuffer sb = new StringBuffer();
-        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/49aAST_output"), outErrIntercept.toString().trim());
     }
     
     @Test // function parse test

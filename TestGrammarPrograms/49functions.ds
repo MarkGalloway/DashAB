@@ -23,6 +23,11 @@ function g (boolean b) returns integer {
 /* function call */
 const integer value = times_two(4);
 
-
 /* Function arguments are implicity const */
 function times_two(var integer x) returns integer = 2 * x; //Will be made const in the AST
+
+/*  Function with tuple argument */
+function nobodyKnowsWhatIDo(tuple(integer, real) t) returns integer = 1;
+
+/* A function with different types of arguments 
+function get(tuple(integer, real) a, integer i) returns real = a.1; */
