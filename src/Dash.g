@@ -150,8 +150,8 @@ formalParameters
    ;
     
 parameter
-	:	specifier type ID -> ^(ARG_DECL specifier type ID)
-	|	type ID -> ^(ARG_DECL Const["const"] type ID)
+	:	specifier? type ID -> ^(ARG_DECL Const["const"] type ID)
+	| specifier? tupleType ID -> ^(ARG_DECL Const["const"] tupleType ID)
 	;
 // END: method
 
@@ -310,9 +310,14 @@ lhs
 	;
 
 expressionList
-    : expr (',' expr)* -> ^(ELIST expr+)
+    : arg (',' arg)* -> ^(ELIST arg+)
     | -> ELIST
     ;
+
+arg // hack for ELIST function parameter ordering ... find a better way?
+  : expression
+  | tupleMemberList
+  ;
     
 expression
     : expr -> ^(EXPR expr)

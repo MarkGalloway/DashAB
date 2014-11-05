@@ -116,7 +116,7 @@ member returns [Type type]
 
 call returns [Type type]
 @init {List args = new ArrayList();}
-	:	^(CALL ID ^(ELIST (expr {args.add($expr.start);})*))
+	:	^(CALL ID ^(ELIST (^(EXPR expr {args.add($expr.start);}))*))
 		{
 		$type = symtab.call($ID, args);
 		$start.evalType = $type;

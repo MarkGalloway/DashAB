@@ -1,4 +1,4 @@
-var x = 1; // var y = 2;
+const x = 1; // var y = 2;
 
 
 /* var z = 42; */
@@ -11,7 +11,7 @@ var x = 1; // var y = 2;
  * should not display
 ada faf */
 
-var z = 4;
+const z = 4;
 
 
  */   // missing start comment, must raise an error!

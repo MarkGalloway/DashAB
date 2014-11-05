@@ -3,9 +3,14 @@
  *  when encountering undefined or invalid types. **/
 package ab.dash.testing;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
+import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
@@ -106,4 +111,11 @@ public class TestType extends BaseTest {
         Runner.typesTestMain(args);
     }
     
+    @Test 
+    public void promoteTupleTypes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/28PromoteTupleTypes/promoteTupleTypes.ds"};
+        Runner.typesTestMain(args);
+        StringBuffer sb = new StringBuffer();
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
