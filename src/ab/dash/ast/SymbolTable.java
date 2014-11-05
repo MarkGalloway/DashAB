@@ -217,7 +217,7 @@ public class SymbolTable {
 		this.warningSB.append(msg);
 	}
 	
-	private void error(String msg) {
+	public void error(String msg) {
 		this.error_count++;
 		this.listener.error(msg);
 		this.errorSB.append(msg);

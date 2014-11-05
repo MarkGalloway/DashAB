@@ -36,7 +36,7 @@ public class TestType extends BaseTest {
     @Test 
     public void undefined() throws RecognitionException, LexerException, ParserException, SymbolTableException {
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("line 2: e2 is not defined in the program.");
+        expectedEx.expectMessage("line 2: unknown variable e2");
         String[] args = new String[] {"TestInvalidTypePrograms/03Undefined/undefined.ds"};
         Runner.typesTestMain(args);
     }
@@ -71,7 +71,7 @@ public class TestType extends BaseTest {
     @Test 
     public void invalidUndefinedButDefinedAfter() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("line 2: reference to undefined variable");
+        expectedEx.expectMessage("line 2: unknown variable e2");
         String[] args = new String[] {"TestInvalidTypePrograms/07UndefinedButDefinedAfter/undefinedButDefinedAfter.ds"};
         Runner.typesTestMain(args);
     }

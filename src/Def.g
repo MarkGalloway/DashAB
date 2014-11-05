@@ -68,6 +68,7 @@ bottomup
     :   exitBlock
     |   exitMethod
     ;
+    
 
 // S C O P E S
 
@@ -160,11 +161,14 @@ typeDef
 /** Set scope for any identifiers in expressions or assignments */
 atoms
 @init {DashAST t = (DashAST)input.LT(1);}
-    :  {t.hasAncestor(EXPR)||t.hasAncestor(ASSIGN)
-    	||t.hasAncestor(PRINT)||t.hasAncestor(INPUT)}? ID
+    :  {(t.hasAncestor(EXPR)||t.hasAncestor(ASSIGN) ||t.hasAncestor(PRINT)||t.hasAncestor(INPUT))}? ID
        {
-       debug("line " + $ID.getLine() + ": ref " + $ID.text);
-       t.scope = currentScope;
+	       debug("line " + $ID.getLine() + ": ref " + $ID.text);
+	       t.scope = currentScope;
+	
+	       Symbol vs = currentScope.resolve($ID.text); 
+	       if(vs == null && !t.hasAncestor(DOT)) 
+	        symtab.error("line " + $ID.getLine() + ": unknown variable " + $ID.text);
        }
     ;
 
@@ -197,11 +201,11 @@ varDeclaration // global, parameter, or local variable
 	         " scope: " + currentScope.toString());
 	         if ($type.type != null) {
 		        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
-			    vs.def = $ID;            // track AST location of def's ID
-			    $ID.symbol = vs;         // track in AST
-			    currentScope.define(vs);
-			    $var_node.deleteChild(0);
-			    $var_node.deleteChild(0);
+				    vs.def = $ID;            // track AST location of def's ID
+				    $ID.symbol = vs;         // track in AST
+				    currentScope.define(vs);
+				    $var_node.deleteChild(0);
+				    $var_node.deleteChild(0);
 		    } else {
 		    	// TODO: Throw error type undefined
 		    }
@@ -241,35 +245,35 @@ specifierElement returns [Specifier specifier]
 type returns [Type type]
     :	^(Tuple 
     {
-    TupleTypeSymbol ts = new TupleTypeSymbol(currentScope);
-	$Tuple.symbol = ts;
+      TupleTypeSymbol ts = new TupleTypeSymbol(currentScope);
+      $Tuple.symbol = ts;
     }
     (
     	^(FIELD_DECL field_specifier=specifier field_type=type ID?) 
-    {
-    	String name = null;
-    	if ($ID != null)
-    		name = $ID.getText();
-    		
-    	VariableSymbol vs = new VariableSymbol(name, $field_type.type, $field_specifier.specifier);
-    	((TupleTypeSymbol)$Tuple.symbol).define(vs);
-    } 
+	    {
+	    	String name = null;
+	    	if ($ID != null)
+	    		name = $ID.getText();
+	    		
+	    	VariableSymbol vs = new VariableSymbol(name, $field_type.type, $field_specifier.specifier);
+	    	((TupleTypeSymbol)$Tuple.symbol).define(vs);
+	    } 
     )+)
-    {
-    TupleTypeSymbol ts = (TupleTypeSymbol)$Tuple.symbol;
-    debug("fields: "+ ts);
-	$type = ts;
-    }
+	    {
+		    TupleTypeSymbol ts = (TupleTypeSymbol)$Tuple.symbol;
+		    debug("fields: "+ ts);
+		    $type = ts;
+	    }
     |	typeElement         
-    {
-    $type = $typeElement.type;
-    }
+	    {
+	    $type = $typeElement.type;
+	    }
     |	ID
-    {
-    TypedefSymbol s = (TypedefSymbol) currentScope.resolve($ID.text);
-    $ID.symbol = s;
-    $type = s;
-    }
+	    {
+	    TypedefSymbol s = (TypedefSymbol) currentScope.resolve($ID.text);
+	    $ID.symbol = s;
+	    $type = s;
+	    }
     ;   
         
 typeElement returns [Type type]
