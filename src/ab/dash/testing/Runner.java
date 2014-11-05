@@ -28,7 +28,9 @@ import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
 
 public class Runner {
-    
+    // needed to return tokens from lexer/parser pass
+    private static TokenRewriteStream tokens;
+
     // grabs the input file name from args
     private static ANTLRFileStream getInputStream(String[] args) {
         ANTLRFileStream input = null;
@@ -42,23 +44,19 @@ public class Runner {
         return input;
     }
     
-    // gets tokens from the lexer, aborts if errors are found
-    private static TokenRewriteStream runLexer(ANTLRFileStream input) throws LexerException, RecognitionException {
+    // builds the AST in the lexer/parser, aborts if errors are found
+    private static DashAST runLexerParser(ANTLRFileStream input) throws LexerException, ParserException, RecognitionException {
+        
         DashLexer lexer = new DashLexer(input);
-        final TokenRewriteStream tokens = new TokenRewriteStream(lexer);
-        
-        if (lexer.getErrorCount() > 0) {
-            throw new LexerException(lexer.getErrors());
-        }
-        
-        return tokens;
-    }
-    
-    // builds the AST in the parser, aborts if errors are found
-    private static DashAST runParser(TokenRewriteStream tokens) throws ParserException, RecognitionException {
+        tokens = new TokenRewriteStream(lexer);
         DashParser parser = new DashParser(tokens);
         parser.setTreeAdaptor(DashAST.dashAdaptor);
         DashParser.program_return entry = parser.program();
+        
+        // lexer errors are constructed after parser.program() executes
+        if (lexer.getErrorCount() > 0) {
+            throw new LexerException(lexer.getErrors());
+        }
         
         if (parser.getErrorCount() > 0) {
             throw new ParserException(parser.getErrors());
@@ -157,16 +155,14 @@ public class Runner {
     // used by ASTtest
     public static void astTestMain(String[] args) throws LexerException, ParserException, RecognitionException {
         ANTLRFileStream input = getInputStream(args);
-        TokenRewriteStream tokens = runLexer(input);
-        DashAST tree = runParser(tokens);
+        DashAST tree = runLexerParser(input);
         System.out.println(tree.toStringTree());
     }
     
     // used by DefTest
     public static SymbolTable defTestMain(String[] args) throws LexerException, ParserException, RecognitionException, SymbolTableException {
         ANTLRFileStream input = getInputStream(args);
-        TokenRewriteStream tokens = runLexer(input);
-        DashAST tree = runParser(tokens);
+        DashAST tree = runLexerParser(input);
         
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
@@ -178,8 +174,7 @@ public class Runner {
     // used by TypeTest
     public static void typesTestMain(String[] args) throws LexerException, ParserException, RecognitionException, SymbolTableException {
         ANTLRFileStream input = getInputStream(args);
-        TokenRewriteStream tokens = runLexer(input);
-        DashAST tree = runParser(tokens);
+        DashAST tree = runLexerParser(input);
         
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
@@ -194,8 +189,7 @@ public class Runner {
         // build the AST
         
         ANTLRFileStream input = getInputStream(args);
-        TokenRewriteStream tokens = runLexer(input);
-        DashAST tree = runParser(tokens);
+        DashAST tree = runLexerParser(input);
         
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
