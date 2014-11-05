@@ -422,4 +422,11 @@ public class TestAST extends BaseTest {
         String[] args = new String[] {"TestGrammarPrograms/48localTypedef.ds"};
         Runner.astTestMain(args);
     }
+    
+    @Test // function parse test
+    public void functionParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/49functions.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/49AST_output"), outErrIntercept.toString().trim());
+    }
 }
