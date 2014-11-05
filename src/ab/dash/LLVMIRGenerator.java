@@ -1,6 +1,7 @@
 package ab.dash;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
@@ -750,10 +751,27 @@ public class LLVMIRGenerator {
 			return operation(t, LLVMOps.XOR);
 
 		case DashLexer.EQUALITY:
+		{
+			Type type = ((DashAST)t.getChild(0)).evalType;
+			
+			if (type.getTypeIndex() == SymbolTable.tTUPLE) {
+				return tupleOperation(t, LLVMOps.EQ);
+			}
+			
 			return operation(t, LLVMOps.EQ);
+		}
+			
 
 		case DashLexer.INEQUALITY:
+		{
+			Type type = ((DashAST)t.getChild(0)).evalType;
+			
+			if (type.getTypeIndex() == SymbolTable.tTUPLE) {
+				return tupleOperation(t, LLVMOps.NE);
+			}
+			
 			return operation(t, LLVMOps.NE);
+		}
 
 		case DashLexer.LESS:
 			return operation(t, LLVMOps.LT);
@@ -930,6 +948,71 @@ public class LLVMIRGenerator {
 
 	}
 	
+	private StringTemplate tupleOperation(DashAST t, LLVMOps op) {
+		String id = Integer.toString(((DashAST)t).llvmResultID);
+		Type type = ((DashAST)t.getChild(0)).evalType;
+		
+		StringTemplate lhs = exec((DashAST)t.getChild(0));
+		String lhs_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
+		
+		StringTemplate rhs = exec((DashAST)t.getChild(1));
+		String rhs_id = Integer.toString(((DashAST)t.getChild(1)).llvmResultID);
+		
+		String code = "";
+		
+		StringTemplate template_init = null;
+		template_init = stg.getInstanceOf("tuple_cmp_init");
+		template_init.setAttribute("lhs_expr", lhs);
+		template_init.setAttribute("rhs_expr", rhs);
+		template_init.setAttribute("id", id);
+		
+		code += template_init.toString() + "\n";
+		
+		TupleTypeSymbol tuple = (TupleTypeSymbol) type;
+		
+		for (int i = 0; i < tuple.fields.size(); i++) {
+			VariableSymbol s = (VariableSymbol) tuple.fields.get(i);
+			int type_index = s.type.getTypeIndex();
+			
+			StringTemplate template_cmp = null;
+			if (op == LLVMOps.EQ) {
+				if (type_index == SymbolTable.tBOOLEAN)
+					template_cmp = stg.getInstanceOf("bool_tuple_eq_member");
+				else if (type_index == SymbolTable.tCHARACTER)
+					template_cmp = stg.getInstanceOf("char_tuple_eq_member");
+				else if (type_index == SymbolTable.tINTEGER)
+					template_cmp = stg.getInstanceOf("int_tuple_eq_member");
+				else if (type_index == SymbolTable.tREAL)
+					template_cmp = stg.getInstanceOf("real_tuple_eq_member");
+			} else if (op == LLVMOps.NE) {
+				if (type_index == SymbolTable.tBOOLEAN)
+					template_cmp = stg.getInstanceOf("bool_tuple_ne_member");
+				else if (type_index == SymbolTable.tCHARACTER)
+					template_cmp = stg.getInstanceOf("char_tuple_ne_member");
+				else if (type_index == SymbolTable.tINTEGER)
+					template_cmp = stg.getInstanceOf("int_tuple_ne_member");
+				else if (type_index == SymbolTable.tREAL)
+					template_cmp = stg.getInstanceOf("real_tuple_ne_member");
+			}
+			
+			template_cmp.setAttribute("lhs_expr_id", lhs_id);
+			template_cmp.setAttribute("rhs_expr_id", rhs_id);
+			template_cmp.setAttribute("index", i);
+			template_cmp.setAttribute("tuple_type", tuple.tupleTypeIndex);
+			template_cmp.setAttribute("id", id);
+			
+			code += template_cmp.toString() + "\n";
+		}
+		
+		StringTemplate template_result = null;
+		template_result = stg.getInstanceOf("tuple_cmp_result");
+		template_result.setAttribute("id", id);
+		
+		code += template_result.toString() + "\n";
+		
+		return new StringTemplate(code);
+	}
+
 	private StringTemplate getSymbol(DashAST t) {
 		int id = ((DashAST)t).llvmResultID;
 		
@@ -1039,8 +1122,6 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("char_eq");
 			} else if (type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_eq");
-			} else if (type == SymbolTable.tTUPLE) {
-				template = stg.getInstanceOf("tuple_eq");
 			}
 			break;
 		case NE:
@@ -1052,8 +1133,6 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("char_ne");
 			} else if (type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_ne");
-			} else if (type == SymbolTable.tTUPLE) {
-				template = stg.getInstanceOf("tuple_ne");
 			}
 			break;
 		case LT:

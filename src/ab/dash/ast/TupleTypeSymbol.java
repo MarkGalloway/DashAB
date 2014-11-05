@@ -14,12 +14,12 @@ import java.util.Collection;
 public class TupleTypeSymbol extends Symbol implements Type, Scope {
     Scope enclosingScope;
     public int tupleTypeIndex;
-    
-    ArrayList<Symbol> fields = new ArrayList<Symbol>();
+    public ArrayList<Symbol> fields;
 
     public TupleTypeSymbol(Scope enclosingScope) {
         super("tuple");
         this.enclosingScope = enclosingScope;
+        this.fields = new ArrayList<Symbol>();
     }
     
     /** For a.b, only look in a only to resolve b, not up scope tree */

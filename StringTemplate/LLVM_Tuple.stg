@@ -75,3 +75,74 @@ real_get_tuple_member(id, tuple_expr, tuple_expr_id, tuple_type, index) ::= <<
   <vlocal(id)>addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(tuple_expr_id)>, i32 0, i32 <index>
   <vlocal_result(id)> = load float* <vlocal(id)>addr
 >>
+
+tuple_cmp_init(id, lhs_expr, rhs_expr) ::= <<
+<lhs_expr>
+<rhs_expr>
+>>
+
+bool_tuple_eq_member(id, lhs_expr_id, rhs_expr_id, tuple_type, index) ::= <<
+  <vlocal(id)>lhs_<index>_addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(lhs_expr_id)>, i32 0, i32 <index>
+  <vlocal(id)>lhs_<index> = load i1* <vlocal(id)>lhs_<index>_addr
+  
+  <vlocal(id)>rhs_<index>_addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(rhs_expr_id)>, i32 0, i32 <index>
+  <vlocal(id)>rhs_<index> = load i1* <vlocal(id)>rhs_<index>_addr
+
+  <vlocal(id)>cmp_<index> = icmp eq i1 <vlocal(id)>lhs_<index>, <vlocal(id)>rhs_<index>
+  br i1 <vlocal(id)>cmp_<index>, label %tuple.eq.continue.<index>.<id>, label %tuple.cmp.false.<id>
+  
+  tuple.eq.continue.<index>.<id>:
+>>
+
+char_tuple_eq_member(id, lhs_expr_id, rhs_expr_id, tuple_type, index) ::= <<
+  <vlocal(id)>lhs_<index>_addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(lhs_expr_id)>, i32 0, i32 <index>
+  <vlocal(id)>lhs_<index> = load i8* <vlocal(id)>lhs_<index>_addr
+  
+  <vlocal(id)>rhs_<index>_addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(rhs_expr_id)>, i32 0, i32 <index>
+  <vlocal(id)>rhs_<index> = load i8* <vlocal(id)>rhs_<index>_addr
+
+  <vlocal(id)>cmp_<index> = icmp eq i8 <vlocal(id)>lhs_<index>, <vlocal(id)>rhs_<index>
+  br i1 <vlocal(id)>cmp_<index>, label %tuple.eq.continue.<index>.<id>, label %tuple.cmp.false.<id>
+  
+  tuple.eq.continue.<index>.<id>:
+>>
+
+int_tuple_eq_member(id, lhs_expr_id, rhs_expr_id, tuple_type, index) ::= <<
+  <vlocal(id)>lhs_<index>_addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(lhs_expr_id)>, i32 0, i32 <index>
+  <vlocal(id)>lhs_<index> = load i32* <vlocal(id)>lhs_<index>_addr
+  
+  <vlocal(id)>rhs_<index>_addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(rhs_expr_id)>, i32 0, i32 <index>
+  <vlocal(id)>rhs_<index> = load i32* <vlocal(id)>rhs_<index>_addr
+
+  <vlocal(id)>cmp_<index> = icmp eq i32 <vlocal(id)>lhs_<index>, <vlocal(id)>rhs_<index>
+  br i1 <vlocal(id)>cmp_<index>, label %tuple.eq.continue.<index>.<id>, label %tuple.cmp.false.<id>
+  
+  tuple.eq.continue.<index>.<id>:
+>>
+
+real_tuple_eq_member(id, lhs_expr_id, rhs_expr_id, tuple_type, index) ::= <<
+  <vlocal(id)>lhs_<index>_addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(lhs_expr_id)>, i32 0, i32 <index>
+  <vlocal(id)>lhs_<index> = load float* <vlocal(id)>lhs_<index>_addr
+  
+  <vlocal(id)>rhs_<index>_addr = getelementptr <tuple_type(tuple_type)>* <vlocal_result(rhs_expr_id)>, i32 0, i32 <index>
+  <vlocal(id)>rhs_<index> = load float* <vlocal(id)>rhs_<index>_addr
+
+  <vlocal(id)>cmp_<index> = fcmp oeq float <vlocal(id)>lhs_<index>, <vlocal(id)>rhs_<index>
+  br i1 <vlocal(id)>cmp_<index>, label %tuple.eq.continue.<index>.<id>, label %tuple.cmp.false.<id>
+  
+  tuple.eq.continue.<index>.<id>:
+>>
+
+tuple_cmp_result(id) ::= <<
+	
+	br label %tuple.cmp.true.<id>
+	tuple.cmp.true.<id>:
+	br label %tuple.cmp.done.<id>
+	
+	tuple.cmp.false.<id>:
+	br label %tuple.cmp.done.<id>
+	
+	tuple.cmp.done.<id>:
+	<vlocal_result(id)> = phi i1 [ 1, %tuple.cmp.true.<id> ], [ 0, %tuple.cmp.false.<id> ]
+>>
+
