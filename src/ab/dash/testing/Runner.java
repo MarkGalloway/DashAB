@@ -199,7 +199,11 @@ public class Runner {
         DashAST tree;
         try {
             tree = runLexerParser(input);
-        } catch (LexerException | ParserException | RecognitionException e) {
+        } catch (LexerException e) {
+        	return;
+        } catch (ParserException e) {
+        	return;
+        } catch (RecognitionException e) {
             return;
         }
 
