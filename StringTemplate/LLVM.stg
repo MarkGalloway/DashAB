@@ -69,6 +69,8 @@ declare i8* @calloc(i32, i32)
 declare void @free(i8*)
 declare void @exit(i32)
 declare float @llvm.pow.f32(float, float) nounwind readonly
+declare i8* @llvm.stacksave()
+declare void @llvm.stackrestore(i8* %ptr)
 >>
 
 string_constants() ::= <<
@@ -140,28 +142,40 @@ call void @initGlobals()
 }
 >>
 
-function(id, sym_id, return_type, args, arg_init, code) ::= <<
+function(id, sym_id, return_type, args, code) ::= <<
 define <return_type> <fglobal(sym_id)>(<args; separator=", ">) {
-<arg_init>
 <code; separator="\n">
 }
 >>
 
-args(id, arg_id, arg_type) ::= <<
-<arg_type> <vlocal_argument(arg_id)>
+declare_argument(id, arg_id, arg_type) ::= <<
+<arg_type>* <vlocal_symbol(arg_id)>
 >>
 
-pass_by_reference_args(id, arg_id, arg_type) ::= <<
-<arg_type>* <vlocal_symbol(arg_id)>
+pass_variable_by_reference(id, var_id, arg_type) ::= <<
+<arg_type>* <vlocal_symbol(var_id)>
+>>
+
+pass_expr_by_reference(id, arg_expr_id, arg_type) ::= <<
+<arg_type>* <vlocal_result(arg_expr_id)>_stackptr
+>>
+
+expr_result_to_stack(id, expr_id, expr_type) ::= <<
+  <vlocal_result(expr_id)>_stackptr = alloca <expr_type>;
+  store <expr_type> <vlocal_result(expr_id)>, <expr_type>* <vlocal_result(expr_id)>_stackptr
+>>
+
+save_stack(id, call_id) ::= <<
+  <vlocal(call_id)>stack = call i8*()* @llvm.stacksave()
+>>
+
+restore_stack(id, call_id) ::= <<
+  call void(i8*)* @llvm.stackrestore(i8* <vlocal(call_id)>stack)
 >>
 
 arg_init(id, arg_id, arg_type) ::= <<
   <vlocal_symbol(arg_id)> = alloca <arg_type>
   store <arg_type> <vlocal_argument(arg_id)>, <arg_type>* <vlocal_symbol(arg_id)>
->>
-
-args_call(id, arg_id, arg_type) ::= <<
-<arg_type> <vlocal_result(arg_id)>
 >>
 
 
@@ -170,14 +184,16 @@ return(id, expr, expr_id, type) ::= <<
   ret <type> <vlocal_result(expr_id)>
 >>
 
-call_void(id, function_id, args, code) ::= <<
+call_void(id, function_id, args, code, postcode) ::= <<
 <code; separator="\n">
   call void <fglobal(function_id)>(<args; separator=", ">)
+<postcode; separator="\n">
 >>
 
-call(id, function_id, return_type, args, code) ::= <<
+call(id, function_id, return_type, args, code, postcode) ::= <<
 <code; separator="\n">
   <vlocal_result(id)> = call <return_type> <fglobal(function_id)>(<args; separator=", ">)
+<postcode; separator="\n">
 >>
 
 if(id, expr, expr_id, block) ::= <<
