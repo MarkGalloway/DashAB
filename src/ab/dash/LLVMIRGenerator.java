@@ -789,15 +789,15 @@ public class LLVMIRGenerator {
 			DashAST tupleNode = (DashAST) t.getChild(0);
 			DashAST memberNode = (DashAST) t.getChild(1);
 			
+			StringTemplate tuple_expr = exec(tupleNode);
+			int tuple_expr_id = tupleNode.llvmResultID;
+			
 			VariableSymbol tuple = (VariableSymbol) tupleNode.symbol;
 			TupleTypeSymbol tuple_type = null;
-			int tuple_id = 0;
 			if (tuple != null) {
 				tuple_type = (TupleTypeSymbol)tuple.type;
-				tuple_id = tuple.id;
 			} else {
 				tuple_type = (TupleTypeSymbol)tupleNode.evalType;
-				tuple_id = tupleNode.llvmResultID;
 			}
 			
 			int index = tuple_type.getMemberIndex(memberNode.getText());
@@ -806,18 +806,20 @@ public class LLVMIRGenerator {
 			
 			StringTemplate template = null;
 			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_get_local_tuple_member");
+				//*_get_tuple_member(id, tuple_expr, tuple_expr_id, tuple_type, index)
+				template = stg.getInstanceOf("int_get_tuple_member");
 			}  else if (type == SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_get_local_tuple_member");
+				template = stg.getInstanceOf("real_get_tuple_member");
 			} else if (type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_get_local_tuple_member");
+				template = stg.getInstanceOf("char_get_tuple_member");
 			} else if (type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_get_local_tuple_member");
+				template = stg.getInstanceOf("bool_get_tuple_member");
 			}
 			
 			template.setAttribute("index", index);
 			template.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
-			template.setAttribute("tuple_id", tuple_id);
+			template.setAttribute("tuple_expr_id", tuple_expr_id);
+			template.setAttribute("tuple_expr", tuple_expr);
 			template.setAttribute("id", id);
 			return template;
 		}
@@ -944,6 +946,8 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("char_get_global");
 			} else if (type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_get_global");
+			} else if (type == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("tuple_get_global");
 			}
 		} else {
 			if (type == SymbolTable.tINTEGER) {
@@ -954,6 +958,9 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("char_get_local");
 			} else if (type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_get_local");
+			} else if (type == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("tuple_get_local");
+				template.setAttribute("type_id", ((TupleTypeSymbol)sym.type).tupleTypeIndex);
 			}
 		}
 		
