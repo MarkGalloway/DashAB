@@ -438,4 +438,11 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/49AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // function parse test
+    public void functionCallMultiTypeTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/52functionsArgOrdering.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/52AST_output"), outErrIntercept.toString().trim());
+    }
 }

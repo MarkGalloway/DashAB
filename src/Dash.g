@@ -308,9 +308,14 @@ lhs
 	;
 
 expressionList
-    : expr (',' expr)* -> ^(ELIST expr+)
+    : arg (',' arg)* -> ^(ELIST arg+)
     | -> ELIST
     ;
+
+arg // hack for ELIST function parameter ordering ... find a better way?
+  : expr
+  | tupleMemberList
+  ;
     
 expression
     : expr -> ^(EXPR expr)
@@ -369,7 +374,7 @@ postfixExpression
     : 	ID 
     (
     	(	DOT^ (INTEGER | ID)
-    	|	r=LPAREN^ (expressionList|tupleMemberList) RPAREN!	
+    	|	r=LPAREN^ expressionList RPAREN!	
     	{
     	$r.setType(CALL);
     	$r.setText("CALL");
