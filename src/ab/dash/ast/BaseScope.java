@@ -28,6 +28,13 @@ public abstract class BaseScope implements Scope {
 		if ( enclosingScope != null ) return enclosingScope.resolve(name);
 		return null; // not found
 	}
+    
+    public Symbol resolveInCurrentScope(String name) {
+        Symbol s = symbols.get(name);
+        if ( s!=null ) return s;
+
+        return null; // not found
+    }
 
 	public void define(Symbol sym) {
 		symbols.put(sym.name, sym);

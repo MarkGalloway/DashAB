@@ -31,6 +31,13 @@ public abstract class ScopedSymbol extends Symbol implements Scope {
 		}
 		return null; // not found
 	}
+    
+    public Symbol resolveInCurrentScope(String name) {
+        Symbol s = getMembers().get(name);
+        if ( s!=null ) return s;
+
+        return null; // not found
+    }
 
     public Symbol resolveType(String name) { return resolve(name); }
     

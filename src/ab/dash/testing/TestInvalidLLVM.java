@@ -343,7 +343,7 @@ public class TestInvalidLLVM extends BaseTest {
     public void doubleDeclaration() throws RecognitionException, LexerException, ParserException, SymbolTableException, IOException, InterruptedException {        
         String[] args = new String[] {"TestUndefinedVariablePrograms/03DoubleDeclaration/doubleDeclaration.ds"};
         Runner.llvmMain(args);
-        assertEquals("", outErrIntercept.toString().trim());
+        assertEquals("line 3: Identifier e1 declared twice in the same scope.", outErrIntercept.toString().trim());
     }
     
     // TODO: Fix this!

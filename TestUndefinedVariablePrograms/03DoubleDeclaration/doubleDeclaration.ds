@@ -1,5 +1,5 @@
 procedure main() returns integer {
 	integer e1 = 2;
-	integer e2 = 5;
+	integer e1 = 5;
     return 0;
 }

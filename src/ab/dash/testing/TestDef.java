@@ -152,7 +152,7 @@ public class TestDef extends BaseTest {
     @Test 
     public void doubleDeclaration() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("");
+        expectedEx.expectMessage("line 3: Identifier e1 declared twice in the same scope.");
         String[] args = new String[] {"TestUndefinedVariablePrograms/03DoubleDeclaration/doubleDeclaration.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
     }

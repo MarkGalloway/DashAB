@@ -252,6 +252,13 @@ varDeclaration // global, parameter, or local variable
 	         " type ( " + $type.type +  " ) " + 
 	         " specifier ( " + $specifier.specifier +  " )" +
 	         " scope: " + currentScope.toString());
+	         
+	         // test for double declaration
+	         Symbol s = currentScope.resolveInCurrentScope($ID.text);
+	         if(s != null) {
+	            symtab.error("line " + $ID.getLine() + ": Identifier " + $ID.text + " declared twice in the same scope.");
+	         }
+	         
 	         if ($type.type != null) {
 		        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
 				    vs.def = $ID;            // track AST location of def's ID
@@ -269,6 +276,13 @@ varDeclaration // global, parameter, or local variable
 	         ": def " + $ID.text + 
 	         " type ( unknown ) " + 
 	         " specifier ( " + $specifier.specifier +  " )");
+	         
+	        // test for double declaration
+	        Symbol s = currentScope.resolveInCurrentScope($ID.text);
+           if(s != null) {
+              symtab.error("line " + $ID.getLine() + ": Identifier " + $ID.text + " declared twice in the same scope.");
+           }
+	         
 	        VariableSymbol vs = new VariableSymbol($ID.text, null, $specifier.specifier);
 	        vs.def = $ID;            // track AST location of def's ID
 	        $ID.symbol = vs;         // track in AST
