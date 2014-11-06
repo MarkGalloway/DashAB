@@ -1,0 +1,14 @@
+const out = std_output();
+
+procedure one(tuple(integer, integer) t) returns real {
+	t.1 -> out; '\n' -> out;
+	t.2 -> out; '\n' -> out;
+    return 1.0;
+}
+
+procedure main() returns integer {
+    var tup = (1, 2);
+    one(tup) -> out; '\n' -> out;
+    
+    return 0;
+}
