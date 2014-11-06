@@ -674,7 +674,6 @@ public class TestLLVM extends BaseTest {
         sb.append("1\n");
         sb.append("0\n");
         sb.append("1\n");
-        sb.append("-1\n");
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
@@ -725,6 +724,15 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         sb.append("T\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void tupleTypeCastWithID() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/57TupleTypeCastWithID/tupleTypeCastWithID.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }

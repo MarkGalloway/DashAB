@@ -1,0 +1,13 @@
+const out = std_output();
+
+procedure main() returns integer {
+	tuple(integer, integer) ri_tup;
+	tuple(boolean, character) rr_tup = (true, 'a');
+	
+	ri_tup = as<(integer, integer)>(rr_tup);
+	
+	ri_tup.1 -> out; '\n' -> out;
+	ri_tup.2 -> out; '\n' -> out;
+	
+    return 0;
+}
