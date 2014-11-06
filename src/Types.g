@@ -6,6 +6,7 @@ options {
   ASTLabelType = DashAST;
   filter = true;
   backtrack=true; 
+  output = AST;
 }
 
 @header {
@@ -18,6 +19,8 @@ options {
     public Types(TreeNodeStream input, SymbolTable symtab) {
         this(input);
         this.symtab = symtab;
+        
+        setTreeAdaptor(DashAST.dashAdaptor);
     }
 }
 // END: header
@@ -108,10 +111,14 @@ expr returns [Type type]
     ;
 
 typecast returns [Type type]
-	:	^(TYPECAST e=.)	
+	:	^(TYPECAST ^(EXPR e=.))	
 		{
-			symtab.typeCast($TYPECAST, $e);
 			$type = $TYPECAST.evalType;
+			if (symtab.typeCast($TYPECAST, $e)) {
+				DashAST parent = (DashAST) $TYPECAST.getParent();
+              	int index = $TYPECAST.getChildIndex();
+              	parent.replaceChildren(index, index, $e);
+            }
 		}
     ;
 
