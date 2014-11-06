@@ -1,4 +1,37 @@
+const out = std_output();
+
+procedure testIdentity() returns integer {
+	return identity;
+}
+
 procedure main() returns integer {
-	integer a11 = +null;
+	integer a1 = identity;
+	integer a2 = identity + 0;
+	integer a3 = 0 + identity;
+	var a4 = identity + 0;
+	var a5 = 0 + identity;
+	var a6 = 1 > identity;
+	boolean a7 = 1 < identity;
+	boolean a8 = 0 == identity;
+	var a9 = 0 != identity;
+	var a10 = testIdentity();
+	var a11 = -identity;
+	var a12 = +identity;
+	var a13 = not identity;
+	
+	a1 -> out; '\n' -> out;
+	a2 -> out; '\n' -> out;
+	a3 -> out; '\n' -> out;
+	a4 -> out; '\n' -> out;
+	a5 -> out; '\n' -> out;
+	a6 -> out; '\n' -> out;
+	a7 -> out; '\n' -> out;
+	a8 -> out; '\n' -> out;
+	a9 -> out; '\n' -> out;
+	a10 -> out; '\n' -> out;
+	a11 -> out; '\n' -> out;
+	a12 -> out; '\n' -> out;
+	a13 -> out; '\n' -> out;
+	
 	return 0;
 }

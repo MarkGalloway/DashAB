@@ -76,11 +76,10 @@ public class TestNull extends BaseTest {
     }
     
     @Test 
-    public void legalNullTypeInference() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/48LegalIdentityTypeInference/legalIdentityTypeInference.ds"};
+    public void argNullIdentityTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/49ArgNullIdentityTest/argNullIdentityTest.ds"};
         Runner.nullTestMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }

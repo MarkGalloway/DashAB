@@ -450,10 +450,9 @@ public class SymbolTable {
             argAST.promoteToType = promoteFromTo[targ][tformal];
             if ( !canAssignTo(actualArgType, formalArgType,
                               argAST.promoteToType) ) {
-                error(text(argAST)+", argument "+
+                error("line " + id.getLine() + ": argument "+
                                a.name+":<"+a.type+"> of "+ms.name+
-                               "() have incompatible types in "+
-                               text((DashAST)id.getParent()));
+                               "() is incompatible type");
             }
         }
         
@@ -508,10 +507,8 @@ public class SymbolTable {
         
         if (declID.symbol.type.getTypeIndex() == tTUPLE) {
         	if (init.evalType.getTypeIndex() != tTUPLE) {
-        		error("line " + declID.getLine() + ": " +
-	            		text(declID)+", "+
-	            		text(init)+" have incompatible types in "+
-	            		text((DashAST)declID.getParent()));
+        		error("line " + declID.getLine() + ": " + declID.evalType + " " +
+	            		declID.getText() + " is incompatible with " + init.evalType + " type");
         		return;
         	}
         	
@@ -547,10 +544,8 @@ public class SymbolTable {
         	
         } else {
         	if (init.evalType.getTypeIndex() == tTUPLE) {
-        		error("line " + declID.getLine() + ": " +
-	            		text(declID)+", "+
-	            		text(init)+" have incompatible types in "+
-	            		text((DashAST)declID.getParent()));
+                error("line " + declID.getLine() + ": " + declID.evalType + " " +
+                        declID.getText() + " is incompatible with " + init.evalType + " type");
         		return;
         	}
         	
@@ -559,10 +554,8 @@ public class SymbolTable {
 	        init.promoteToType = promoteFromTo[te][tdecl];
 	        if ( !canAssignTo(init.evalType, declID.symbol.type,
 	                          init.promoteToType) ) {
-	            error("line " + declID.getLine() + ": " +
-	            		text(declID)+", "+
-	            		text(init)+" have incompatible types in "+
-	            		text((DashAST)declID.getParent()));
+                error("line " + declID.getLine() + ": " + declID.evalType + " " +
+                        declID.getText() + " is incompatible with " + init.evalType + " type");
 	        }
         }
     }

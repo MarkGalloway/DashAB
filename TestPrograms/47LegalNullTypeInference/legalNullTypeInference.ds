@@ -17,6 +17,7 @@ procedure main() returns integer {
 	var a10 = testNull();
 	var a11 = -null;
 	var a12 = +null;
+	var a13 = not null;
 	
 	a1 -> out; '\n' -> out;
 	a2 -> out; '\n' -> out;
@@ -30,6 +31,7 @@ procedure main() returns integer {
 	a10 -> out; '\n' -> out;
 	a11 -> out; '\n' -> out;
 	a12 -> out; '\n' -> out;
+	a13 -> out; '\n' -> out;
 	
 	return 0;
 }

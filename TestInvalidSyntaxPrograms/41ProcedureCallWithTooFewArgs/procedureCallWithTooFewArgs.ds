@@ -1,0 +1,8 @@
+procedure test(integer a) returns integer {
+	return 0;
+}
+
+procedure main() returns integer {
+  integer b = test();
+  return 0;
+}

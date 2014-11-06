@@ -1,0 +1,12 @@
+const out = std_output();
+
+procedure test(boolean a, boolean b) returns boolean {
+	return b;
+}
+
+procedure main() returns integer {
+	boolean a1 = test(null, identity);
+	
+	a1 -> out; '\n' -> out;
+	return 0;
+}

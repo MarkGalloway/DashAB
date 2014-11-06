@@ -427,7 +427,7 @@ public class TestInvalidLLVM extends BaseTest {
     public void invalidOutputTypes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {
         String[] args = new String[] {"TestInvalidTypePrograms/06InvalidOutputTypes/invalidOutputTypes"};
         Runner.llvmMain(args);
-        assertEquals("line 20: invalid type (<tuple.a:boolean>, <tuple.b:boolean>) sent to outstream", outErrIntercept.toString().trim());;
+        assertEquals("line 20: invalid type (<tuple.a:boolean>, <tuple.b:boolean>)  sent to outstream", outErrIntercept.toString().trim());;
     }
     
     @Test
@@ -479,6 +479,23 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
+    @Test
+    public void cantCombineNullIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/40CantCombineNullIdentity/cantCombineNullIdentity.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 2: identity:<identity>, null:<null> have incompatible types in identity + null");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void procedureCallWithFewManyArgs() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/41ProcedureCallWithTooFewArgs/procedureCallWithTooFewArgs.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 6: invalid number of args to 'test'");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
     
     
 }
