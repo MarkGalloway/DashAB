@@ -605,6 +605,12 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
+        sb.append("F\n");
+        sb.append("T\n");
+        sb.append((char)0 + "\n");
+        sb.append((char)1 + "\n");
+        sb.append("0\n");
+        sb.append("1\n");
         sb.append("0\n");
         sb.append("1\n");
 
