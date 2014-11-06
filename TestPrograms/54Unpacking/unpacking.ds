@@ -3,8 +3,14 @@ const out = std_output();
 procedure main() returns integer {
 	integer x;
 	real y;
+	tuple(integer, real) tup = (5, 0.5);
 	
 	x, y = (1, 0.1);
+	
+	x -> out; '\n' -> out;
+	y -> out; '\n' -> out;
+	
+	x, y = tup;
 	
 	x -> out; '\n' -> out;
 	y -> out; '\n' -> out;

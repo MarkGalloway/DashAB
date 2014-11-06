@@ -624,6 +624,8 @@ public class TestLLVM extends BaseTest {
 
         sb.append("1\n");
         sb.append("0.1\n");
+        sb.append("5\n");
+        sb.append("0.5\n");
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
