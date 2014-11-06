@@ -32,7 +32,6 @@ public class TestInvalidLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         sb.append("line 2: tuples must have more than one element");
-        sb.append("\nline 2: tuple lists must have more than one element");
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
     
@@ -302,7 +301,7 @@ public class TestInvalidLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
-        sb.append("line 1: unknown variable f\n");
+        sb.append("line 1: unknown identifier f\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
