@@ -67,12 +67,7 @@ loop.done_<id>_
 >>
 
 externs() ::= <<
-declare i32 @puts(i8* nocapture) nounwind
 declare i32 @printf(i8*, ...)
-declare i8* @malloc(i32)
-declare i8* @calloc(i32, i32)
-declare void @free(i8*)
-declare void @exit(i32)
 declare float @llvm.pow.f32(float, float) nounwind readonly
 declare float @llvm.floor.f32(float)
 declare i8* @llvm.stacksave()
