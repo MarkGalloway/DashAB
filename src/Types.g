@@ -7,6 +7,7 @@ options {
   filter = true;
   backtrack=true; 
   output = AST;
+  rewrite = true;
 }
 
 @header {
@@ -104,6 +105,17 @@ expr returns [Type type]
     	}
     }
     |   ^(UNARY_MINUS a=expr)   {$type=symtab.uminus($a.start);}
+    |   ^(posNode = UNARY_POSITIVE a=expr)   
+      { 
+        $type=symtab.upositive($a.start); 
+        //DashAST child = (DashAST)$UNARY_POSITIVE.getChild(1);
+        //$UNARY_POSITIVE = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+        //$UNARY_POSITIVE.token = new CommonToken(DashLexer.EXPR, "EXPR");
+        //$UNARY_POSITIVE.addChild(child);
+        //DashAST parent = (DashAST)$UNARY_POSITIVE.getParent();
+        //parent.deleteChild($UNARY_POSITIVE.getChildIndex());
+        
+      } -> expr
     |   ^(Not a=expr) {$type=symtab.unot($a.start);}
     |	tuple_list	{$type = $tuple_list.type;}
     |	typecast	{$type = $typecast.type;}

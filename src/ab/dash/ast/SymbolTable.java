@@ -352,6 +352,28 @@ public class SymbolTable {
         return a.evalType;
     }
     
+    public Type upositive(DashAST a) {
+        if (a.evalType  == _null) { 
+            CommonToken token = convertFromNull(_integer);
+            a.evalType = _integer;
+            a.token = token;
+        }  
+        
+        if (a.evalType  == _identity) { 
+            CommonToken token = convertFromIdentity(_integer);
+            a.evalType = _integer;
+            a.token = token;
+        }  
+
+        if ( !(a.evalType==_integer || a.evalType==_real) ) {
+            error("line " + a.getLine() + ": " +
+                    text(a)+" must have integer or real type in "+
+                           text((DashAST)a.getParent()));
+            return null;
+        }
+        return a.evalType;
+    }
+    
     public Type unot(DashAST a) {
         if (a.evalType  == _null) { 
             CommonToken token = convertFromNull(_boolean);
@@ -626,7 +648,7 @@ public class SymbolTable {
         //String s = super.toString();
         if ( lhs.evalType != _boolean &&
                 lhs.evalType != _integer && lhs.evalType != _real && lhs.evalType!= _character) {
-            error("line " + print.getLine() + ": invalid type " + lhs.evalType + "sent to outstream");
+            error("line " + print.getLine() + ": invalid type " + lhs.evalType + " sent to outstream");
         }
         
     	if (s.type != null) {

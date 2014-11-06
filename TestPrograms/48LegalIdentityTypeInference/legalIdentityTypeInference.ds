@@ -1,4 +1,4 @@
 procedure main() returns integer {
-	var a11 = +null;
+	integer a11 = +null;
 	return 0;
 }
