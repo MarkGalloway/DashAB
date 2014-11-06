@@ -172,8 +172,11 @@ procedureParameter
 
 // START: block
 block
-@after {varDeclConstraint.pop();}
-  : LBRACE {varDeclConstraint.push(true);} varDeclaration* statement* RBRACE -> ^(BLOCK varDeclaration* statement*)
+  : LBRACE {varDeclConstraint.push(true);} varDeclaration* nonDeclarableStatement* RBRACE {varDeclConstraint.pop();} -> ^(BLOCK varDeclaration* nonDeclarableStatement*)
+  | LBRACE {varDeclConstraint.push(true);} varDeclaration* nonDeclarableStatement* varDeclaration
+    {
+      emitErrorMessage("In the block starting on line " + $LBRACE.getLine() + ": Declarations can only appear at the start of this block."); 
+    }
   ;
 // END: block
 
@@ -247,12 +250,12 @@ typedef
   ;
 
 statement
+  : varDeclaration
+  | nonDeclarableStatement
+  ;
+
+nonDeclarableStatement
   : block
-  |	varDeclaration 
-    {  
-      if(!varDeclConstraint.empty() && varDeclConstraint.peek()) 
-          emitErrorMessage("line " + input.LT(1).getLine()  + ": Declarations can only appear at the start of a block."); 
-    }
   | typedef
   |	If LPAREN expression RPAREN s=statement (Else e=statement)? -> ^(If expression $s $e?)
   | If LPAREN expression statement (Else statement)?
