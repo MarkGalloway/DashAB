@@ -227,6 +227,12 @@ define <return_type> <fglobal(sym_id)>(<args; separator=", ">) {
 }
 >>
 
+function_returning_tuple(id, sym_id, type_id, args, code) ::= <<
+define void <fglobal(sym_id)>(<args; separator=", "><if(args)>, <endif><tuple_type(type_id)>* %tuple_return) {
+<code; separator="\n">
+}
+>>
+
 declare_argument(id, arg_id, arg_type) ::= <<
 <arg_type>* <vlocal_symbol(arg_id)>
 >>
@@ -263,6 +269,12 @@ return(id, expr, expr_id, type) ::= <<
   ret <type> <vlocal_result(expr_id)>
 >>
 
+return_tuple(id, assign_code, type_id) ::= <<
+  <vlocal_result(id)> = bitcast <tuple_type(type_id)>* %tuple_return to <tuple_type(type_id)>*
+<assign_code>
+  ret void
+>>
+
 call_void(id, function_id, args, code, postcode) ::= <<
 <code; separator="\n">
   call void <fglobal(function_id)>(<args; separator=", ">)
@@ -272,6 +284,13 @@ call_void(id, function_id, args, code, postcode) ::= <<
 call(id, function_id, return_type, args, code, postcode) ::= <<
 <code; separator="\n">
   <vlocal_result(id)> = call <return_type> <fglobal(function_id)>(<args; separator=", ">)
+<postcode; separator="\n">
+>>
+
+call_returning_tuple(id, function_id, type_id, args, code, postcode) ::= <<
+<code; separator="\n">
+  <vlocal_result(id)> = alloca <tuple_type(type_id)>
+  call void <fglobal(function_id)>(<args; separator=", "><if(args)>, <endif><tuple_type(type_id)>* <vlocal_result(id)>)
 <postcode; separator="\n">
 >>
 
