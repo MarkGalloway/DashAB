@@ -1,0 +1,11 @@
+procedure p() returns integer {
+	return 1;
+}
+
+function f() returns integer {
+	return p();
+}
+
+procedure main() returns integer {
+	return f();
+}

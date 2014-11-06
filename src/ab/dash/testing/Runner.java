@@ -20,6 +20,7 @@ import ab.dash.DashParser;
 import ab.dash.Def;
 import ab.dash.DefineTupleTypes;
 import ab.dash.LLVMIRGenerator;
+import ab.dash.MethodCheck;
 import ab.dash.Types;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
@@ -175,6 +176,16 @@ public class Runner {
         clean.clean(tree);
     }
     
+    private static void methodCheck(CommonTreeNodeStream nodes, DashAST tree) throws SymbolTableException {
+        nodes.reset();
+        MethodCheck checker = new MethodCheck();
+        checker.check(tree);
+        
+        if (checker.getErrorCount() > 0) {
+            throw new SymbolTableException(checker.getErrors());
+        }
+    }
+    
     // used by ASTtest
     public static void astTestMain(String[] args) throws LexerException, ParserException, RecognitionException {
         ANTLRFileStream input = getInputStream(args);
@@ -236,10 +247,10 @@ public class Runner {
             runDef(nodes, symtab, tree);
             runTypes(nodes, symtab, tree);
             runDefineTupleTypes(nodes, symtab, tree);
+            methodCheck(nodes, tree);
         } catch (SymbolTableException e) {
             return;
         }
-;
         
         // generate llvm
         
