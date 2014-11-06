@@ -77,8 +77,7 @@ declare float @llvm.pow.f32(float, float) nounwind readonly
 declare float @llvm.floor.f32(float)
 declare i8* @llvm.stacksave()
 declare void @llvm.stackrestore(i8* %ptr)
-declare i32 @feof(%struct._IO_FILE* nocapture) #1
-declare i32 @__isoc99_scanf(i8* nocapture readonly, ...) #1
+declare i32 @__isoc99_scanf(i8*, ...)
 >>
 
 string_constants() ::= <<
