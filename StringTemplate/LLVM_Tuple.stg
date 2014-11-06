@@ -29,6 +29,11 @@ tuple_get_global(id, type_id, sym_id) ::= <<
   <vlocal_result(id)> = bitcast <tuple_type(type_id)>* <vglobalSymbol(sym_id)> to <tuple_type(type_id)>*
 >>
 
+tuple_unpack(id, tuple_expr, element_assigns) ::= <<
+<tuple_expr; separator="\n">
+<element_assigns; separator="\n">
+>>
+
 tuple_assign(id, lhs_expr, rhs_expr, element_assigns) ::= <<
 <rhs_expr; separator="\n">
 <lhs_expr; separator="\n">

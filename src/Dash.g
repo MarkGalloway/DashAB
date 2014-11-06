@@ -301,7 +301,7 @@ nonDeclarableStatement
   		-> ^(EXPR postfixExpression)
   //| ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
   //| ID (',' ID)+ ASSIGN tupleMemberList DELIM -> ^(UNPACK ID+ tupleMemberList)
-  | ID (',' ID)+ ASSIGN expression DELIM -> ^(UNPACK ID+ expression)
+  | ID (',' ID)+ ASSIGN expression DELIM -> ^(UNPACK ^(EXPR ID)+ expression)
   | Break DELIM!
     {
       if(loopDepth == 0) 
