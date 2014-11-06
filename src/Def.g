@@ -263,14 +263,16 @@ varDeclaration // global, parameter, or local variable
 		        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
 				    vs.def = $ID;            // track AST location of def's ID
 				    $ID.symbol = vs;         // track in AST
+				    
 				    currentScope.define(vs);
+				    
 				    $var_node.deleteChild(0);
 				    $var_node.deleteChild(0);
 		    } else {
 		    	// TODO: Throw error type undefined
 		    }
         }
-    |	^(VAR_DECL specifier ID ( ^(TUPLE_LIST .+) | ^(EXPR .) ) )
+    |	^(VAR_DECL specifier ID ^(EXPR .)) 
         {
 	        debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 
