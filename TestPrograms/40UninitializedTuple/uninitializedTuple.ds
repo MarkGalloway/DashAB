@@ -1,0 +1,9 @@
+const out = std_output();
+
+procedure main() returns integer {
+	tuple(integer a, integer b) t2;
+	t2.1 -> out;
+	'\n' -> out;
+	t2.2 -> out;
+	return 0;
+}

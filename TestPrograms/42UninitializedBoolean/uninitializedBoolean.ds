@@ -1,0 +1,9 @@
+const out = std_output();
+const boolean j;
+procedure main() returns integer {
+	boolean i;
+	i -> out;
+	'\n' -> out;
+	j -> out;
+	return 0;
+}

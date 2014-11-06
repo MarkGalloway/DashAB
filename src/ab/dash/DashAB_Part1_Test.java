@@ -1,30 +1,20 @@
 package ab.dash;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.StringReader;
-import java.util.Arrays;
 
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenRewriteStream;
-import org.antlr.runtime.TokenStream;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.antlr.runtime.tree.TreeAdaptor;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import ab.dash.ast.DashAST;
-import ab.dash.ast.DashErrorNode;
 import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
-import ab.dash.exceptions.SymbolTableException;
 
 public class DashAB_Part1_Test {
 
@@ -86,7 +76,7 @@ public class DashAB_Part1_Test {
 		Def def = new Def(nodes, symtab); // use custom constructor
 		def.downup(tree); // trigger symtab actions upon certain subtrees
 		
-		if (def.getErrorCount() > 0) {
+		if (symtab.getErrorCount() > 0) {
 			return;
 		}
 
@@ -135,7 +125,6 @@ public class DashAB_Part1_Test {
 		nodes.reset();
     	tokens.reset();
 		llvm.build(tree);
-        
         System.out.println(llvm.toString());
     }
 }

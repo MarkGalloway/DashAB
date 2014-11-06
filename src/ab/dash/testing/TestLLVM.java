@@ -296,11 +296,13 @@ public class TestLLVM extends BaseTest {
         sb.append("5.25\n");	// f4 -> out; '\n' -> out;		// 5.25
         sb.append("0.5\n");		// f5 -> out; '\n' -> out;		// 0.5
         sb.append("15.625\n");	// f6 -> out; '\n' -> out;		// 15.625
+        sb.append("0\n");   // e2 -> out; '\n' -> out;      // 24.25
 
         sb.append("15.25\n");	// e0 -> out; '\n' -> out;		// 15.25
         sb.append("18.75\n");	// e1 -> out; '\n' -> out;		// 18.75
         sb.append("24.25\n");	// e2 -> out; '\n' -> out;		// 24.25
 
+        
         sb.append("T\n");		// b0 -> out; '\n' -> out;		// true;
         sb.append("F\n");		// b1 -> out; '\n' -> out;		// false
 
@@ -493,6 +495,64 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    
+    @Test 
+    public void testUnitializedTuple() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/40UninitializedTuple/uninitializedTuple.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("0\n0");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testUninitializedReal() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/41UninitializedReal/uninitializedReal.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("0\n0");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    
+    @Test 
+    public void testUninitializedBoolean() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/42UninitializedBoolean/uninitializedBoolean.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("F\nF");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    
+    @Test 
+    public void testUninitializedCharacter() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/43UninitializedCharacter/uninitializedCharacter.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    
+    @Test 
+    public void testUninitializedInteger() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/44UninitializedInteger/uninitializedInteger.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("0\n0");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testNullInteger() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/45NullInteger/nullInteger.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("0\n0");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
 
     @Test
     public void tupleAsArgument() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
