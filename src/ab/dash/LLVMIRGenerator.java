@@ -678,7 +678,7 @@ public class LLVMIRGenerator {
 			TupleTypeSymbol tuple = (TupleTypeSymbol) ((DashAST)t.getChild(last_child_index)).evalType;
 			
 			StringTemplate tuple_expr = exec((DashAST)t.getChild(last_child_index));
-			int tuple_expr_id = ((DashAST)t.getChild(last_child_index)).llvmResultID;
+			int tuple_expr_id = ((DashAST)t.getChild(last_child_index).getChild(0)).llvmResultID;
 			
 			List<StringTemplate> element_assigns = new ArrayList<StringTemplate>();
 			
