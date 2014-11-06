@@ -1066,6 +1066,58 @@ public class LLVMIRGenerator {
 			int expr_id = ((DashAST)child.getChild(0)).llvmResultID;
 			
 			StringTemplate template = null;
+			
+			//TODO
+			if (castTo.getTypeIndex() == SymbolTable.tTUPLE) {
+				template = stg.getInstanceOf("tuple_assign");
+				List<StringTemplate> element_assigns = new ArrayList<StringTemplate>();
+
+				TupleTypeSymbol tuple_type = (TupleTypeSymbol) castTo;
+				List<Symbol> fields = tuple_type.fields;
+				for (int i = 0; i < fields.size(); i++) {
+					StringTemplate memberAssign = null;
+					StringTemplate getMember = null;
+
+					int field_type = fields.get(i).type.getTypeIndex();
+					if (field_type == SymbolTable.tINTEGER) {
+						getMember = stg.getInstanceOf("int_get_tuple_member");
+						memberAssign = stg.getInstanceOf("int_tuple_assign");
+					} else if (field_type == SymbolTable.tREAL) {
+						getMember = stg.getInstanceOf("real_get_tuple_member");
+						memberAssign = stg.getInstanceOf("real_tuple_assign");
+					} else if (field_type == SymbolTable.tCHARACTER) {
+						getMember = stg.getInstanceOf("char_get_tuple_member");
+						memberAssign = stg.getInstanceOf("char_tuple_assign");
+					} else if (field_type == SymbolTable.tBOOLEAN) {
+						getMember = stg.getInstanceOf("bool_get_tuple_member");
+						memberAssign = stg.getInstanceOf("bool_tuple_assign");
+					}
+
+					int uid1 = DashAST.getUniqueId();
+					int uid2 = DashAST.getUniqueId();
+					getMember.setAttribute("id", uid1);
+					getMember.setAttribute("tuple_expr_id", expr_id);
+					getMember.setAttribute("tuple_type",
+							tuple_type.tupleTypeIndex);
+					getMember.setAttribute("index", i);
+
+					memberAssign.setAttribute("id", uid2);
+					memberAssign.setAttribute("tuple_expr_id",
+							template.getAttribute("id"));
+					memberAssign.setAttribute("tuple_type",
+							tuple_type.tupleTypeIndex);
+					memberAssign.setAttribute("index", i);
+					memberAssign.setAttribute("expr", getMember);
+					memberAssign.setAttribute("expr_id", uid1);
+
+					element_assigns.add(memberAssign);
+				}
+				
+				//template.setAttribute("lhs_expr", getLocalTuple);
+				template.setAttribute("rhs_expr", expr);
+				template.setAttribute("element_assigns", element_assigns);
+			}
+			
 			if (castFrom.getTypeIndex() == SymbolTable.tBOOLEAN) {
 				if (castTo.getTypeIndex() == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("bool_to_bool");
