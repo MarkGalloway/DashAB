@@ -1179,7 +1179,9 @@ public class LLVMIRGenerator {
 				} else {
 					// ERROR
 				}
-			} else {
+			} 
+			
+			if (template == null){
 				int val = Integer.parseInt(t.getText().replaceAll("_", ""));
 				
 				template = stg.getInstanceOf("int_literal");
