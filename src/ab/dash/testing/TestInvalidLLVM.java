@@ -32,7 +32,6 @@ public class TestInvalidLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         sb.append("line 2: tuples must have more than one element");
-        sb.append("\nline 2: tuple lists must have more than one element");
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
     
@@ -97,20 +96,111 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
     
+    @Test 
+    public void nestedComments() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/12NestedComments/nestedComments.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 17: comments cannot be nested");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void emptyTupleMemberList() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/13EmptyTupleMemberList/emptyTupleMemberList.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: Empty tuple lists are not allowed.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void emptyTupleTupleList() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/14EmptyTupleTupleList/emptyTupleTupleList.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: tuples cannot be empty");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void functionCallBeforeDecl() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/15FunctionCallBeforeDecl/functionCallBeforeDecl.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: unknown identifier foo");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void procedureCallBeforeDecl() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/16ProcedureCallBeforeDecl/procedureCallBeforeDecl.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: unknown identifier foo");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void tupleIndexExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/17TupleIndexExpression/tupleIndexExpression.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 7: Only integers and identifiers are allowed to index tuples.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void varDeclAfterStartOfBlock() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/18VarDeclAfterStartOfBlock/varDeclAfterStartOfBlock.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 8: Declarations can only appear at the start of a block.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void varDeclAfterStartOfIfStat() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/19VarDeclAfterStartOfIfStat/varDeclAfterStartOfIfStat.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 10: Declarations can only appear at the start of a block.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void danglingElseStatement() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/20DanglingElseStatement/danglingElseStatement.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 15: else statement missing matching if.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    @Test 
+    public void danglingBreakStatement() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/21DangingBreakStatement/danglingBreakStatement.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 15: Break statements can only be used within loops.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    
+    
     // Programs with undeclared variables: Put TestUndefinedVariablePrograms Here
     
     @Test 
     public void undefined() throws RecognitionException, LexerException, ParserException, SymbolTableException, IOException, InterruptedException {
         String[] args = new String[] {"TestUndefinedVariablePrograms/01Undefined/undefined.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 2: unknown variable e2", outErrIntercept.toString().trim());
+        assertEquals("line 2: unknown identifier e2", outErrIntercept.toString().trim());
     }
     
     @Test 
     public void invalidUndefinedButDefinedAfter() throws RecognitionException, LexerException, ParserException, SymbolTableException, IOException, InterruptedException {        
         String[] args = new String[] {"TestUndefinedVariablePrograms/02UndefinedButDefinedAfter/undefinedButDefinedAfter.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 2: unknown variable e2", outErrIntercept.toString().trim());
+        assertEquals("line 2: unknown identifier e2", outErrIntercept.toString().trim());
     }
     
     // TODO: Fix this!
@@ -140,14 +230,14 @@ public class TestInvalidLLVM extends BaseTest {
     public void undeclaredTuple() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestUndefinedVariablePrograms/06UndeclaredTuple/undeclaredTuple.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 7: unknown variable k", outErrIntercept.toString().trim());
+        assertEquals("line 7: unknown identifier k", outErrIntercept.toString().trim());
     }
     
     @Test 
     public void undeclaredTupleIndex() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestUndefinedVariablePrograms/07UndeclaredTupleIndex/undeclaredTupleIndex.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 7: unknown variable k", outErrIntercept.toString().trim());
+        assertEquals("line 7: unknown identifier k", outErrIntercept.toString().trim());
     }
     
     @Test 
@@ -211,7 +301,7 @@ public class TestInvalidLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
-        sb.append("line 1: unknown variable f\n");
+        sb.append("line 1: unknown identifier f\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }

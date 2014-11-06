@@ -221,7 +221,7 @@ atoms
 	
 	       Symbol vs = currentScope.resolve($ID.text); 
 	       if(vs == null && !t.hasAncestor(DOT)) 
-	        symtab.error("line " + $ID.getLine() + ": unknown variable " + $ID.text);
+	        symtab.error("line " + $ID.getLine() + ": unknown identifier " + $ID.text);
        }
     ;
 
@@ -335,7 +335,7 @@ tupleMembers
        {
          // check that the tuple is defined first
          Symbol tuple = currentScope.resolve($id.text);
-         if(tuple == null) { symtab.error("line " + $DOT.getLine() + ": unknown variable " + $id.text); }
+         if(tuple == null) { symtab.error("line " + $DOT.getLine() + ": unknown identifier " + $id.text); }
          
          else {
             // check that the member variable is defined

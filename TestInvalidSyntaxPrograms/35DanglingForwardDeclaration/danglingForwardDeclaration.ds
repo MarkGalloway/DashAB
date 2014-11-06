@@ -1,0 +1,5 @@
+function foo(integer x) returns integer;  // matching declaration never found, should throw exception
+
+procedure main() returns integer {
+  return 0;
+}

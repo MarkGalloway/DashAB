@@ -376,7 +376,7 @@ unaryExpression
 postfixExpression
     : 	ID 
     (
-    	(	DOT^ (INTEGER | ID)
+    	(	DOT^ (INTEGER | ID | {emitErrorMessage("line " + $DOT.getLine() + ": Only integers and identifiers are allowed to index tuples.");})
     	|	r=LPAREN^ expressionList RPAREN!	{ $r.setType(CALL); $r.setText("CALL"); }
     	// TODO: Part 2
     	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
@@ -399,6 +399,7 @@ primary
     | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
+    | LPAREN RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Empty tuple lists are not allowed.");}
     ;
     
 

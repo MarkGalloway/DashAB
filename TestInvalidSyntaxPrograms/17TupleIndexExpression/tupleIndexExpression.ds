@@ -1,0 +1,10 @@
+procedure main() returns integer {
+  
+  tuple(integer, real r, integer) tuple_var = (1, 2.1, 5); // valid
+
+  tuple_var.3; // valid
+  
+  tuple_var.(1 + 2); // Expressions not allowed. should elicit error
+
+  return 0;
+}
