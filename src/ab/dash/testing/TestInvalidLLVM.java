@@ -187,6 +187,132 @@ public class TestInvalidLLVM extends BaseTest {
     }
     
     @Test 
+    public void danglingContinueStatement() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/22DangingContinueStatement/danglingContinueStatement.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 14: Continue statements can only be used within loops.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void varDeclAfterNestedBlock() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/23VarDeclAfterNestedBlock/varDeclAfterNestedBlock.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("In the block starting on line 3: Declarations can only appear at the start of this block.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void ifStatMissingLeftParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/24IfStatMissingLeftParen/ifStatMissingLeftParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing left parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void ifStatMissingRightParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/25IfStatMissingRightParen/ifStatMissingRightParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing right parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void prePredLoopMissingLeftParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/26PrePredLoopMissingLeftParen/prePredLoopMissingLeftParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing left parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void prePredLoopMissingRightParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/27PrePredLoopMissingRightParen/prePredLoopMissingRightParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing right parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void postPredLoopMissingLeftParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/28PostPredLoopMissingLeftParen/postPredLoopMissingLeftParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing left parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void postPredLoopMissingRightParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/29PostPredLoopMissingRightParen/postPredLoopMissingRightParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing right parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void globalVarMissingConst() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/30GlobalVarMissingConst/globalVarMissingConst.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Global variables must be declared with the const specifier.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void globalVarNotConst() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/31GlobalVarNotConst/globalVarNotConst.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Global variables must be declared with the const specifier.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void globalTupleMissingConst() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/32GlobalTupleMissingConst/globalTupleMissingConst.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Global variables must be declared with the const specifier.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void globalTupleNotConst() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/33GlobalTupleNotConst/globalTupleNotConst.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Global variables must be declared with the const specifier.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void typedefInLocalScope() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/34TypedefInLocalScope/typedefInLocalScope.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 8: Typedef must only be declared in global scope.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void danglingForwardDeclaration() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/35DanglingForwardDeclaration/danglingForwardDeclaration.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Danging forward Declaration.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
     public void invalidEscapeSequence() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestInvalidSyntaxPrograms/36InvalidEscapeSequence/invalidEscapeSequence.ds"};
         Runner.llvmMain(args);
@@ -194,10 +320,6 @@ public class TestInvalidLLVM extends BaseTest {
         sb.append("line 3: invalid escape sequence");
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
-    
-    
-    
-    
     
     // Programs with undeclared variables: Put TestUndefinedVariablePrograms Here
     

@@ -1,12 +1,11 @@
 const tuple(integer, real r, boolean) tuple_var = (111, 1.2, false);
 
 procedure main() returns integer {
-    typedef tuple(integer, integer) point;
     var i = 1;
     var j = 2;
     var out = std_output();
     var t = f();
-
+    typedef tuple(integer, integer) point;
     j = i + 1;
 
     f().2 -> out;
