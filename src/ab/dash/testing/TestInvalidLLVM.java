@@ -155,7 +155,7 @@ public class TestInvalidLLVM extends BaseTest {
         String[] args = new String[] {"TestInvalidSyntaxPrograms/18VarDeclAfterStartOfBlock/varDeclAfterStartOfBlock.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("line 8: Declarations can only appear at the start of a block.");
+        sb.append("In the block starting on line 1: Declarations can only appear at the start of this block.");
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
     
@@ -164,7 +164,7 @@ public class TestInvalidLLVM extends BaseTest {
         String[] args = new String[] {"TestInvalidSyntaxPrograms/19VarDeclAfterStartOfIfStat/varDeclAfterStartOfIfStat.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("line 10: Declarations can only appear at the start of a block.");
+        sb.append("In the block starting on line 7: Declarations can only appear at the start of this block.");
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
     
@@ -176,6 +176,7 @@ public class TestInvalidLLVM extends BaseTest {
         sb.append("line 15: else statement missing matching if.");
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
+    
     @Test 
     public void danglingBreakStatement() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestInvalidSyntaxPrograms/21DangingBreakStatement/danglingBreakStatement.ds"};
@@ -184,6 +185,17 @@ public class TestInvalidLLVM extends BaseTest {
         sb.append("line 15: Break statements can only be used within loops.");
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void invalidEscapeSequence() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/36InvalidEscapeSequence/invalidEscapeSequence.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: invalid escape sequence");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    
     
     
     

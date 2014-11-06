@@ -13,5 +13,5 @@ procedure main() returns integer {
     '\n' -> out;
     t.1 -> out;
 
-    //return 0;
+    return 0;
 }
