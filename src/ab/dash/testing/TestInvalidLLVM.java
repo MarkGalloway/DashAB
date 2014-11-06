@@ -11,6 +11,7 @@ import java.io.IOException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
+import ab.dash.Runner;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
@@ -32,7 +33,6 @@ public class TestInvalidLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         sb.append("line 2: tuples must have more than one element");
-        sb.append("\nline 2: tuple lists must have more than one element");
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
     
@@ -97,20 +97,245 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals(sb.toString(), outErrIntercept.toString().trim());
     }
     
+    @Test 
+    public void nestedComments() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/12NestedComments/nestedComments.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 17: comments cannot be nested");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void emptyTupleMemberList() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/13EmptyTupleMemberList/emptyTupleMemberList.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: Empty tuple lists are not allowed.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void emptyTupleTupleList() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/14EmptyTupleTupleList/emptyTupleTupleList.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: tuples cannot be empty");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void functionCallBeforeDecl() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/15FunctionCallBeforeDecl/functionCallBeforeDecl.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: unknown identifier foo");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void procedureCallBeforeDecl() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/16ProcedureCallBeforeDecl/procedureCallBeforeDecl.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: unknown identifier foo");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void tupleIndexExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/17TupleIndexExpression/tupleIndexExpression.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 7: Only integers and identifiers are allowed to index tuples.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void varDeclAfterStartOfBlock() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/18VarDeclAfterStartOfBlock/varDeclAfterStartOfBlock.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("In the block starting on line 1: Declarations can only appear at the start of this block.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void varDeclAfterStartOfIfStat() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/19VarDeclAfterStartOfIfStat/varDeclAfterStartOfIfStat.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("In the block starting on line 7: Declarations can only appear at the start of this block.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void danglingElseStatement() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/20DanglingElseStatement/danglingElseStatement.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 15: else statement missing matching if.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void danglingBreakStatement() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/21DangingBreakStatement/danglingBreakStatement.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 15: Break statements can only be used within loops.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void danglingContinueStatement() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/22DangingContinueStatement/danglingContinueStatement.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 14: Continue statements can only be used within loops.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void varDeclAfterNestedBlock() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/23VarDeclAfterNestedBlock/varDeclAfterNestedBlock.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("In the block starting on line 3: Declarations can only appear at the start of this block.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void ifStatMissingLeftParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/24IfStatMissingLeftParen/ifStatMissingLeftParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing left parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void ifStatMissingRightParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/25IfStatMissingRightParen/ifStatMissingRightParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing right parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void prePredLoopMissingLeftParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/26PrePredLoopMissingLeftParen/prePredLoopMissingLeftParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing left parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void prePredLoopMissingRightParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/27PrePredLoopMissingRightParen/prePredLoopMissingRightParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing right parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void postPredLoopMissingLeftParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/28PostPredLoopMissingLeftParen/postPredLoopMissingLeftParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing left parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void postPredLoopMissingRightParen() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/29PostPredLoopMissingRightParen/postPredLoopMissingRightParen.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 5: Missing right parenthesis.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void globalVarMissingConst() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/30GlobalVarMissingConst/globalVarMissingConst.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Global variables must be declared with the const specifier.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void globalVarNotConst() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/31GlobalVarNotConst/globalVarNotConst.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Global variables must be declared with the const specifier.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void globalTupleMissingConst() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/32GlobalTupleMissingConst/globalTupleMissingConst.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Global variables must be declared with the const specifier.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void globalTupleNotConst() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/33GlobalTupleNotConst/globalTupleNotConst.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Global variables must be declared with the const specifier.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void typedefInLocalScope() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/34TypedefInLocalScope/typedefInLocalScope.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 8: Typedef must only be declared in global scope.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void danglingForwardDeclaration() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/35DanglingForwardDeclaration/danglingForwardDeclaration.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Danging forward Declaration.");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void invalidEscapeSequence() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/36InvalidEscapeSequence/invalidEscapeSequence.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: invalid escape sequence");
+        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+    }
+    
     // Programs with undeclared variables: Put TestUndefinedVariablePrograms Here
     
     @Test 
     public void undefined() throws RecognitionException, LexerException, ParserException, SymbolTableException, IOException, InterruptedException {
         String[] args = new String[] {"TestUndefinedVariablePrograms/01Undefined/undefined.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 2: unknown variable e2", outErrIntercept.toString().trim());
+        assertEquals("line 2: unknown identifier e2", outErrIntercept.toString().trim());
     }
     
     @Test 
     public void invalidUndefinedButDefinedAfter() throws RecognitionException, LexerException, ParserException, SymbolTableException, IOException, InterruptedException {        
         String[] args = new String[] {"TestUndefinedVariablePrograms/02UndefinedButDefinedAfter/undefinedButDefinedAfter.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 2: unknown variable e2", outErrIntercept.toString().trim());
+        assertEquals("line 2: unknown identifier e2", outErrIntercept.toString().trim());
     }
     
     // TODO: Fix this!
@@ -118,7 +343,7 @@ public class TestInvalidLLVM extends BaseTest {
     public void doubleDeclaration() throws RecognitionException, LexerException, ParserException, SymbolTableException, IOException, InterruptedException {        
         String[] args = new String[] {"TestUndefinedVariablePrograms/03DoubleDeclaration/doubleDeclaration.ds"};
         Runner.llvmMain(args);
-        assertEquals("", outErrIntercept.toString().trim());
+        assertEquals("line 3: Identifier e1 declared twice in the same scope.", outErrIntercept.toString().trim());
     }
     
     // TODO: Fix this!
@@ -140,14 +365,14 @@ public class TestInvalidLLVM extends BaseTest {
     public void undeclaredTuple() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestUndefinedVariablePrograms/06UndeclaredTuple/undeclaredTuple.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 7: unknown variable k", outErrIntercept.toString().trim());
+        assertEquals("line 7: unknown identifier k", outErrIntercept.toString().trim());
     }
     
     @Test 
     public void undeclaredTupleIndex() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestUndefinedVariablePrograms/07UndeclaredTupleIndex/undeclaredTupleIndex.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 7: unknown variable k", outErrIntercept.toString().trim());
+        assertEquals("line 7: unknown identifier k", outErrIntercept.toString().trim());
     }
     
     @Test 
@@ -203,6 +428,28 @@ public class TestInvalidLLVM extends BaseTest {
         String[] args = new String[] {"TestInvalidTypePrograms/06InvalidOutputTypes/invalidOutputTypes"};
         Runner.llvmMain(args);
         assertEquals("line 20: invalid type (<tuple.a:boolean>, <tuple.b:boolean>) sent to outstream", outErrIntercept.toString().trim());;
+    }
+    
+    @Test
+    public void forwardDeclarationError() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/39ForwardDeclarationError/forwardDeclarationError.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("line 1: unknown identifier f\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void procedureCallInFunction() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/53ProcedureCallInFunction/procedureCallInFunction.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("line 6: Can not call procedure inside function.\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
 }

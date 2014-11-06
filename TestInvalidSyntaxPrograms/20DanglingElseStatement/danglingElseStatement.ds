@@ -1,0 +1,19 @@
+procedure main() returns integer {
+  integer x = 0;
+  integer y = 0;
+  integer z = 0;
+  boolean tamaraHasCavities;
+
+  /* if Statement with dangling else */
+
+  if (x == 3) {
+     y = 7;
+  }
+
+  tamaraHasCavities = true;
+
+  else {
+    y = 32;
+  }  
+  return 0;
+}

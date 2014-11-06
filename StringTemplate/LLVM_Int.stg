@@ -3,15 +3,15 @@ i32
 >>
 
 int_literal(id, val) ::= <<
- <vlocal_result(id)> = add i32 <val>, 0
+  <vlocal_result(id)> = add i32 <val>, 0
 >>
 
 int_null(id) ::= <<
- <vlocal_result(id)> = add i32 0, 0
+  <vlocal_result(id)> = add i32 0, 0
 >>
 
 int_identity(id) ::= <<
- <vlocal_result(id)> = add i32 1, 0
+  <vlocal_result(id)> = add i32 1, 0
 >>
 
 int_init_local(sym_id) ::= <<
@@ -130,13 +130,13 @@ int_input(id, sym_id) ::= <<
 
 int_to_bool(id, expr, expr_id) ::= <<
 <expr>
- <vlocal_result(id)> = icmp ne i32 <vlocal_result(expr_id)>, 0
+  <vlocal_result(id)> = icmp ne i32 <vlocal_result(expr_id)>, 0
 >>
 
 int_to_char(id, expr, expr_id) ::= <<
 <expr>
- <vlocal(id)>temp = srem i32 <vlocal_result(expr_id)>, 256
- <vlocal_result(id)> = trunc i32 <vlocal(id)>temp to i8
+  <vlocal(id)>temp = srem i32 <vlocal_result(expr_id)>, 256
+  <vlocal_result(id)> = trunc i32 <vlocal(id)>temp to i8
 >>
 
 int_to_int(id, expr, expr_id) ::= <<

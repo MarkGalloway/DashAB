@@ -1,4 +1,4 @@
-integer x = 0;
+const integer x = 0;
 
 if x == 0 ) //missing paren, should throw exception
   x = x + 1;

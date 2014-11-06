@@ -78,6 +78,13 @@ public class TupleTypeSymbol extends Symbol implements Type, Scope {
 		}
 		return null; // not found
 	}
+    
+    public Symbol resolveInCurrentScope(String name) {
+        Symbol s = resolveMember(name);
+        if ( s!=null ) return s;
+
+        return null; // not found
+    }
 
     public Symbol resolveType(String name) { return resolve(name); }
     

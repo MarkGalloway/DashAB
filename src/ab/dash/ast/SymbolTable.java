@@ -402,6 +402,14 @@ public class SymbolTable {
         TupleTypeSymbol scope = (TupleTypeSymbol) type;
         Symbol s = scope.resolveMember(field.getText());	// resolve ID in scope
         field.symbol = s;
+        
+        if (s == null) {
+        	 error("line " + id.getLine() + ": " +
+             		text(id)+" tuple member not found "+
+                            text((DashAST)id.getParent()));
+        	return null;
+        }
+        
         return s.type;           // return ID's type
     }
 
@@ -516,6 +524,9 @@ public class SymbolTable {
     			
     			TupleTypeSymbol scope = (TupleTypeSymbol) st.type;
     			VariableSymbol s = (VariableSymbol)scope.resolveMember(field.getText());
+    			
+    			if (s == null)
+    				return true;
     			
     			return s.specifier.getSpecifierIndex() == sCONST;
         	}
@@ -637,9 +648,70 @@ public class SymbolTable {
                            text((DashAST)cond.getParent()));
         }
     }
+    
+    public boolean typeCast(DashAST typecast, DashAST list) {
+    	
+    	if (typecast.evalType.getTypeIndex() == tTUPLE) {
+    		TupleTypeSymbol tuple = (TupleTypeSymbol) typecast.evalType;
+    		
+    		if (list.getType() == DashLexer.TUPLE_LIST) {
+    			list.evalType = tuple;
+    			
+    			for (int i = 0; i < tuple.fields.size(); i++) {
+        			VariableSymbol var = (VariableSymbol) tuple.fields.get(i);
+        			Type type = var.type;
+        			
+        			DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+        			expr.evalType = type;
+        			
+        			DashAST type_cast = new DashAST(new CommonToken(DashLexer.TYPECAST, "TYPECAST"));
+        			type_cast.evalType = type;
+    
+        			type_cast.addChild(list.getChild(i));
+        			expr.addChild(type_cast);
+        			
+        			list.replaceChildren(i, i, expr);
+        		}
+    			
+    			return true;
+    		}	
+    	}
+    	
+    	return false;
+    }
 
     //TODO: prevent reassignment to input/output streams
     public boolean canAssignTo(Type valueType,Type destType,Type promotion) {
+    	if (valueType.getTypeIndex() == tTUPLE  && destType.getTypeIndex() == tTUPLE) {
+    		TupleTypeSymbol valueTuple = (TupleTypeSymbol)valueType;
+    		TupleTypeSymbol destTuple = (TupleTypeSymbol)destType;
+    		
+    		if (valueTuple.fields.size() != destTuple.fields.size()) {
+        		return false;
+        	}
+        	
+        	for (int i = 0; i < valueTuple.fields.size(); i++) {
+        		VariableSymbol f_var = (VariableSymbol) valueTuple.fields.get(i);
+        		VariableSymbol a_var = (VariableSymbol) destTuple.fields.get(i);
+        		
+        		Type f = f_var.type;
+        		Type a = a_var.type;
+        		
+        		int tf = f.getTypeIndex();
+        		int ta = a.getTypeIndex();
+        		
+        		Type promoteToType = promoteFromTo[ta][tf];
+        		// TODO Promote To
+        		//args.get(i).promoteToType = promoteToType;
+        		
+                if ( !canAssignTo(a, f, promoteToType) ) {
+        			return false;
+        		}
+        	}
+        	
+        	return true;
+    	}
+    	
         // either types are same or value was successfully promoted
         return valueType==destType || promotion==destType;
     }

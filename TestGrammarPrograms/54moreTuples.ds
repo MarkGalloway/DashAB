@@ -1,0 +1,10 @@
+
+procedure main() returns integer {
+    if(true) {
+      integer x = 5;
+    }
+
+    if(false) var integer two = 2;
+    
+    return 0;
+}

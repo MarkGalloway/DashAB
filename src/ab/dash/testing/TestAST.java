@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
+import ab.dash.Runner;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
@@ -180,7 +181,7 @@ public class TestAST extends BaseTest {
     @Test // Block Statement invalid parse test
     public void blockStatementInvalidParseTest() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(ParserException.class);
-        expectedEx.expectMessage("line 8: Declarations can only appear at the start of a block.");
+        expectedEx.expectMessage("In the block starting on line 5: Declarations can only appear at the start of this block.");
         String[] args = new String[] {"TestGrammarPrograms/18blockStatementInvalid.ds"};
         Runner.astTestMain(args);
     }
@@ -195,7 +196,7 @@ public class TestAST extends BaseTest {
     @Test // if Statement invalid parse test
     public void ifStatementInvalidDeclTest() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(ParserException.class);
-        expectedEx.expectMessage("line 10: Declarations can only appear at the start of a block.");
+        expectedEx.expectMessage("In the block starting on line 7: Declarations can only appear at the start of this block.");
         String[] args = new String[] {"TestGrammarPrograms/20ifStatementInvalidDecl.ds"};
         Runner.astTestMain(args);
     }
@@ -254,7 +255,7 @@ public class TestAST extends BaseTest {
     @Test // block statements nested
     public void nestedBlockStatementTest() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(ParserException.class);
-        expectedEx.expectMessage("line 9: Declarations can only appear at the start of a block.");
+        expectedEx.expectMessage("In the block starting on line 1: Declarations can only appear at the start of this block.");
         String[] args = new String[] {"TestGrammarPrograms/28nestedBlockStatements.ds"};
         Runner.astTestMain(args);
     }
@@ -353,7 +354,7 @@ public class TestAST extends BaseTest {
     @Test // block statements nested
     public void streamDeclInvalidTest() throws RecognitionException, LexerException, ParserException {
         expectedEx.expect(ParserException.class);
-        expectedEx.expectMessage("line 13: Declarations can only appear at the start of a block.");
+        expectedEx.expectMessage("In the block starting on line 3: Declarations can only appear at the start of this block.");
         String[] args = new String[] {"TestGrammarPrograms/41streamDeclInvalid.ds"};
         Runner.astTestMain(args);
     }
@@ -454,4 +455,5 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/53AST_output"), outErrIntercept.toString().trim());
     }
+
 }

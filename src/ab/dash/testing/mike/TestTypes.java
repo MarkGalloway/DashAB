@@ -177,9 +177,11 @@ public class TestTypes {
 
 	public static void main(String[] args) throws RecognitionException {
 //		parseFile("tuples.ds", "TestPrograms/05Tuples/tuples.ds");
-//		parseFile("typeCast.ds", "TestPrograms/33TypeCast/typeCast.ds");
+		parseFile("typeCast.ds", "TestPrograms/33TypeCast/typeCast.ds");
+		parseFile("tupleTypeCast.ds", "TestPrograms/34TupleTypeCast/tupleTypeCast.ds");
+		parseFile("forwardDeclaration.ds", "TestPrograms/38ForwardDeclaration/forwardDeclaration.ds");
 //		parseFile("functionWithArgs.ds", "TestPrograms/10FunctionWithArgs/functionWithArgs.ds");
-		parseFile("functionExpression.ds", "TestPrograms/25FunctionExpression/functionExpression.ds");
+//		parseFile("functionExpression.ds", "TestPrograms/25FunctionExpression/functionExpression.ds");
 //		File[] files = new File("TestPrograms/").listFiles();
 //		showFiles(files);
 //

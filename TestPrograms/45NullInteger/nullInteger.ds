@@ -3,6 +3,6 @@ procedure main() returns integer {
 	//this one works integer i = null;
 	// this one throws a null ptr exception
 	integer j = 2 + null;
-	i -> out;
+	j -> out;
 	return 0;
 }

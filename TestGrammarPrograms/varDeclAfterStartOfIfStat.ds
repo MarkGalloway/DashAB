@@ -1,0 +1,13 @@
+procedure main() returns integer {
+  
+  integer x = 0;
+  integer y = 0;
+  integer z = 0;
+
+  if (x == 3) {
+   y = 7;
+   boolean tamara_is_cool = false;
+} 
+
+  return 0;
+}

@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
+import ab.dash.Runner;
 import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
@@ -134,7 +135,7 @@ public class TestDef extends BaseTest {
     @Test 
     public void undefined() throws RecognitionException, LexerException, ParserException, SymbolTableException {
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("line 2: unknown variable e2");
+        expectedEx.expectMessage("line 2: unknown identifier e2");
         String[] args = new String[] {"TestUndefinedVariablePrograms/01Undefined/undefined.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
     }
@@ -142,7 +143,7 @@ public class TestDef extends BaseTest {
     @Test 
     public void invalidUndefinedButDefinedAfter() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("line 2: unknown variable e2");
+        expectedEx.expectMessage("line 2: unknown identifier e2");
         String[] args = new String[] {"TestUndefinedVariablePrograms/02UndefinedButDefinedAfter/undefinedButDefinedAfter.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
     }
@@ -151,7 +152,7 @@ public class TestDef extends BaseTest {
     @Test 
     public void doubleDeclaration() throws RecognitionException, LexerException, ParserException, SymbolTableException {        
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("");
+        expectedEx.expectMessage("line 3: Identifier e1 declared twice in the same scope.");
         String[] args = new String[] {"TestUndefinedVariablePrograms/03DoubleDeclaration/doubleDeclaration.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
     }
@@ -176,7 +177,7 @@ public class TestDef extends BaseTest {
     @Test 
     public void undeclaredTuple() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("line 7: unknown variable k");
+        expectedEx.expectMessage("line 7: unknown identifier k");
         String[] args = new String[] {"TestUndefinedVariablePrograms/06UndeclaredTuple/undeclaredTuple.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
     }
@@ -184,7 +185,7 @@ public class TestDef extends BaseTest {
     @Test 
     public void undeclaredTupleIndex() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         expectedEx.expect(SymbolTableException.class);
-        expectedEx.expectMessage("line 7: unknown variable k");
+        expectedEx.expectMessage("line 7: unknown identifier k");
         String[] args = new String[] {"TestUndefinedVariablePrograms/07UndeclaredTupleIndex/undeclaredTupleIndex.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
     }

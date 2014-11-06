@@ -1,9 +1,12 @@
 /**  Contains logic and static methods used to execute the program from Junit Tests **/
-package ab.dash.testing;
+package ab.dash;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -20,8 +23,6 @@ import ab.dash.CleanAST;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
-import ab.dash.DefineTupleTypes;
-import ab.dash.LLVMIRGenerator;
 import ab.dash.Types;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
@@ -35,6 +36,22 @@ public class Runner {
 	
     // needed to return tokens from lexer/parser pass
     private static TokenRewriteStream tokens;
+    
+    public static  void createFile(String filename, String input){
+        File f = new File(filename);
+        f.getAbsoluteFile().getParentFile().mkdirs();
+        
+        try
+        {
+          BufferedWriter out = new BufferedWriter(new FileWriter(filename));
+          out.write(input);
+          out.close();
+        }
+        catch (IOException e)
+        {
+          throw new RuntimeException("Unable to create file [" + filename + "]", e);
+        }
+      }
 
     // grabs the input file name from args
     private static ANTLRFileStream getInputStream(String[] args) {
@@ -198,7 +215,17 @@ public class Runner {
         clean.clean(tree);
     }
     
-    // used by ASTtest, prints AST for use in tests
+    private static void methodCheck(CommonTreeNodeStream nodes, DashAST tree) throws SymbolTableException {
+        nodes.reset();
+        MethodCheck checker = new MethodCheck();
+        checker.check(tree);
+        
+        if (checker.getErrorCount() > 0) {
+            throw new SymbolTableException(checker.getErrors());
+        }
+    }
+    
+    // used by ASTtest
     public static void astTestMain(String[] args) throws LexerException, ParserException, RecognitionException {
         ANTLRFileStream input = getInputStream(args);
         DashAST tree = runLexerParser(input);
@@ -247,6 +274,46 @@ public class Runner {
         runDefineTupleTypes(nodes, symtab, tree);
     }
     
+    public static void llvmCompile(String[] args) throws IOException, InterruptedException {
+    	// build the AST
+        
+        ANTLRFileStream input = getInputStream(args);
+        
+
+        DashAST tree;
+        try {
+            tree = runLexerParser(input);
+        } catch (LexerException e) {
+        	return;
+        } catch (ParserException e) {
+        	return;
+        } catch (RecognitionException e) {
+            return;
+        }
+
+        CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
+        nodes.setTokenStream(tokens);
+        SymbolTable symtab = new SymbolTable(tokens);
+        
+        // run tree walker passes
+        
+        try {
+            runDef(nodes, symtab, tree);
+            runTypes(nodes, symtab, tree);
+            runDefineTupleTypes(nodes, symtab, tree);
+            methodCheck(nodes, tree);
+        } catch (SymbolTableException e) {
+            return;
+        }
+        
+        // generate llvm
+        
+        deleteNoLongerNeeded(nodes, tree);
+        
+        String llvm = runLLVMIRgenerator(nodes, symtab, tree, tokens);
+        System.out.println(llvm);
+    }
+    
     // used by LLVMtest
     public static void llvmMain(String[] args) throws IOException, InterruptedException {
         
@@ -278,21 +345,21 @@ public class Runner {
             runTypes(nodes, symtab, tree);
             runDefineTupleTypes(nodes, symtab, tree);
             runNullAndIdentitySweep(nodes, symtab, tree);
+            methodCheck(nodes, tree);
         } catch (SymbolTableException e) {
             return;
         }
-;
         
         // generate llvm
         
         deleteNoLongerNeeded(nodes, tree);
         String ast = tree.toStringTree();
         String ast_file = "LLVMIROutput/" + args[0].substring((args[0].lastIndexOf('/')+1)) + ".ast";
-        SampleFileWriter.createFile(ast_file, ast);
+        createFile(ast_file, ast);
 
         String llvm = runLLVMIRgenerator(nodes, symtab, tree, tokens);
         String llvm_file = "LLVMIROutput/" + args[0].substring((args[0].lastIndexOf('/')+1)) + ".ll";
-        SampleFileWriter.createFile(llvm_file, llvm);
+        createFile(llvm_file, llvm);
         
         // execute llvm and print it in stdout/stderr
     	Process p = null;

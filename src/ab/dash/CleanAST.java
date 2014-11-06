@@ -22,6 +22,14 @@ public class CleanAST {
 					delete = true;
 					break;
 				}
+				case DashLexer.PROCEDURE_DECL:
+				case DashLexer.FUNCTION_DECL:
+				{
+					if (child.getChildCount() <= 1) {
+						delete = true;
+						break;
+					}
+				}
 			}
 			
 			if (!delete)

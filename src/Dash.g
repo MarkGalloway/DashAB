@@ -172,8 +172,11 @@ procedureParameter
 
 // START: block
 block
-@after {varDeclConstraint.pop();}
-  : LBRACE {varDeclConstraint.push(true);} varDeclaration* statement* RBRACE -> ^(BLOCK varDeclaration* statement*)
+  : LBRACE {varDeclConstraint.push(true);} varDeclaration* nonDeclarableStatement* RBRACE {varDeclConstraint.pop();} -> ^(BLOCK varDeclaration* nonDeclarableStatement*)
+  | LBRACE {varDeclConstraint.push(true);} varDeclaration* nonDeclarableStatement* varDeclaration
+    {
+      emitErrorMessage("In the block starting on line " + $LBRACE.getLine() + ": Declarations can only appear at the start of this block."); 
+    }
   ;
 // END: block
 
@@ -247,12 +250,12 @@ typedef
   ;
 
 statement
+  : varDeclaration
+  | nonDeclarableStatement
+  ;
+
+nonDeclarableStatement
   : block
-  |	varDeclaration 
-    {  
-      if(!varDeclConstraint.empty() && varDeclConstraint.peek()) 
-          emitErrorMessage("line " + input.LT(1).getLine()  + ": Declarations can only appear at the start of a block."); 
-    }
   | typedef
   |	If LPAREN expression RPAREN s=statement (Else e=statement)? -> ^(If expression $s $e?)
   | If LPAREN expression statement (Else statement)?
@@ -376,7 +379,7 @@ unaryExpression
 postfixExpression
     : 	ID 
     (
-    	(	DOT^ (INTEGER | ID)
+    	(	DOT^ (INTEGER | ID | {emitErrorMessage("line " + $DOT.getLine() + ": Only integers and identifiers are allowed to index tuples.");})
     	|	r=LPAREN^ expressionList RPAREN!	{ $r.setType(CALL); $r.setText("CALL"); }
     	// TODO: Part 2
     	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
@@ -399,6 +402,7 @@ primary
     | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
+    | LPAREN RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Empty tuple lists are not allowed.");}
     ;
     
 
@@ -524,8 +528,12 @@ REAL
 			| (DIGIT (DIGIT | UNDERSCORE)*)
 		) (DecimalExponent1 | DecimalExponent2)? FloatTypeSuffix?
 	;
-	
-CHARACTER :	'\'' '\\'? . '\'' ;
+
+fragment Quote : 	'\'';
+//CHARACTER :	'\'' '\\'? . '\'' ;
+CHARACTER : Quote (~'\\' | '\\' ('a'| 'b' | 'n' | 'r' | 't' | '\\' | '\'' | '"' | '0')) Quote
+          | a=Quote ('\\' .) Quote {emitErrorMessage("line " + $a.getLine() + ": invalid escape sequence");} 
+          ;
 
 INVALID_CHARACTER : '"' '\\'? . '"' ;
 

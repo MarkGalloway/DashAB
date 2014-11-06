@@ -93,28 +93,45 @@ tuple_list
 	;
 // END: tuple
 
+
 enterMethod
     // it's alright that alternative 2 is disabled by antlr in this case, that's what we want
-    :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) type id=ID .+) // need .+ to match 0-or-more args
+    :   ^(method_node = (FUNCTION_DECL | PROCEDURE_DECL) type id=ID init=.*) // need .+ to match 0-or-more args
         {
         debug("line " + $id.getLine() + ": def method " + $id.text + " return " + $type.type);
-        MethodSymbol ms = new MethodSymbol($id.text, $type.type, currentScope);
+        MethodSymbol ms = (MethodSymbol)currentScope.resolve($id.text);
+        if (ms == null) {
+	        ms = new MethodSymbol($id.text, $type.type, currentScope);
+	        currentScope.define(ms); // def method in globals
+        }
+        
         currentMethod = ms;
-        ms.def = $id;            // track AST location of def's ID
         $id.symbol = ms;         // track in AST
-        currentScope.define(ms); // def method in globals
+	    
+	    if ($init != null) {
+	    	ms.def = $id;            // track AST location of def's ID
+	    }
+        
         currentScope = ms;       // set current scope to method scope
         
         $method_node.deleteChild(0);
         } 
-    |	^(PROCEDURE_DECL id=ID .+) // need .+ to match 0-or-more args
+    |	^(PROCEDURE_DECL id=ID init=.*) // need .+ to match 0-or-more args
         {
         debug("line " + $id.getLine() + ": def method " + $id.text + " return null" );
-        MethodSymbol ms = new MethodSymbol($id.text, SymbolTable._void, currentScope);
-        currentMethod = ms;
-        ms.def = $id;            // track AST location of def's ID
-        $id.symbol = ms;         // track in AST
-        currentScope.define(ms); // def method in globals
+        MethodSymbol ms = (MethodSymbol)currentScope.resolve($id.text);
+        if (ms == null) {
+	        ms = new MethodSymbol($id.text, SymbolTable._void, currentScope);
+	        currentScope.define(ms); // def method in globals
+	    }
+	    
+	    currentMethod = ms;
+	    $id.symbol = ms;         // track in AST
+	    
+	    if ($init != null) {
+	    	ms.def = $id;            // track AST location of def's ID
+	    }
+	    
         currentScope = ms;       // set current scope to method scope
         }
     ;
@@ -197,7 +214,7 @@ atoms
 	
 	       Symbol vs = currentScope.resolve($ID.text); 
 	       if(vs == null && !t.hasAncestor(DOT)) 
-	        symtab.error("line " + $ID.getLine() + ": unknown variable " + $ID.text);
+	        symtab.error("line " + $ID.getLine() + ": unknown identifier " + $ID.text);
        }
     ;
 
@@ -228,23 +245,39 @@ varDeclaration // global, parameter, or local variable
 	         " type ( " + $type.type +  " ) " + 
 	         " specifier ( " + $specifier.specifier +  " )" +
 	         " scope: " + currentScope.toString());
+	         
+	         // test for double declaration
+	         Symbol s = currentScope.resolveInCurrentScope($ID.text);
+	         if(s != null) {
+	            symtab.error("line " + $ID.getLine() + ": Identifier " + $ID.text + " declared twice in the same scope.");
+	         }
+	         
 	         if ($type.type != null) {
 		        VariableSymbol vs = new VariableSymbol($ID.text, $type.type, $specifier.specifier);
 				    vs.def = $ID;            // track AST location of def's ID
 				    $ID.symbol = vs;         // track in AST
+				    
 				    currentScope.define(vs);
+				    
 				    $var_node.deleteChild(0);
 				    $var_node.deleteChild(0);
 		    } else {
 		    	// TODO: Throw error type undefined
 		    }
         }
-    |	^(VAR_DECL specifier ID ( ^(TUPLE_LIST .+) | ^(EXPR .) ) )
+    |	^(VAR_DECL specifier ID ^(EXPR .)) 
         {
 	        debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 
 	         " type ( unknown ) " + 
 	         " specifier ( " + $specifier.specifier +  " )");
+	         
+	        // test for double declaration
+	        Symbol s = currentScope.resolveInCurrentScope($ID.text);
+           if(s != null) {
+              symtab.error("line " + $ID.getLine() + ": Identifier " + $ID.text + " declared twice in the same scope.");
+           }
+	         
 	        VariableSymbol vs = new VariableSymbol($ID.text, null, $specifier.specifier);
 	        vs.def = $ID;            // track AST location of def's ID
 	        $ID.symbol = vs;         // track in AST
@@ -311,7 +344,7 @@ tupleMembers
        {
          // check that the tuple is defined first
          Symbol tuple = currentScope.resolve($id.text);
-         if(tuple == null) { symtab.error("line " + $DOT.getLine() + ": unknown variable " + $id.text); }
+         if(tuple == null) { symtab.error("line " + $DOT.getLine() + ": unknown identifier " + $id.text); }
          
          else {
             // check that the member variable is defined

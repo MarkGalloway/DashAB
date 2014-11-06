@@ -77,8 +77,7 @@ declare float @llvm.pow.f32(float, float) nounwind readonly
 declare float @llvm.floor.f32(float)
 declare i8* @llvm.stacksave()
 declare void @llvm.stackrestore(i8* %ptr)
-declare i32 @feof(%struct._IO_FILE* nocapture) #1
-declare i32 @__isoc99_scanf(i8* nocapture readonly, ...) #1
+declare i32 @__isoc99_scanf(i8*, ...)
 >>
 
 string_constants() ::= <<
@@ -108,7 +107,7 @@ string_constants() ::= <<
 
 utils() ::= <<
 ; Function Attrs: nounwind readnone uwtable
-define i32 @powi(i32 %a, i32 %n) #0 {
+define i32 @powi(i32 %a, i32 %n) {
 entry:
   %cmp10 = icmp sgt i32 %n, 0
   br i1 %cmp10, label %while.body.preheader, label %while.end
@@ -148,7 +147,7 @@ while.end:                                        ; preds = %while.end.loopexit,
 
 
 ; Function Attrs: nounwind uwtable
-define i1 @readBool() #0 {
+define i1 @readBool() {
 entry:
   %retval = alloca i1, align 4
   %input = alloca i8, align 1
@@ -186,7 +185,7 @@ return:                                           ; preds = %if.end6, %if.then5,
 }
 
 ; Function Attrs: nounwind uwtable
-define signext i8 @readChar() #0 {
+define signext i8 @readChar() {
 entry:
   %input = alloca i8, align 1
   %call = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str.input.char, i32 0, i32 0), i8* %input)
@@ -195,7 +194,7 @@ entry:
 }
 
 ; Function Attrs: nounwind uwtable
-define i32 @readInt() #0 {
+define i32 @readInt() {
 entry:
   %input = alloca i32, align 4
   %call = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str.input.int, i32 0, i32 0), i32* %input)
@@ -204,7 +203,7 @@ entry:
 }
 
 ; Function Attrs: nounwind uwtable
-define float @readFloat() #0 {
+define float @readFloat() {
 entry:
   %input = alloca float, align 4
   %call = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str.input.real, i32 0, i32 0), float* %input)
@@ -227,6 +226,12 @@ define <return_type> <fglobal(sym_id)>(<args; separator=", ">) {
 }
 >>
 
+function_returning_tuple(id, sym_id, type_id, args, code) ::= <<
+define void <fglobal(sym_id)>(<args; separator=", "><if(args)>, <endif><tuple_type(type_id)>* %tuple_return) {
+<code; separator="\n">
+}
+>>
+
 declare_argument(id, arg_id, arg_type) ::= <<
 <arg_type>* <vlocal_symbol(arg_id)>
 >>
@@ -237,6 +242,10 @@ pass_variable_by_reference(id, var_id, arg_type) ::= <<
 
 pass_expr_by_reference(id, arg_expr_id, arg_type) ::= <<
 <arg_type>* <vlocal_result(arg_expr_id)>_stackptr
+>>
+
+pass_tuple_expr_by_reference(id, tuple_expr_id, type_id) ::= <<
+<tuple_type(type_id)>* <vlocal_result(tuple_expr_id)>
 >>
 
 expr_result_to_stack(id, expr_id, expr_type) ::= <<
@@ -263,6 +272,12 @@ return(id, expr, expr_id, type) ::= <<
   ret <type> <vlocal_result(expr_id)>
 >>
 
+return_tuple(id, assign_code, type_id) ::= <<
+  <vlocal_result(id)> = bitcast <tuple_type(type_id)>* %tuple_return to <tuple_type(type_id)>*
+<assign_code>
+  ret void
+>>
+
 call_void(id, function_id, args, code, postcode) ::= <<
 <code; separator="\n">
   call void <fglobal(function_id)>(<args; separator=", ">)
@@ -272,6 +287,13 @@ call_void(id, function_id, args, code, postcode) ::= <<
 call(id, function_id, return_type, args, code, postcode) ::= <<
 <code; separator="\n">
   <vlocal_result(id)> = call <return_type> <fglobal(function_id)>(<args; separator=", ">)
+<postcode; separator="\n">
+>>
+
+call_returning_tuple(id, function_id, type_id, args, code, postcode) ::= <<
+<code; separator="\n">
+  <vlocal_result(id)> = alloca <tuple_type(type_id)>
+  call void <fglobal(function_id)>(<args; separator=", "><if(args)>, <endif><tuple_type(type_id)>* <vlocal_result(id)>)
 <postcode; separator="\n">
 >>
 

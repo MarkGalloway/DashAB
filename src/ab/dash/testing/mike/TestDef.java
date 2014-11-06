@@ -11,9 +11,12 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 
+import ab.dash.CleanAST;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
+import ab.dash.ConvertNullAndIdentity;
+import ab.dash.AddNullToUninitialized;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
 
@@ -35,17 +38,32 @@ public class TestDef {
         DashParser.program_return r = parser.program();
 
         DashAST tree = (DashAST)r.getTree();
-        System.out.println(tree.toStringTree());
+        
         
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
-
+        System.out.println(tree.toStringTree());
         SymbolTable symtab = new SymbolTable(tokens); // make global scope, types
         
         Boolean debug = true;
         Def def = new Def(nodes, symtab, debug); // use custom constructor
         def.downup(tree); // trigger symtab actions upon certain subtrees 
         System.out.println("globals: "+symtab.globals);
+        nodes.reset();
+        
+        CleanAST clean = new CleanAST();
+        clean.clean(tree);
+        System.out.println(tree.toStringTree());
+        
+        AddNullToUninitialized addNull = new AddNullToUninitialized(nodes, symtab);
+        addNull.downup(tree);
+        nodes.reset();
+        //ConvertNullandIdentity convert = new ConvertNullandIdentity(nodes, symtab);
+        //convert.downup(tree);
+        
+        //nodes.reset();
+        clean.clean(tree);
+        System.out.println(tree.toStringTree());
 	}
 	
 	public static void showFiles(File[] files) throws RecognitionException {
