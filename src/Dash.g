@@ -525,8 +525,12 @@ REAL
 			| (DIGIT (DIGIT | UNDERSCORE)*)
 		) (DecimalExponent1 | DecimalExponent2)? FloatTypeSuffix?
 	;
-	
-CHARACTER :	'\'' '\\'? . '\'' ;
+
+fragment Quote : 	'\'';
+//CHARACTER :	'\'' '\\'? . '\'' ;
+CHARACTER : Quote (~'\\' | '\\' ('a'| 'b' | 'n' | 'r' | 't' | '\\' | '\'' | '"' | '0')) Quote
+          | a=Quote ('\\' .) Quote {emitErrorMessage("line " + $a.getLine() + ": invalid escape sequence");} 
+          ;
 
 INVALID_CHARACTER : '"' '\\'? . '"' ;
 

@@ -1,0 +1,6 @@
+procedure main() returns integer {
+  
+  character c = '\q'; // invalid escape char, should see an exception
+
+  return 0;
+}
