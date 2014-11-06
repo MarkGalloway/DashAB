@@ -26,7 +26,8 @@ options {
 }
 
 bottomup
-	:	nullExpr
+  : identExpr
+	|	nullExpr
 	;
 	
 
@@ -36,6 +37,18 @@ nullExpr
     $node.evalType = $node.promoteToType;
     $node.promoteToType = null;
     DashAST expr = symtab.getExprForNull($node.evalType);
+    ((DashAST)expr.getChild(0)).evalType = $node.evalType;
+    $node.deleteChild(0);
+    $node.addChild(expr.getChild(0));
+  } 
+  ;
+  
+identExpr
+  : ^(node = EXPR Identity)
+  { 
+    $node.evalType = $node.promoteToType;
+    $node.promoteToType = null;
+    DashAST expr = symtab.getExprForIdentity($node.evalType);
     ((DashAST)expr.getChild(0)).evalType = $node.evalType;
     $node.deleteChild(0);
     $node.addChild(expr.getChild(0));

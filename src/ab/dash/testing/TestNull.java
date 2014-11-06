@@ -9,10 +9,10 @@ import java.io.IOException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
-import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
+import ab.dash.Runner;
 
 public class TestNull extends BaseTest {
     
@@ -62,7 +62,16 @@ public class TestNull extends BaseTest {
         String[] args = new String[] {"TestPrograms/45NullInteger/nullInteger.ds"};
         Runner.nullTestMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("(PROGRAM (DECL_OUTSTREAM const out<std_output()> std_output()) (PROCEDURE_DECL main<integer> (BLOCK (VAR_DECL i<integer> (EXPR<integer> 0<integer>)) (VAR_DECL j<integer> (EXPR<integer> (+<integer> 2<integer> 0<integer:integer>))) (PRINT (EXPR<integer> i<integer>)) (return<integer> (EXPR<integer> 0<integer>)))))");
+        sb.append("(PROGRAM (DECL_OUTSTREAM const out<std_output()> std_output()) (PROCEDURE_DECL main<integer> (BLOCK (VAR_DECL j<integer> (EXPR<integer> (+<integer> 2<integer> 0<integer:integer>))) (PRINT (EXPR<integer> j<integer>)) (return<integer> (EXPR<integer> 0<integer>)))))");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testIdentityPrimitives() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/46IdentityPrimitives/identityPrimitives.ds"};
+        Runner.nullTestMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("(PROGRAM (DECL_OUTSTREAM const out<std_output()> std_output()) (PROCEDURE_DECL main<integer> (BLOCK (VAR_DECL j<integer> (EXPR<integer> 1<integer>)) (VAR_DECL k<real> (EXPR<real> 1.0<real>)) (VAR_DECL c<character> (EXPR<character> ''<character>)) (VAR_DECL t<boolean> (EXPR<boolean> true<boolean>)) (PRINT (EXPR<integer> j<integer>)) (PRINT (EXPR<real> k<real>)) (PRINT (EXPR<character> c<character>)) (PRINT (EXPR<boolean> t<boolean>)) (return<integer> (EXPR<integer> 0<integer>)))))");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }

@@ -93,6 +93,7 @@ expr returns [Type type]
     |   INTEGER     {$type = SymbolTable._integer;}
     |   REAL      	{$type = SymbolTable._real;}
     |   Null        {$type = SymbolTable._null;}
+    |   Identity    {$type = SymbolTable._identity;}
     |   ID 
     {
     	Symbol s = (Symbol)$ID.scope.resolve($ID.text);
