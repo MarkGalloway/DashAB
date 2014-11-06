@@ -42,7 +42,7 @@ nullExpr
       
     DashAST expr = symtab.getExprForNull($node.evalType);
     if (expr == null) {
-      //symtab.error("line " + $EXPR.getLine() + ": type cannot be inferred"); 
+      symtab.error("line " + $EXPR.getLine() + ": type cannot be inferred"); 
     }
     else {
       ((DashAST)expr.getChild(0)).evalType = $node.evalType;

@@ -252,7 +252,6 @@ public class SymbolTable {
 		
 		error("line " + a.getLine() + ": " +
    			 text(a)+ " is not defined in the program.");
-		//throw new SymbolTableException("Undefined Type");
         return false;
     }
 

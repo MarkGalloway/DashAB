@@ -647,6 +647,16 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         sb.append("T\n");
+        sb.append("F\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void nullIdentityTupleComparison() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/50NullInferencePostDeclaration/nullInferencePostDeclaration.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("1\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
@@ -706,6 +716,15 @@ public class TestLLVM extends BaseTest {
         sb.append("5.1\n");
         sb.append("1.5\n");
 
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void nullTupleComparison() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/56NullTupleComparison/nullTupleComparison.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("T\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }

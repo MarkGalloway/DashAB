@@ -80,6 +80,7 @@ public class TestNull extends BaseTest {
         String[] args = new String[] {"TestPrograms/49ArgNullIdentityTest/argNullIdentityTest.ds"};
         Runner.nullTestMain(args);
         StringBuffer sb = new StringBuffer();
+        sb.append("(PROGRAM (DECL_OUTSTREAM const out<std_output()> std_output()) (FUNCTION_DECL test2<boolean> (ARG_DECL b<boolean>) (BLOCK (return<boolean> (EXPR<boolean> b<boolean>)))) (PROCEDURE_DECL test<boolean> (ARG_DECL a<boolean>) (ARG_DECL b<boolean>) (BLOCK (return<boolean> (EXPR<boolean> b<boolean>)))) (PROCEDURE_DECL main<integer> (BLOCK (VAR_DECL a1<boolean> (EXPR<boolean> (CALL<boolean> test<boolean> (ELIST (EXPR<boolean> false<boolean>) (EXPR<boolean> true<boolean>))))) (VAR_DECL a2<boolean> (EXPR<boolean> (CALL<boolean> test2<boolean> (ELIST (EXPR<boolean> false<boolean>))))) (PRINT (EXPR<boolean> a1<boolean>)) (PRINT (EXPR<character> '\\n'<character>)) (PRINT (EXPR<boolean> a2<boolean>)) (PRINT (EXPR<character> '\\n'<character>)) (return<integer> (EXPR<integer> 0<integer>)))))");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }

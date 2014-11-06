@@ -1,0 +1,9 @@
+const out = std_output();
+
+procedure main() returns integer {
+	// should be true
+	// null should be promoted to the same type as opposing tuple's element
+	boolean a = (null, 1) == (0, 1);
+	a -> out;
+	return 0;
+}

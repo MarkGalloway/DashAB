@@ -1,12 +1,18 @@
 const out = std_output();
 
+function test2(boolean b) returns boolean {
+	return b;
+}
+
 procedure test(boolean a, boolean b) returns boolean {
 	return b;
 }
 
 procedure main() returns integer {
 	boolean a1 = test(null, identity);
+	boolean a2 = test2(null);
 	
 	a1 -> out; '\n' -> out;
+	a2 -> out; '\n' -> out;
 	return 0;
 }

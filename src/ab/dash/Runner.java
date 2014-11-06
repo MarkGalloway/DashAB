@@ -299,8 +299,10 @@ public class Runner {
         
         try {
             runDef(nodes, symtab, tree);
+            runNullUninitializedValues(nodes, symtab, tree);
             runTypes(nodes, symtab, tree);
             runDefineTupleTypes(nodes, symtab, tree);
+            runNullAndIdentitySweep(nodes, symtab, tree);
             methodCheck(nodes, tree);
         } catch (SymbolTableException e) {
             return;

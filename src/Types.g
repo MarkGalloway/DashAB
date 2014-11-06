@@ -163,7 +163,7 @@ ArrayList<DashAST> arg_nodes = new ArrayList<DashAST>();
 
 		TupleTypeSymbol ts = (TupleTypeSymbol)$TUPLE_LIST.symbol;
 		for (int i = 0; i < arg_nodes.size(); i++) {
-			DashAST arg = arg_nodes.get(i);
+			  DashAST arg = arg_nodes.get(i);
 		    VariableSymbol vs = new VariableSymbol(null, arg.evalType, SymbolTable._const);    	
 		    ts.define(vs);
 	    }
