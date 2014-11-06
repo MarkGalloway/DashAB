@@ -454,11 +454,5 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/53AST_output"), outErrIntercept.toString().trim());
     }
-    
-    @Test // tuple return parse test
-    public void anotherTupleTest() throws RecognitionException, LexerException, ParserException {
-        String[] args = new String[] {"TestGrammarPrograms/54moreTuples.ds"};
-        Runner.astTestMain(args);
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/54AST_output"), outErrIntercept.toString().trim());
-    }
+
 }
