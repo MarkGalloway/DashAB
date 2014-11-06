@@ -1,4 +1,4 @@
-package ab.dash;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -19,6 +19,13 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.runtime.tree.TreeAdaptor;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
+import ab.dash.CleanAST;
+import ab.dash.DashLexer;
+import ab.dash.DashParser;
+import ab.dash.Def;
+import ab.dash.DefineTupleTypes;
+import ab.dash.LLVMIRGenerator;
+import ab.dash.Types;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.DashErrorNode;
 import ab.dash.ast.SymbolTable;
