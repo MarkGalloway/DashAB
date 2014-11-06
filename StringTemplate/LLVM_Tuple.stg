@@ -17,8 +17,8 @@ tuple_init_literal(id, type_id, element_exprs) ::= <<
 <element_exprs; separator="\n">
 >>
 
-tuple_init_global(sym_id, type_id) ::= <<
-<vglobalSymbol(sym_id)> = private unnamed_addr global <tuple_type(type_id)> 0
+tuple_init_global(sym_id, type_id, init) ::= <<
+<vglobalSymbol(sym_id)> = private unnamed_addr global <tuple_type(type_id)> {<init>}
 >>
 
 tuple_get_local(id, type_id, sym_id) ::= <<
@@ -26,7 +26,7 @@ tuple_get_local(id, type_id, sym_id) ::= <<
 >>
 
 tuple_get_global(id, type_id, sym_id) ::= <<
-  <vlocal_result(id)> = add <tuple_type(type_id)>* <vglobalSymbol(sym_id)>, 0
+  <vlocal_result(id)> = bitcast <tuple_type(type_id)>* <vglobalSymbol(sym_id)> to <tuple_type(type_id)>*
 >>
 
 tuple_assign(id, lhs_expr, rhs_expr, element_assigns) ::= <<

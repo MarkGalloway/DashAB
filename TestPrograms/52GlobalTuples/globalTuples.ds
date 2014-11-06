@@ -1,0 +1,10 @@
+const tuple(integer, real) tup = (1, 0.1);
+
+procedure main() returns integer {
+	var out = std_output();
+	
+	tup.1 -> out; '\n' -> out;
+	tup.2 -> out; '\n' -> out;
+	
+	return 0;
+}

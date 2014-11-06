@@ -100,6 +100,29 @@ public class LLVMIRGenerator {
 							template = stg.getInstanceOf("bool_init_global");
 						} else if (type == SymbolTable.tTUPLE) {
 							template = stg.getInstanceOf("tuple_init_global");
+							TupleTypeSymbol tuple = (TupleTypeSymbol)s.type;
+							
+							String init = "";
+							
+							for (int i = 0; i < tuple.fields.size(); i++) {
+								VariableSymbol member = (VariableSymbol) tuple.fields.get(i);
+								int member_type = member.type.getTypeIndex();
+								
+								if (member_type == SymbolTable.tBOOLEAN)
+									init += "i1 0";
+								else if (member_type == SymbolTable.tCHARACTER)
+									init += "i8 0";
+								else if (member_type == SymbolTable.tINTEGER)
+									init += "i32 0";
+								else if (member_type == SymbolTable.tREAL)
+									init += "float 0.0";
+								
+								if (i < tuple.fields.size() - 1)
+									init += ", ";
+							}
+							
+							template.setAttribute("init", init);
+							template.setAttribute("type_id", tuple.tupleTypeIndex);
 						}
 						
 						if (template != null) {
@@ -664,6 +687,66 @@ public class LLVMIRGenerator {
 				int expr_id = ((DashAST)child.getChild(0)).llvmResultID;
 				
 				StringTemplate template = null;
+				if (type == SymbolTable.tTUPLE) {
+					TupleTypeSymbol tuple_type = (TupleTypeSymbol) sym.type;
+					template = stg.getInstanceOf("tuple_assign");
+                    List<StringTemplate> element_assigns = new ArrayList<StringTemplate>();
+                    
+                    StringTemplate getLocalTuple = null;
+                    if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
+                    	getLocalTuple = stg.getInstanceOf("tuple_get_global");
+                    } else {
+                    	getLocalTuple = stg.getInstanceOf("tuple_get_local");
+                    }
+                    
+                    getLocalTuple.setAttribute("id", DashAST.getUniqueId());
+                    getLocalTuple.setAttribute("type_id", tuple_type.tupleTypeIndex);
+                    getLocalTuple.setAttribute("sym_id", sym.id);
+
+                    List<Symbol> fields = tuple_type.fields;
+					for (int i = 0; i <	fields.size(); i++) {
+						StringTemplate memberAssign = null;
+						StringTemplate getMember = null;
+
+						int field_type = fields.get(i).type.getTypeIndex();
+						if (field_type == SymbolTable.tINTEGER) {
+							getMember = stg.getInstanceOf("int_get_tuple_member");
+							memberAssign = stg.getInstanceOf("int_tuple_assign");
+						}
+						else if (field_type == SymbolTable.tREAL) {
+							getMember = stg.getInstanceOf("real_get_tuple_member");
+							memberAssign = stg.getInstanceOf("real_tuple_assign");
+						}
+						else if (field_type == SymbolTable.tCHARACTER) {
+							getMember = stg.getInstanceOf("char_get_tuple_member");
+							memberAssign = stg.getInstanceOf("char_tuple_assign");
+						}
+						else if (field_type == SymbolTable.tBOOLEAN) {
+							getMember = stg.getInstanceOf("bool_get_tuple_member");
+							memberAssign = stg.getInstanceOf("bool_tuple_assign");
+						}
+
+						getMember.setAttribute("id", DashAST.getUniqueId());
+						getMember.setAttribute("tuple_expr_id", expr_id);
+						getMember.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
+						getMember.setAttribute("index", i);
+
+						memberAssign.setAttribute("id", DashAST.getUniqueId());
+						memberAssign.setAttribute("tuple_expr_id", getLocalTuple.getAttribute("id"));
+						memberAssign.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
+						memberAssign.setAttribute("index", i);
+						memberAssign.setAttribute("expr", getMember);
+						memberAssign.setAttribute("expr_id", getMember.getAttribute("id"));
+
+						element_assigns.add(memberAssign);
+					}
+					
+					template.setAttribute("lhs_expr", getLocalTuple);
+					template.setAttribute("rhs_expr", expr);
+					template.setAttribute("element_assigns", element_assigns);
+					return template;
+				}
+				
 				if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
 					if (type == SymbolTable.tINTEGER) {
 						template = stg.getInstanceOf("int_global_assign");
@@ -673,9 +756,6 @@ public class LLVMIRGenerator {
 						template = stg.getInstanceOf("char_global_assign");
 					} else if (type == SymbolTable.tBOOLEAN) {
 						template = stg.getInstanceOf("bool_global_assign");
-					} else if (type == SymbolTable.tTUPLE) {
-						//template = stg.getInstanceOf("tuple_global_assign");
-						template = new StringTemplate();
 					}
 				} else {
 					if (type == SymbolTable.tINTEGER) {
@@ -686,58 +766,6 @@ public class LLVMIRGenerator {
 						template = stg.getInstanceOf("char_local_assign");
 					} else if (type == SymbolTable.tBOOLEAN) {
 						template = stg.getInstanceOf("bool_local_assign");
-					} else if (type == SymbolTable.tTUPLE) {
-						TupleTypeSymbol tuple_type = (TupleTypeSymbol) sym.type;
-						template = stg.getInstanceOf("tuple_assign");
-                        List<StringTemplate> element_assigns = new ArrayList<StringTemplate>();
-                        
-                        StringTemplate getLocalTuple = stg.getInstanceOf("tuple_get_local");
-                        getLocalTuple.setAttribute("id", DashAST.getUniqueId());
-                        getLocalTuple.setAttribute("type_id", tuple_type.tupleTypeIndex);
-                        getLocalTuple.setAttribute("sym_id", sym.id);
-
-                        List<Symbol> fields = tuple_type.fields;
-						for (int i = 0; i <	fields.size(); i++) {
-							StringTemplate memberAssign = null;
-							StringTemplate getMember = null;
-
-							int field_type = fields.get(i).type.getTypeIndex();
-							if (field_type == SymbolTable.tINTEGER) {
-								getMember = stg.getInstanceOf("int_get_tuple_member");
-								memberAssign = stg.getInstanceOf("int_tuple_assign");
-							}
-							else if (field_type == SymbolTable.tREAL) {
-								getMember = stg.getInstanceOf("real_get_tuple_member");
-								memberAssign = stg.getInstanceOf("real_tuple_assign");
-							}
-							else if (field_type == SymbolTable.tCHARACTER) {
-								getMember = stg.getInstanceOf("char_get_tuple_member");
-								memberAssign = stg.getInstanceOf("char_tuple_assign");
-							}
-							else if (field_type == SymbolTable.tBOOLEAN) {
-								getMember = stg.getInstanceOf("bool_get_tuple_member");
-								memberAssign = stg.getInstanceOf("bool_tuple_assign");
-							}
-
-							getMember.setAttribute("id", DashAST.getUniqueId());
-							getMember.setAttribute("tuple_expr_id", expr_id);
-							getMember.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
-							getMember.setAttribute("index", i);
-
-							memberAssign.setAttribute("id", DashAST.getUniqueId());
-							memberAssign.setAttribute("tuple_expr_id", getLocalTuple.getAttribute("id"));
-							memberAssign.setAttribute("tuple_type", tuple_type.tupleTypeIndex);
-							memberAssign.setAttribute("index", i);
-							memberAssign.setAttribute("expr", getMember);
-							memberAssign.setAttribute("expr_id", getMember.getAttribute("id"));
-
-							element_assigns.add(memberAssign);
-						}
-						
-						template.setAttribute("lhs_expr", getLocalTuple);
-						template.setAttribute("rhs_expr", expr);
-						template.setAttribute("element_assigns", element_assigns);
-						return template;
 					}
 				}
 				
@@ -1225,6 +1253,7 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("bool_get_global");
 			} else if (type == SymbolTable.tTUPLE) {
 				template = stg.getInstanceOf("tuple_get_global");
+				template.setAttribute("type_id", ((TupleTypeSymbol)sym.type).tupleTypeIndex);
 			}
 		} else {
 			if (type == SymbolTable.tINTEGER) {

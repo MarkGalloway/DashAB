@@ -533,12 +533,24 @@ public class TestLLVM extends BaseTest {
     
     @Test
     public void identity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/40Identity/identity.ds"};
+        String[] args = new String[] {"TestPrograms/51Identity/identity.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
         sb.append("0\n");
         sb.append("1\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void globalTuples() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/52GlobalTuples/globalTuples.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("1\n");
+        sb.append("0.1\n");
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
