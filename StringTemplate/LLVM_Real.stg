@@ -3,8 +3,7 @@ float
 >>
 
 real_literal(id, val) ::= <<
-  <vlocal(id)>dbl = fadd double <val>, 0x0000000000000000
-  <vlocal_result(id)> = fptrunc double <vlocal(id)>dbl to float
+  <vlocal_result(id)> = fptrunc double <val> to float
 >>
 
 real_null(id) ::= <<
