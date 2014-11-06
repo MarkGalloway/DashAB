@@ -9,10 +9,10 @@ import java.io.IOException;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
+import ab.dash.Runner;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
-import ab.dash.Runner;
 
 public class TestNull extends BaseTest {
     

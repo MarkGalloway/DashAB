@@ -40,7 +40,6 @@ public class BaseTest {
         base_globals.add("tuple");
         base_globals.add("var");
         base_globals.add("null");
-        base_globals.add("identity");
     }
 
     @After

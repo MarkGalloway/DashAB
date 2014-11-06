@@ -586,7 +586,7 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/45NullInteger/nullInteger.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("0\n0");
+        sb.append("02");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
@@ -619,6 +619,20 @@ public class TestLLVM extends BaseTest {
 
         sb.append("1\n");
         sb.append("0.1\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void unpacking() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/54Unpacking/unpacking.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("1\n");
+        sb.append("0.1\n");
+        sb.append("5\n");
+        sb.append("0.5\n");
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }

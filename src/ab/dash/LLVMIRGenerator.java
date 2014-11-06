@@ -670,6 +670,64 @@ public class LLVMIRGenerator {
 
 			return template;
 		}
+		
+		case DashLexer.UNPACK:
+		{
+			int id = ((DashAST)t).llvmResultID;
+			int last_child_index = t.getChildCount() - 1;
+			TupleTypeSymbol tuple = (TupleTypeSymbol) ((DashAST)t.getChild(last_child_index)).evalType;
+			
+			StringTemplate tuple_expr = exec((DashAST)t.getChild(last_child_index));
+			int tuple_expr_id = ((DashAST)t.getChild(last_child_index).getChild(0)).llvmResultID;
+			
+			List<StringTemplate> element_assigns = new ArrayList<StringTemplate>();
+			
+			for (int i = 0; i < tuple.fields.size(); i++) {
+				VariableSymbol member = (VariableSymbol) tuple.fields.get(i);
+				VariableSymbol sym = (VariableSymbol) ((DashAST)t.getChild(i).getChild(0)).symbol;
+				
+				StringTemplate memberAssign = null;
+				StringTemplate getMember = null;
+
+				int field_type = member.type.getTypeIndex();
+				if (field_type == SymbolTable.tINTEGER) {
+					getMember = stg.getInstanceOf("int_get_tuple_member");
+					memberAssign = stg.getInstanceOf("int_local_assign");
+				}
+				else if (field_type == SymbolTable.tREAL) {
+					getMember = stg.getInstanceOf("real_get_tuple_member");
+					memberAssign = stg.getInstanceOf("real_local_assign");
+				}
+				else if (field_type == SymbolTable.tCHARACTER) {
+					getMember = stg.getInstanceOf("char_get_tuple_member");
+					memberAssign = stg.getInstanceOf("char_local_assign");
+				}
+				else if (field_type == SymbolTable.tBOOLEAN) {
+					getMember = stg.getInstanceOf("bool_get_tuple_member");
+					memberAssign = stg.getInstanceOf("bool_local_assign");
+				}
+				
+				int uid = DashAST.getUniqueId();
+				getMember.setAttribute("id", uid);
+				getMember.setAttribute("tuple_expr_id", tuple_expr_id);
+				getMember.setAttribute("tuple_type", tuple.tupleTypeIndex);
+				getMember.setAttribute("index", i);
+				
+				memberAssign.setAttribute("expr_id", uid);
+				memberAssign.setAttribute("expr", getMember);
+				memberAssign.setAttribute("sym_id", sym.id);
+				memberAssign.setAttribute("id", DashAST.getUniqueId());
+				
+				element_assigns.add(memberAssign);
+			}
+			
+			StringTemplate template = stg.getInstanceOf("tuple_unpack");;
+			template.setAttribute("tuple_expr", tuple_expr);
+			template.setAttribute("element_assigns", element_assigns);
+			template.setAttribute("id", id);
+			
+			return template;
+		}
 			
 		case DashLexer.VAR_DECL:
 		{
@@ -1121,7 +1179,9 @@ public class LLVMIRGenerator {
 				} else {
 					// ERROR
 				}
-			} else {
+			} 
+			
+			if (template == null){
 				int val = Integer.parseInt(t.getText().replaceAll("_", ""));
 				
 				template = stg.getInstanceOf("int_literal");
