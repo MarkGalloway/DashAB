@@ -6,7 +6,7 @@ procedure main() returns integer {
 
 const  integer y;
 const  integer z = 20__;
-const  z = 200;
+const  w = 200;
 const integer a;
 const integer b = -21;
 const c = 3;

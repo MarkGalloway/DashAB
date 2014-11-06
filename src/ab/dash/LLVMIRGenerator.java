@@ -1164,31 +1164,27 @@ public class LLVMIRGenerator {
 
 		case DashLexer.INTEGER:
 		{
-			int id = ((DashAST)t).llvmResultID;
+			int id = ((DashAST) t).llvmResultID;
 			StringTemplate template = null;
-			if (t.promoteToType != null) {
-				if (t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
-					int val = Integer.parseInt(t.getText().replaceAll("_", ""));
-					
-					float fval = (float)val;
-					String hex_val = Long.toHexString(Double.doubleToLongBits(fval));
-					hex_val = "0x" + hex_val.toUpperCase();
-					
-					template = stg.getInstanceOf("real_literal");
-					template.setAttribute("val", hex_val);
-				} else {
-					// ERROR
-				}
-			} 
-			
-			if (template == null){
-				int val = Integer.parseInt(t.getText().replaceAll("_", ""));
+
+			int val = Integer.parseInt(t.getText().replaceAll("_", ""));
+
+			template = stg.getInstanceOf("int_literal");
+			template.setAttribute("val", val);
+
+			if (t.promoteToType != null && t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+				template.setAttribute("id", id + "_temp");
 				
-				template = stg.getInstanceOf("int_literal");
-				template.setAttribute("val", val);
+				StringTemplate promote = stg.getInstanceOf("int_to_real");
+				promote.setAttribute("expr_id", id + "_temp");
+				promote.setAttribute("expr", template);
+				promote.setAttribute("id", id);
+				
+				return promote;
+			} else {
+				template.setAttribute("id", id);
 			}
 			
-			template.setAttribute("id", id);
 			return template;
 		}
 		
@@ -1329,9 +1325,20 @@ public class LLVMIRGenerator {
 				template.setAttribute("type_id", ((TupleTypeSymbol)sym.type).tupleTypeIndex);
 			}
 		}
-		
 		template.setAttribute("sym_id", sym_id);
-		template.setAttribute("id", id);
+		
+		if (t.promoteToType != null && t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+			template.setAttribute("id", id + "_temp");
+			
+			StringTemplate promote = stg.getInstanceOf("int_to_real");
+			promote.setAttribute("expr_id", id + "_temp");
+			promote.setAttribute("expr", template);
+			promote.setAttribute("id", id);
+			
+			return promote;
+		} else {
+			template.setAttribute("id", id);
+		}
 		return template;
 	}
 	
@@ -1359,6 +1366,12 @@ public class LLVMIRGenerator {
 	{
 		String id = Integer.toString(((DashAST)t).llvmResultID);
 		int type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
+		
+		if (((DashAST)t.getChild(0)).promoteToType != null) {
+			if (((DashAST)t.getChild(0)).promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+				type = ((DashAST)t.getChild(0)).promoteToType.getTypeIndex();
+			}
+		}
 		
 		StringTemplate lhs = exec((DashAST)t.getChild(0));
 		String lhs_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);

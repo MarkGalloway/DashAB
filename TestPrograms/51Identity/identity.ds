@@ -2,11 +2,29 @@ const out = std_output();
 
 procedure main() returns integer {
 
+	boolean b0 = null;
+	boolean b1 = identity;
+	
+	character c0 = null;
+	character c1 = identity;
+	
 	integer i0 = null;
 	integer i1 = identity;
 	
+	real r0 = null;
+	real r1 = identity;
+	
+	b0 -> out; '\n' -> out;
+	b1 -> out; '\n' -> out;
+	
+	c0 -> out; '\n' -> out;
+	c1 -> out; '\n' -> out;
+	
 	i0 -> out; '\n' -> out;
 	i1 -> out; '\n' -> out;
+	
+	r0 -> out; '\n' -> out;
+	r1 -> out; '\n' -> out;
 
 	return 0;
 }
