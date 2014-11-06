@@ -182,8 +182,10 @@ public class TestTypes {
 //		parseFile("forwardDeclaration.ds", "TestPrograms/38ForwardDeclaration/forwardDeclaration.ds");
 //		parseFile("functionWithArgs.ds", "TestPrograms/10FunctionWithArgs/functionWithArgs.ds");
 //		parseFile("functionExpression.ds", "TestPrograms/25FunctionExpression/functionExpression.ds");
-		File[] files = new File("TestPrograms/").listFiles();
-		showFiles(files);
+		parseFile("promoteFunctionArguments.ds", "TestPrograms/35PromoteFunctionArguments/promoteFunctionArguments.ds");
+
+//		File[] files = new File("TestPrograms/").listFiles();
+//		showFiles(files);
 //
 //		File[] invalid_files = new File("TestInvalidTypePrograms/").listFiles();
 //		showFiles(invalid_files);

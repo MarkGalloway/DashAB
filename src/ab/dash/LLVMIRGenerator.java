@@ -257,7 +257,9 @@ public class LLVMIRGenerator {
 				StringTemplate llvm_arg_type = getType(arg_type);
 
 				StringTemplate arg_template = null;
-				if (arg_child.symbol instanceof VariableSymbol) {
+				if (arg_child.symbol instanceof VariableSymbol && 
+						(arg_child.promoteToType == null ||
+						arg_child.promoteToType.getTypeIndex() != SymbolTable.tREAL)) {
 					VariableSymbol var_sym = (VariableSymbol)arg_child.symbol;
 					arg_template = stg.getInstanceOf("pass_variable_by_reference");
 					arg_template.setAttribute("var_id", var_sym.id);
@@ -271,7 +273,7 @@ public class LLVMIRGenerator {
 				} else {
 					if (stackSave == null) {
 						stackSave = stg.getInstanceOf("save_stack");
-						stackSave.setAttribute("call_id", method.id);
+						stackSave.setAttribute("call_id", method_node.llvmResultID);
 						code.add(stackSave);
 					}
 
@@ -306,7 +308,7 @@ public class LLVMIRGenerator {
 
 			if (stackSave != null) {
 				StringTemplate stackRestore = stg.getInstanceOf("restore_stack");
-				stackRestore.setAttribute("call_id", method.id);
+				stackRestore.setAttribute("call_id", method_node.llvmResultID);
 				template.setAttribute("postcode", stackRestore);
 			}
 
