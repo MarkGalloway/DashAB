@@ -102,8 +102,8 @@ public class SymbolTable {
     	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null},
         /*boolean*/ 	{null,		null,    	null,   	null,   	null, 	null, 	null,         null,      null},
         /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
-        /*integer*/     {null,		null,  		null,    	_integer,   _real,	null,	null,         _integer,  null},
-        /*real*/   		{null,		null,  		null,    	_real,   	_real,	null,	null,         _real,     null},
+        /*integer*/     {null,		null,  		null,    	_integer,   _real,	null,	null,         _integer,  _integer},
+        /*real*/   		{null,		null,  		null,    	_real,   	_real,	null,	null,         _real,     _real},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
         /*null*/        {null,      null,       null,       _integer,   _real,  null,   null,         null,      null},
@@ -431,8 +431,15 @@ public class SymbolTable {
         int i=0;
 		
         for (Symbol a : ms.orderedArgs.values() ) { // for each arg
-            DashAST argAST = (DashAST)args.get(i++);
-			
+            DashAST argAST = null;
+            try {
+                argAST = (DashAST)args.get(i++);
+            }
+            catch (IndexOutOfBoundsException e) {
+                error("line " + id.getLine() + ": invalid number of args to '" + id.getText() + "'");
+                break;
+            }
+
             // get argument expression type and expected type
             Type actualArgType = argAST.evalType;
             Type formalArgType = ((VariableSymbol)a).type;
