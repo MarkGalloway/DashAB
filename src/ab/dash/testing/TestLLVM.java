@@ -733,6 +733,9 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         
+        sb.append("1\n");
+        sb.append("97\n");
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }
