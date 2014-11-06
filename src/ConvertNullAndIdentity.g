@@ -37,9 +37,14 @@ nullExpr
     $node.evalType = $node.promoteToType;
     $node.promoteToType = null;
     DashAST expr = symtab.getExprForNull($node.evalType);
-    ((DashAST)expr.getChild(0)).evalType = $node.evalType;
-    $node.deleteChild(0);
-    $node.addChild(expr.getChild(0));
+    if (expr == null) {
+      symtab.error("line " + $EXPR.getLine() + ": type cannot be inferred"); 
+    }
+    else {
+      ((DashAST)expr.getChild(0)).evalType = $node.evalType;
+      $node.deleteChild(0);
+      $node.addChild(expr.getChild(0));
+    }
   } 
   ;
   
@@ -49,8 +54,13 @@ identExpr
     $node.evalType = $node.promoteToType;
     $node.promoteToType = null;
     DashAST expr = symtab.getExprForIdentity($node.evalType);
-    ((DashAST)expr.getChild(0)).evalType = $node.evalType;
-    $node.deleteChild(0);
-    $node.addChild(expr.getChild(0));
+    if (expr == null) {
+      symtab.error("line " + $EXPR.getLine() + ": type cannot be inferred"); 
+    }
+    else {
+      ((DashAST)expr.getChild(0)).evalType = $node.evalType;
+      $node.deleteChild(0);
+      $node.addChild(expr.getChild(0));
+    }
   } 
   ;

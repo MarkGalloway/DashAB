@@ -1,0 +1,4 @@
+procedure main() returns integer {
+  var x = identity;
+  return 0;
+}

@@ -40,7 +40,7 @@ public class TestInvalidLLVM extends BaseTest {
     public void invalidTupleListOf1() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {        
         String[] args = new String[] {"TestInvalidSyntaxPrograms/03TupleSizeTupleListOf1/TupleSizeTupleListOf1.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 2: tuple lists must have more than one element", outErrIntercept.toString().trim());
+        assertEquals("line 2: t2, (0):<integer> have incompatible types in tuple(integer, integer i, integer k) t2 = (0);", outErrIntercept.toString().trim());
     }
     
     @Test 
@@ -379,7 +379,7 @@ public class TestInvalidLLVM extends BaseTest {
     public void invalidTupleIndex() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestUndefinedVariablePrograms/08InvalidTupleIndex/invalidTupleIndex.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 7: invalid index for tuple t", outErrIntercept.toString().trim());
+        assertEquals("line 7: t:<(<tuple.b:boolean>, <tuple.b:character>, <tuple.i:integer>, <tuple.r:real>) > tuple member not found t.5", outErrIntercept.toString().trim());
     }
     
     // Programs with invalid types: Put TestInvalidTypePrograms Here
@@ -451,5 +451,34 @@ public class TestInvalidLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void cantInferNullType() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/37CantInferNullType/cantInferNullType.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 2: type cannot be inferred");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void missingReturn() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/38MissingReturn/missingReturn.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("error: missing return value");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void cantInferIdentityType() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/39CantInferIdentityType/cantInferIdentityType.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 2: type cannot be inferred");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    
     
 }
