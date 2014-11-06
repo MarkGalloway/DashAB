@@ -108,12 +108,12 @@ char_ge(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 
 char_to_bool(id, expr, expr_id) ::= <<
 <expr>
- <vlocal_result(id)> = icmp ne i8 <vlocal_result(expr_id)>, 0
+  <vlocal_result(id)> = icmp ne i8 <vlocal_result(expr_id)>, 0
 >>
 
 char_to_char(id, expr, expr_id) ::= <<
 <expr>
- <vlocal_result(id)> = add i8 <vlocal_result(expr_id)>, 0
+  <vlocal_result(id)> = add i8 <vlocal_result(expr_id)>, 0
 >>
 
 char_to_int(id, expr, expr_id) ::= <<

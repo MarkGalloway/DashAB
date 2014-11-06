@@ -77,12 +77,12 @@ bool_ne(id, lhs, lhs_id, rhs, rhs_id) ::= <<
 
 bool_to_bool(id, expr, expr_id) ::= <<
 <expr>
- <vlocal_result(id)> = add i1 <vlocal_result(expr_id)>, 0
+  <vlocal_result(id)> = add i1 <vlocal_result(expr_id)>, 0
 >>
 
 bool_to_char(id, expr, expr_id) ::= <<
 <expr>
- <vlocal_result(id)> = zext i1 <vlocal_result(expr_id)> to i8
+  <vlocal_result(id)> = zext i1 <vlocal_result(expr_id)> to i8
 >>
 
 bool_to_int(id, expr, expr_id) ::= <<

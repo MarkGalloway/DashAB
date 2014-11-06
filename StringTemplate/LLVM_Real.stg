@@ -7,11 +7,11 @@ real_literal(id, val) ::= <<
 >>
 
 real_null(id) ::= <<
- <vlocal_result(id)> = fadd float 0.0, 0.0
+  <vlocal_result(id)> = fadd float 0.0, 0.0
 >>
 
 real_identity(id) ::= <<
- <vlocal_result(id)> = fadd float 1.0, 0.0
+  <vlocal_result(id)> = fadd float 1.0, 0.0
 >>
 
 real_init_local(sym_id) ::= <<
