@@ -607,32 +607,35 @@ public class SymbolTable {
         }
     }
     
-    public Type typeCast(DashAST typecast, DashAST expr) {
+    public boolean typeCast(DashAST typecast, DashAST list) {
     	
     	if (typecast.evalType.getTypeIndex() == tTUPLE) {
     		TupleTypeSymbol tuple = (TupleTypeSymbol) typecast.evalType;
     		
-    		DashAST list = (DashAST)expr.getChild(0);
-    		ArrayList<DashAST> nodes = new ArrayList<DashAST>();
     		if (list.getType() == DashLexer.TUPLE_LIST) {
+    			list.evalType = tuple;
+    			
     			for (int i = 0; i < tuple.fields.size(); i++) {
         			VariableSymbol var = (VariableSymbol) tuple.fields.get(i);
         			Type type = var.type;
         			
-        			DashAST type_cast = new DashAST(new CommonToken(DashLexer.TYPECAST));
-        			type_cast.addChild(list.getChild(0));
-        			list.deleteChild(0);
+        			DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+        			expr.evalType = type;
         			
-        			nodes.add(type_cast);
+        			DashAST type_cast = new DashAST(new CommonToken(DashLexer.TYPECAST, "TYPECAST"));
+        			type_cast.evalType = type;
+    
+        			type_cast.addChild(list.getChild(i));
+        			expr.addChild(type_cast);
+        			
+        			list.replaceChildren(i, i, expr);
         		}
     			
-    			for (int i = 0; i < nodes.size(); i++) {
-    				list.addChild(nodes.get(i));
-    			}
+    			return true;
     		}	
     	}
     	
-    	return typecast.evalType;
+    	return false;
     }
 
     //TODO: prevent reassignment to input/output streams
