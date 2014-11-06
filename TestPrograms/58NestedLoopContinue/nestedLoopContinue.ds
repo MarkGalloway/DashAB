@@ -1,0 +1,36 @@
+const out = std_output();
+
+procedure main() returns integer {
+	/* Prints every number between 1 and 10, except for 7 */
+	integer x = 0;
+	integer y = 0;
+	
+	loop while x < 3 {
+		x = x + 1;
+
+		y = 0;
+		loop while y < 3 {
+			y = y + 1;
+		
+			if x == 1 continue;  /* Start at the beginning of the loop, skip 7 */
+			if y == 2 continue;
+		
+			x -> out; '\n' -> out;
+			y -> out; '\n' -> out;
+		}
+
+		if x == 1 {
+			'f' -> out;
+			'i' -> out;
+			'r' -> out;
+			's' -> out;
+			't' -> out;
+			'\n' -> out;
+			continue;
+		}
+
+		x -> out; '\n' -> out;
+	}
+	
+	return 0;
+}
