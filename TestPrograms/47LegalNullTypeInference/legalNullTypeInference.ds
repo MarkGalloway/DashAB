@@ -1,0 +1,35 @@
+const out = std_output();
+
+procedure testNull() returns integer {
+	return null;
+}
+
+procedure main() returns integer {
+	integer a1 = null;
+	integer a2 = null + 1;
+	integer a3 = 1 + null;
+	var a4 = null + 1;
+	var a5 = 1 + null;
+	var a6 = 1 > null;
+	boolean a7 = 1 < null;
+	boolean a8 = 0 == null;
+	var a9 = 0 != null;
+	var a10 = testNull();
+	var a11 = -null;
+	var a12 = +null;
+	
+	a1 -> out; '\n' -> out;
+	a2 -> out; '\n' -> out;
+	a3 -> out; '\n' -> out;
+	a4 -> out; '\n' -> out;
+	a5 -> out; '\n' -> out;
+	a6 -> out; '\n' -> out;
+	a7 -> out; '\n' -> out;
+	a8 -> out; '\n' -> out;
+	a9 -> out; '\n' -> out;
+	a10 -> out; '\n' -> out;
+	a11 -> out; '\n' -> out;
+	a12 -> out; '\n' -> out;
+	
+	return 0;
+}

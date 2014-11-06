@@ -276,6 +276,22 @@ public class SymbolTable {
             }  
         }
         
+        if (a.evalType.getTypeIndex() == this.tIDENTITY) { 
+            CommonToken token = convertFromIdentity(b.evalType);
+            if (token != null) {
+                a.evalType = b.evalType;
+                a.token = token;
+            }  
+        }
+        
+        if (b.evalType.getTypeIndex() == this.tIDENTITY) { 
+            CommonToken token = convertFromIdentity(a.evalType);
+            if (token != null) {
+                b.evalType = a.evalType;
+                b.token = token;
+            }  
+        }
+        
         Type result = typeTable[ta][tb];    // operation result type
         if ( result==null ) {
             error("line " + a.getLine() + ": " +
@@ -315,6 +331,18 @@ public class SymbolTable {
     }
 
     public Type uminus(DashAST a) {
+        if (a.evalType  == _null) { 
+            CommonToken token = convertFromNull(_integer);
+            a.evalType = _integer;
+            a.token = token;
+        }  
+        
+        if (a.evalType  == _identity) { 
+            CommonToken token = convertFromIdentity(_integer);
+            a.evalType = _integer;
+            a.token = token;
+        }  
+
         if ( !(a.evalType==_integer || a.evalType==_real) ) {
             error("line " + a.getLine() + ": " +
             		text(a)+" must have integer or real type in "+
@@ -325,6 +353,18 @@ public class SymbolTable {
     }
     
     public Type unot(DashAST a) {
+        if (a.evalType  == _null) { 
+            CommonToken token = convertFromNull(_boolean);
+            a.evalType = _boolean;
+            a.token = token;
+        }  
+        
+        if (a.evalType  == _identity) { 
+            CommonToken token = convertFromIdentity(_boolean);
+            a.evalType = _boolean;
+            a.token = token;
+        }  
+
         if ( a.evalType!=_boolean ) {
             error("line " + a.getLine() + ": " +
             		text(a)+" must have boolean type in "+

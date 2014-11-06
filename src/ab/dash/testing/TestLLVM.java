@@ -599,6 +599,26 @@ public class TestLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
+    @Test 
+    public void legalNullTypeInferences() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/47LegalNullTypeInference/legalNullTypeInference.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("0\n");
+        sb.append("1\n");
+        sb.append("1\n");
+        sb.append("1\n");
+        sb.append("1\n");
+        sb.append("T\n");
+        sb.append("F\n");
+        sb.append("T\n");
+        sb.append("F\n");
+        sb.append("0\n");
+        sb.append("0\n");
+        sb.append("0\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
     @Test
     public void identity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestPrograms/51Identity/identity.ds"};
@@ -613,6 +633,7 @@ public class TestLLVM extends BaseTest {
         sb.append("1\n");
         sb.append("0\n");
         sb.append("1\n");
+        sb.append("-1\n");
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }

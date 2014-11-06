@@ -118,10 +118,6 @@ public class TestLLVMCodeGen {
 														// types
 		Def def = new Def(nodes, symtab, debug); // use custom constructor
 		def.downup(tree); // trigger symtab actions upon certain subtrees
-		
-		if (def.getErrorCount() > 0) {
-			return "";
-		}
 
 		// RESOLVE SYMBOLS, COMPUTE EXPRESSION TYPES
 		nodes.reset();
