@@ -518,5 +518,16 @@ public class TestLLVM extends BaseTest {
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void forwardDeclaration() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/38ForwardDeclaration/forwardDeclaration.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
 
+        sb.append("a\n");
+        sb.append("b\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

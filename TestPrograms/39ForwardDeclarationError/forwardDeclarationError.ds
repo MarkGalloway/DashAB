@@ -1,0 +1,11 @@
+const c = f();
+
+function f() returns character = 'a';
+
+procedure main() returns integer {
+	var out = std_output();
+	
+	c -> out; '\n' -> out;
+	
+	return 0;
+}

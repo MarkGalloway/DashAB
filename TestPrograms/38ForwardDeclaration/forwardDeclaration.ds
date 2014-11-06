@@ -1,0 +1,20 @@
+const out = std_output();
+
+function f() returns character;
+procedure p();
+
+const c = f();
+
+function f() returns character = 'a';
+
+procedure main() returns integer {
+
+	c -> out; '\n' -> out;
+	p();
+	
+	return 0;
+}
+
+procedure p() {
+	'b' -> out; '\n' -> out;
+}

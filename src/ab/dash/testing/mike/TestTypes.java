@@ -179,6 +179,7 @@ public class TestTypes {
 //		parseFile("tuples.ds", "TestPrograms/05Tuples/tuples.ds");
 		parseFile("typeCast.ds", "TestPrograms/33TypeCast/typeCast.ds");
 		parseFile("tupleTypeCast.ds", "TestPrograms/34TupleTypeCast/tupleTypeCast.ds");
+		parseFile("forwardDeclaration.ds", "TestPrograms/38ForwardDeclaration/forwardDeclaration.ds");
 //		parseFile("functionWithArgs.ds", "TestPrograms/10FunctionWithArgs/functionWithArgs.ds");
 //		parseFile("functionExpression.ds", "TestPrograms/25FunctionExpression/functionExpression.ds");
 //		File[] files = new File("TestPrograms/").listFiles();

@@ -205,4 +205,15 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals("line 20: invalid type (<tuple.a:boolean>, <tuple.b:boolean>) sent to outstream", outErrIntercept.toString().trim());;
     }
     
+    @Test
+    public void forwardDeclarationError() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/39ForwardDeclarationError/forwardDeclarationError.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("line 1: unknown variable f\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
 }

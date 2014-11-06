@@ -371,6 +371,14 @@ public class SymbolTable {
         TupleTypeSymbol scope = (TupleTypeSymbol) type;
         Symbol s = scope.resolveMember(field.getText());	// resolve ID in scope
         field.symbol = s;
+        
+        if (s == null) {
+        	 error("line " + id.getLine() + ": " +
+             		text(id)+" tuple member not found "+
+                            text((DashAST)id.getParent()));
+        	return null;
+        }
+        
         return s.type;           // return ID's type
     }
 
@@ -485,6 +493,9 @@ public class SymbolTable {
     			
     			TupleTypeSymbol scope = (TupleTypeSymbol) st.type;
     			VariableSymbol s = (VariableSymbol)scope.resolveMember(field.getText());
+    			
+    			if (s == null)
+    				return true;
     			
     			return s.specifier.getSpecifierIndex() == sCONST;
         	}
