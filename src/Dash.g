@@ -376,7 +376,7 @@ unaryExpression
 postfixExpression
     : 	ID 
     (
-    	(	DOT^ (INTEGER | ID)
+    	(	DOT^ (INTEGER | ID | {emitErrorMessage("line " + $DOT.getLine() + ": Only integers and identifiers are allowed to index tuples.");})
     	|	r=LPAREN^ expressionList RPAREN!	{ $r.setType(CALL); $r.setText("CALL"); }
     	// TODO: Part 2
     	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
