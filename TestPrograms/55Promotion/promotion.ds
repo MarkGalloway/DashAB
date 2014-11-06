@@ -1,0 +1,12 @@
+procedure main() returns integer {
+	const out = std_output();
+	var i = 5;
+	var r = 0.5;
+	
+	i + r -> out; '\n' -> out;
+	4 + 0.4 -> out; '\n' -> out;
+	i + 0.1 -> out; '\n' -> out;
+	1 + r -> out; '\n' -> out;
+
+	return 0;
+}
