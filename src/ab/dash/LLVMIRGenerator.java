@@ -220,6 +220,7 @@ public class LLVMIRGenerator {
 			List<StringTemplate> code = new ArrayList<StringTemplate>();
 			List<StringTemplate> args = new ArrayList<StringTemplate>();
 			DashAST argument_list = (DashAST) t.getChild(1);
+			StringTemplate stackSave = null;
 
 			for (int i = 0; i < argument_list.getChildCount(); i++) {
 				DashAST arg = (DashAST)argument_list.getChild(i);
@@ -245,8 +246,8 @@ public class LLVMIRGenerator {
 					arg_template.setAttribute("tuple_expr_id", arg_child.llvmResultID);
 					arg_template.setAttribute("type_id", ((TupleTypeSymbol)arg_type).tupleTypeIndex);
 				} else {
-					if (code.isEmpty()) {
-						StringTemplate stackSave = stg.getInstanceOf("save_stack");
+					if (stackSave == null) {
+						stackSave = stg.getInstanceOf("save_stack");
 						stackSave.setAttribute("call_id", method.id);
 						code.add(stackSave);
 					}
@@ -280,7 +281,7 @@ public class LLVMIRGenerator {
 				template.setAttribute("return_type", getType(method_type));
 			}
 
-			if (!code.isEmpty()) {
+			if (stackSave != null) {
 				StringTemplate stackRestore = stg.getInstanceOf("restore_stack");
 				stackRestore.setAttribute("call_id", method.id);
 				template.setAttribute("postcode", stackRestore);
