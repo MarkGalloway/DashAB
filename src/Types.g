@@ -89,6 +89,7 @@ expr returns [Type type]
     |   CHARACTER   {$type = SymbolTable._character;}
     |   INTEGER     {$type = SymbolTable._integer;}
     |   REAL      	{$type = SymbolTable._real;}
+    |   Null        {$type = SymbolTable._null;}
     |   ID 
     {
     	Symbol s = (Symbol)$ID.scope.resolve($ID.text);
@@ -137,10 +138,10 @@ tuple_list returns [Type type]
 @init { 
 ArrayList<DashAST> arg_nodes = new ArrayList<DashAST>();
 }
-	:	^(TUPLE_LIST (^(EXPR expr) {$EXPR.evalType = $expr.type; arg_nodes.add($EXPR);} )+)
+	:	^(TUPLE_LIST (^(EXPR expr) { $EXPR.evalType = $expr.type; arg_nodes.add($EXPR); } )+)
 	{
+
 		TupleTypeSymbol ts = (TupleTypeSymbol)$TUPLE_LIST.symbol;
-		
 		for (int i = 0; i < arg_nodes.size(); i++) {
 			DashAST arg = arg_nodes.get(i);
 		    VariableSymbol vs = new VariableSymbol(null, arg.evalType, SymbolTable._const);    	

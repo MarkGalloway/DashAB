@@ -7,6 +7,7 @@ const real f3 = 5.5 * 2.0;
 const real f4 = 10.5 / 2.0;
 const real f5 = 5.0 % 2.25;
 const real f6 = 2.5^3.0;
+const real f7 = 0.0;
 
 const real e0 = 5.5*2.5 + 1.5;
 const real e1 = f1 + 2.5*4.5;
@@ -45,7 +46,8 @@ procedure main() returns integer {
 	f4 -> out; '\n' -> out;		// 5.5
 	f5 -> out; '\n' -> out;		// 1.5
 	f6 -> out; '\n' -> out;		// 8.5
-
+	f7 -> out; '\n' -> out;
+	
 	e0 -> out; '\n' -> out;		// 11.5
 	e1 -> out; '\n' -> out;		// 15.5
 	e2 -> out; '\n' -> out;		// 20.5

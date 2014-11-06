@@ -7,6 +7,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    TestAST.class,
    TestDef.class,
+   TestNull.class,
    TestType.class,
    TestLLVM.class,
    TestInvalidLLVM.class,

@@ -19,8 +19,6 @@ options {
     Scope currentScope;
     MethodSymbol currentMethod;
     boolean debug_mode;
-    int error_count = 0;
-    StringBuffer errorSB = new StringBuffer();
     
     public Def(TreeNodeStream input, SymbolTable symtab) {
     	this(input, symtab, false);
@@ -41,15 +39,10 @@ options {
     }
     
 
-	  @Override
-	  public void emitErrorMessage(String msg) {
-	    System.err.println(msg);
-	    error_count++;
-	    errorSB.append(msg);
-	  }
   
-	  public int getErrorCount() { return error_count; }
-	  public String getErrors() { return errorSB.toString(); }
+
+    
+    
 }
 // END: header
 
@@ -228,7 +221,7 @@ varDeclaration // global, parameter, or local variable
  * Therfore, the following case is handled:
  * 		integer x = 0;
  */
-    :   ^(var_node = (VAR_DECL|ARG_DECL) specifier type ID .?)	
+    :   ^(var_node = (ARG_DECL|VAR_DECL) specifier type ID .?)	
         {
 	         debug("line " + $ID.getLine() +
 	         ": def " + $ID.text + 

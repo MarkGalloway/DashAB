@@ -14,6 +14,8 @@ import org.antlr.runtime.TokenRewriteStream;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
+import ab.dash.ConvertNullAndIdentity;
+import ab.dash.AddNullToUninitialized;
 import ab.dash.CleanAST;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
@@ -80,7 +82,7 @@ public class Runner {
         Def def = new Def(nodes, symtab, false);
         def.downup(tree); 
         
-        //TODO: This can probably be moved somewhere better
+        //TODO: This logic for checking 'main' rules can probably be moved somewhere better
         Symbol main = symtab.globals.resolve("main");
         if (main == null || !(main instanceof MethodSymbol)) {
             symtab.error("error: missing main procedure");
@@ -91,11 +93,32 @@ public class Runner {
         else if (((MethodSymbol)main).getMembers().size() > 0) {
             symtab.error("line " + main.def.getLine() + ": main procedure takes no arguments");
         }
-
+        
         if (symtab.getErrorCount() > 0) {
             throw new SymbolTableException(symtab.getErrors());
         }
     }
+    
+    private static void runNullUninitializedValues(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
+        nodes.reset();
+        AddNullToUninitialized addNull = new AddNullToUninitialized(nodes, symtab);
+        addNull.downup(tree); 
+        
+        if (symtab.getErrorCount() > 0) {
+            throw new SymbolTableException(symtab.getErrors());
+        }
+    }
+    
+    private static void runNullAndIdentitySweep(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
+        nodes.reset();
+        ConvertNullAndIdentity convert = new ConvertNullAndIdentity(nodes, symtab);
+        convert.downup(tree); 
+        
+        if (symtab.getErrorCount() > 0) {
+            throw new SymbolTableException(symtab.getErrors());
+        }
+    }
+    
     
     // runs Types.g treewalker, aborts if errors are found
     private static void runTypes(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
@@ -108,7 +131,7 @@ public class Runner {
         }
     }
     
-    // runs Types.g DefineTupleTypes.g treewalker, aborts if errors are found
+    // runs DefineTupleTypes.g treewalker, aborts if errors are found
     private static void runDefineTupleTypes(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
         nodes.reset();
         DefineTupleTypes tupleTypeComp = new DefineTupleTypes(symtab);
@@ -119,7 +142,7 @@ public class Runner {
             throw new SymbolTableException(symtab.getErrors());
         }
     }
-    
+
     // generates LLVM code
     private static String runLLVMIRgenerator(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree, TokenRewriteStream tokens) {
        StringBuilder sb;
@@ -175,7 +198,7 @@ public class Runner {
         clean.clean(tree);
     }
     
-    // used by ASTtest
+    // used by ASTtest, prints AST for use in tests
     public static void astTestMain(String[] args) throws LexerException, ParserException, RecognitionException {
         ANTLRFileStream input = getInputStream(args);
         DashAST tree = runLexerParser(input);
@@ -194,6 +217,22 @@ public class Runner {
         return symtab;
     }
     
+    // used by NullAndIdentityTests, prints AST for use in Tests
+    public static void nullTestMain(String[] args) throws LexerException, ParserException, RecognitionException, SymbolTableException {
+        ANTLRFileStream input = getInputStream(args);
+        DashAST tree = runLexerParser(input);
+        
+        CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
+        nodes.setTokenStream(tokens);
+        SymbolTable symtab = new SymbolTable(tokens); 
+        runDef(nodes, symtab, tree);
+        runNullUninitializedValues(nodes, symtab, tree);
+        runTypes(nodes, symtab, tree);
+        runDefineTupleTypes(nodes, symtab, tree);
+        runNullAndIdentitySweep(nodes, symtab, tree);
+        System.out.println(tree.toStringTree());
+    }
+    
     // used by TypeTest
     public static void typesTestMain(String[] args) throws LexerException, ParserException, RecognitionException, SymbolTableException {
         ANTLRFileStream input = getInputStream(args);
@@ -203,6 +242,7 @@ public class Runner {
         nodes.setTokenStream(tokens);
         SymbolTable symtab = new SymbolTable(tokens); 
         runDef(nodes, symtab, tree);
+        runNullUninitializedValues(nodes, symtab, tree);
         runTypes(nodes, symtab, tree);
         runDefineTupleTypes(nodes, symtab, tree);
     }
@@ -234,8 +274,10 @@ public class Runner {
         
         try {
             runDef(nodes, symtab, tree);
+            runNullUninitializedValues(nodes, symtab, tree);
             runTypes(nodes, symtab, tree);
             runDefineTupleTypes(nodes, symtab, tree);
+            runNullAndIdentitySweep(nodes, symtab, tree);
         } catch (SymbolTableException e) {
             return;
         }

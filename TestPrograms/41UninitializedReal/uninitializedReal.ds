@@ -1,0 +1,9 @@
+const out = std_output();
+const real j;
+procedure main() returns integer {
+	real i;
+	i -> out;
+	'\n' -> out;
+	j -> out;
+	return 0;
+}
