@@ -107,7 +107,7 @@ string_constants() ::= <<
 
 utils() ::= <<
 ; Function Attrs: nounwind readnone uwtable
-define i32 @powi(i32 %a, i32 %n) #0 {
+define i32 @powi(i32 %a, i32 %n) {
 entry:
   %cmp10 = icmp sgt i32 %n, 0
   br i1 %cmp10, label %while.body.preheader, label %while.end
@@ -147,7 +147,7 @@ while.end:                                        ; preds = %while.end.loopexit,
 
 
 ; Function Attrs: nounwind uwtable
-define i1 @readBool() #0 {
+define i1 @readBool() {
 entry:
   %retval = alloca i1, align 4
   %input = alloca i8, align 1
@@ -185,7 +185,7 @@ return:                                           ; preds = %if.end6, %if.then5,
 }
 
 ; Function Attrs: nounwind uwtable
-define signext i8 @readChar() #0 {
+define signext i8 @readChar() {
 entry:
   %input = alloca i8, align 1
   %call = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str.input.char, i32 0, i32 0), i8* %input)
@@ -194,7 +194,7 @@ entry:
 }
 
 ; Function Attrs: nounwind uwtable
-define i32 @readInt() #0 {
+define i32 @readInt() {
 entry:
   %input = alloca i32, align 4
   %call = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str.input.int, i32 0, i32 0), i32* %input)
@@ -203,7 +203,7 @@ entry:
 }
 
 ; Function Attrs: nounwind uwtable
-define float @readFloat() #0 {
+define float @readFloat() {
 entry:
   %input = alloca float, align 4
   %call = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([4 x i8]* @.str.input.real, i32 0, i32 0), float* %input)
