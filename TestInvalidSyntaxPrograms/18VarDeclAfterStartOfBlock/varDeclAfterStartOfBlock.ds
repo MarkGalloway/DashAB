@@ -1,0 +1,11 @@
+procedure main() returns integer {
+  integer x = 3;
+  integer y = 0;
+  real z = 0;
+  y = 42;
+  
+  real r = 7.1;   // Should throw an error. Decl must happen at the start of blocks only.
+  z = r;
+
+  return 0;
+}

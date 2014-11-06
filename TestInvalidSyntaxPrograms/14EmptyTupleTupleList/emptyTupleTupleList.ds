@@ -1,0 +1,6 @@
+procedure main() returns integer {
+
+  var tuple() tuple_var; //should elicit error
+
+  return 0;
+}

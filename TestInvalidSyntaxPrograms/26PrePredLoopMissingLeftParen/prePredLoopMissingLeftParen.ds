@@ -1,0 +1,9 @@
+procedure main() returns integer {
+  
+  integer x = 0;
+
+  loop while x == 0 ) //missing paren, should throw exception
+    x = x + 1;
+
+  return 0;
+}

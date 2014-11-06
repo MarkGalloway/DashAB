@@ -1,0 +1,27 @@
+const x = 1; // var y = 2;
+
+
+/* var z = 42; */
+
+/* This is a block comment
+ * and 
+ 
+ const y = 3;
+ 
+ * should not display
+ada faf */
+
+const z = 4;
+
+
+/* /* 
+
+Comments cannot nest ! this should throw some sort of error or exception 
+
+*/ */
+
+const y = 5;
+
+procedure main() returns integer {
+  return 0;
+}

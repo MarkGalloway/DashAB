@@ -1,0 +1,8 @@
+procedure main() returns integer {
+  
+  var integer x = foo(5); // foo() has not yet been declared!
+
+  return 0;
+}
+
+procedure foo(integer x) returns integer = -x;

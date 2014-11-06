@@ -1,0 +1,16 @@
+tuple(integer, real r, boolean) tuple_var = (111, 1.2, false);
+
+procedure main() returns integer {
+    var i = 1;
+    var j = 2;
+    var out = std_output();
+    var t = f();
+
+    j = i + 1;
+
+    f().2 -> out;
+    '\n' -> out;
+    t.1 -> out;
+
+    //return 0;
+}
