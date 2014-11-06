@@ -237,6 +237,13 @@ public class LLVMIRGenerator {
 					VariableSymbol var_sym = (VariableSymbol)arg_child.symbol;
 					arg_template = stg.getInstanceOf("pass_variable_by_reference");
 					arg_template.setAttribute("var_id", var_sym.id);
+					arg_template.setAttribute("arg_type", llvm_arg_type);
+				} else if (arg_type.getTypeIndex() == SymbolTable.tTUPLE) {
+					code.add(exec(arg));
+
+					arg_template = stg.getInstanceOf("pass_tuple_expr_by_reference");
+					arg_template.setAttribute("tuple_expr_id", arg_child.llvmResultID);
+					arg_template.setAttribute("type_id", ((TupleTypeSymbol)arg_type).tupleTypeIndex);
 				} else {
 					if (code.isEmpty()) {
 						StringTemplate stackSave = stg.getInstanceOf("save_stack");
@@ -253,9 +260,9 @@ public class LLVMIRGenerator {
 
 					arg_template = stg.getInstanceOf("pass_expr_by_reference");
 					arg_template.setAttribute("arg_expr_id", arg_child.llvmResultID);
+					arg_template.setAttribute("arg_type", llvm_arg_type);
 				}
 
-				arg_template.setAttribute("arg_type", llvm_arg_type);
 				arg_template.setAttribute("id", arg_child.llvmResultID);
 
 				args.add(arg_template);

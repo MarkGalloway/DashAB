@@ -1,0 +1,19 @@
+const out = std_output();
+
+procedure one(tuple(integer, integer) t) returns real {
+	t.1 -> out; '\n' -> out;
+	t.2 -> out; '\n' -> out;
+    return 1.0;
+}
+
+function returnTuple(integer i) returns tuple(integer, integer) {
+	tuple(integer, integer) t = (i, 5);
+	t.2 = 7;
+	return t;
+}
+
+procedure main() returns integer {
+    one(returnTuple(10)) -> out; '\n' -> out;
+    
+    return 0;
+}

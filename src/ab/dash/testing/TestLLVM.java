@@ -506,4 +506,17 @@ public class TestLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 
+    @Test
+    public void returnedTupleAsArgument() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/37ReturnedTupleAsArgument/returnedTupleAsArgument.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("10\n");
+        sb.append("7\n");
+        sb.append("1\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
 }

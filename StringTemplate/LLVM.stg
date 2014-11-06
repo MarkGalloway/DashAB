@@ -245,6 +245,10 @@ pass_expr_by_reference(id, arg_expr_id, arg_type) ::= <<
 <arg_type>* <vlocal_result(arg_expr_id)>_stackptr
 >>
 
+pass_tuple_expr_by_reference(id, tuple_expr_id, type_id) ::= <<
+<tuple_type(type_id)>* <vlocal_result(tuple_expr_id)>
+>>
+
 expr_result_to_stack(id, expr_id, expr_type) ::= <<
   <vlocal_result(expr_id)>_stackptr = alloca <expr_type>;
   store <expr_type> <vlocal_result(expr_id)>, <expr_type>* <vlocal_result(expr_id)>_stackptr
