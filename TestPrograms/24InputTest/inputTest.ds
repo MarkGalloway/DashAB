@@ -2,20 +2,45 @@ const out = std_output();
 const inp = std_input();
 
 procedure main() returns integer {
-	boolean b;
-	character c;
-	integer i;
-	real r;
+	character c = null;
 	
-	b <- inp;
-	c <- inp;
-	i <- inp;
-	r <- inp;
+	boolean b1;
+	boolean b2;
 	
-	b -> out; '\n' -> out;
-	c -> out; '\n' -> out;
-	i -> out; '\n' -> out;
-	r -> out; '\n' -> out;
+	integer i1;
+	integer i2;
+	integer i3;
+	
+	real r1;
+	real r2;
+	real r3;
+	
+	loop while c != '\n' {
+		c <- inp;
+		c -> out;
+	}
+	
+	b1 <- inp;
+	b2 <- inp;
+	
+	i1 <- inp;
+	i2 <- inp;
+	i3 <- inp;
+	
+	r1 <- inp;
+	r2 <- inp;
+	r3 <- inp;
+	
+	b1 -> out; '\n' -> out;
+	b2 -> out; '\n' -> out;
+	
+	i1 -> out; '\n' -> out;
+	i2 -> out; '\n' -> out;
+	i3 -> out; '\n' -> out;
+	
+	r1 -> out; '\n' -> out;
+	r2 -> out; '\n' -> out;
+	r3 -> out; '\n' -> out;
 
 	return 0;
 }

@@ -350,10 +350,15 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         
+        sb.append("Hello, World!\n");
         sb.append("T\n");
-        sb.append("a\n");
-        sb.append("125\n");
-        sb.append("1.25\n");
+        sb.append("F\n");
+       	sb.append("125\n");
+       	sb.append("125\n");
+       	sb.append("-125\n");
+       	sb.append("1.25\n");
+       	sb.append("1.25\n");
+       	sb.append("-1.25\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
@@ -799,6 +804,19 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/62DashABStyleInput/dashABStyleInput.ds", "TestPrograms/62DashABStyleInput/input.in"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
+        
+        sb.append("1234\n");
+        sb.append("1234\n");
+        sb.append("1234\n");
+        sb.append("0.42\n");
+        sb.append("42\n");
+        sb.append("4.2e+11\n");
+        sb.append("0.42\n");
+        sb.append("42\n");
+        sb.append("4.2e-09\n");
+        sb.append("4.2e+11\n");
+        sb.append("4.2e-09\n");
+        sb.append("4.2e+11\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
