@@ -784,4 +784,13 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void validAliasing() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/61ValidAliasing/validAliasing.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
