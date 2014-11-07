@@ -1,8 +1,9 @@
-#include "stdio.h"
+#include <stdio.h>
+#include <stdint.h>
 
 int stream_state = 0;
 
-int readBool() {
+int readBoolean() {
 	char input;
 	scanf("%c\n", &input);
 	
@@ -16,7 +17,7 @@ int readBool() {
 	return 0;
 }
 
-char readChar() {
+int8_t readCharacter() {
 	char input;
 	if (scanf("%c\n", &input) != 1) {
 		stream_state = 1;
@@ -24,7 +25,7 @@ char readChar() {
 	return input;
 }
 
-int readInt() {
+int32_t readInteger() {
 	int input;
 	if (scanf("%d\n", &input) != 1) {
 		stream_state = 1;
@@ -32,12 +33,32 @@ int readInt() {
 	return input;
 }
 
-float readFloat() {
+float readReal() {
 	float input;
 	if (scanf("%g\n", &input) != 1) {
 		stream_state = 1;
 	}
 	return input;
+}
+
+
+int powi(int a,int n)
+{
+	int result = 1;
+	int power = n;
+	int value = a;
+	while(power>0)
+	{
+		if(power&1)
+		{
+			result = result*value;
+			result = result%1000000007;
+		}
+		value = value*value;
+		value = value%1000000007;
+		power >>= 1;
+	}
+	return result;
 }
 
 int getStreamState() {

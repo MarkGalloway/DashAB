@@ -136,6 +136,6 @@ real_print(id, expr, expr_id) ::= <<
 >>
 
 real_input(id, sym_id) ::= <<
-  <vlocal_result(id)> = call float @readFloat()
+  <vlocal_result(id)> = call float @readReal()
   store float <vlocal_result(id)>, float* <vlocal_symbol(sym_id)>
 >>
