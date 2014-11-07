@@ -857,6 +857,8 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         
+        sb.append("Expected not specified");
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }

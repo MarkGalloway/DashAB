@@ -161,6 +161,9 @@ float readReal() {
 		e++;
 	}
 
+	if (c != '\0')
+		stream_state = 1;
+
 	a = sign*a;
 
 	return a;
