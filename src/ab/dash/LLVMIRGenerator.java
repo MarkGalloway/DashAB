@@ -1550,6 +1550,32 @@ public class LLVMIRGenerator {
 		StringTemplate rhs = exec((DashAST)t.getChild(1));
 		String rhs_id = Integer.toString(((DashAST)t.getChild(1)).llvmResultID);
 		
+		if (t.promoteToType != null && 
+				t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+			
+			type = SymbolTable.tREAL;
+			
+			if (((DashAST)t.getChild(0)).evalType.getTypeIndex() == SymbolTable.tINTEGER) {
+				StringTemplate promote = stg.getInstanceOf("int_to_real");
+				promote.setAttribute("expr_id", lhs_id);
+				promote.setAttribute("expr", lhs);
+				promote.setAttribute("id", lhs_id + "_lhs_tmp");
+				
+				lhs = promote;
+				lhs_id = lhs_id + "_lhs_tmp";
+			}
+			
+			if (((DashAST)t.getChild(1)).evalType.getTypeIndex() == SymbolTable.tINTEGER) {
+				StringTemplate promote = stg.getInstanceOf("int_to_real");
+				promote.setAttribute("expr_id", rhs_id);
+				promote.setAttribute("expr", rhs);
+				promote.setAttribute("id", rhs_id + "_rhs_tmp");
+				
+				rhs = promote;
+				rhs_id = rhs_id + "_rhs_tmp";
+			}
+		}
+		
 		StringTemplate template = null;
 		switch (op) {
 		case AND: {

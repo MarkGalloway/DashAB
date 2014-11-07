@@ -1,0 +1,14 @@
+const out = std_output();
+
+procedure main() returns integer {
+
+	var a = 1.0;
+	var b = 1.0;
+	var c = 2;
+	
+	(a^2 + b^2)^(1/2) -> out; '\n' -> out;
+	(a^2 + b^2)^(1/((2 + 2)/2)) -> out; '\n' -> out;
+	(a^2 + b^2)^(1/c) -> out; '\n' -> out;
+	
+	return 0;
+}

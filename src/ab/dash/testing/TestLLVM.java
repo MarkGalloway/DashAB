@@ -771,4 +771,17 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void testPromotionInExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/60TestPromotionInExpression/testPromotionInExpression.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("1.41421\n");
+        sb.append("1.41421\n");
+        sb.append("1.41421\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
