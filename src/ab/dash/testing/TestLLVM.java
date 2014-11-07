@@ -759,4 +759,16 @@ public class TestLLVM extends BaseTest {
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void tupleTypedef() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/59TupleTypedef/tupleTypedef.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("1\n");
+        sb.append("0.5\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

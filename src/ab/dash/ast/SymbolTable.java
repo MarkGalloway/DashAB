@@ -31,8 +31,7 @@ public class SymbolTable {
     
     
     /* tVOID is for procedures with no return and should not be added 
-     * to the globals. This is 
-     * mostly used for debugging type checking.
+     * to the globals. This is mostly used for debugging type checking.
      */
     public static final int tVOID = 9;		
     public static final BuiltInTypeSymbol _void =
@@ -259,7 +258,7 @@ public class SymbolTable {
         int ta = a.evalType.getTypeIndex(); // type index of left operand
         int tb = b.evalType.getTypeIndex(); // type index of right operand
         
-        if (a.evalType.getTypeIndex() == this.tNULL) { 
+        if (a.evalType.getTypeIndex() == tNULL) { 
             CommonToken token = convertFromNull(b.evalType);
             if (token != null) {
                 a.evalType = b.evalType;
@@ -267,7 +266,7 @@ public class SymbolTable {
             }  
         }
         
-        if (b.evalType.getTypeIndex() == this.tNULL) { 
+        if (b.evalType.getTypeIndex() == tNULL) { 
             CommonToken token = convertFromNull(a.evalType);
             if (token != null) {
                 b.evalType = a.evalType;
@@ -275,7 +274,7 @@ public class SymbolTable {
             }  
         }
         
-        if (a.evalType.getTypeIndex() == this.tIDENTITY) { 
+        if (a.evalType.getTypeIndex() == tIDENTITY) { 
             CommonToken token = convertFromIdentity(b.evalType);
             if (token != null) {
                 a.evalType = b.evalType;
@@ -283,7 +282,7 @@ public class SymbolTable {
             }  
         }
         
-        if (b.evalType.getTypeIndex() == this.tIDENTITY) { 
+        if (b.evalType.getTypeIndex() == tIDENTITY) { 
             CommonToken token = convertFromIdentity(a.evalType);
             if (token != null) {
                 b.evalType = a.evalType;
@@ -504,58 +503,13 @@ public class SymbolTable {
         	declID.symbol.type = typedef.def_type;
         }
         
-        if (declID.symbol.type.getTypeIndex() == tTUPLE) {
-        	if (init.evalType.getTypeIndex() != tTUPLE) {
-        		error("line " + declID.getLine() + ": " + declID.evalType + " " +
-	            		declID.getText() + " is incompatible with " + init.evalType + " type");
-        		return;
-        	}
-        	
-        	TupleTypeSymbol idTuple = (TupleTypeSymbol) declID.symbol.type;
-        	TupleTypeSymbol initTuple = (TupleTypeSymbol) init.evalType;
-        	
-        	if (idTuple.fields.size() != initTuple.fields.size()) {
-        		error("line " + declID.getLine() + ": Tuples have mismatched sizes in "+
-                        text((DashAST)declID.getParent()));
-        		return;
-        	}
-        	
-        	for (int i = 0; i < idTuple.fields.size(); i++) {
-        		VariableSymbol f_var = (VariableSymbol) idTuple.fields.get(i);
-        		VariableSymbol a_var = (VariableSymbol) initTuple.fields.get(i);
-        		
-        		Type f = f_var.type;
-        		Type a = a_var.type;
-        		
-        		int tf = f.getTypeIndex();
-        		int ta = a.getTypeIndex();
-        		
-        		Type promoteToType = promoteFromTo[ta][tf];
-        		// TODO Promote To
-        		//args.get(i).promoteToType = promoteToType;
-        		
-                if ( !canAssignTo(a, f, promoteToType) ) {
-        			error("line " + declID.getLine() + ": Tuple argument at index " + (i+1) +
-        					" has incompatible types in " +
-                            text((DashAST)declID.getParent()));
-        		}
-        	}
-        	
-        } else {
-        	if (init.evalType.getTypeIndex() == tTUPLE) {
-                error("line " + declID.getLine() + ": " + declID.evalType + " " +
-                        declID.getText() + " is incompatible with " + init.evalType + " type");
-        		return;
-        	}
-        	
-	        int tdecl = declID.symbol.type.getTypeIndex();
-	        declID.evalType = declID.symbol.type;
-	        init.promoteToType = promoteFromTo[te][tdecl];
-	        if ( !canAssignTo(init.evalType, declID.symbol.type,
-	                          init.promoteToType) ) {
-                error("line " + declID.getLine() + ": " + declID.evalType + " " +
-                        declID.getText() + " is incompatible with " + init.evalType + " type");
-	        }
+        int tdecl = declID.symbol.type.getTypeIndex();
+        declID.evalType = declID.symbol.type;
+        init.promoteToType = promoteFromTo[te][tdecl];
+        if ( !canAssignTo(init.evalType, declID.symbol.type,
+                          init.promoteToType) ) {
+            error("line " + declID.getLine() + ": " + declID.evalType + " " +
+                    declID.getText() + " is incompatible with " + init.evalType + " type");
         }
     }
 
@@ -573,6 +527,7 @@ public class SymbolTable {
         }
     }
     
+    // TODO Remove and add specifier to type
     private boolean isConstantVariable(DashAST t) {
     	switch (t.token.getType()) {
     	case DashLexer.ID: {
@@ -646,7 +601,9 @@ public class SymbolTable {
     	
         //String s = super.toString();
         if ( lhs.evalType != _boolean &&
-                lhs.evalType != _integer && lhs.evalType != _real && lhs.evalType!= _character) {
+                lhs.evalType != _integer && 
+                lhs.evalType != _real && 
+                lhs.evalType!= _character) {
             error("line " + print.getLine() + ": invalid type " + lhs.evalType + " sent to outstream");
         }
         
@@ -751,6 +708,7 @@ public class SymbolTable {
     }
 
     //TODO: prevent reassignment to input/output streams
+    //TODO: add check for constant
     public boolean canAssignTo(Type valueType,Type destType,Type promotion) {
     	if (valueType.getTypeIndex() == tTUPLE  && destType.getTypeIndex() == tTUPLE) {
     		TupleTypeSymbol valueTuple = (TupleTypeSymbol)valueType;
@@ -771,8 +729,6 @@ public class SymbolTable {
         		int ta = a.getTypeIndex();
         		
         		Type promoteToType = promoteFromTo[ta][tf];
-        		// TODO Promote To
-        		//args.get(i).promoteToType = promoteToType;
         		
                 if ( !canAssignTo(a, f, promoteToType) ) {
         			return false;

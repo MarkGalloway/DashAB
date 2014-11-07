@@ -189,10 +189,10 @@ ArrayList<Type> types = new ArrayList<Type>();
 // D e f i n e  s y m b o l s
 
 typeDef
-	:	^(TYPEDEF typeElement ID)
+	:	^(TYPEDEF type_tyepdef ID)
 	{
-		debug("line " + $ID.getLine() + ": typedef " + $typeElement.type + " " + $ID.text);
-		Type type = $typeElement.type;
+		debug("line " + $ID.getLine() + ": typedef " + $type_tyepdef.type + " " + $ID.text);
+		Type type = $type_tyepdef.type;
 		if (type != null) {
 			TypedefSymbol ts = new TypedefSymbol($ID.text, type);
 			ts.def = $ID;            // track AST location of def's ID
@@ -288,6 +288,26 @@ varDeclaration // global, parameter, or local variable
     ;
 // END: field
 
+tupleMembers
+    // check that t.member or t.index (t.1 ... t.n) is defined
+    : ^(DOT id=ID m=(ID|INTEGER)) 
+       {
+         // check that the tuple is defined first
+         Symbol tuple = currentScope.resolve($id.text);
+         if(tuple == null) { symtab.error("line " + $DOT.getLine() + ": unknown identifier " + $id.text); }
+         
+         else {
+            // check that the member variable is defined
+            if ($m.token.getType() == ID) {
+            	Symbol member = ((TupleTypeSymbol)tuple.type).resolveMember($m.text);
+	            if(member == null) {
+	              symtab.error("line " + $DOT.getLine() + ": unknown member '" + $m.text +  "' for tuple " + $id.text);
+	            }
+	        }
+         }
+       }
+    ;
+
 /** Not included in tree pattern matching directly.  Needed by declarations */
 specifier returns [Specifier specifier]
     :	specifierElement         {$specifier = $specifierElement.specifier;}
@@ -305,7 +325,17 @@ specifierElement returns [Specifier specifier]
     ;
 
 type returns [Type type]
-    :	^(Tuple 
+    :	type_tyepdef {$type = $type_tyepdef.type;}
+    |	ID
+	    {
+	    TypedefSymbol s = (TypedefSymbol) currentScope.resolve($ID.text);
+	    $ID.symbol = s;
+	    $type = s;
+	    }
+    ;
+    
+type_tyepdef returns [Type type]
+	:	^(Tuple 
     {
       TupleTypeSymbol ts = new TupleTypeSymbol(currentScope);
       $Tuple.symbol = ts;
@@ -330,33 +360,8 @@ type returns [Type type]
 	    {
 	    $type = $typeElement.type;
 	    }
-    |	ID
-	    {
-	    TypedefSymbol s = (TypedefSymbol) currentScope.resolve($ID.text);
-	    $ID.symbol = s;
-	    $type = s;
-	    }
-    ;   
-    
-tupleMembers
-    // check that t.member or t.index (t.1 ... t.n) is defined
-    : ^(DOT id=ID m=(ID|INTEGER)) 
-       {
-         // check that the tuple is defined first
-         Symbol tuple = currentScope.resolve($id.text);
-         if(tuple == null) { symtab.error("line " + $DOT.getLine() + ": unknown identifier " + $id.text); }
-         
-         else {
-            // check that the member variable is defined
-            if ($m.token.getType() == ID) {
-            	Symbol member = ((TupleTypeSymbol)tuple.type).resolveMember($m.text);
-	            if(member == null) {
-	              symtab.error("line " + $DOT.getLine() + ": unknown member '" + $m.text +  "' for tuple " + $id.text);
-	            }
-	        }
-         }
-       }
-    ;
+	;
+   
         
 typeElement returns [Type type]
 @init {
