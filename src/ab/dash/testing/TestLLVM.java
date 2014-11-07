@@ -820,4 +820,34 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void primes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/63Primes/primes.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        int p = 1;
+    	
+    	while (p < 1000) {
+    	   	int i = 1;
+    	    boolean isPrime = true;
+    	    p = p + 1;
+    		
+    	    while (i < p/2) {
+    	        i = i+1;
+    	
+    	        if ((p/i) * i == p) {
+    	            isPrime = false;
+    	            i = p;
+    	        }
+    	    }
+    	
+    	    if (isPrime) {
+    	        sb.append(p + "\n");
+    	    }
+    	}
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
