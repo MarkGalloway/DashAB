@@ -793,4 +793,13 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void dashABStyleInput() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/62DashABStyleInput/dashABStyleInput.ds", "TestPrograms/62DashABStyleInput/input.in"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

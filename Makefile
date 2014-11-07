@@ -7,6 +7,10 @@ all:
 	antlr3 src/*.g
 	javac -d ./ src/*.java src/ab/dash/*.java src/ab/dash/ast/*.java src/ab/dash/exceptions/*.java
 
+runtime:
+	clang -c runtime.c -o runtime.o
+	ar rcs libruntime.a runtime.o
+	
 test:
 	javac -cp .:$(antlr):ab/dash/:ab/dash/ast/:ab/dash/exeptions/:junit-4.10.jar -d ./ src/ab/dash/testing/*.java
 	java -cp .:$(antlr):junit-4.10.jar ab/dash/testing/FullTest

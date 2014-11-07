@@ -355,13 +355,19 @@ public class Runner {
         // generate llvm
         
         deleteNoLongerNeeded(nodes, tree);
+        
+        String file = "LLVMIROutput/" + args[0].substring((args[0].lastIndexOf('/')+1));
+        
         String ast = tree.toStringTree();
-        String ast_file = "LLVMIROutput/" + args[0].substring((args[0].lastIndexOf('/')+1)) + ".ast";
+        String ast_file = file + ".ast";
         createFile(ast_file, ast);
 
         String llvm = runLLVMIRgenerator(nodes, symtab, tree, tokens);
-        String llvm_file = "LLVMIROutput/" + args[0].substring((args[0].lastIndexOf('/')+1)) + ".ll";
+        String llvm_file = file + ".ll";
         createFile(llvm_file, llvm);
+        
+        String object_file = file + ".o";
+        String executable = file.substring(0, (file.lastIndexOf('.')));
         
         // execute llvm and print it in stdout/stderr
     	Process p = null;
@@ -369,14 +375,20 @@ public class Runner {
     		String[] cmd = {
     				"/bin/sh",
     				"-c",
-    				"cat " + args[1] + " | lli " + llvm_file
+    				"make runtime > /dev/null && " +
+    				"llc " + llvm_file + " -filetype=obj && " +
+    				"clang " + object_file + " -o " + executable + " -L. -lruntime -lm && " +
+    				"cat " + args[1] + " | ./" + executable
     				};
     		p = Runtime.getRuntime().exec(cmd);
         } else {
         	String[] cmd = {
         			"/bin/sh",
     				"-c",
-    				"lli " + llvm_file
+    				"make runtime > /dev/null && " +
+    				"llc " + llvm_file + " -filetype=obj && " +
+    				"clang " + object_file + " -o " + executable + " -L. -lruntime -lm && " +
+    				"./" + executable
     				};
         	p = Runtime.getRuntime().exec(cmd);
         }
