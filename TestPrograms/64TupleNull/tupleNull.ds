@@ -1,0 +1,18 @@
+const out = std_output();
+
+procedure main() returns integer {
+	tuple(boolean, character, integer, real) tup_null = null;
+	tuple(boolean, character, integer, real) tup_identity = identity;
+	
+	tup_null.1 -> out; '\n' -> out;
+	tup_null.2 -> out; '\n' -> out;
+	tup_null.3 -> out; '\n' -> out;
+	tup_null.4 -> out; '\n' -> out;
+
+	tup_identity.1 -> out; '\n' -> out;
+	tup_identity.2 -> out; '\n' -> out;
+	tup_identity.3 -> out; '\n' -> out;
+	tup_identity.4 -> out; '\n' -> out;
+
+	return 0;
+}
