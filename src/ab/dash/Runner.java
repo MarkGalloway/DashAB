@@ -375,7 +375,7 @@ public class Runner {
     		String[] cmd = {
     				"/bin/sh",
     				"-c",
-    				"make runtime > /dev/null && " +
+    				//"make runtime > /dev/null && " +
     				"llc " + llvm_file + " -filetype=obj && " +
     				"clang " + object_file + " -o " + executable + " -L. -lruntime -lm && " +
     				"cat " + args[1] + " | ./" + executable
@@ -385,7 +385,7 @@ public class Runner {
         	String[] cmd = {
         			"/bin/sh",
     				"-c",
-    				"make runtime > /dev/null && " +
+    				//"make runtime > /dev/null && " +
     				"llc " + llvm_file + " -filetype=obj && " +
     				"clang " + object_file + " -o " + executable + " -L. -lruntime -lm && " +
     				"./" + executable
