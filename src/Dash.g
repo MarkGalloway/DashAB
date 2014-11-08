@@ -444,7 +444,7 @@ Length : 'length';
 //Out : 'out';
 //Inp : 'inp';
 Tuple : 'tuple';
-Stream_state : 'stream_state';
+//Stream_state : 'stream_state';
 Revserse : 'reverse';
 Identity : 'identity';
 Null : 'null';

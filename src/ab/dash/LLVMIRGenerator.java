@@ -237,8 +237,16 @@ public class LLVMIRGenerator {
 		{
 			DashAST method_node = (DashAST) t.getChild(0);
 			MethodSymbol method = (MethodSymbol)method_node.symbol;
+			
+			if (method.getShortName().equals("stream_state")) {
+				StringTemplate template = null;
+				template = stg.getInstanceOf("call_stream_state");
+				template.setAttribute("id", t.llvmResultID);
+				return template;
+			}
+			
 			Type method_type = method.type;
-
+			
 			// Arguments
 			List<StringTemplate> code = new ArrayList<StringTemplate>();
 			List<StringTemplate> args = new ArrayList<StringTemplate>();

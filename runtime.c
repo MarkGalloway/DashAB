@@ -56,22 +56,26 @@ int32_t readInteger() {
 	int read = 0;
 	int integer = 0;
 	int sign = 1;
+	int digit_found = 0;
+	
 	stream_state = 0;
 	
 	while (whiteSpace(input) || (input == 0 && stream_state == 0))
 		checkEOF(scanf("%c", &input));
-
 	
 	while (!whiteSpace(input)) {
 		if (isdigit(input)) {
 			integer = integer*10 + ((int)input - '0');
 			read = 1;
+			digit_found = 1;
 		} else if (input == '+' && read == 0) {
 			sign = 1;
 			read = 1;
 		} else if (input == '-' && read == 0) {
 			sign = -1;
 			read = 1;
+		} else if (input == '_' && digit_found == 0) {
+			stream_state = 1;
 		} else if (input != '_')
 			stream_state = 1;
 
@@ -88,23 +92,26 @@ float readReal() {
 	char input = 0;
 	int read = 0;
 	char buffer[256];
+	int digit_found = 0;
 
 	stream_state = 0;
 	
 	while (whiteSpace(input) || (input == 0 && stream_state == 0))
 		checkEOF(scanf("%c", &input));
 
-	
 	while (!whiteSpace(input)) {
 		if (isdigit(input) ||
 			input == '+' || input == '-' ||
 			input == '.' || input == 'e') {
 			buffer[read] = input;
 			read++;
+			digit_found = 1;
+		} else if (input == '_' && digit_found == 0) {
+			stream_state = 1;
 		} else if (input != '_')
 			stream_state = 1;
 
-		if (checkEOF(scanf("%c", &input)))
+		if (scanf("%c", &input) <= 0)
 			break;
 	}
 

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.antlr.runtime.RecognitionException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ab.dash.Runner;
@@ -17,6 +18,24 @@ import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
 
 public class TestLLVM extends BaseTest {
+	
+	@BeforeClass
+    public static void oneTimeSetUp() {
+		String[] cmd = {
+				"/bin/sh",
+				"-c",
+				"make runtime > /dev/null"
+				};
+		Process p;
+		try {
+			p = Runtime.getRuntime().exec(cmd);
+			p.waitFor();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+    }
     
     @Test 
     public void simpleMain() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
@@ -858,6 +877,27 @@ public class TestLLVM extends BaseTest {
         StringBuffer sb = new StringBuffer();
         
         sb.append("Expected not specified");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void streamState() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/65StreamState/streamState.ds", "TestPrograms/65StreamState/input.in"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("T\n");
+        sb.append("0\n");
+        sb.append("1\n");
+        sb.append("125\n");
+        sb.append("0\n");
+        sb.append("1\n");
+        sb.append("1\n");
+        sb.append("1.25\n");
+        sb.append("0\n");
+        sb.append("1\n");
+        sb.append("1\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }

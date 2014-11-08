@@ -219,6 +219,14 @@ public class SymbolTable {
         for (Specifier s : indexToSpecifier) {
         	if ( s!=null ) globals.define((BuiltInSpecifierSymbol)s);
         }
+        
+        MethodSymbol stream_state =
+            	new MethodSymbol("stream_state", _integer, globals);
+        
+        VariableSymbol stream_state_input = new VariableSymbol("inp", _instream, _const);
+        stream_state.define(stream_state_input);
+        
+        globals.define(stream_state);
     }
     
     public int getWarningCount() {

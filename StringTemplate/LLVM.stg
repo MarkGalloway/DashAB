@@ -188,6 +188,10 @@ call_returning_tuple(id, function_id, type_id, args, code, postcode) ::= <<
 <postcode; separator="\n">
 >>
 
+call_stream_state(id) ::= <<
+  <vlocal_result(id)> = call i32 @getStreamState()
+>>
+
 if(id, expr, expr_id, block) ::= <<
   <expr>
   br i1 <vlocal_result(expr_id)>, label %if.body<id>, label %if.done<id>
