@@ -564,6 +564,11 @@ public class SymbolTable {
     			return s.specifier.getSpecifierIndex() == sCONST;
         	}
     	}
+    	case DashLexer.EXPR:
+    		break;
+    		
+    	default:
+    		return true;
     	}
     	
     	for (int i = 0; i < t.getChildCount(); i++) {
