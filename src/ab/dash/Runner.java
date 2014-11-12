@@ -274,7 +274,7 @@ public class Runner {
         runDefineTupleTypes(nodes, symtab, tree);
     }
     
-    public static void llvmCompile(String[] args) throws IOException, InterruptedException {
+    public static CompileOutput llvmCompile(String[] args) throws IOException, InterruptedException {
     	// build the AST
         
         ANTLRFileStream input = getInputStream(args);
@@ -284,11 +284,11 @@ public class Runner {
         try {
             tree = runLexerParser(input);
         } catch (LexerException e) {
-        	return;
+        	return null;
         } catch (ParserException e) {
-        	return;
+        	return null;
         } catch (RecognitionException e) {
-            return;
+        	return null;
         }
 
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
@@ -305,7 +305,7 @@ public class Runner {
             runNullAndIdentitySweep(nodes, symtab, tree);
             methodCheck(nodes, tree);
         } catch (SymbolTableException e) {
-            return;
+            return null;
         }
         
         // generate llvm
@@ -313,58 +313,27 @@ public class Runner {
         deleteNoLongerNeeded(nodes, tree);
         
         String llvm = runLLVMIRgenerator(nodes, symtab, tree, tokens);
-        System.out.println(llvm);
+        
+        return new CompileOutput(llvm, tree);
     }
     
     // used by LLVMtest
     public static void llvmMain(String[] args) throws IOException, InterruptedException {
         
-        // build the AST
-        
-        ANTLRFileStream input = getInputStream(args);
-        
-
-        DashAST tree;
-        try {
-            tree = runLexerParser(input);
-        } catch (LexerException e) {
-        	return;
-        } catch (ParserException e) {
-        	return;
-        } catch (RecognitionException e) {
-            return;
-        }
-
-        CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
-        nodes.setTokenStream(tokens);
-        SymbolTable symtab = new SymbolTable(tokens);
-        
-        // run tree walker passes
-        
-        try {
-            runDef(nodes, symtab, tree);
-            runNullUninitializedValues(nodes, symtab, tree);
-            runTypes(nodes, symtab, tree);
-            runDefineTupleTypes(nodes, symtab, tree);
-            runNullAndIdentitySweep(nodes, symtab, tree);
-            methodCheck(nodes, tree);
-        } catch (SymbolTableException e) {
-            return;
-        }
-        
-        // generate llvm
-        
-        deleteNoLongerNeeded(nodes, tree);
+    	CompileOutput llvm_output = llvmCompile(args);
+    	
+    	if (llvm_output == null) {
+    		return;
+    	}
         
         String file = "LLVMIROutput/" + args[0].substring((args[0].lastIndexOf('/')+1));
         
-        String ast = tree.toStringTree();
+        String ast = llvm_output.tree.toStringTree();
         String ast_file = file + ".ast";
         createFile(ast_file, ast);
 
-        String llvm = runLLVMIRgenerator(nodes, symtab, tree, tokens);
         String llvm_file = file + ".ll";
-        createFile(llvm_file, llvm);
+        createFile(llvm_file, llvm_output.llvm);
         
         String object_file = file + ".o";
         String executable = file.substring(0, (file.lastIndexOf('.')));
