@@ -46,6 +46,7 @@ nullExpr
     }
     else {
       ((DashAST)expr.getChild(0)).evalType = $node.evalType;
+      //((DashAST)expr.getChild(0)).promoteToType = null;
       $node.deleteChild(0);
       $node.addChild(expr.getChild(0));
     }
@@ -67,6 +68,7 @@ identExpr
     }
     else {
       ((DashAST)expr.getChild(0)).evalType = $node.evalType;
+      //((DashAST)expr.getChild(0)).promoteToType = null;
       $node.deleteChild(0);
       $node.addChild(expr.getChild(0));
     }
