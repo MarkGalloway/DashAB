@@ -11,5 +11,7 @@ public class DashAB_Part1_Test {
     	CompileOutput output = Runner.llvmCompile(args);
     	if (output != null)
     		System.out.println(output.llvm);
+    	else
+    		System.err.println("Build Failed");
     }
 }

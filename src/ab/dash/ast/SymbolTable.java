@@ -511,8 +511,10 @@ public class SymbolTable {
         if (declID.symbol.type == null) {
         	if (te != tNULL && te != tIDENTITY)
         		declID.symbol.type = init.evalType;
-        	else
-        		error("line " + declID.getLine() + ": type cannot be inferred for " + init.getText());
+        	else {
+        		error("line " + declID.getLine() + ": type cannot be inferred for " + text((DashAST) init.getParent()));
+        		return;
+        	}
         }
         
         if (declID.symbol.type instanceof TypedefSymbol) {

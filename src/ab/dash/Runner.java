@@ -104,7 +104,7 @@ public class Runner {
         if (main == null || !(main instanceof MethodSymbol)) {
             symtab.error("error: missing main procedure");
         }
-        else if (main.type != symtab._integer) {
+        else if (main.type.getTypeIndex() != SymbolTable.tINTEGER) {
             symtab.error("line " + main.def.getLine() + ": main procedure must return an integer");
         }
         else if (((MethodSymbol)main).getMembers().size() > 0) {
