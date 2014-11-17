@@ -1,0 +1,14 @@
+procedure p(var integer a, var integer b, const integer c, const integer d) {
+   /* Some code here */
+}
+
+procedure main() returns integer {
+    integer x = 0;
+    integer y = 0;
+    integer z = 0;
+
+    /* Legal */
+    call p(x, y, z, z); /* Even though 'z' is aliased with 'c' and 'd' they are both const. */
+
+    return 0;
+}

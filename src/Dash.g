@@ -300,8 +300,6 @@ nonDeclarableStatement
   | lhs INSTREAM ID DELIM -> ^(INPUT ID lhs)
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
-  //| ID ASSIGN tupleMemberList DELIM -> ^(ASSIGN ID tupleMemberList)
-  //| ID (',' ID)+ ASSIGN tupleMemberList DELIM -> ^(UNPACK ID+ tupleMemberList)
   | ID (',' ID)+ ASSIGN expression DELIM -> ^(UNPACK ^(EXPR ID)+ expression)
   | Break DELIM!
     {
@@ -446,7 +444,7 @@ Length : 'length';
 //Out : 'out';
 //Inp : 'inp';
 Tuple : 'tuple';
-Stream_state : 'stream_state';
+//Stream_state : 'stream_state';
 Revserse : 'reverse';
 Identity : 'identity';
 Null : 'null';

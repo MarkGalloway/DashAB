@@ -1,0 +1,12 @@
+const out = std_output();
+typedef tuple(integer, real) x;
+
+procedure main() returns integer {
+
+	x x = (1, 0.5);
+	
+	x.1 -> out; '\n' -> out;
+	x.2 -> out; '\n' -> out;
+	
+	return 0;
+}

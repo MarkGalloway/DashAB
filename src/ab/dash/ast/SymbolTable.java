@@ -29,10 +29,8 @@ public class SymbolTable {
     public static final int sCONST = 0;
     public static final int sVAR = 1;
     
-    
     /* tVOID is for procedures with no return and should not be added 
-     * to the globals. This is 
-     * mostly used for debugging type checking.
+     * to the globals. This is mostly used for debugging type checking.
      */
     public static final int tVOID = 9;		
     public static final BuiltInTypeSymbol _void =
@@ -87,8 +85,8 @@ public class SymbolTable {
 
     /** arithmetic types defined in order from narrowest to widest */
     public static final Type[] indexToType = {
-        // 0, 	1,        2,     	  3,    	4,		5,				6,      7
-    	_tuple, _boolean, _character, _integer, _real, _outstream, _instream, _null
+        // 0, 	1,        2,     	  3,    	4,		5,				6,      7,	8
+    	_tuple, _boolean, _character, _integer, _real, _outstream, _instream, _null, _identity
     };
     
     public static final Specifier[] indexToSpecifier = {
@@ -113,14 +111,14 @@ public class SymbolTable {
     public static final Type[][] logicResultType = new Type[][] {
     	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity*/
     	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null},
-        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null,         null,      null},
+        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null,         _boolean,   _boolean},
         /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
         /*integer*/     {null,		null,  		null,    	null,   	null,	null,	null,         null,      null},
         /*real*/   		{null,		null,  		null,    	null,   	null,	null,	null,         null,      null},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
-        /*null*/        {null,      _boolean,   null,       null,       null,   null,   null,         null,      null},
-        /*identity*/    {null,      _boolean,   null,       null,       null,   null,   null,         null,      null}
+        /*null*/        {null,    	_boolean,   null,       null,       null,   null,   null,         null,      null},
+        /*identity*/    {null,    	_boolean,   null,       null,       null,   null,   null,         null,      null}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
@@ -132,8 +130,8 @@ public class SymbolTable {
         /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null},
-        /*null*/        {null,      _boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null},
-        /*identity*/    {null,      _boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null}
+        /*null*/        {null,   	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null},
+        /*identity*/    {null,    	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
@@ -145,8 +143,8 @@ public class SymbolTable {
         /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,    _boolean,      _boolean},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,    null,          null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,    null,          null},
-        /*null*/        {null,  _boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
-        /*identity*/    {null,  _boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
+        /*null*/        {_boolean,  _boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
+        /*identity*/    {_boolean,  _boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
     };
     
     public static final Type[][] castResultType = new Type[][] {
@@ -158,8 +156,8 @@ public class SymbolTable {
         /*real*/   		{null,		null,  		null,    	_integer,   _real,	null,	null,        null,      null},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,        null,      null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,        null,      null},
-        /*null*/        {null,      _boolean,  _character,  _integer,   _real,  null,   null,        null,      null},
-        /*null*/        {null,      _boolean,  _character,  _integer,   _real,  null,   null,        null,      null},
+        /*null*/        {_tuple,    _boolean,  _character,  _integer,   _real,  null,   null,        null,      null},
+        /*identity*/    {_tuple,    _boolean,  _character,  _integer,   _real,  null,   null,        null,      null},
    };
 
     /** Indicate whether a type needs a promotion to a wider type.
@@ -176,10 +174,9 @@ public class SymbolTable {
         /*real*/   		{null,		null,  		null,    	null,   	null, 	null,       null,      null,      null},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null},
-        /*null*/        {null,      _boolean,   _character, _integer,   _real,  null,       null,      null,      null},
-        /*identity*/    {null,      _boolean,   _character, _integer,   _real,  null,       null,      null,      null},
-    };
-    
+        /*null*/        {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null},
+        /*identity*/    {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null},
+    };    
 
     
 
@@ -220,6 +217,14 @@ public class SymbolTable {
         for (Specifier s : indexToSpecifier) {
         	if ( s!=null ) globals.define((BuiltInSpecifierSymbol)s);
         }
+        
+        MethodSymbol stream_state =
+            	new MethodSymbol("stream_state", _integer, globals);
+        
+        VariableSymbol stream_state_input = new VariableSymbol("inp", _instream, _const);
+        stream_state.define(stream_state_input);
+        
+        globals.define(stream_state);
     }
     
     public int getWarningCount() {
@@ -256,40 +261,34 @@ public class SymbolTable {
     }
 
     public Type getResultType(Type[][] typeTable, DashAST a, DashAST b) {
-        int ta = a.evalType.getTypeIndex(); // type index of left operand
-        int tb = b.evalType.getTypeIndex(); // type index of right operand
-        
-        if (a.evalType.getTypeIndex() == this.tNULL) { 
-            CommonToken token = convertFromNull(b.evalType);
-            if (token != null) {
-                a.evalType = b.evalType;
-                a.token = token;
-            }  
-        }
-        
-        if (b.evalType.getTypeIndex() == this.tNULL) { 
-            CommonToken token = convertFromNull(a.evalType);
-            if (token != null) {
-                b.evalType = a.evalType;
-                b.token = token;
-            }  
-        }
-        
-        if (a.evalType.getTypeIndex() == this.tIDENTITY) { 
-            CommonToken token = convertFromIdentity(b.evalType);
-            if (token != null) {
-                a.evalType = b.evalType;
-                a.token = token;
-            }  
-        }
-        
-        if (b.evalType.getTypeIndex() == this.tIDENTITY) { 
-            CommonToken token = convertFromIdentity(a.evalType);
-            if (token != null) {
-                b.evalType = a.evalType;
-                b.token = token;
-            }  
-        }
+    	 Type aType = a.evalType; // type of left operand
+         Type bType = b.evalType; // type of right operand
+         
+         int ta = aType.getTypeIndex();
+         int tb = bType.getTypeIndex();
+         if (ta == tNULL || ta == tIDENTITY) {
+        	 CommonToken token = null;
+        	 if (ta == tNULL)
+        		 token = convertFromNull(bType);
+        	 else
+        		 token = convertFromIdentity(bType);
+             if (token != null) {
+                 a.evalType = b.evalType;
+                 a.token = token;
+             }  
+         }
+         
+         if (tb == tNULL || tb == tIDENTITY) { 
+        	 CommonToken token = null;
+        	 if (tb == tNULL)
+        		 token = convertFromNull(aType);
+        	 else
+        		 token = convertFromIdentity(aType);
+             if (token != null) {
+                 b.evalType = a.evalType;
+                 b.token = token;
+             }  
+         }
         
         Type result = typeTable[ta][tb];    // operation result type
         if ( result==null ) {
@@ -488,77 +487,7 @@ public class SymbolTable {
         
         return s.type;           // return ID's type
     }
-
-    // assignnment stuff (arg assignment in call())
     
-    public void declinit(DashAST declID, DashAST init) {
-        int te = init.evalType.getTypeIndex(); // promote expr to decl type?
-              
-        // Check for Type Inference
-        if (declID.symbol.type == null) {
-        	declID.symbol.type = init.evalType;
-        }
-        
-        if (declID.symbol.type instanceof TypedefSymbol) {
-        	TypedefSymbol typedef = (TypedefSymbol) declID.symbol.type;
-        	declID.symbol.type = typedef.def_type;
-        }
-        
-        if (declID.symbol.type.getTypeIndex() == tTUPLE) {
-        	if (init.evalType.getTypeIndex() != tTUPLE) {
-        		error("line " + declID.getLine() + ": " + declID.evalType + " " +
-	            		declID.getText() + " is incompatible with " + init.evalType + " type");
-        		return;
-        	}
-        	
-        	TupleTypeSymbol idTuple = (TupleTypeSymbol) declID.symbol.type;
-        	TupleTypeSymbol initTuple = (TupleTypeSymbol) init.evalType;
-        	
-        	if (idTuple.fields.size() != initTuple.fields.size()) {
-        		error("line " + declID.getLine() + ": Tuples have mismatched sizes in "+
-                        text((DashAST)declID.getParent()));
-        		return;
-        	}
-        	
-        	for (int i = 0; i < idTuple.fields.size(); i++) {
-        		VariableSymbol f_var = (VariableSymbol) idTuple.fields.get(i);
-        		VariableSymbol a_var = (VariableSymbol) initTuple.fields.get(i);
-        		
-        		Type f = f_var.type;
-        		Type a = a_var.type;
-        		
-        		int tf = f.getTypeIndex();
-        		int ta = a.getTypeIndex();
-        		
-        		Type promoteToType = promoteFromTo[ta][tf];
-        		// TODO Promote To
-        		//args.get(i).promoteToType = promoteToType;
-        		
-                if ( !canAssignTo(a, f, promoteToType) ) {
-        			error("line " + declID.getLine() + ": Tuple argument at index " + (i+1) +
-        					" has incompatible types in " +
-                            text((DashAST)declID.getParent()));
-        		}
-        	}
-        	
-        } else {
-        	if (init.evalType.getTypeIndex() == tTUPLE) {
-                error("line " + declID.getLine() + ": " + declID.evalType + " " +
-                        declID.getText() + " is incompatible with " + init.evalType + " type");
-        		return;
-        	}
-        	
-	        int tdecl = declID.symbol.type.getTypeIndex();
-	        declID.evalType = declID.symbol.type;
-	        init.promoteToType = promoteFromTo[te][tdecl];
-	        if ( !canAssignTo(init.evalType, declID.symbol.type,
-	                          init.promoteToType) ) {
-                error("line " + declID.getLine() + ": " + declID.evalType + " " +
-                        declID.getText() + " is incompatible with " + init.evalType + " type");
-	        }
-        }
-    }
-
     public void ret(MethodSymbol ms, DashAST expr) {
         Type retType = ms.type; // promote return expr to function decl type?
         Type exprType = expr.evalType;
@@ -571,6 +500,77 @@ public class SymbolTable {
             		ms.name+"():<"+ms.type+"> have incompatible types in "+
             		text((DashAST)expr.getParent()));
         }
+    }
+
+    // assignnment stuff (arg assignment in call())
+    
+    public void declinit(DashAST declID, DashAST init) {
+        int te = init.evalType.getTypeIndex(); // promote expr to decl type?
+        
+        // Check for Type Inference
+        if (declID.symbol.type == null) {
+        	if (te != tNULL && te != tIDENTITY)
+        		declID.symbol.type = init.evalType;
+        	else {
+        		error("line " + declID.getLine() + ": type cannot be inferred for " + text((DashAST) init.getParent()));
+        		return;
+        	}
+        }
+        
+        if (declID.symbol.type instanceof TypedefSymbol) {
+        	TypedefSymbol typedef = (TypedefSymbol) declID.symbol.type;
+        	declID.symbol.type = typedef.def_type;
+        }
+        
+        if (declID.symbol.type.getTypeIndex() == tTUPLE) {
+        	if (te == tNULL || te == tIDENTITY) {
+        		DashAST parent = (DashAST) init.getParent();
+        		int index = init.getChildIndex();
+        		
+        		DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+        		DashAST tuple_list = new DashAST(new CommonToken(DashLexer.TUPLE_LIST, "TUPLE_LIST"));
+        		
+        		TupleTypeSymbol tuple = (TupleTypeSymbol) declID.symbol.type;
+        		ArrayList<Symbol> fields = tuple.fields;
+        		
+        		for (int i = 0; i < fields.size(); i++) {
+        			VariableSymbol field = (VariableSymbol) fields.get(i);
+        			Type type = field.type;
+        			
+        			DashAST expr_t = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+        			DashAST expr_e = null;
+        			
+        			if (te == tNULL)
+        				expr_e = new DashAST(convertFromNull(type));
+        			else if (te == tIDENTITY)
+        				expr_e = new DashAST(convertFromIdentity(type));
+        			
+        			expr_e.evalType = type;
+        			expr_t.evalType = type;
+        			
+        			expr_t.addChild(expr_e);
+        			tuple_list.addChild(expr_t);
+        		}
+        		
+        		tuple_list.evalType = tuple;
+        		expr.evalType = tuple;
+        		init = expr;
+        		te = tTUPLE;
+        		
+        		expr.addChild(tuple_list);
+        		parent.replaceChildren(index, index, expr);
+
+        	}
+        } 
+        
+		int tdecl = declID.symbol.type.getTypeIndex();
+		declID.evalType = declID.symbol.type;
+		init.promoteToType = promoteFromTo[te][tdecl];
+		if (!canAssignTo(init.evalType, declID.symbol.type, init.promoteToType)) {
+			error("line " + declID.getLine() + ": " + declID.evalType + " "
+					+ declID.getText() + " is incompatible with "
+					+ init.evalType + " type");
+		}
     }
     
     private boolean isConstantVariable(DashAST t) {
@@ -591,7 +591,7 @@ public class SymbolTable {
     			if (st.specifier.getSpecifierIndex() == sCONST) {
     				return true;
     			}
-    			
+    	        
     			TupleTypeSymbol scope = (TupleTypeSymbol) st.type;
     			VariableSymbol s = (VariableSymbol)scope.resolveMember(field.getText());
     			
@@ -601,6 +601,11 @@ public class SymbolTable {
     			return s.specifier.getSpecifierIndex() == sCONST;
         	}
     	}
+    	case DashLexer.EXPR:
+    		break;
+    		
+    	default:
+    		return true;
     	}
     	
     	for (int i = 0; i < t.getChildCount(); i++) {
@@ -619,6 +624,7 @@ public class SymbolTable {
                     text((DashAST)lhs.getParent()));
 			return;
 		}
+    	
         int tlhs = lhs.evalType.getTypeIndex(); // promote right to left type?
         int trhs = rhs.evalType.getTypeIndex();
         rhs.promoteToType = promoteFromTo[trhs][tlhs];
@@ -646,7 +652,9 @@ public class SymbolTable {
     	
         //String s = super.toString();
         if ( lhs.evalType != _boolean &&
-                lhs.evalType != _integer && lhs.evalType != _real && lhs.evalType!= _character) {
+                lhs.evalType != _integer && 
+                lhs.evalType != _real && 
+                lhs.evalType!= _character) {
             error("line " + print.getLine() + ": invalid type " + lhs.evalType + " sent to outstream");
         }
         
@@ -677,10 +685,18 @@ public class SymbolTable {
 		}
 
 		DashAST stream = (DashAST) input.getChild(0);
+		DashAST lhs = (DashAST) input.getChild(1);
 
 		VariableSymbol s = (VariableSymbol) stream.scope.resolve(stream
 				.getText());
 		stream.symbol = s;
+		
+		if ( lhs.evalType != _boolean &&
+                lhs.evalType != _integer && 
+                lhs.evalType != _real && 
+                lhs.evalType!= _character) {
+            error("line " + input.getLine() + ": invalid type " + lhs.evalType + " sent to instream");
+        }
 
 		if (s.type != null) {
 			if (s.type.getTypeIndex() != SymbolTable.tINSTREAM) {
@@ -749,8 +765,7 @@ public class SymbolTable {
     	
     	return false;
     }
-
-    //TODO: prevent reassignment to input/output streams
+    
     public boolean canAssignTo(Type valueType,Type destType,Type promotion) {
     	if (valueType.getTypeIndex() == tTUPLE  && destType.getTypeIndex() == tTUPLE) {
     		TupleTypeSymbol valueTuple = (TupleTypeSymbol)valueType;
@@ -771,8 +786,6 @@ public class SymbolTable {
         		int ta = a.getTypeIndex();
         		
         		Type promoteToType = promoteFromTo[ta][tf];
-        		// TODO Promote To
-        		//args.get(i).promoteToType = promoteToType;
         		
                 if ( !canAssignTo(a, f, promoteToType) ) {
         			return false;

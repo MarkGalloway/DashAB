@@ -114,6 +114,6 @@ bool_print_output<id>:
 >>
 
 bool_input(id, sym_id) ::= <<
-  <vlocal_result(id)> = call i1 @readBool()
+  <vlocal_result(id)> = call i1 @readBoolean()
   store i1 <vlocal_result(id)>, i1* <vlocal_symbol(sym_id)>
 >>

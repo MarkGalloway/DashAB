@@ -1,0 +1,56 @@
+const out = std_output();
+const inp = std_input();
+
+procedure main() returns integer {
+	integer err;
+	
+	boolean b;
+	integer i;
+	real r;
+	
+	b <- inp;
+	b -> out; '\n' -> out;
+	
+	err = stream_state(inp);
+	err -> out; '\n' -> out;
+	
+	b <- inp;
+	
+	err = stream_state(inp);
+	err -> out; '\n' -> out;
+
+	i <- inp;
+	i -> out; '\n' -> out;
+	
+	err = stream_state(inp);
+	err -> out; '\n' -> out;
+	
+	i <- inp;
+	
+	err = stream_state(inp);
+	err -> out; '\n' -> out;
+	
+	i <- inp;
+	
+	err = stream_state(inp);
+	err -> out; '\n' -> out;
+	
+	r <- inp;
+	r -> out; '\n' -> out;
+	
+	err = stream_state(inp);
+	err -> out; '\n' -> out;
+	
+	r <- inp;
+	
+	err = stream_state(inp);
+	err -> out; '\n' -> out;
+	
+	r <- inp;
+	
+	err = stream_state(inp);
+	err -> out; '\n' -> out;
+
+
+	return 0;
+}

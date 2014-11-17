@@ -1,0 +1,26 @@
+const out = std_output();
+
+procedure main() returns integer {
+	var p = 1;
+	
+	loop while (p < 1000) {
+	   	var i = 1;
+	    var isPrime = true;
+	    p = p + 1;
+		
+	    loop while (i < p/2) {
+	        i = i+1;
+	
+	        if ((p/i) * i == p) {
+	            isPrime = false;
+	            i = p;
+	        }
+	    }
+	
+	    if (isPrime) {
+	        p -> out; '\n' -> out;
+	    }
+	}
+	
+	return 0;
+}

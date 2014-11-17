@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.antlr.runtime.RecognitionException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ab.dash.Runner;
@@ -17,6 +18,24 @@ import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
 
 public class TestLLVM extends BaseTest {
+	
+	@BeforeClass
+    public static void oneTimeSetUp() {
+		String[] cmd = {
+				"/bin/sh",
+				"-c",
+				"make runtime > /dev/null"
+				};
+		Process p;
+		try {
+			p = Runtime.getRuntime().exec(cmd);
+			p.waitFor();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+    }
     
     @Test 
     public void simpleMain() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
@@ -350,10 +369,15 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         
+        sb.append("Hello, World!\n");
         sb.append("T\n");
-        sb.append("a\n");
-        sb.append("125\n");
-        sb.append("1.25\n");
+        sb.append("F\n");
+       	sb.append("125\n");
+       	sb.append("125\n");
+       	sb.append("-125\n");
+       	sb.append("1.25\n");
+       	sb.append("1.25\n");
+       	sb.append("-1.25\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
@@ -747,6 +771,131 @@ public class TestLLVM extends BaseTest {
         
         sb.append("5\n");
         sb.append("4\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void tupleTypedef() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/59TupleTypedef/tupleTypedef.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("1\n");
+        sb.append("0.5\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void testPromotionInExpression() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/60TestPromotionInExpression/testPromotionInExpression.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("1.41421\n");
+        sb.append("1.41421\n");
+        sb.append("1.41421\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void validAliasing() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/61ValidAliasing/validAliasing.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void dashABStyleInput() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/62DashABStyleInput/dashABStyleInput.ds", "TestPrograms/62DashABStyleInput/input.in"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("1234\n");
+        sb.append("1234\n");
+        sb.append("1234\n");
+        sb.append("0.42\n");
+        sb.append("42\n");
+        sb.append("4.2e+11\n");
+        sb.append("0.42\n");
+        sb.append("42\n");
+        sb.append("4.2e-09\n");
+        sb.append("4.2e+11\n");
+        sb.append("4.2e-09\n");
+        sb.append("4.2e+11\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void primes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/63Primes/primes.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        int p = 1;
+    	
+    	while (p < 1000) {
+    	   	int i = 1;
+    	    boolean isPrime = true;
+    	    p = p + 1;
+    		
+    	    while (i < p/2) {
+    	        i = i+1;
+    	
+    	        if ((p/i) * i == p) {
+    	            isPrime = false;
+    	            i = p;
+    	        }
+    	    }
+    	
+    	    if (isPrime) {
+    	        sb.append(p + "\n");
+    	    }
+    	}
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void tupleNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/64TupleNull/tupleNull.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("F\n");
+        sb.append("\0\n");
+        sb.append("0\n");
+        sb.append("0\n");
+        sb.append("T\n");
+        sb.append("\n");
+        sb.append("1\n");
+        sb.append("1\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void streamState() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/65StreamState/streamState.ds", "TestPrograms/65StreamState/input.in"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("T\n");
+        sb.append("0\n");
+        sb.append("1\n");
+        sb.append("125\n");
+        sb.append("0\n");
+        sb.append("1\n");
+        sb.append("1\n");
+        sb.append("1.25\n");
+        sb.append("0\n");
+        sb.append("1\n");
+        sb.append("1\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }

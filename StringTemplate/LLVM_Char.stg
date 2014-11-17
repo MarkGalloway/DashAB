@@ -134,6 +134,6 @@ char_print(id, expr, expr_id) ::= <<
 >>
 
 char_input(id, sym_id) ::= <<
-  <vlocal_result(id)> = call i8 @readChar()
+  <vlocal_result(id)> = call i8 @readCharacter()
   store i8 <vlocal_result(id)>, i8* <vlocal_symbol(sym_id)>
 >>

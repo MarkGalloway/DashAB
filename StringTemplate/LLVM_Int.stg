@@ -124,7 +124,7 @@ int_print(id, expr, expr_id) ::= <<
 >>
 
 int_input(id, sym_id) ::= <<
-  <vlocal_result(id)> = call i32 @readInt()
+  <vlocal_result(id)> = call i32 @readInteger()
   store i32 <vlocal_result(id)>, i32* <vlocal_symbol(sym_id)>
 >>
 

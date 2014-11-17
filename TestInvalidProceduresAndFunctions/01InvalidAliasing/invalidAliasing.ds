@@ -1,0 +1,16 @@
+procedure p(var integer a, var integer b, const integer c, const integer d) {
+   /* Some code here */
+}
+
+procedure main() returns integer {
+    integer x = 0;
+    integer y = 0;
+    integer z = 0;
+
+    /* Illegal */
+    call p(x, x, x, x); /* Aliasing, this is an error. */
+    call p(x, x, y, y); /* Still aliasing, error. */
+    call p(x, y, x, x); /* Argument a is mutable and aliased with c and d. */
+
+    return 0;
+}
