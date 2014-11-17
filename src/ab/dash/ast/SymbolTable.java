@@ -111,7 +111,7 @@ public class SymbolTable {
     public static final Type[][] logicResultType = new Type[][] {
     	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity*/
     	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null},
-        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null,         null,      null},
+        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null,         _boolean,   _boolean},
         /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
         /*integer*/     {null,		null,  		null,    	null,   	null,	null,	null,         null,      null},
         /*real*/   		{null,		null,  		null,    	null,   	null,	null,	null,         null,      null},
@@ -143,8 +143,8 @@ public class SymbolTable {
         /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,    _boolean,      _boolean},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,    null,          null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,    null,          null},
-        /*null*/        {_tuple,  	_boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
-        /*identity*/    {_tuple,  	_boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
+        /*null*/        {_boolean,  _boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
+        /*identity*/    {_boolean,  _boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
     };
     
     public static final Type[][] castResultType = new Type[][] {
