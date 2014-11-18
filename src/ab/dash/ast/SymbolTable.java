@@ -785,9 +785,9 @@ public class SymbolTable {
         		int tf = f.getTypeIndex();
         		int ta = a.getTypeIndex();
         		
-        		Type promoteToType = promoteFromTo[ta][tf];
+        		Type promoteToType = promoteFromTo[tf][ta];
         		
-                if ( !canAssignTo(a, f, promoteToType) ) {
+                if ( !canAssignTo(f, a, promoteToType) ) {
         			return false;
         		}
         	}

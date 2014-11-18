@@ -148,7 +148,7 @@ public class Runner {
         }
     }
     
-    // runs DefineTupleTypes.g treewalker, aborts if errors are found
+ // runs DefineTupleTypes.g treewalker, aborts if errors are found
     private static void runDefineTupleTypes(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
         nodes.reset();
         DefineTupleTypes tupleTypeComp = new DefineTupleTypes(symtab);
@@ -157,6 +157,17 @@ public class Runner {
         
         if (symtab.getErrorCount() > 0) {
             throw new SymbolTableException(symtab.getErrors());
+        }
+    }
+    
+    // runs TuplePromotion.java, aborts if errors are found
+    private static void runTuplePromotion(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
+        nodes.reset();
+        TuplePromotion tupleTypeComp = new TuplePromotion();
+        tupleTypeComp.check(tree);
+        
+        if (tupleTypeComp.getErrorCount() > 0) {
+            throw new SymbolTableException(tupleTypeComp.getErrors());
         }
     }
 
@@ -301,6 +312,7 @@ public class Runner {
             runDef(nodes, symtab, tree);
             runNullUninitializedValues(nodes, symtab, tree);
             runTypes(nodes, symtab, tree);
+            runTuplePromotion(nodes, symtab, tree);
             runDefineTupleTypes(nodes, symtab, tree);
             runNullAndIdentitySweep(nodes, symtab, tree);
             methodCheck(nodes, tree);
