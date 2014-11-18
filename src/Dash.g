@@ -541,10 +541,11 @@ Examples:
 
 REAL 
 	: 	(
-			(DIGIT (DIGIT | UNDERSCORE)* DOT (DIGIT | UNDERSCORE)*)
+			  (DIGIT (DIGIT | UNDERSCORE)* DOT (DIGIT | UNDERSCORE)*)
 			| {!member_access}?=> (DOT (DIGIT | UNDERSCORE)*)
 			| (DIGIT (DIGIT | UNDERSCORE)*)
-		) (DecimalExponent1 | DecimalExponent2)? FloatTypeSuffix?
+			) 
+			DecimalExponent1? FloatTypeSuffix?
 	;
 
 fragment Quote : 	'\'';
@@ -587,8 +588,8 @@ fragment MULTILINE_COMMENT_END
   
 NL : ('\r' '\n' | '\r' | '\n') {$channel=HIDDEN;};
 
-fragment DecimalExponent1 : ('e' | 'E') UNDERSCORE* ('+' | '-') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
-fragment DecimalExponent2 : ('e' | 'E') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
+fragment DecimalExponent1 : ('e' | 'E') (UNDERSCORE* ('+' | '-') UNDERSCORE*)? DIGIT (DIGIT | UNDERSCORE)*;
+//fragment DecimalExponent2 : ('e' | 'E') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
 fragment FloatTypeSuffix : 'f' | 'F' | 'l' | 'L' UNDERSCORE*;
 fragment UNDERSCORE : '_';
 fragment DIGIT : '0'..'9';
