@@ -534,12 +534,13 @@ Examples:
 */
 
 REAL 
-	: 	(
-			  (DIGIT (DIGIT | UNDERSCORE)* DOT (DIGIT | UNDERSCORE)*)
-			| {!member_access}?=> (DOT (DIGIT | UNDERSCORE)*)
-			| (DIGIT (DIGIT | UNDERSCORE)*)
-			) 
-			DecimalExponent1? FloatTypeSuffix?
+	: 	DIGIT (DIGIT | UNDERSCORE)* 
+	(
+		(DOT (DIGIT | UNDERSCORE | DecimalExponent1))=> DOT (DIGIT | UNDERSCORE)* DecimalExponent1? FloatTypeSuffix?
+		| (RANGE)=> {_type=INTEGER;} 
+		| DecimalExponent1 FloatTypeSuffix?
+	)
+		| {!member_access}?=> (DOT (DIGIT | UNDERSCORE)*) DecimalExponent1? FloatTypeSuffix?
 	;
 
 fragment Quote : 	'\'';
