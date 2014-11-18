@@ -30,6 +30,7 @@ tokens {
   DOWHILE;
   UNPACK;
   TYPECAST;
+  VECTOR_LIST;
 }
 
 // Parser Rules
@@ -208,6 +209,7 @@ varDeclaration
   | inputDeclaration
   | streamDeclaration
   | intervalDeclaration 
+  | vectorDeclaration
 	;
 
 inputDeclaration
@@ -234,6 +236,11 @@ intervalDeclaration
       -> ^(VAR_DECL specifier Interval ID expression?)
 //  | specifier? type Interval ID (ASSIGN expression)? DELIM
 //      { emitErrorMessage("line " + $ID.getLine() + ": Intervals only support interger base types."); }
+  ;
+  
+vectorDeclaration
+  : primitiveType Vector? ID LBRACK size=expression RBRACK (ASSIGN init=expression)? DELIM
+      -> ^(Vector["vector"] primitiveType $size ID $init?)
   ;
   
 // END: var
@@ -387,10 +394,12 @@ primary
     | Null
     | LPAREN expr RPAREN -> expr
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
+    | LBRACK expression (',' expression)* RBRACK -> ^(VECTOR_LIST expression+)
     | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
     | LPAREN RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Empty tuple lists are not allowed.");}
+    | LBRACK RBRACK {emitErrorMessage("line " + $LBRACK.getLine() + ": Empty vector construction is not allowed.");}
     ;
     
 /* END EXPRESSIONS */

@@ -1,0 +1,1 @@
+(PROGRAM (PROCEDURE_DECL integer main (BLOCK (vector integer (EXPR 5) v) (vector integer (EXPR 5) v2) (vector integer (EXPR (/ (+ 5 10) 5)) v3) (vector integer (EXPR (/ (+ 5 10) 5)) v4) (vector integer (EXPR 3) v5 (EXPR (VECTOR_LIST (EXPR 1) (EXPR 2) (EXPR 3)))) (return (EXPR 0)))))
