@@ -215,6 +215,7 @@ varDeclaration
   |	tupleDeclaration
   | inputDeclaration
   | streamDeclaration
+  | intervalDeclaration 
 	;
 
 tupleDeclaration
@@ -240,6 +241,18 @@ streamDeclaration throws ParserError
   | specifier? type ID ASSIGN STDOUT DELIM
       { emitErrorMessage("line " + $STDOUT.getLine() + ": " + "unexpected type for " + $STDOUT.text); }
   ;
+  
+intervalDeclaration
+  : INTEGER_TYPE Interval ID (ASSIGN expression)? DELIM
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL Var["var"] Interval ID expression?)
+  | specifier INTEGER_TYPE? Interval ID (ASSIGN expression)? DELIM
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier Interval ID expression?)
+//  | specifier? type Interval ID (ASSIGN expression)? DELIM
+//      { emitErrorMessage("line " + $ID.getLine() + ": Intervals only support interger base types."); }
+  ;
+  
 // END: var
 
 typedef
@@ -371,8 +384,12 @@ unaryExpression
 	:	op=ADD unaryExpression -> ^(UNARY_POSITIVE[$op] unaryExpression)
 	|	op=SUBTRACT unaryExpression -> ^(UNARY_MINUS[$op] unaryExpression)
 	|	Not unaryExpression -> ^(Not unaryExpression)
-	|	postfixExpression
+	|	rangeExpression
 	;
+	
+rangeExpression
+  : postfixExpression (RANGE^ postfixExpression)?
+  ;
 	
 
 // START: call
@@ -474,6 +491,7 @@ RBRACK : ']';
 LBRACE : '{';
 RBRACE : '}';
 PIPE : '|';
+RANGE: '..';
 DOT : '.';
 DELIM : ';';
 STDOUT : 'std_output()';
