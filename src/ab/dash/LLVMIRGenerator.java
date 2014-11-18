@@ -1030,27 +1030,10 @@ public class LLVMIRGenerator {
 			return operation(t, LLVMOps.XOR);
 
 		case DashLexer.EQUALITY:
-		{
-			Type type = ((DashAST)t.getChild(0)).evalType;
-			
-			if (type.getTypeIndex() == SymbolTable.tTUPLE) {
-				return tupleOperation(t, LLVMOps.EQ);
-			}
-			
-			return operation(t, LLVMOps.EQ);
-		}
-			
+			return comparisonPrimaryOrTuple(t, LLVMOps.EQ);
 
 		case DashLexer.INEQUALITY:
-		{
-			Type type = ((DashAST)t.getChild(0)).evalType;
-			
-			if (type.getTypeIndex() == SymbolTable.tTUPLE) {
-				return tupleOperation(t, LLVMOps.NE);
-			}
-			
-			return operation(t, LLVMOps.NE);
-		}
+			return comparisonPrimaryOrTuple(t, LLVMOps.NE);
 
 		case DashLexer.LESS:
 			return operation(t, LLVMOps.LT);
@@ -1409,6 +1392,16 @@ public class LLVMIRGenerator {
 
 	}
 	
+	private StringTemplate comparisonPrimaryOrTuple(DashAST t, LLVMOps op) {
+		Type type = ((DashAST)t.getChild(0)).evalType;
+
+		if (type.getTypeIndex() == SymbolTable.tTUPLE) {
+			return tupleOperation(t, op);
+		}
+
+		return operation(t, op);
+	}
+
 	private StringTemplate tupleOperation(DashAST t, LLVMOps op) {
 		String id = Integer.toString(((DashAST)t).llvmResultID);
 		Type type = ((DashAST)t.getChild(0)).evalType;
