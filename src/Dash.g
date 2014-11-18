@@ -402,7 +402,7 @@ postfixExpression
     	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
     	)*
     )
-    |	primary -> primary
+    |	primary
     ;
 // END: call
 
