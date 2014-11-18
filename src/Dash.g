@@ -272,41 +272,8 @@ statement
 nonDeclarableStatement
   : block
   | typedef
-  |	If LPAREN expression RPAREN s=statement (Else e=statement)? -> ^(If expression $s $e?)
-  | If LPAREN expression statement (Else statement)?
-    {
-      emitErrorMessage("line " + $If.getLine() + ": Missing right parenthesis."); 
-    }
-  | If expression RPAREN statement (Else statement)?
-    {
-      emitErrorMessage("line " + $If.getLine() + ": Missing left parenthesis."); 
-    }
-  | If expression s=statement (Else e=statement)? -> ^(If expression $s $e?)
-  | Else // Catch danging else statements missing corresponding if.
-    {
-      emitErrorMessage("line " + $Else.getLine() + ": else statement missing matching if."); 
-    }
-  | Loop {loopDepth++;} While LPAREN expression RPAREN statement {loopDepth--;} -> ^(WHILE expression statement)
-  | Loop While LPAREN expression statement
-    {
-      emitErrorMessage("line " + $Loop.getLine() + ": Missing right parenthesis."); 
-    }
-  | Loop While expression RPAREN statement
-    {
-      emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); 
-    } 
-  | Loop {loopDepth++;} While expression statement {loopDepth--;} -> ^(WHILE expression statement)
-  | Loop {loopDepth++;} statement While LPAREN expression RPAREN {loopDepth--;} -> ^(DOWHILE expression statement)
-  | Loop statement While LPAREN expression
-    {
-      emitErrorMessage("line " + $Loop.getLine() + ": Missing right parenthesis."); 
-    }
-  | Loop statement While expression RPAREN
-    {
-      emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); 
-    } 
-  | Loop {loopDepth++;} statement While expression {loopDepth--;} -> ^(DOWHILE expression statement)
-  | Loop {loopDepth++;} statement {loopDepth--;} -> ^(Loop statement) // infinite loop
+  |	conditionalStatement
+  | loopStatement
   |	CALL postfixExpression DELIM ->  ^(EXPR postfixExpression)
   | Return expression? DELIM -> ^(Return expression?)
   |	lhs ASSIGN expression DELIM -> ^(ASSIGN lhs expression)
@@ -315,21 +282,45 @@ nonDeclarableStatement
   | a=postfixExpression DELIM // handles function calls like f(i);
   		-> ^(EXPR postfixExpression)
   | ID (',' ID)+ ASSIGN expression DELIM -> ^(UNPACK ^(EXPR ID)+ expression)
-  | Break DELIM!
-    {
-      if(loopDepth == 0) 
-          emitErrorMessage("line " + $Break.getLine() + ": Break statements can only be used within loops."); 
-    }
-  | Continue DELIM!
-    {
-      if(loopDepth == 0) 
-          emitErrorMessage("line " + $Continue.getLine() + ": Continue statements can only be used within loops."); 
-    }
+  | flowControlStatement
   ;
-    
+
+conditionalStatement
+  : If LPAREN expression RPAREN s=statement (Else e=statement)? -> ^(If expression $s $e?)
+  | If LPAREN expression statement (Else statement)? { emitErrorMessage("line " + $If.getLine() + ": Missing right parenthesis."); }
+  | If expression RPAREN statement (Else statement)? { emitErrorMessage("line " + $If.getLine() + ": Missing left parenthesis."); }
+  | If expression s=statement (Else e=statement)? -> ^(If expression $s $e?)
+  | // Catch danging else statements missing corresponding if.
+    Else {  emitErrorMessage("line " + $Else.getLine() + ": else statement missing matching if."); }
+  ;
+
+loopStatement
+  : Loop {loopDepth++;} While LPAREN expression RPAREN statement {loopDepth--;} -> ^(WHILE expression statement)
+  | Loop While LPAREN expression statement { emitErrorMessage("line " + $Loop.getLine() + ": Missing right parenthesis."); }
+  | Loop While expression RPAREN statement { emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); } 
+  | Loop {loopDepth++;} While expression statement {loopDepth--;} -> ^(WHILE expression statement)
+  | Loop {loopDepth++;} statement While LPAREN expression RPAREN {loopDepth--;} -> ^(DOWHILE expression statement)
+  | Loop statement While LPAREN expression { emitErrorMessage("line " + $Loop.getLine() + ": Missing right parenthesis."); }
+  | Loop statement While expression RPAREN { emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); } 
+  | Loop {loopDepth++;} statement While expression {loopDepth--;} -> ^(DOWHILE expression statement)
+  | Loop {loopDepth++;} statement {loopDepth--;} -> ^(Loop statement) // infinite loop
+  ;
+
 lhs 
 	:	postfixExpression -> ^(EXPR postfixExpression)
 	;
+
+flowControlStatement
+  : Break DELIM!  
+      { if(loopDepth == 0)  emitErrorMessage("line " + $Break.getLine() + ": Break statements can only be used within loops."); }
+  | Continue DELIM! 
+      { if(loopDepth == 0) emitErrorMessage("line " + $Continue.getLine() + ": Continue statements can only be used within loops."); }
+  ;
+
+/* END STATEMENTS */
+
+
+/* BEGIN EXPRESSIONS */
 
 expressionList
     : expression (',' expression)* -> ^(ELIST expression+)
@@ -422,6 +413,9 @@ primary
     | LPAREN RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Empty tuple lists are not allowed.");}
     ;
     
+/* END EXPRESSIONS */
+
+
 
 // DashAB reserved words
 CALL : 'call';
