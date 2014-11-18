@@ -212,19 +212,21 @@ varDeclaration
   | specifier ID ASSIGN expression DELIM 
     {if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL specifier ID expression)
-  |	tupleType ID (ASSIGN expression)? DELIM 
-    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
-      -> ^(VAR_DECL Var["var"] tupleType ID expression?)
-  |	specifier tupleType ID (ASSIGN expression)? DELIM
-    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
-      -> ^(VAR_DECL specifier tupleType ID expression?)
-  | specifier ID ASSIGN expression DELIM 
-    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
-      -> ^(VAR_DECL specifier ID expression)
+  |	tupleDeclaration
   | inputDeclaration
   | streamDeclaration
+  | intervalDeclaration 
 	;
-	
+
+tupleDeclaration
+  : tupleType ID (ASSIGN expression)? DELIM 
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
+      -> ^(VAR_DECL Var["var"] tupleType ID expression?)
+  | specifier tupleType ID (ASSIGN expression)? DELIM
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier tupleType ID expression?)
+  ;
+
 inputDeclaration
   : type decl=ID INSTREAM instream=ID DELIM -> ^(INSTREAM Var["var"] type $decl $instream)
   | specifier type decl=ID INSTREAM instream=ID DELIM -> ^(INSTREAM specifier type $decl $instream)
@@ -239,6 +241,18 @@ streamDeclaration throws ParserError
   | specifier? type ID ASSIGN STDOUT DELIM
       { emitErrorMessage("line " + $STDOUT.getLine() + ": " + "unexpected type for " + $STDOUT.text); }
   ;
+  
+intervalDeclaration
+  : INTEGER_TYPE Interval ID (ASSIGN expression)? DELIM
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL Var["var"] Interval ID expression?)
+  | specifier INTEGER_TYPE? Interval ID (ASSIGN expression)? DELIM
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier Interval ID expression?)
+//  | specifier? type Interval ID (ASSIGN expression)? DELIM
+//      { emitErrorMessage("line " + $ID.getLine() + ": Intervals only support interger base types."); }
+  ;
+  
 // END: var
 
 typedef
@@ -370,8 +384,12 @@ unaryExpression
 	:	op=ADD unaryExpression -> ^(UNARY_POSITIVE[$op] unaryExpression)
 	|	op=SUBTRACT unaryExpression -> ^(UNARY_MINUS[$op] unaryExpression)
 	|	Not unaryExpression -> ^(Not unaryExpression)
-	|	postfixExpression
+	|	rangeExpression
 	;
+	
+rangeExpression
+  : postfixExpression (RANGE^ postfixExpression)?
+  ;
 	
 
 // START: call
@@ -384,7 +402,7 @@ postfixExpression
     	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
     	)*
     )
-    |	primary -> primary
+    |	primary
     ;
 // END: call
 
@@ -473,6 +491,7 @@ RBRACK : ']';
 LBRACE : '{';
 RBRACE : '}';
 PIPE : '|';
+RANGE: '..';
 DOT : '.';
 DELIM : ';';
 STDOUT : 'std_output()';
@@ -522,10 +541,11 @@ Examples:
 
 REAL 
 	: 	(
-			(DIGIT (DIGIT | UNDERSCORE)* DOT (DIGIT | UNDERSCORE)*)
+			  (DIGIT (DIGIT | UNDERSCORE)* DOT (DIGIT | UNDERSCORE)*)
 			| {!member_access}?=> (DOT (DIGIT | UNDERSCORE)*)
 			| (DIGIT (DIGIT | UNDERSCORE)*)
-		) (DecimalExponent1 | DecimalExponent2)? FloatTypeSuffix?
+			) 
+			DecimalExponent1? FloatTypeSuffix?
 	;
 
 fragment Quote : 	'\'';
@@ -568,8 +588,8 @@ fragment MULTILINE_COMMENT_END
   
 NL : ('\r' '\n' | '\r' | '\n') {$channel=HIDDEN;};
 
-fragment DecimalExponent1 : ('e' | 'E') UNDERSCORE* ('+' | '-') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
-fragment DecimalExponent2 : ('e' | 'E') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
+fragment DecimalExponent1 : ('e' | 'E') (UNDERSCORE* ('+' | '-') UNDERSCORE*)? DIGIT (DIGIT | UNDERSCORE)*;
+//fragment DecimalExponent2 : ('e' | 'E') UNDERSCORE* DIGIT (DIGIT | UNDERSCORE)*;
 fragment FloatTypeSuffix : 'f' | 'F' | 'l' | 'L' UNDERSCORE*;
 fragment UNDERSCORE : '_';
 fragment DIGIT : '0'..'9';

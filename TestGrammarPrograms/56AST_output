@@ -1,0 +1,1 @@
+(PROGRAM (VAR_DECL const interval iv1 (EXPR (.. 1 10))) (VAR_DECL const interval iv2 (EXPR (.. 1 10))) (PROCEDURE_DECL integer main (BLOCK (return (EXPR 0)))))

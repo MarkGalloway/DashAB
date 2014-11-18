@@ -1,0 +1,9 @@
+const integer interval iv1 = 1 .. 10;  // Contains spaces, parses correctly
+
+const integer interval iv2 = 1..10;    // Invalid parse. Matches "1." as real and then can't figure out 
+                                        // what  ".10" is, I think. 
+
+procedure main() returns integer {
+  //integer interval iv = 1&&10;      // If we use  && instead of .. then it parses correctly in any case.
+  return 0;
+}
