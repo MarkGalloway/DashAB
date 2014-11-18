@@ -111,16 +111,24 @@ line
 	|	methodDeclaration
 	|	statement
 	;
-
-methodType
-	:	tupleType
-	|	primitiveType
-	;
+	
+/* BEGIN TYPES */
 
 type
-	:	primitiveType
+	:	tupleType
+	| primitiveType
 	|	ID
 	;
+
+tupleType
+  : Tuple LPAREN tupleMember (',' tupleMember)+ RPAREN -> ^(Tuple tupleMember+)
+  | Tuple LPAREN tupleMember RPAREN  { emitErrorMessage("line " + $LPAREN.getLine() + ": tuples must have more than one element"); }
+  | Tuple LPAREN RPAREN              { emitErrorMessage("line " + $LPAREN.getLine() + ": tuples cannot be empty"); }
+  ;
+  
+tupleMember
+  : type ID? -> ^(FIELD_DECL Var["var"] type ID?)
+  ;
 
 primitiveType
 	: REAL_TYPE
@@ -129,26 +137,27 @@ primitiveType
   |	BOOLEAN_TYPE
   ;
   
+/* END TYPES */ 
     
 // START: method
 methodForwardDeclaration
-	: Function ID LPAREN formalParameters? RPAREN Returns methodType DELIM
-	    -> ^(FUNCTION_DECL methodType ID formalParameters?)
-  | Procedure ID LPAREN informalParameters? RPAREN (Returns methodType)? DELIM
-      -> ^(PROCEDURE_DECL methodType? ID informalParameters?)
+	: Function ID LPAREN formalParameters? RPAREN Returns type DELIM
+	    -> ^(FUNCTION_DECL type ID formalParameters?)
+  | Procedure ID LPAREN informalParameters? RPAREN (Returns type)? DELIM
+      -> ^(PROCEDURE_DECL type? ID informalParameters?)
   ;
 
 methodDeclaration
-  : Function ID LPAREN formalParameters? RPAREN Returns methodType ASSIGN expression DELIM
+  : Function ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
     { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
-       -> ^(FUNCTION_DECL methodType ID formalParameters? ^(Return expression))    
-	| Function ID LPAREN formalParameters? RPAREN Returns methodType block
+       -> ^(FUNCTION_DECL type ID formalParameters? ^(Return expression))    
+	| Function ID LPAREN formalParameters? RPAREN Returns type block
 	  { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
-	    -> ^(FUNCTION_DECL methodType ID formalParameters? block)
-	| Procedure ID LPAREN informalParameters? RPAREN Returns methodType ASSIGN expression DELIM
-	    -> ^(PROCEDURE_DECL methodType ID informalParameters? ^(Return expression))
-	| Procedure ID LPAREN informalParameters? RPAREN (Returns methodType)? block
-	    -> ^(PROCEDURE_DECL methodType? ID informalParameters? block)
+	    -> ^(FUNCTION_DECL type ID formalParameters? block)
+	| Procedure ID LPAREN informalParameters? RPAREN Returns type ASSIGN expression DELIM
+	    -> ^(PROCEDURE_DECL type ID informalParameters? ^(Return expression))
+	| Procedure ID LPAREN informalParameters? RPAREN (Returns type)? block
+	    -> ^(PROCEDURE_DECL type? ID informalParameters? block)
   ;
 
 formalParameters
@@ -161,12 +170,11 @@ informalParameters
     
 functionParameter
 	:	specifier? type ID -> ^(ARG_DECL Const["const"] type ID)
-	| specifier? tupleType ID -> ^(ARG_DECL Const["const"] tupleType ID)
 	;
 	
 procedureParameter
-  : specifier (a=type|b=tupleType) ID -> ^(ARG_DECL specifier $a* $b* ID)
-  | (c=type|d=tupleType) ID -> ^(ARG_DECL Const["const"] $c* $d* ID)
+  : specifier type ID -> ^(ARG_DECL specifier type ID)
+  | type ID -> ^(ARG_DECL Const["const"] type ID)
   ;
 	
 // END: method
@@ -180,21 +188,6 @@ block
     }
   ;
 // END: block
-
-// START: tuple
-tupleType
-	: Tuple LPAREN tupleMember (',' tupleMember)+ RPAREN -> ^(Tuple tupleMember+)
-	| ID  // typedef
-	| Tuple LPAREN tupleMember RPAREN
-	  { emitErrorMessage("line " + $LPAREN.getLine() + ": tuples must have more than one element"); }
-	| Tuple LPAREN RPAREN
-	  { emitErrorMessage("line " + $LPAREN.getLine() + ": tuples cannot be empty"); }
-	;
-	
-tupleMember
-	:	type ID? -> ^(FIELD_DECL Var["var"] type ID?)
-	;
-// END: tuple
 
 // START: var
 specifier
@@ -212,20 +205,10 @@ varDeclaration
   | specifier ID ASSIGN expression DELIM 
     {if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL specifier ID expression)
-  |	tupleDeclaration
   | inputDeclaration
   | streamDeclaration
   | intervalDeclaration 
 	;
-
-tupleDeclaration
-  : tupleType ID (ASSIGN expression)? DELIM 
-    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
-      -> ^(VAR_DECL Var["var"] tupleType ID expression?)
-  | specifier tupleType ID (ASSIGN expression)? DELIM
-    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
-      -> ^(VAR_DECL specifier tupleType ID expression?)
-  ;
 
 inputDeclaration
   : type decl=ID INSTREAM instream=ID DELIM -> ^(INSTREAM Var["var"] type $decl $instream)
@@ -256,12 +239,9 @@ intervalDeclaration
 // END: var
 
 typedef
-  : Typedef primitiveType ID DELIM 
+  : Typedef type ID DELIM 
     { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
-      -> ^(TYPEDEF primitiveType ID)
-  | Typedef tupleType ID DELIM 
-    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
-      -> ^(TYPEDEF tupleType ID)
+      -> ^(TYPEDEF type ID)
   ;
 
 statement
