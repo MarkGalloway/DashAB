@@ -212,19 +212,20 @@ varDeclaration
   | specifier ID ASSIGN expression DELIM 
     {if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL specifier ID expression)
-  |	tupleType ID (ASSIGN expression)? DELIM 
-    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
-      -> ^(VAR_DECL Var["var"] tupleType ID expression?)
-  |	specifier tupleType ID (ASSIGN expression)? DELIM
-    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
-      -> ^(VAR_DECL specifier tupleType ID expression?)
-  | specifier ID ASSIGN expression DELIM 
-    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
-      -> ^(VAR_DECL specifier ID expression)
+  |	tupleDeclaration
   | inputDeclaration
   | streamDeclaration
 	;
-	
+
+tupleDeclaration
+  : tupleType ID (ASSIGN expression)? DELIM 
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); } 
+      -> ^(VAR_DECL Var["var"] tupleType ID expression?)
+  | specifier tupleType ID (ASSIGN expression)? DELIM
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier tupleType ID expression?)
+  ;
+
 inputDeclaration
   : type decl=ID INSTREAM instream=ID DELIM -> ^(INSTREAM Var["var"] type $decl $instream)
   | specifier type decl=ID INSTREAM instream=ID DELIM -> ^(INSTREAM specifier type $decl $instream)
