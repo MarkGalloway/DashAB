@@ -10,19 +10,25 @@ import ab.dash.ast.DashAST;
  *
  * For example, transform the following code,
  *
+ *     const z = 2;
+ *
  *     procedure main() returns integer {
  *     ...
  *        a = b + [1, 2, 3];
+ *        c = d + [4, z, 5];
  *     ...
  *     }
  *
  * into something like this,
  *
+ *     const z = 2;
  *     const __constant_1762 = [1, 2, 3]
+ *     const __constant_1763 = [1, z, 3]
  *
  *     procedure main() returns integer {
  *     ...
  *        a = b + __constant_1762;
+ *        c = d + __constant_1763;
  *     ...
  *     }
  *
