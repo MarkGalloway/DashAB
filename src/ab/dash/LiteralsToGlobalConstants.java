@@ -1,5 +1,9 @@
 package ab.dash;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import ab.dash.DashLexer;
 import ab.dash.ast.DashAST;
 
@@ -46,15 +50,47 @@ import ab.dash.ast.DashAST;
  *
  */
 public class LiteralsToGlobalConstants {
+	private List<Integer> primaryLiterals;
+
 	public LiteralsToGlobalConstants() {
+		primaryLiterals = (Arrays.asList(new Integer[] {
+				DashLexer.True,
+				DashLexer.False,
+				DashLexer.INTEGER,
+				DashLexer.REAL,
+				DashLexer.CHARACTER
+		}));
 	}
 
 	public void walk(DashAST t) {
 		/* TODO: Implement. */
 
+		switch (t.getType()) {
+		case DashLexer.TUPLE_LIST:
+		}
+
 		for (int i = 0; i < t.getChildCount(); i++) {
 			DashAST child = (DashAST) t.getChild(i);
 			walk(child);
 		}
+	}
+
+	private boolean childrenExprsAreLiterals(DashAST t) {
+		DashAST child;
+
+		for (int i = 0; i < t.getChildCount(); i++) {
+			child = (DashAST) t.getChild(i);
+
+			if (child.getType() == DashLexer.EXPR) {
+			}
+		}
+
+		return true;
+	}
+
+	private boolean exprIsLiteral(DashAST expr) {
+		DashAST exprContent = (DashAST) expr.getChild(0);
+
+		return false;
 	}
 }
