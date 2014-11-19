@@ -45,5 +45,10 @@ public class LiteralsToGlobalConstants {
 
 	public void walk(DashAST t) {
 		/* TODO: Implement. */
+
+		for (int i = 0; i < t.getChildCount(); i++) {
+			DashAST child = (DashAST) t.getChild(i);
+			walk(child);
+		}
 	}
 }
