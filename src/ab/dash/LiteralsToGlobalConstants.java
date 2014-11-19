@@ -51,7 +51,7 @@ import ab.dash.ast.DashAST;
 public class LiteralsToGlobalConstants {
 	private List<Integer> primaryLiterals;
 
-	public LiteralsToGlobalConstants() {
+	public LiteralsToGlobalConstants(DashAST root) {
 		primaryLiterals = (Arrays.asList(new Integer[] {
 				DashLexer.True,
 				DashLexer.False,
@@ -59,6 +59,10 @@ public class LiteralsToGlobalConstants {
 				DashLexer.REAL,
 				DashLexer.CHARACTER
 		}));
+
+		/* TODO: Use root to find location to insert
+		 * global var declarations.
+		 */
 	}
 
 	public void walk(DashAST t) {
