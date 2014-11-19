@@ -1,0 +1,16 @@
+const out = std_output();
+const inp = std_input();
+
+function f() returns integer {
+	integer i;
+
+	i <- inp;
+	i = i + 1;
+	i -> out;
+
+	return i;
+}
+
+procedure main() returns integer {
+	return f();
+}

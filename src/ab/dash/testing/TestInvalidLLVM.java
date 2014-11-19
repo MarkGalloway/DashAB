@@ -451,7 +451,19 @@ public class TestInvalidLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
-    
+
+    @Test
+    public void ioOperationInFunction() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/66IOOperationInFunction/ioOperationInFunction.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("line 7: Cannot perform IO operations inside function.\n");
+        sb.append("EEEline 9: Cannot perform IO operations inside function.\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
     @Test
     public void cantInferNullType() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestInvalidSyntaxPrograms/37CantInferNullType/cantInferNullType.ds"};
