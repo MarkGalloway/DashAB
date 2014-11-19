@@ -35,7 +35,7 @@ import ab.dash.ast.DashAST;
  *
  *     a = b + 1..7
  *
- * Be sure to run this pass after the constant folding and propogation
+ * Be sure to run this pass after the constant folding and propagation
  * optimizations.
  *
  */
