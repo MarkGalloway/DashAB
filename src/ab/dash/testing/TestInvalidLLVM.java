@@ -458,8 +458,8 @@ public class TestInvalidLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
-        sb.append("line 7: Cannot perform IO operations inside function.\n");
-        sb.append("EEEline 9: Cannot perform IO operations inside function.\n");
+        sb.append("line 7: IO operations can only be performed inside procedures, not in functions or a global context.\n");
+        sb.append("line 9: IO operations can only be performed inside procedures, not in functions or a global context.\n");
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }

@@ -37,6 +37,13 @@ public class MethodCheck {
 				}
 			}
 			break;
+
+		case DashLexer.PRINT:
+		case DashLexer.INPUT:
+			if (!t.hasAncestor(DashLexer.PROCEDURE_DECL)) {
+				emitErrorMessage("line " + t.getLine() + ": IO operations can only be performed inside procedures, not in functions or a global context.");
+			}
+			break;
 		}
 
 		for (int i = 0; i < t.getChildCount(); i++) {
