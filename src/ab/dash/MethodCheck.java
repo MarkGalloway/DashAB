@@ -26,7 +26,7 @@ public class MethodCheck {
 
 	public void check(DashAST t) {
 		switch (t.getType()) {
-		case DashLexer.CALL: {
+		case DashLexer.CALL:
 			DashAST call_id = (DashAST) t.getChild(0);
 			DashAST def = call_id.symbol.def;
 
@@ -37,7 +37,6 @@ public class MethodCheck {
 				}
 			}
 			break;
-		}
 		}
 
 		for (int i = 0; i < t.getChildCount(); i++) {
