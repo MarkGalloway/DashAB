@@ -29,6 +29,15 @@ import ab.dash.ast.DashAST;
  * This optimization is expected to provide significant performance gains when
  * literals are used inside loops.
  *
+ * NOTES:
+ *
+ * Be sure to apply this to static ranges, such as the following:
+ *
+ *     a = b + 1..7
+ *
+ * Be sure to run this pass after the constant folding and propogation
+ * optimizations.
+ *
  */
 public class LiteralsToGlobalConstants {
 	public LiteralsToGlobalConstants() {
