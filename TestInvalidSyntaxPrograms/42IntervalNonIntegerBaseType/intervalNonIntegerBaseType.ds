@@ -1,0 +1,5 @@
+procedure main() returns integer {
+  double interval iv= 3.2..5.4;
+
+  return 0;
+}

@@ -506,5 +506,14 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
+    @Test
+    public void intervalNonIntegerBaseType() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/42IntervalNonIntegerBaseType/intervalNonIntegerBaseType.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 2: Intervals only support integer base types.");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
     
 }

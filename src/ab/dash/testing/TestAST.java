@@ -470,11 +470,21 @@ public class TestAST extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/56AST_output"), outErrIntercept.toString().trim());
     }
     
+    @Test // intervals invalid
+    public void intervalNonIntegerException() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 2: Intervals only support integer base types.");
+        String[] args = new String[] {"TestGrammarPrograms/57intervalNonIntegerException.ds"};
+        Runner.astTestMain(args);
+    }
+    
     @Test // vector parsing
     public void vectorParseTest() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/60vectorParsing.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/60AST_output"), outErrIntercept.toString().trim());
     }
+    
+    
 
 }
