@@ -1,9 +1,21 @@
-const integer interval iv1 = 1 .. 10;  // Contains spaces, parses correctly
-
-const integer interval iv2 = 1..10;    // Invalid parse. Matches "1." as real and then can't figure out 
-                                        // what  ".10" is, I think. 
+const integer interval iv1 = 1 .. 10;
+const integer interval iv2 = 1..10;
 
 procedure main() returns integer {
-  //integer interval iv = 1&&10;      // If we use  && instead of .. then it parses correctly in any case.
+  integer interval iv;
+
+  integer interval iv5to5 = 5..5;  // should generate 5
+
+  var interval nullIV = null..null;
+  var interval identIV = identity..identity;
+
+  var interval comparison = 1..5 == 1..5; // (VAR_DECL var interval withExpr (EXPR (+ (- 2 (.. 1 5)) 5)))
+
+  var interval mult = 1..10 * 1..10; // (VAR_DECL var interval mult (EXPR (* (.. 1 10) (.. 1 10))))
+  var interval mult = 1..5 + 1..5;
+
+  var interval expression = 2-1 .. 5+5; // (VAR_DECL var interval withExpr (EXPR (+ (- 2 (.. 1 5)) 5)))
+
+
   return 0;
 }

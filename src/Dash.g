@@ -234,8 +234,8 @@ intervalDeclaration
   | specifier INTEGER_TYPE? Interval ID (ASSIGN expression)? DELIM
     { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL specifier Interval ID expression?)
-//  | specifier? type Interval ID (ASSIGN expression)? DELIM
-//      { emitErrorMessage("line " + $ID.getLine() + ": Intervals only support interger base types."); }
+  | specifier? type Interval ID (ASSIGN expression)? DELIM
+      { emitErrorMessage("line " + $ID.getLine() + ": Intervals only support integer base types."); }
   ;
   
 vectorDeclaration
