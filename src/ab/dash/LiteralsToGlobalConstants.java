@@ -63,10 +63,15 @@ public class LiteralsToGlobalConstants {
 	}
 
 	public void walk(DashAST t) {
-		/* TODO: Implement. */
 
 		switch (t.getType()) {
 		case DashLexer.TUPLE_LIST:
+			if (childrenExprsAreLiterals(t)) {
+				/* TODO: create a global variable with this value. */
+				/* TODO: swap this tuple with a use of the new global variable. */
+			}
+			break;
+		/* TODO: Handle other data types. */
 		}
 
 		for (int i = 0; i < t.getChildCount(); i++) {
@@ -82,6 +87,9 @@ public class LiteralsToGlobalConstants {
 			child = (DashAST) t.getChild(i);
 
 			if (child.getType() == DashLexer.EXPR) {
+				if (!exprIsLiteral(child)) {
+					return false;
+				}
 			}
 		}
 
@@ -90,6 +98,14 @@ public class LiteralsToGlobalConstants {
 
 	private boolean exprIsLiteral(DashAST expr) {
 		DashAST exprContent = (DashAST) expr.getChild(0);
+
+		int astType = exprContent.getType();
+
+		if (primaryLiterals.contains(astType)) {
+			return true;
+		}
+
+		/* TODO: Detect more possible valid cases. */
 
 		return false;
 	}
