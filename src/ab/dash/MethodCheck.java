@@ -25,23 +25,24 @@ public class MethodCheck {
 	}
 
 	public void check(DashAST t) {
+		switch (t.getType()) {
+		case DashLexer.CALL: {
+			DashAST call_id = (DashAST) t.getChild(0);
+			DashAST def = call_id.symbol.def;
+
+			if (def != null) {
+				if (def.hasAncestor(DashLexer.PROCEDURE_DECL)
+						&& call_id.hasAncestor(DashLexer.FUNCTION_DECL)) {
+					emitErrorMessage("line " + call_id.getLine() + ": Can not call procedure inside function.");
+				}
+			}
+			break;
+		}
+		}
+
 		for (int i = 0; i < t.getChildCount(); i++) {
 			DashAST child = (DashAST) t.getChild(i);
 			check(child);
-			switch (child.getToken().getType()) {
-			case DashLexer.CALL: {
-				DashAST call_id = (DashAST) child.getChild(0);
-				DashAST def = call_id.symbol.def;
-				
-				if (def != null) {
-					if (def.hasAncestor(DashLexer.PROCEDURE_DECL)
-							&& call_id.hasAncestor(DashLexer.FUNCTION_DECL)) {
-						emitErrorMessage("line " + call_id.getLine() + ": Can not call procedure inside function.");
-					}
-				}
-				break;
-			}
-			}
 		}
 	}
 }
