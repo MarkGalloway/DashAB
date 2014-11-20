@@ -337,17 +337,21 @@ equalityExpression
 	;
 
 relationalExpression
-	:	additiveExpression
+	:	byExpression
 		(	(	(	LESS^
 				|	GREATER^
 				|	LESS_EQUAL^
 				|	GREATER_EQUAL^
 				)
-				additiveExpression
+				byExpression
 			)*
 		)
 	;
-	
+
+byExpression
+  : additiveExpression (By^ additiveExpression)?
+  ;
+
 additiveExpression
 	:	multiplicativeExpression ((ADD^ | SUBTRACT^) multiplicativeExpression)*
 	;

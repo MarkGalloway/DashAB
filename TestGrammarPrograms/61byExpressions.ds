@@ -1,0 +1,7 @@
+procedure main() returns integer {
+  
+  integer vector v1 = 1..10 by 2;
+
+
+  return 0;
+}
