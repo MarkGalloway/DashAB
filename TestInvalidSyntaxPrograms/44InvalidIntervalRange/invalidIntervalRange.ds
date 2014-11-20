@@ -1,0 +1,6 @@
+procedure main() returns integer {
+  
+  integer interval nullIv = 20..10;  // invalid interval, should raise error
+
+  return 0;
+}

@@ -536,4 +536,13 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
+    @Test // interval invalid range  - EXCEPTION CASE NOT YET IMPLEMENTED - SHOULD FAIL
+    public void intervalInvalidRangeTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/44InvalidIntervalRange/invalidIntervalRange.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("error check not yet implemented....");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
 }
