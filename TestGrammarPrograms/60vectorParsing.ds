@@ -4,7 +4,17 @@ procedure main() returns integer {
   integer vector v3[(5+10)/5];
   integer v4[(5+10)/5];
   integer v5[3] = [1,2 ,3];
-  //integer v6[*];
+  real vector v6[3] = [1.2, 5.4,9.6];
+  
+  integer vector v7[*] = [1,2,3];
+  integer vector v8 = [1,2,3];
+  integer v9 = [1,2,3];
+  integer v10[*] = [1,2,3];
+
+  boolean vector v11[11] = null;
+  boolean vector v12[12] = identity;
+  
+
 
   return 0;
 }
