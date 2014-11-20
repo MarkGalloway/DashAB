@@ -485,6 +485,12 @@ public class TestAST extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/60AST_output"), outErrIntercept.toString().trim());
     }
     
-    
+    @Test // vector construction invalid
+    public void vectorEmptyContructionTest() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        expectedEx.expectMessage("line 3: Empty vector construction is not allowed.");
+        String[] args = new String[] {"TestGrammarPrograms/62emptyVectorConstruction.ds"};
+        Runner.astTestMain(args);
+    }
 
 }
