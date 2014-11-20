@@ -425,7 +425,7 @@ public class TestInvalidLLVM extends BaseTest {
       
     @Test 
     public void invalidOutputTypes() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {
-        String[] args = new String[] {"TestInvalidTypePrograms/06InvalidOutputTypes/invalidOutputTypes"};
+        String[] args = new String[] {"TestInvalidTypePrograms/06InvalidOutputTypes/invalidOutputTypes.ds"};
         Runner.llvmMain(args);
         assertEquals("line 20: invalid type (<tuple.a:boolean>, <tuple.b:boolean>)  sent to outstream", outErrIntercept.toString().trim());;
     }
@@ -469,7 +469,7 @@ public class TestInvalidLLVM extends BaseTest {
         String[] args = new String[] {"TestInvalidSyntaxPrograms/37CantInferNullType/cantInferNullType.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("line 2: type cannot be inferred");
+        sb.append("line 2: type cannot be inferred for var x = null;");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
@@ -487,7 +487,7 @@ public class TestInvalidLLVM extends BaseTest {
         String[] args = new String[] {"TestInvalidSyntaxPrograms/39CantInferIdentityType/cantInferIdentityType.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("line 2: type cannot be inferred");
+        sb.append("line 2: type cannot be inferred for var x = identity;");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
