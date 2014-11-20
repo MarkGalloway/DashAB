@@ -9,13 +9,18 @@ procedure main() returns integer {
   var interval nullIV = null..null;
   var interval identIV = identity..identity;
 
-  var interval comparison = 1..5 == 1..5; // (VAR_DECL var interval withExpr (EXPR (+ (- 2 (.. 1 5)) 5)))
+  var interval comparison = 1..5 == 1..5; // (VAR_DECL var interval comparison (EXPR (== (.. 1 5) (.. 1 5))))
 
   var interval mult = 1..10 * 1..10; // (VAR_DECL var interval mult (EXPR (* (.. 1 10) (.. 1 10))))
-  var interval mult = 1..5 + 1..5;
+  var interval mult = 1..5 + 1..5;  //  (VAR_DECL var interval mult (EXPR (+ (.. 1 5) (.. 1 5))))
 
-  var interval expression = 2-1 .. 5+5; // (VAR_DECL var interval withExpr (EXPR (+ (- 2 (.. 1 5)) 5)))
+  var interval expression = (2-1)..(5+5); // (VAR_DECL var interval withExpr (EXPR (.. (- 2 1) (+ 5 5))))
 
+  var interval unary = -5..1; // (VAR_DECL var interval unary (EXPR (- (.. 5 1))))
+
+  var interval withID = 1..a + 1..b;
+
+  var interval withIndexing = 1..a.2 + 1..b.second;
 
   return 0;
 }
