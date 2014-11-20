@@ -527,5 +527,13 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
+    @Test // vector construction invalid
+    public void vectorEmptyContructionTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/43EmptyVectorConstruction/emptyVectorConstruction.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 3: Empty vector construction is not allowed.");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
     
 }

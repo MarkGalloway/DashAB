@@ -1,0 +1,6 @@
+procedure main() returns integer {
+
+  real vector v = [];
+
+  return 0;
+}
