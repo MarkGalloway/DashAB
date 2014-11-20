@@ -1,22 +1,27 @@
 antlr = /opt/antlr-3.2/lib/antlr-3.2.jar
+C_FILES := $(wildcard runtime/*.c)
+OBJ_FILES := $(addprefix runtime/,$(notdir $(C_FILES:.c=.o)))
 
-all:
-	clang -c runtime.c -o runtime.o
-	ar rcs libruntime.a runtime.o
-
+all: runtime
 	antlr3 src/*.g
 	javac -d ./ src/*.java src/ab/dash/*.java src/ab/dash/ast/*.java src/ab/dash/exceptions/*.java
 
-runtime:
-	clang -c runtime.c -o runtime.o
-	ar rcs libruntime.a runtime.o
+runtime: $(OBJ_FILES)
+	ar rcs libruntime.a $^
+
+runtime/%.o: runtime/%.c
+	clang -c -o $@ $<
+
+clean_runtime:
+	rm -f runtime/*.o
+	rm libruntime.a
 	
 test:
 	javac -cp .:$(antlr):ab/dash/:ab/dash/ast/:ab/dash/exeptions/:junit-4.10.jar -d ./ src/ab/dash/testing/*.java
 	java -cp .:$(antlr):junit-4.10.jar ab/dash/testing/FullTest
 
 clean:
-	rm runtime.o
+	rm -f runtime/*.o
 	rm libruntime.a
 
 	rm -f *.class
