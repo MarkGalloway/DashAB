@@ -454,7 +454,7 @@ public class TestInvalidLLVM extends BaseTest {
 
     @Test
     public void ioOperationInFunction() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/66IOOperationInFunction/ioOperationInFunction.ds"};
+        String[] args = new String[] {"TestInvalidProceduresAndFunctions/02IOOperationInFunction/ioOperationInFunction.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
