@@ -239,10 +239,15 @@ intervalDeclaration
   ;
   
 vectorDeclaration
-  : primitiveType Vector? ID LBRACK size=expression RBRACK (ASSIGN init=expression)? DELIM  // Explicit size declaration
-      -> ^(Vector["vector"] primitiveType $size ID $init?)
-  | primitiveType Vector? ID (LBRACK MULTIPLY RBRACK)? ASSIGN init=expression DELIM // Implicit size declaration
-      -> ^(Vector["vector"] primitiveType ID $init)
+  : primitiveType Vector? ID LBRACK size=expression RBRACK (ASSIGN init=expression)? DELIM  // Explicit size no specifier
+      -> ^(VAR_DECL Var["var"] ^(Vector["vector"] primitiveType $size) ID $init?)
+  | specifier primitiveType Vector? ID LBRACK size=expression RBRACK (ASSIGN init=expression)? DELIM  // Explicit size w/ specifier
+      -> ^(VAR_DECL specifier ^(Vector["vector"] primitiveType $size) ID $init?)
+  | primitiveType Vector? ID (LBRACK MULTIPLY RBRACK)? ASSIGN init=expression DELIM // Implicit size no specifier
+      -> ^(VAR_DECL Var["var"] ^(Vector["vector"] primitiveType ^(EXPR INTEGER["0"])) ID $init)
+  | specifier primitiveType Vector? ID (LBRACK MULTIPLY RBRACK)? ASSIGN init=expression DELIM // Implicit size w/ specifier
+      -> ^(VAR_DECL specifier ^(Vector["vector"] primitiveType ^(EXPR INTEGER["0"])) ID $init)
+  
   ;
   
 // END: var
