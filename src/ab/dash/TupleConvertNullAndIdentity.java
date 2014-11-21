@@ -34,7 +34,6 @@ public class TupleConvertNullAndIdentity {
 	}
 
 	public void check(DashAST t) {
-		boolean var_decl = false;
 		switch (t.getToken().getType()) {
 		// Create update tuple declaration
 		case DashLexer.VAR_DECL:

@@ -121,6 +121,7 @@ expr returns [Type type]
     |	typecast	{$type = $typecast.type;}
     |   member      {$type = $member.type;}
     |   call        {$type = $call.type;}
+    |	index		{$type = $index.type;}
     |   binaryOps   {$type = $binaryOps.type;}
     ;
 
@@ -151,6 +152,17 @@ call returns [Type type]
 		{
 		$type = symtab.call($ID, args);
 		$start.evalType = $type;
+		}
+    ;
+    
+index returns [Type type]
+	:	^(VECTOR_INDEX id=expr m=.)	
+		{
+			if ($id.type.getClass() == VectorType.class) {
+				VectorType vt = (VectorType) $id.type;
+				$type = vt.elementType;
+				$start.evalType = $type;
+			}
 		}
     ;
 	
