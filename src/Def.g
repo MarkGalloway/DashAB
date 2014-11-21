@@ -341,7 +341,7 @@ type_tyepdef returns [Type type]
 		$Interval.symbol = is;
 		$type = is;
 	}
-	|	^(Vector typeElement size=.) 
+	|	^(VECTOR typeElement size=.) 
 	{
 		VectorType vs = new VectorType($typeElement.type, 0);
 		$Vector.symbol = vs;
