@@ -47,12 +47,12 @@ void int_allocInterval(struct Interval* interval, int32_t lower, int32_t upper) 
 	interval->upper = upper;
 }
 
-void int_IntervalAddition(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
+void int_IntervalAdd(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
 	out->lower = lhs->lower + rhs->lower;
 	out->upper = lhs->upper + rhs->upper;
 }
 
-void int_IntervalSubtraction(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
+void int_IntervalSubtract(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
 	out->lower = lhs->lower - rhs->upper;
 	out->upper = lhs->upper - rhs->lower;
 }
@@ -87,13 +87,12 @@ void int_IntervalDivide(struct Interval* out, struct Interval* lhs, struct Inter
 	out->upper = max( max(ac, ad), max(bc, bd) );
 }
 
-void int_IntervalMinus(struct Interval* out, struct Interval* lhs) {
+void int_IntervalUniaryMinus(struct Interval* out, struct Interval* lhs) {
 	out->lower = -lhs->lower;
 	out->upper = -lhs->upper;
 }
 
 int int_IntervalEq(struct Interval* lhs, struct Interval* rhs) {
-	
 	if (lhs->lower == rhs->lower && lhs->upper == rhs->upper)
 		return 1;
 	
@@ -101,7 +100,6 @@ int int_IntervalEq(struct Interval* lhs, struct Interval* rhs) {
 }
 
 int int_IntervalNe(struct Interval* lhs, struct Interval* rhs) {
-	
 	if (lhs->lower == rhs->lower && lhs->upper == rhs->upper)
 		return 0;
 	
