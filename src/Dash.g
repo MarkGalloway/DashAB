@@ -398,6 +398,7 @@ primary
     |	False
     | Identity
     | Null
+    | Length LPAREN expression RPAREN -> ^(Length expression)  // Length function
     | LPAREN expr RPAREN -> expr
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
     | LBRACK expression (',' expression)* RBRACK -> ^(VECTOR_LIST expression+)

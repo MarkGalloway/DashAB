@@ -1,0 +1,1 @@
+(PROGRAM (PROCEDURE_DECL integer main (BLOCK (vector integer v (EXPR (VECTOR_LIST (EXPR 1) (EXPR 2)))) (VAR_DECL var integer size (EXPR (length (EXPR v)))) (return (EXPR 0)))))
