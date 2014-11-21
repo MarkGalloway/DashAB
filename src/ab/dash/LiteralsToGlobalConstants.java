@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ab.dash.DashLexer;
-import ab.dash.ast.DashAST;
+import ab.dash.ast.*;
 
 /*
  * Move constant string, tuple, array, and matrix literals to global variables,
@@ -50,6 +50,7 @@ import ab.dash.ast.DashAST;
  */
 public class LiteralsToGlobalConstants {
 	private List<Integer> primaryLiterals;
+	private DashAST programNode;
 
 	public LiteralsToGlobalConstants(DashAST root) {
 		primaryLiterals = (Arrays.asList(new Integer[] {
@@ -60,9 +61,10 @@ public class LiteralsToGlobalConstants {
 				DashLexer.CHARACTER
 		}));
 
-		/* TODO: Use root to find location to insert
-		 * global var declarations.
-		 */
+		programNode = (DashAST) root;
+		if (root.getType() != DashLexer.PROGRAM) {
+			/* TODO: Throw exception. */
+		}
 	}
 
 	public void walk(DashAST t) {
@@ -111,5 +113,11 @@ public class LiteralsToGlobalConstants {
 		/* TODO: Detect more possible valid cases. */
 
 		return false;
+	}
+
+	private VariableSymbol createGlobal(DashAST rhsExpr) {
+		/* TODO: Create new variable symbol. */
+		/* TODO: Insert VAR_DECL node under root, after the latest other globals var declarations. */
+		return null;
 	}
 }
