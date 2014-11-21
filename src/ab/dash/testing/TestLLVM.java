@@ -24,6 +24,7 @@ public class TestLLVM extends BaseTest {
 		String[] cmd = {
 				"/bin/sh",
 				"-c",
+				"make clean_runtime --always-make > /dev/null && ",
 				"make runtime --always-make > /dev/null"
 				};
 		Process p;
