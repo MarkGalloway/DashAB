@@ -31,6 +31,7 @@ import ab.dash.ast.MethodSymbol;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
 import ab.dash.exceptions.SymbolTableException;
+import ab.dash.opt.Optimization;
 
 public class Runner {
 	
@@ -180,6 +181,14 @@ public class Runner {
             throw new SymbolTableException(tupleTypeComp.getErrors());
         }
     }
+    
+    // runs optimization on code
+    private static void runOptimization(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
+        nodes.reset();
+        
+        Optimization opt = new Optimization(nodes, tree, symtab);
+        opt.optimize();
+    }
 
     // generates LLVM code
     private static String runLLVMIRgenerator(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree, TokenRewriteStream tokens) {
@@ -325,6 +334,7 @@ public class Runner {
             runTuplePromotion(nodes, symtab, tree);
             runDefineTupleTypes(nodes, symtab, tree);
             runNullAndIdentitySweep(nodes, symtab, tree);
+            
             methodCheck(nodes, tree);
         } catch (SymbolTableException e) {
             return null;

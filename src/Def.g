@@ -330,6 +330,7 @@ type returns [Type type]
 	    {
 	    TypedefSymbol s = (TypedefSymbol) currentScope.resolve($ID.text);
 	    $ID.symbol = s;
+	    s.def = $ID;
 	    $type = s;
 	    }
     ;
@@ -337,26 +338,34 @@ type returns [Type type]
 type_tyepdef returns [Type type]
 	: 	Interval
 	{
-		IntervalType is = new IntervalType(0, 0);
-		$Interval.symbol = is;
-		$type = is;
+		IntervalType stype = new IntervalType(0, 0);
+		$Interval.symbol = stype;
+		stype.def = $Interval;
+		stype.scope = currentScope;
+		$type = stype;
 	}
 	|	^(VECTOR typeElement size=.) 
 	{
-		VectorType vs = new VectorType($typeElement.type, 0);
-		$VECTOR.symbol = vs;
-		$type = vs;
+		VectorType stype = new VectorType($typeElement.type, 0);
+		$VECTOR.symbol = stype;
+		stype.def = $VECTOR;
+		stype.scope = currentScope;
+		$type = stype;
 	}
 	| 	^(Matrix typeElement row=. column=.) 
 	{
-		MatrixType ms = new MatrixType($typeElement.type, 0, 0);
-		$Matrix.symbol = ms;
-		$type = ms;
+		MatrixType stype = new MatrixType($typeElement.type, 0, 0);
+		$Matrix.symbol = stype;
+		stype.def = $Matrix;
+		stype.scope = currentScope;
+		$type = stype;
 	}
 	|	^(Tuple 
     {
-      TupleTypeSymbol ts = new TupleTypeSymbol(currentScope);
-      $Tuple.symbol = ts;
+      TupleTypeSymbol stype = new TupleTypeSymbol(currentScope);
+      $Tuple.symbol = stype;
+      stype.def = $Tuple;
+      stype.scope = currentScope;
     }
     (
     	^(FIELD_DECL field_specifier=specifier field_type=type ID?) 

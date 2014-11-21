@@ -109,7 +109,7 @@ public class TestConstantFoldingAndPropagation {
 	}
 
 	public static void main(String[] args) throws RecognitionException {
-		File[] files = new File("TestOptimization/TestConstantFoldingAndPropagation/").listFiles();
+		File[] files = new File("TestPrograms/").listFiles();
 		showFiles(files);
 	}
 }
