@@ -344,7 +344,7 @@ type_tyepdef returns [Type type]
 	|	^(VECTOR typeElement size=.) 
 	{
 		VectorType vs = new VectorType($typeElement.type, 0);
-		$Vector.symbol = vs;
+		$VECTOR.symbol = vs;
 		$type = vs;
 	}
 	| 	^(Matrix typeElement row=. column=.) 
