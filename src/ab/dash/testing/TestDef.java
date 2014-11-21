@@ -3,13 +3,18 @@
 package ab.dash.testing;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
 import ab.dash.Runner;
+import ab.dash.ast.DashAST;
+import ab.dash.ast.MethodSymbol;
 import ab.dash.ast.SymbolTable;
 import ab.dash.exceptions.LexerException;
 import ab.dash.exceptions.ParserException;
@@ -196,6 +201,36 @@ public class TestDef extends BaseTest {
         expectedEx.expectMessage("line 7: invalid index for tuple t");
         String[] args = new String[] {"TestUndefinedVariablePrograms/08InvalidTupleIndex/invalidTupleIndex.ds"};
         SymbolTable symtab = Runner.defTestMain(args);
+    }
+    
+    @Test
+    public void vector() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/66Vector/vector.ds"};
+        SymbolTable symtab = Runner.defTestMain(args);
+        base_globals.add("main");
+        base_globals.add("out");
+        base_globals.add("inp");
+        assertEquals(base_globals, symtab.globals.keys());
+        
+        MethodSymbol main = (MethodSymbol) symtab.globals.resolve("main");
+        if (main == null)
+        	fail("main method not found in globals.");
+        
+        DashAST main_node = main.def;
+        
+        if (main_node == null)
+        	fail("main method not attached to AST node.");
+        
+        DashAST block = (DashAST) main_node.parent.getChild(1);
+        
+        Set<String> main_locals = new LinkedHashSet<String>();
+        main_locals.add("v1");
+        main_locals.add("v2");
+        main_locals.add("v3");
+        main_locals.add("v4");
+        main_locals.add("v5");
+        main_locals.add("v6");
+     	assertEquals(main_locals.toString(), block.scope.toString());
     }
 }
 

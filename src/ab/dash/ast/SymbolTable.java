@@ -795,8 +795,12 @@ public class SymbolTable {
         	return true;
     	}
     	
+    	if (promotion == null)
+    		promotion = _null;
+    	
         // either types are same or value was successfully promoted
-        return valueType==destType || promotion==destType;
+        return valueType.getTypeIndex()==destType.getTypeIndex() || 
+        		promotion.getTypeIndex()==destType.getTypeIndex();
     }
     
     private static CommonToken convertFromNull(Type evalType) {

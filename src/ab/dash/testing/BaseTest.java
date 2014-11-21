@@ -5,7 +5,7 @@ package ab.dash.testing;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.junit.After;
@@ -29,7 +29,7 @@ public class BaseTest {
         System.setOut(new PrintStream(outErrIntercept));
         System.setErr(new PrintStream(outErrIntercept));
         
-        base_globals = new HashSet<String>();
+        base_globals = new LinkedHashSet<String>();
         base_globals.add("boolean");
         base_globals.add("character");
         base_globals.add("const");

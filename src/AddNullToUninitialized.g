@@ -34,14 +34,14 @@ varDeclaration
   : ^(var_node = VAR_DECL id=ID)
     { 
       // if tuple declaration add ^(EXPR ^(TUPLE_LIST ^(EXPR AppropriateNullValue) ^(EXPR AppropriateNullValue) ...)) 
-      if ($ID.symbol.type.getTypeIndex() == symtab.tTUPLE) {
+      if ($ID.symbol.type.getTypeIndex() == SymbolTable.tTUPLE) {
          TupleTypeSymbol tuple = (TupleTypeSymbol)$ID.symbol.type;
          DashAST tupleList = new DashAST(new CommonToken(DashLexer.TUPLE_LIST, "TUPLE_LIST"));
          TupleTypeSymbol ts = new TupleTypeSymbol($ID.scope);
          tupleList.symbol = ts;
          
          for (int i=0; i<tuple.fields.size(); ++i) {
-            DashAST listExpr = symtab.getExprForNull(tuple.fields.get(i).type);
+            DashAST listExpr = SymbolTable.getExprForNull(tuple.fields.get(i).type);
             
             if (listExpr == null) { 
               symtab.error("line " + $ID.getLine() + ": type cannot be inferred for " + $ID.text); 
@@ -56,7 +56,7 @@ varDeclaration
       }
       // otherwise add ^(EXPR AppropriateNullValue)
       else {
-        DashAST expr = symtab.getExprForNull($ID.symbol.type);
+        DashAST expr = SymbolTable.getExprForNull($ID.symbol.type);
         if (expr == null) {
           symtab.error("line " + $ID.getLine() + ": type cannot be inferred for " + $ID.text); 
         }

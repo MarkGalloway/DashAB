@@ -900,4 +900,13 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void vector() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/66Vector/vector.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

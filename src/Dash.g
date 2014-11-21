@@ -32,6 +32,7 @@ tokens {
   TYPECAST;
   VECTOR_LIST;
   VECTOR;
+  VECTOR_INDEX;
 }
 
 // Parser Rules
@@ -390,8 +391,7 @@ postfixExpression
     (
     	(	DOT^ (INTEGER | ID | {emitErrorMessage("line " + $DOT.getLine() + ": Only integers and identifiers are allowed to index tuples.");})
     	|	r=LPAREN^ expressionList RPAREN!	{ $r.setType(CALL); $r.setText("CALL"); }
-    	// TODO: Part 2
-    	//|	r=LBRACK^ expr RBRACK!				{$r.setType(INDEX);}
+    	|	r=LBRACK^ expr RBRACK!				{ $r.setType(VECTOR_INDEX); $r.setText("VECTOR_INDEX");}
     	)*
     )
     |	primary

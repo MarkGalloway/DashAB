@@ -1,0 +1,17 @@
+const out = std_output();
+const inp = std_input();
+
+procedure main() returns integer {
+	boolean v1[2];
+	integer v2[1+2] = [1, 2, 3];
+	integer v3[3] = v2*2;
+
+	real vector v4[2];
+	real vector v5[4] = [0.0, 1.0, 2.0, 3.0];
+	real vector v6[*] = v5/2.0;
+	
+	v3[2] -> out;
+	v6[2] -> out;
+
+	return 0;
+}
