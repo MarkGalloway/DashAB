@@ -799,7 +799,7 @@ public class SymbolTable {
         return valueType==destType || promotion==destType;
     }
     
-    private CommonToken convertFromNull(Type evalType) {
+    private static CommonToken convertFromNull(Type evalType) {
         int typeIndex = evalType.getTypeIndex();
         
         if (typeIndex == tINTEGER) {
@@ -820,7 +820,7 @@ public class SymbolTable {
         return null;
     }
     
-    private CommonToken convertFromIdentity(Type evalType) {
+    private static CommonToken convertFromIdentity(Type evalType) {
         int typeIndex = evalType.getTypeIndex();
         
         if (typeIndex == tINTEGER) {
@@ -841,12 +841,13 @@ public class SymbolTable {
         return null;
     }
     
-    public DashAST getExprForNull(Type type) {
+    public static DashAST getExprForNull(Type type) {
         if (type == null) {
           return null;
         }
         
         DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+        expr.evalType = type;
         CommonToken token = convertFromNull(type);
         
         if (token == null)
@@ -856,12 +857,13 @@ public class SymbolTable {
         return expr;
       }
     
-    public DashAST getExprForIdentity(Type type) {
+    public static DashAST getExprForIdentity(Type type) {
         if (type == null) {
           return null;
         }
         
         DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+        expr.evalType = type;
         CommonToken token = convertFromIdentity(type);
         
         if (token == null)

@@ -163,6 +163,16 @@ public class Runner {
     // runs TuplePromotion.java, aborts if errors are found
     private static void runTuplePromotion(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
         nodes.reset();
+        
+        TupleConvertNullAndIdentity tupleUpdate = new TupleConvertNullAndIdentity();
+        tupleUpdate.check(tree);
+        
+        if (tupleUpdate.getErrorCount() > 0) {
+            throw new SymbolTableException(tupleUpdate.getErrors());
+        }
+        
+        nodes.reset();
+        
         TuplePromotion tupleTypeComp = new TuplePromotion();
         tupleTypeComp.check(tree);
         

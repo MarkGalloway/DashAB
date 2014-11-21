@@ -748,7 +748,7 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/56NullTupleComparison/nullTupleComparison.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("T\n");
+        sb.append("TT\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     

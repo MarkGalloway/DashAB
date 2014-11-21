@@ -4,6 +4,8 @@ procedure main() returns integer {
 	// should be true
 	// null should be promoted to the same type as opposing tuple's element
 	boolean a = (null, 1) == (0, 1);
+	boolean b = (0, 1) == (0, identity);
 	a -> out;
+	b -> out;
 	return 0;
 }

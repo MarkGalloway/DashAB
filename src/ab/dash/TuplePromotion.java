@@ -38,6 +38,7 @@ public class TuplePromotion {
 		switch (t.getToken().getType()) {
 		// Create cast tuple declaration
 		case DashLexer.VAR_DECL:
+		case DashLexer.ASSIGN:
 			var_decl = true;
 		// Create cast for == and !=
 		case DashLexer.EQUALITY:
