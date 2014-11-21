@@ -335,18 +335,23 @@ type returns [Type type]
     ;
     
 type_tyepdef returns [Type type]
-	: 	interval
+	: 	Interval
 	{
-		IntervalSymbol is = new IntervalSymbol(0, 0);
-		$interval.symbol = is;
+		IntervalType is = new IntervalType(0, 0);
+		$Interval.symbol = is;
+		$type = is;
 	}
-	|	^(Vector typeElement size=.) {
-		VectorSymbol vs = new VectorSymbol($typeElement.type, 0);
+	|	^(Vector typeElement size=.) 
+	{
+		VectorType vs = new VectorType($typeElement.type, 0);
 		$Vector.symbol = vs;
+		$type = vs;
 	}
-	| 	^(Matrix typeElement row=. column=.) {
-		MatirxSymbol ms = new MatirxSymbol($typeElement.type, 0, 0);
+	| 	^(Matrix typeElement row=. column=.) 
+	{
+		MatrixType ms = new MatrixType($typeElement.type, 0, 0);
 		$Matrix.symbol = ms;
+		$type = ms;
 	}
 	|	^(Tuple 
     {
