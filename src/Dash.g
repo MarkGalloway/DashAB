@@ -31,6 +31,7 @@ tokens {
   UNPACK;
   TYPECAST;
   VECTOR_LIST;
+  VECTOR;
 }
 
 // Parser Rules
@@ -256,6 +257,9 @@ typedef
   : Typedef type ID DELIM 
     { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
       -> ^(TYPEDEF type ID)
+  | Typedef primitiveType LBRACK expression RBRACK ID DELIM
+    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
+      -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
   ;
 
 statement
