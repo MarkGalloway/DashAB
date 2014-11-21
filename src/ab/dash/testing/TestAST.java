@@ -520,5 +520,12 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/65AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // dot product parsing
+    public void dotProductParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/66dotProduct.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/66AST_output"), outErrIntercept.toString().trim());
+    }
 
 }

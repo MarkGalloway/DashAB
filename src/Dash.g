@@ -370,7 +370,7 @@ additiveExpression
 	;
 	
 multiplicativeExpression
-	:	powerExpression ((MULTIPLY^ | DIVIDE^ | MODULAR^) powerExpression)*
+	:	powerExpression ((MULTIPLY^ | DIVIDE^ | MODULAR^ | DOTPRODUCT^) powerExpression)*
 	;
 	
 powerExpression
@@ -481,6 +481,7 @@ GREATER_EQUAL : '>=';
 LESS_EQUAL : '<=';
 ADD : '+';
 SUBTRACT : '-';
+DOTPRODUCT: '**';
 MULTIPLY : '*';
 DIVIDE : '/';
 MODULAR : '%';
