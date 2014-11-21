@@ -506,5 +506,14 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/63AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // vector typedef parsing
+    public void vectorTypedefParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/64vectorTypedef.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/64AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    
 
 }
