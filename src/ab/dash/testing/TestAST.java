@@ -514,6 +514,11 @@ public class TestAST extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/64AST_output"), outErrIntercept.toString().trim());
     }
     
-    
+    @Test // vector concatenation parsing
+    public void vectorConcatenationParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/65vectorConcatenationParsing.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/65AST_output"), outErrIntercept.toString().trim());
+    }
 
 }
