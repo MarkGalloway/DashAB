@@ -335,7 +335,20 @@ type returns [Type type]
     ;
     
 type_tyepdef returns [Type type]
-	:	^(Tuple 
+	: 	interval
+	{
+		IntervalSymbol is = new IntervalSymbol(0, 0);
+		$interval.symbol = is;
+	}
+	|	^(Vector typeElement size=.) {
+		VectorSymbol vs = new VectorSymbol($typeElement.type, 0);
+		$Vector.symbol = vs;
+	}
+	| 	^(Matrix typeElement row=. column=.) {
+		MatirxSymbol ms = new MatirxSymbol($typeElement.type, 0, 0);
+		$Matrix.symbol = ms;
+	}
+	|	^(Tuple 
     {
       TupleTypeSymbol ts = new TupleTypeSymbol(currentScope);
       $Tuple.symbol = ts;
