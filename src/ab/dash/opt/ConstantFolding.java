@@ -43,10 +43,10 @@ public class ConstantFolding {
 							if (size_value.token.getType() == DashLexer.INTEGER) {
 								int s = Integer.parseInt(size_value.getText().replaceAll("_", ""));
 								vector.size = s;
-								System.out.println(vector.size);
+								//System.out.println(vector.size);
 							}
 						}
-						System.out.println(vector.def.toStringTree());
+						//System.out.println(vector.def.toStringTree());
 					}
 				}
 			}
