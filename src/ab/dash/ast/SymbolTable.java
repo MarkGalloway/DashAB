@@ -304,14 +304,59 @@ public class SymbolTable {
         return result;
     }
 
-
-
+    private Type op(Type[][] typeTable, DashAST a, DashAST b) {
+    	Type type =  getResultType(typeTable, a, b);
+    	
+    	if (type == null)
+    		return null;
+    	
+    	if (a.evalType.getClass() == BuiltInTypeSymbol.class && 
+    			b.evalType.getClass() == BuiltInTypeSymbol.class) {
+    		return type;
+    	}
+    	
+    	// A
+    	if ((a.evalType.getClass() == IntervalType.class && 
+    			b.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Interval
+    			(a.evalType.getClass() == VectorType.class && 
+    			b.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Vector
+    			(a.evalType.getClass() == MatrixType.class && 
+    			b.evalType.getClass() == BuiltInTypeSymbol.class) ) 	// Matrix
+    	{
+    		return a.evalType;
+    	}
+    	
+    	// B
+    	if ((b.evalType.getClass() == IntervalType.class && 
+    			a.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Interval
+    			(b.evalType.getClass() == VectorType.class && 
+    			a.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Vector
+    			(b.evalType.getClass() == MatrixType.class && 
+    			a.evalType.getClass() == BuiltInTypeSymbol.class) ) 	// Matrix
+    	{
+    		return b.evalType;
+    	}
+    	
+    	// A
+    	if ((a.evalType.getClass() == IntervalType.class && 
+    			b.evalType.getClass() == IntervalType.class) ||	// Interval
+    			(a.evalType.getClass() == VectorType.class && 
+    			b.evalType.getClass() == VectorType.class) ||	// Vector
+    			(a.evalType.getClass() == MatrixType.class && 
+    			b.evalType.getClass() == MatrixType.class) ) 	// Matrix
+    	{
+    		return a.evalType;
+    	}
+    	
+        return null;
+    }
+    
     public Type bop(DashAST a, DashAST b) {
-        return getResultType(arithmeticResultType, a, b);
+    	return op(arithmeticResultType, a, b);
     }
     
     public Type lop(DashAST a, DashAST b) {
-        return getResultType(logicResultType, a, b);
+        return op(logicResultType, a, b);
     }
     
     public Type relop(DashAST a, DashAST b) {
