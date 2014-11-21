@@ -527,5 +527,12 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/66AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // vector index parsing
+    public void vectorIdnexParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/67vectorIndex.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/67AST_output"), outErrIntercept.toString().trim());
+    }
 
 }
