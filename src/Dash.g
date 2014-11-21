@@ -329,9 +329,13 @@ expression
     ;
 	
 expr
-	:	orExpression
+	:	concatenationExpression
 	;
-	
+
+concatenationExpression
+  : orExpression (CONCAT^ orExpression )*
+  ;
+
 orExpression
 	:	andExpression ((Or^ | Xor^) andExpression)*
 	;
@@ -493,6 +497,7 @@ DOT : '.';
 DELIM : ';';
 STDOUT : 'std_output()';
 STDIN : 'std_input()';
+CONCAT : '||';
 
 ID : (UNDERSCORE | LETTER) (UNDERSCORE |LETTER | DIGIT)*;
 INTEGER : DIGIT+;

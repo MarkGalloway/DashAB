@@ -1,0 +1,1 @@
+(PROGRAM (PROCEDURE_DECL integer main (BLOCK (VAR_DECL var (VECTOR integer (EXPR 3)) v (EXPR (VECTOR_LIST (EXPR 1) (EXPR 2) (EXPR 3)))) (VAR_DECL var (VECTOR integer (EXPR 5)) s (EXPR (|| v (VECTOR_LIST (EXPR 4) (EXPR 5))))) (VAR_DECL var (VECTOR integer (EXPR 4)) t (EXPR (|| (VECTOR_LIST (EXPR 1) (EXPR 2) (EXPR 3)) 4))) (return (EXPR 0)))))

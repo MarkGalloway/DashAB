@@ -1,0 +1,10 @@
+procedure main() returns integer {
+  
+  integer v[3] = [1,2,3];
+
+  integer s[5] = v || [4,5];    // s = [1,2,3,4,5]
+
+  integer t[4] = [1,2,3] || 4;  // t = [1,2,3,4]
+
+  return 0;
+}
