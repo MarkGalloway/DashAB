@@ -1,3 +1,5 @@
+const integer vector v = [1,2,3];
+
 procedure main() returns integer {
   integer vector v[5];
   integer v2[5];
