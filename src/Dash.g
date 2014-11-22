@@ -281,11 +281,13 @@ matrixDeclaration
 // END: var
 
 typedef
-  : Typedef type ID DELIM 
-    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
+@init { int line = -1; }
+@after { if(!varDeclConstraint.empty()) emitErrorMessage("line " + line + ": Typedef must only be declared in global scope.");}
+  : Typedef type ID DELIM {line = $ID.getLine();} 
       -> ^(TYPEDEF type ID)
-  | Typedef primitiveType LBRACK expression RBRACK ID DELIM
-    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
+  | Typedef primitiveType LBRACK expression RBRACK ID DELIM {line = $ID.getLine();} 
+      -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
+  | Typedef primitiveType LBRACK expression ',' expression RBRACK ID DELIM {line = $ID.getLine();}
       -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
   ;
 
