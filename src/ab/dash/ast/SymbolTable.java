@@ -372,6 +372,24 @@ public class SymbolTable {
         // this operation must be boolean
         return _boolean;
     }
+    
+    public Type range(DashAST a, DashAST b) {
+        if (a.evalType.getTypeIndex() != tINTEGER) {
+        	error("line " + a.getLine() + ": Left hand side of range needs to evaluate to an integer.");
+        	return null;
+        }
+        
+        if (b.evalType.getTypeIndex() != tINTEGER) {
+        	error("line " + b.getLine() + ": Right hand side of range needs to evaluate to an integer.");
+	    	return null;
+	    }
+        
+        IntervalType type = new IntervalType(0, 0);
+        type.def = (DashAST) a.parent;
+        type.def.evalType = type;
+        
+        return type;
+    }
 
     public Type uminus(DashAST a) {
         if (a.evalType  == _null) { 
@@ -644,6 +662,17 @@ public class SymbolTable {
     				return true;
     			
     			return s.specifier.getSpecifierIndex() == sCONST;
+        	}
+    	}
+    	case DashLexer.VECTOR_INDEX: {
+    		DashAST id = (DashAST) t.getChild(0);
+    		if (id.getToken().getType() == DashLexer.ID) {
+    			VariableSymbol st = (VariableSymbol)id.scope.resolve(id.getText());
+    			if (st.specifier.getSpecifierIndex() == sCONST) {
+    				return true;
+    			}
+    			
+    			return false;
         	}
     	}
     	case DashLexer.EXPR:
