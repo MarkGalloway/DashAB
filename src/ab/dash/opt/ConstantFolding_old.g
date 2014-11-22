@@ -1,4 +1,4 @@
-tree grammar ConstantFolding;
+tree grammar ConstantFolding_old;
 
 options {
   language = Java;
