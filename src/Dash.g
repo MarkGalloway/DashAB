@@ -33,6 +33,8 @@ tokens {
   VECTOR_LIST;
   VECTOR;
   VECTOR_INDEX;
+  INFERRED;
+  MATRIX;
 }
 
 // Parser Rules
@@ -212,6 +214,7 @@ varDeclaration
   | streamDeclaration
   | intervalDeclaration 
   | vectorDeclaration
+  | matrixDeclaration
 	;
 
 inputDeclaration
@@ -242,24 +245,54 @@ intervalDeclaration
   
 vectorDeclaration
   : primitiveType Vector? ID LBRACK size=expression RBRACK (ASSIGN init=expression)? DELIM  // Explicit size no specifier
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL Var["var"] ^(VECTOR primitiveType $size) ID $init?)
   | specifier primitiveType Vector? ID LBRACK size=expression RBRACK (ASSIGN init=expression)? DELIM  // Explicit size w/ specifier
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
       -> ^(VAR_DECL specifier ^(VECTOR primitiveType $size) ID $init?)
   | primitiveType Vector? ID (LBRACK MULTIPLY RBRACK)? ASSIGN init=expression DELIM // Implicit size no specifier
-      -> ^(VAR_DECL Var["var"] ^(VECTOR primitiveType ^(EXPR INTEGER["0"])) ID $init)
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL Var["var"] ^(VECTOR primitiveType INFERRED) ID $init)
   | specifier primitiveType Vector? ID (LBRACK MULTIPLY RBRACK)? ASSIGN init=expression DELIM // Implicit size w/ specifier
-      -> ^(VAR_DECL specifier ^(VECTOR primitiveType ^(EXPR INTEGER["0"])) ID $init)
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier ^(VECTOR primitiveType INFERRED) ID $init)
   ;
+  
+matrixDeclaration
+  :  primitiveType Matrix? ID LBRACK (s1=expression | s2=MULTIPLY) ',' (s3=expression|s4=MULTIPLY) RBRACK (ASSIGN init=expression)? DELIM
+      {if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); 
+       if($s2 != null) { $s2.setType(INFERRED); $s2.setText("INFERRED");}
+       if($s4 != null) { $s4.setType(INFERRED); $s4.setText("INFERRED");}}
+      -> ^(VAR_DECL Var["var"] ^(MATRIX primitiveType $s1? $s2? $s3? $s4?) ID $init?)
+  |  specifier primitiveType Matrix? ID LBRACK (s1=expression | s2=MULTIPLY) ',' (s3=expression|s4=MULTIPLY) RBRACK (ASSIGN init=expression)? DELIM
+      {if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); 
+       if($s2 != null) { $s2.setType(INFERRED); $s2.setText("INFERRED");}
+       if($s4 != null) { $s4.setType(INFERRED); $s4.setText("INFERRED");}}
+      -> ^(VAR_DECL specifier ^(MATRIX primitiveType $s1? $s2? $s3? $s4?) ID $init?)
+  | primitiveType Matrix? ID ASSIGN init=expression DELIM
+     { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+     -> ^(VAR_DECL Var["var"] ^(MATRIX primitiveType INFERRED) ID $init)
+  | specifier primitiveType Matrix? ID ASSIGN init=expression DELIM
+     { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+     -> ^(VAR_DECL specifier ^(MATRIX primitiveType INFERRED) ID $init)
+  ;
+
   
 // END: var
 
 typedef
-  : Typedef type ID DELIM 
-    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
+@init { int line = -1; }
+@after { if(!varDeclConstraint.empty()) emitErrorMessage("line " + line + ": Typedef must only be declared in global scope.");}
+  : Typedef type ID DELIM {line = $ID.getLine();} 
       -> ^(TYPEDEF type ID)
-  | Typedef primitiveType LBRACK expression RBRACK ID DELIM
-    { if(!varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Typedef must only be declared in global scope."); }
+  | Typedef primitiveType LBRACK expression RBRACK ID DELIM {line = $ID.getLine();}   // Vector explicit size.. INVALID?
       -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
+  | Typedef primitiveType Vector ID DELIM {line = $ID.getLine();}
+      -> ^(TYPEDEF ^(VECTOR primitiveType INFERRED) ID)
+  | Typedef primitiveType LBRACK expression ',' expression RBRACK ID DELIM {line = $ID.getLine();}  // Matrix explicit size.. INVALID?
+      -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
+  | Typedef primitiveType Matrix ID DELIM {line = $ID.getLine();}
+      -> ^(TYPEDEF ^(MATRIX primitiveType INFERRED INFERRED) ID)
   ;
 
 statement
@@ -370,7 +403,7 @@ additiveExpression
 	;
 	
 multiplicativeExpression
-	:	powerExpression ((MULTIPLY^ | DIVIDE^ | MODULAR^) powerExpression)*
+	:	powerExpression ((MULTIPLY^ | DIVIDE^ | MODULAR^ | DOTPRODUCT^) powerExpression)*
 	;
 	
 powerExpression
@@ -481,6 +514,7 @@ GREATER_EQUAL : '>=';
 LESS_EQUAL : '<=';
 ADD : '+';
 SUBTRACT : '-';
+DOTPRODUCT: '**';
 MULTIPLY : '*';
 DIVIDE : '/';
 MODULAR : '%';

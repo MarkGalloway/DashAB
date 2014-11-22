@@ -304,14 +304,59 @@ public class SymbolTable {
         return result;
     }
 
-
-
+    private Type op(Type[][] typeTable, DashAST a, DashAST b) {
+    	Type type =  getResultType(typeTable, a, b);
+    	
+    	if (type == null)
+    		return null;
+    	
+    	if (a.evalType.getClass() == BuiltInTypeSymbol.class && 
+    			b.evalType.getClass() == BuiltInTypeSymbol.class) {
+    		return type;
+    	}
+    	
+    	// A
+    	if ((a.evalType.getClass() == IntervalType.class && 
+    			b.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Interval
+    			(a.evalType.getClass() == VectorType.class && 
+    			b.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Vector
+    			(a.evalType.getClass() == MatrixType.class && 
+    			b.evalType.getClass() == BuiltInTypeSymbol.class) ) 	// Matrix
+    	{
+    		return a.evalType;
+    	}
+    	
+    	// B
+    	if ((b.evalType.getClass() == IntervalType.class && 
+    			a.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Interval
+    			(b.evalType.getClass() == VectorType.class && 
+    			a.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Vector
+    			(b.evalType.getClass() == MatrixType.class && 
+    			a.evalType.getClass() == BuiltInTypeSymbol.class) ) 	// Matrix
+    	{
+    		return b.evalType;
+    	}
+    	
+    	// A
+    	if ((a.evalType.getClass() == IntervalType.class && 
+    			b.evalType.getClass() == IntervalType.class) ||	// Interval
+    			(a.evalType.getClass() == VectorType.class && 
+    			b.evalType.getClass() == VectorType.class) ||	// Vector
+    			(a.evalType.getClass() == MatrixType.class && 
+    			b.evalType.getClass() == MatrixType.class) ) 	// Matrix
+    	{
+    		return a.evalType;
+    	}
+    	
+        return null;
+    }
+    
     public Type bop(DashAST a, DashAST b) {
-        return getResultType(arithmeticResultType, a, b);
+    	return op(arithmeticResultType, a, b);
     }
     
     public Type lop(DashAST a, DashAST b) {
-        return getResultType(logicResultType, a, b);
+        return op(logicResultType, a, b);
     }
     
     public Type relop(DashAST a, DashAST b) {
@@ -326,6 +371,24 @@ public class SymbolTable {
         // even if the operands are incompatible, the type of
         // this operation must be boolean
         return _boolean;
+    }
+    
+    public Type range(DashAST a, DashAST b) {
+        if (a.evalType.getTypeIndex() != tINTEGER) {
+        	error("line " + a.getLine() + ": Left hand side of range needs to evaluate to an integer.");
+        	return null;
+        }
+        
+        if (b.evalType.getTypeIndex() != tINTEGER) {
+        	error("line " + b.getLine() + ": Right hand side of range needs to evaluate to an integer.");
+	    	return null;
+	    }
+        
+        IntervalType type = new IntervalType(0, 0);
+        type.def = (DashAST) a.parent;
+        type.def.evalType = type;
+        
+        return type;
     }
 
     public Type uminus(DashAST a) {
@@ -599,6 +662,17 @@ public class SymbolTable {
     				return true;
     			
     			return s.specifier.getSpecifierIndex() == sCONST;
+        	}
+    	}
+    	case DashLexer.VECTOR_INDEX: {
+    		DashAST id = (DashAST) t.getChild(0);
+    		if (id.getToken().getType() == DashLexer.ID) {
+    			VariableSymbol st = (VariableSymbol)id.scope.resolve(id.getText());
+    			if (st.specifier.getSpecifierIndex() == sCONST) {
+    				return true;
+    			}
+    			
+    			return false;
         	}
     	}
     	case DashLexer.EXPR:

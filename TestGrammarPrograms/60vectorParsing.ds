@@ -1,3 +1,5 @@
+const integer vector v = [1,2,3];
+
 procedure main() returns integer {
   integer vector v[5];
   integer v2[5];
@@ -14,6 +16,8 @@ procedure main() returns integer {
   boolean vector v11[11] = null;
   boolean vector v12[12] = identity;
   
+  integer vector v[0] = [1,2,3];
+  integer vector v[*] = [1,2,3];
 
 
   return 0;

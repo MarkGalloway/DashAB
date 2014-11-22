@@ -34,7 +34,7 @@ public class Optimization {
 		
 		this.constant_folding = true;
 		this.constant_propagation = true;
-		this.remove_unused_variables = false;
+		this.remove_unused_variables = true;
 	}
 	
 	public Optimization(CommonTreeNodeStream nodes, DashAST tree, SymbolTable symtab, boolean debug_mode) {
@@ -70,10 +70,9 @@ public class Optimization {
 		
 		boolean fixed_state = false;
 		
-		ConstantFolding opt1 = new ConstantFolding(nodes);
-		opt1.setTreeAdaptor(DashAST.dashAdaptor);
-	
+		ConstantFolding opt1 = new ConstantFolding();
 		ConstantPropagation opt2 = new ConstantPropagation();
+		
 		int iterations = 0;
 		String tree_before = tree.toStringTree();
 		
@@ -85,7 +84,7 @@ public class Optimization {
 			// Perform constant folding
 			if (constant_folding) {
 				nodes.reset();
-				opt1.downup(tree);
+				opt1.optimize(tree);
 			}
 			
 			// Perform constant propagation

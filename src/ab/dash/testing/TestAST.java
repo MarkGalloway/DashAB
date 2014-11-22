@@ -520,5 +520,33 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/65AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // dot product parsing
+    public void dotProductParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/66dotProduct.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/66AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // vector index parsing
+    public void vectorIndexParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/67vectorIndex.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/67AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // matrix parsing
+    public void matrixParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/68matrixParsing.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/68AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test // matrix parsing
+    public void matrixTypedefParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/69matrixTypedef.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/69AST_output"), outErrIntercept.toString().trim());
+    }
 
 }

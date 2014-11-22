@@ -1,1 +1,1 @@
-(PROGRAM (PROCEDURE_DECL integer main (BLOCK (VAR_DECL var (VECTOR integer (EXPR 0)) v1 (EXPR (by (.. 1 10) 2))) (return (EXPR 0)))))
+(PROGRAM (PROCEDURE_DECL integer main (BLOCK (VAR_DECL var (VECTOR integer INFERRED) v1 (EXPR (by (.. 1 10) 2))) (return (EXPR 0)))))

@@ -24,11 +24,9 @@ public class ConstantPropagation {
 						id.hasAncestor(DashLexer.PROCEDURE_DECL)) {
 						if (s.specifier.getSpecifierIndex() == SymbolTable.sCONST) {
 							value = s.initialValue;
-							System.out.println(id.symbol);
 						}
 					} else {
 						value = s.initialValue;
-						System.out.println(id.symbol);
 					}
 				}
 			}
@@ -67,6 +65,8 @@ public class ConstantPropagation {
 					}
 				}
 			}
+			
+			break;
 		}
 		case DashLexer.ID: {
 			int type = -1;
@@ -89,25 +89,26 @@ public class ConstantPropagation {
 		        	} 
 		        }
 			}
+			
+			break;
 		}
-		case DashLexer.INTEGER: {
-			if (t.promoteToType != null) {
-				if (t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
-					int integer = Integer.parseInt(t.getText().replaceAll("_", ""));
-					float real = (float)integer;
-					String value = Float.toString(real);
-					t.token = new CommonToken(DashLexer.REAL, value);
-					t.evalType = SymbolTable._real;
-					t.promoteToType = null;
-				}
-			}
-		}
-		default:
-		{
-			for (int i = 0; i < t.getChildCount(); i++)
-				exec((DashAST) t.getChild(i));
-		}
+//		case DashLexer.INTEGER: {
+//			if (t.promoteToType != null) {
+//				if (t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+//					int integer = Integer.parseInt(t.getText().replaceAll("_", ""));
+//					float real = (float)integer;
+//					String value = Float.toString(real);
+//					t.token = new CommonToken(DashLexer.REAL, value);
+//					t.evalType = SymbolTable._real;
+//					t.promoteToType = null;
+//				}
+//			}
+//			
+//			break;
+//		}
 		
 		}
+		for (int i = 0; i < t.getChildCount(); i++)
+			exec((DashAST) t.getChild(i));
 	}
 }

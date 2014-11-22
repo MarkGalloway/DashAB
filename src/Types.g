@@ -118,6 +118,7 @@ expr returns [Type type]
       } -> expr
     |   ^(Not a=expr) {$type=symtab.unot($a.start);}
     |	tuple_list	{$type = $tuple_list.type;}
+    |	vector_list {$type = $vector_list.type;}
     |	typecast	{$type = $typecast.type;}
     |   member      {$type = $member.type;}
     |   call        {$type = $call.type;}
@@ -183,6 +184,29 @@ ArrayList<DashAST> arg_nodes = new ArrayList<DashAST>();
 	    $type = ts;
 	}
 	;
+	
+vector_list returns [Type type]
+@init { 
+ArrayList<DashAST> arg_nodes = new ArrayList<DashAST>();
+}
+	:	^(VECTOR_LIST (^(EXPR expr) { $EXPR.evalType = $expr.type; arg_nodes.add($EXPR); } )+)
+	{
+		Type arg_type = null;
+		for (int i = 0; i < arg_nodes.size(); i++) {
+			DashAST arg = arg_nodes.get(i);
+			if (arg_type != null) {
+				if (arg.evalType != arg_type) {
+					symtab.error("line " + arg.getLine() + ": Mismatched types in vector literal.");
+				}
+			}
+			arg_type = arg.evalType;  
+	    }
+	    
+	    VectorType vt = new VectorType(arg_type, arg_nodes.size());
+	    $VECTOR_LIST.evalType = vt;
+	    $type = vt;
+	}
+	;
 
 binaryOps returns [Type type]
 @after { $start.evalType = $type; }
@@ -190,6 +214,7 @@ binaryOps returns [Type type]
 		|	^(lop a=expr b=expr)    {$type=symtab.lop($a.start, $b.start);}
 		|	^(relop a=expr b=expr)  {$type=symtab.relop($a.start, $b.start);}
 		|	^(eqop a=expr b=expr)   {$type=symtab.eqop($a.start, $b.start);}
+		|	^(RANGE a=expr b=expr)   {$type=symtab.range($a.start, $b.start);}
 		)
 	;
 	
