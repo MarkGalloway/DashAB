@@ -1,0 +1,14 @@
+const integer matrix B[*,*];
+
+procedure main() returns integer {
+
+  //integer matrix A = [[1,2,3], [4,5,6], [7,8,9]]
+
+  integer matrix A[3,2] = [[1,2], [4,5], [7,8]];
+  integer matrix A[3,*] = [[1,2], [4,5], [7,8]];
+  integer matrix A[*,2] = [[1,2], [4,5], [7,8]];
+  integer matrix A[*,*] = [[1,2], [4,5], [7,8]];
+
+  return 0;
+}
+
