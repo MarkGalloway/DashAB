@@ -43,10 +43,8 @@ public class ConstantFolding {
 							if (size_value.token.getType() == DashLexer.INTEGER) {
 								int s = Integer.parseInt(size_value.getText().replaceAll("_", ""));
 								vector.size = s;
-								//System.out.println(vector.size);
 							}
 						}
-						//System.out.println(vector.def.toStringTree());
 					}
 				}
 			}
@@ -203,19 +201,40 @@ public class ConstantFolding {
 			break;
 		}
 		
+		case DashLexer.Not: {
+			DashAST arg1 = (DashAST) t.getChild(0);
+			
+			// Booleans
+			if ((arg1.getToken().getType() == DashLexer.True ||
+					arg1.getToken().getType() == DashLexer.False)	&&
+					t.promoteToType == null) {
+				
+				if (arg1.getToken().getType() == DashLexer.True)
+					t.token = new CommonToken(DashLexer.False, "false");
+				else if (arg1.getToken().getType() == DashLexer.False)
+					t.token = new CommonToken(DashLexer.True, "true");
+				
+				t.deleteChild(0);
+			}
+			
+			break;
+		}
+		
 		// Equality Ops
 		case DashLexer.EQUALITY: {
 			DashAST arg1 = (DashAST) t.getChild(0);
 			DashAST arg2 = (DashAST) t.getChild(1);
 			
-			// Integers
-			if (arg1.getToken().getType() == DashLexer.INTEGER &&
-					arg2.getToken().getType() == DashLexer.INTEGER &&
+			int op1 = arg1.getToken().getType();
+			int op2 = arg2.getToken().getType();
+			
+			// Booleans
+			if ((op1 == DashLexer.True ||
+					op1 == DashLexer.False) &&
+					(op2 == DashLexer.True ||
+					op2 == DashLexer.False) && 
 					t.promoteToType == null) {
-				int i1 = Integer.parseInt(arg1.getText().replaceAll("_", ""));
-				int i2 = Integer.parseInt(arg2.getText().replaceAll("_", ""));
-				
-				if (i1 == i2) {
+				if (op1 == op2) {
 					t.token = new CommonToken(DashLexer.True, "true");
 				} else {
 					t.token = new CommonToken(DashLexer.False, "false");
@@ -225,16 +244,54 @@ public class ConstantFolding {
 				t.deleteChild(0);
 			}
 			
+			// Integers
+			if (op1 == DashLexer.INTEGER
+					&& op2 == DashLexer.INTEGER
+					&& t.promoteToType == null) {
+				int i1 = Integer.parseInt(arg1.getText().replaceAll("_", ""));
+				int i2 = Integer.parseInt(arg2.getText().replaceAll("_", ""));
+
+				if (i1 == i2) {
+					t.token = new CommonToken(DashLexer.True, "true");
+				} else {
+					t.token = new CommonToken(DashLexer.False, "false");
+				}
+
+				t.deleteChild(1);
+				t.deleteChild(0);
+			}
+			
 			break;
 		}
+
 		
 		case DashLexer.INEQUALITY: {
 			DashAST arg1 = (DashAST) t.getChild(0);
 			DashAST arg2 = (DashAST) t.getChild(1);
 			
+			int op1 = arg1.getToken().getType();
+			int op2 = arg2.getToken().getType();
+			
+			// Booleans
+			if ((op1 == DashLexer.True ||
+					op1 == DashLexer.False) &&
+					(op2 == DashLexer.True ||
+					op2 == DashLexer.False) && 
+					t.promoteToType == null) {
+
+				if (op1 != op2) {
+					t.token = new CommonToken(DashLexer.True, "true");
+				} else {
+					t.token = new CommonToken(DashLexer.False, "false");
+				}
+
+				t.deleteChild(1);
+				t.deleteChild(0);
+			}
+			
 			// Integers
-			if (arg1.getToken().getType() == DashLexer.INTEGER &&
-					arg2.getToken().getType() == DashLexer.INTEGER &&
+			if (op1 == DashLexer.INTEGER
+					&& op2 == DashLexer.INTEGER &&
 					t.promoteToType == null) {
 				int i1 = Integer.parseInt(arg1.getText().replaceAll("_", ""));
 				int i2 = Integer.parseInt(arg2.getText().replaceAll("_", ""));
@@ -348,40 +405,88 @@ public class ConstantFolding {
 			
 			break;
 		}
+		
+		// Logic Ops
+		case DashLexer.And: {
+			DashAST arg1 = (DashAST) t.getChild(0);
+			DashAST arg2 = (DashAST) t.getChild(1);
+			
+			int op1 = arg1.getToken().getType();
+			int op2 = arg2.getToken().getType();
+			
+			// Booleans
+			if ((op1 == DashLexer.True ||
+					op1 == DashLexer.False) &&
+					(op2 == DashLexer.True ||
+					op2 == DashLexer.False) && 
+					t.promoteToType == null) {
+				if (op1 == DashLexer.True && op2 == DashLexer.True) {
+					t.token = new CommonToken(DashLexer.True, "true");
+				} else {
+					t.token = new CommonToken(DashLexer.False, "false");
+				}
+				
+				t.deleteChild(1);
+				t.deleteChild(0);
+			}
+			
+			break;
+		}
+		
+		case DashLexer.Or: {
+			DashAST arg1 = (DashAST) t.getChild(0);
+			DashAST arg2 = (DashAST) t.getChild(1);
+			
+			int op1 = arg1.getToken().getType();
+			int op2 = arg2.getToken().getType();
+			
+			// Booleans
+			if ((op1 == DashLexer.True ||
+					op1 == DashLexer.False) &&
+					(op2 == DashLexer.True ||
+					op2 == DashLexer.False) && 
+					t.promoteToType == null) {
+				if (op1 == DashLexer.True || op2 == DashLexer.True) {
+					t.token = new CommonToken(DashLexer.True, "true");
+				} else {
+					t.token = new CommonToken(DashLexer.False, "false");
+				}
+				
+				t.deleteChild(1);
+				t.deleteChild(0);
+			}
+			
+			break;
+		}
+		
+		case DashLexer.Xor: {
+			DashAST arg1 = (DashAST) t.getChild(0);
+			DashAST arg2 = (DashAST) t.getChild(1);
+			
+			int op1 = arg1.getToken().getType();
+			int op2 = arg2.getToken().getType();
+			
+			// Booleans
+			if ((op1 == DashLexer.True ||
+					op1 == DashLexer.False) &&
+					(op2 == DashLexer.True ||
+					op2 == DashLexer.False) && 
+					t.promoteToType == null) {
+				if ((op1 == DashLexer.True && op2 == DashLexer.False) ||
+						(op1 == DashLexer.False && op2 == DashLexer.True)) {
+					t.token = new CommonToken(DashLexer.True, "true");
+				} else {
+					t.token = new CommonToken(DashLexer.False, "false");
+				}
+				
+				t.deleteChild(1);
+				t.deleteChild(0);
+			}
+			
+			break;
+		}
 		}
 	}
-//
-//	// Booleans
-//	// Not
-//	|	^(Not op1=False) -> True["true"]
-//	|	^(Not op1=True) -> False["false"]
-//	// Equality Ops
-//	// EQUALITY
-//	|	^(EQUALITY op1=False op2=False) -> True["true"]
-//	|	^(EQUALITY op1=False op2=True) -> False["false"]
-//	|	^(EQUALITY op1=True op2=False) -> False["false"]
-//	|	^(EQUALITY op1=True op2=True) -> True["true"]
-//	// INEQUALITY
-//	|	^(INEQUALITY op1=False op2=False) -> False["false"]
-//	|	^(INEQUALITY op1=False op2=True) -> True["true"]
-//	|	^(INEQUALITY op1=True op2=False) -> True["true"]
-//	|	^(INEQUALITY op1=True op2=True) -> False["false"]
-//	// And
-//	|	^(And op1=False op2=False) -> False["false"]
-//	|	^(And op1=False op2=True) -> False["false"]
-//	|	^(And op1=True op2=False) -> False["false"]
-//	|	^(And op1=True op2=True) -> True["true"]
-//	// Or
-//	|	^(Or op1=False op2=False) -> False["false"]
-//	|	^(Or op1=False op2=True) -> True["true"]
-//	|	^(Or op1=True op2=False) -> True["true"]
-//	|	^(Or op1=True op2=True) -> True["true"]
-//	// Xor
-//	|	^(Xor op1=False op2=False) -> False["false"]
-//	|	^(Xor op1=False op2=True) -> True["true"]
-//	|	^(Xor op1=True op2=False) -> True["true"]
-//	|	^(Xor op1=True op2=True) -> False["false"]
-//	// Characters
 //	// Equality Ops
 //	|	^(EQUALITY op1=CHARACTER op2=CHARACTER)
 //	{ 

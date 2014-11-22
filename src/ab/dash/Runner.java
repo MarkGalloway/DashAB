@@ -334,7 +334,7 @@ public class Runner {
             runTuplePromotion(nodes, symtab, tree);
             runDefineTupleTypes(nodes, symtab, tree);
             runNullAndIdentitySweep(nodes, symtab, tree);
-            
+            runOptimization(nodes, symtab, tree);
             methodCheck(nodes, tree);
         } catch (SymbolTableException e) {
             return null;
