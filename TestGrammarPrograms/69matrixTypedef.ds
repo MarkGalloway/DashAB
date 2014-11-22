@@ -1,0 +1,10 @@
+typedef integer[2,2] sq_matrix; // invalid according to dash?? FIX ME
+typedef integer matrix mat; // valid according to dash
+
+procedure main() returns integer {
+
+  sq_matrix sq = [[1,2],[3,4]];
+  mat m = [[1,2],[3,4]];
+
+  return 0;
+}

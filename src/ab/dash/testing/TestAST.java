@@ -541,5 +541,12 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/68AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // matrix parsing
+    public void matrixTypedefParseTest() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/69matrixTypedef.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/69AST_output"), outErrIntercept.toString().trim());
+    }
 
 }
