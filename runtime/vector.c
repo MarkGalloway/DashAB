@@ -36,6 +36,8 @@ int32_t max(int32_t a, int32_t b) {
 
 // Declarations
 
+extern int powi(int a,int n);
+
 void int_allocVector(struct Vector* vector, int32_t size);
 
 //////////////////////////
@@ -292,19 +294,110 @@ void int_allocVector(struct Vector* vector, int32_t size) {
 	vector->data = malloc(sizeof(int32_t) * size);
 }
 
-int32_t int_VectorDot(struct Vector* lhs, struct Vector* rhs) {
+int int_VectorAddVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
 	int32_t *lhs_data = (int32_t*) lhs->data;
 	int32_t *rhs_data = (int32_t*) rhs->data;
 
 	if (lhs->size != rhs->size)
 		return 1;
 	
-	int32_t result = 0;
 	for (int i = 0; i < lhs->size; i++)
-		result += lhs_data[i]*rhs_data[i];
+		out_data[i] = lhs_data[i] + rhs_data[i];
 
 	return 0;
+}
+
+int int_VectorSubtractVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	if (lhs->size != rhs->size)
+		return 1;
 	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] - rhs_data[i];
+
+	return 0;
+}
+
+int int_VectorMultiplyVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	if (lhs->size != rhs->size)
+		return 1;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] * rhs_data[i];
+
+	return 0;
+}
+
+int int_VectorDivideVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	if (lhs->size != rhs->size)
+		return 1;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] / rhs_data[i];
+
+	return 0;
+}
+
+int int_VectorModulusVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	if (lhs->size != rhs->size)
+		return 1;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] % rhs_data[i];
+
+	return 0;
+}
+
+int int_VectorPowerVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	if (lhs->size != rhs->size)
+		return 1;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = powi(lhs_data[i], rhs_data[i]);
+
+	return 0;
+}
+
+void int_VectorUniaryMinus(struct Vector* out, struct Vector* lhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = -lhs_data[i];
+}
+
+int int_VectorDot(int32_t *result, struct Vector* lhs, struct Vector* rhs) {
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	if (lhs->size != rhs->size)
+		return 1;
+	
+	*result = 0;
+	for (int i = 0; i < lhs->size; i++)
+		*result += lhs_data[i]*rhs_data[i];
+
+	return 0;
 }
 
 int int_VectorEq(struct Vector* lhs, struct Vector* rhs) {
