@@ -6,11 +6,11 @@ procedure main() returns integer {
 
   integer matrix A[3,2] = [[1,2], [4,5], [7,8]];
   integer matrix A[3,*] = [[1,2], [4,5], [7,8]];
-  integer matrix A[*,2] = [[1,2], [4,5], [7,8]];
+  integer A[*,2] = [[1,2], [4,5], [7,8]];
   integer matrix A[*,*] = [[1,2], [4,5], [7,8]];
 
   integer matrix B[*,*] = null;
-  integer matrix B[*,*] = identity;
+  integer B[*,*] = identity;
 
   integer vector v = [1,2,3];
   integer matrix A = [v, [1,2]];
