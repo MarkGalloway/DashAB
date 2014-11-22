@@ -269,6 +269,12 @@ matrixDeclaration
        if($s2 != null) { $s2.setType(INFERRED); $s2.setText("INFERRED");}
        if($s4 != null) { $s4.setType(INFERRED); $s4.setText("INFERRED");}}
       -> ^(VAR_DECL specifier ^(MATRIX primitiveType $s1? $s2? $s3? $s4?) ID $init?)
+  | primitiveType Matrix ID ASSIGN init=expression DELIM
+     { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+     -> ^(VAR_DECL Var["var"] ^(MATRIX primitiveType INFERRED) ID $init)
+  | specifier primitiveType Matrix ID ASSIGN init=expression DELIM
+     { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+     -> ^(VAR_DECL specifier ^(MATRIX primitiveType INFERRED) ID $init)
   ;
 
   
