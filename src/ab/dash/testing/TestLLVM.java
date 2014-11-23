@@ -909,4 +909,13 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void procedureAddOne() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/67ProcedureAddOne/procedureAddOne.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("2\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

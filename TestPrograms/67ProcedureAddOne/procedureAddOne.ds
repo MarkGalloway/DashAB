@@ -1,0 +1,15 @@
+const out = std_output();
+
+procedure addOne(var integer x) {
+	x = x + 1;
+}
+
+procedure main() returns integer {
+	var x = 0;
+	addOne(x);
+	addOne(x);
+	
+	x -> out;
+	
+	return 0;
+}
