@@ -183,10 +183,12 @@ public class TestTypes {
 //		parseFile("functionWithArgs.ds", "TestPrograms/10FunctionWithArgs/functionWithArgs.ds");
 //		parseFile("functionExpression.ds", "TestPrograms/25FunctionExpression/functionExpression.ds");
 //		parseFile("promoteFunctionArguments.ds", "TestPrograms/35PromoteFunctionArguments/promoteFunctionArguments.ds");
+//		parseFile("uninitializedTuple.ds", "TestPrograms/40UninitializedTuple/uninitializedTuple.ds");
+//		parseFile("promoteTupleTypes.ds", "TestPrograms/26PromoteTupleTypes/promoteTupleTypes.ds");
 
 		File[] files = new File("TestPrograms/").listFiles();
 		showFiles(files);
-//
+
 //		File[] invalid_files = new File("TestInvalidTypePrograms/").listFiles();
 //		showFiles(invalid_files);
 	}

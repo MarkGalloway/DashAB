@@ -50,7 +50,7 @@ loopstat
   | ^(DOWHILE cond=. s=.) {symtab.loopstat($cond);} ;
 
 decl
-	: ^(VAR_DECL ID (init=.)?) 
+	: ^(var_node=VAR_DECL . ID (init=.)?) 
       {
 	      if ( $init!=null && $init.evalType!=null ) {
 	           symtab.declinit($ID, $init);
