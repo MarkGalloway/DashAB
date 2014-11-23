@@ -451,4 +451,5 @@ int32_t getVectorSize(struct Vector* vector) {
 
 void releaseVector(struct Vector* vector) {
 	free(vector->data);
+	free(vector);
 }
