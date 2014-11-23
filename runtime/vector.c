@@ -22,13 +22,13 @@ int32_t getRealTypeId() {
 }
 */
 
-int32_t min(int32_t a, int32_t b) {
+inline int32_t min(int32_t a, int32_t b) {
 	if (a < b)
 		return a;
 	return b;
 }
 
-int32_t max(int32_t a, int32_t b) {
+inline int32_t max(int32_t a, int32_t b) {
 	if (a > b)
 		return a;
 	return b;
