@@ -41,6 +41,13 @@ extern int powi(int a,int n);
 void int_allocVector(struct Vector* vector, int32_t size);
 
 //////////////////////////
+// VECTOR COMMON
+//////////////////////////
+struct Vector* allocVector() {
+    return (struct Vector*) malloc(sizeof(struct Vector));
+}
+
+//////////////////////////
 // 	INTERVAL  	//
 //////////////////////////
 
