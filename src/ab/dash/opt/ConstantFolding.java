@@ -31,25 +31,25 @@ public class ConstantFolding {
 			exec((DashAST) t.getChild(i));
 		
 		switch (t.getToken().getType()) {
-		case DashLexer.ID: {
-			if (t.symbol != null) {
-				if (t.symbol.type != null) {
-					if (t.symbol.type.getClass() == VectorType.class) {
-						VectorType vector = (VectorType) t.symbol.type;
-						DashAST size = (DashAST) vector.def.getChild(1);
-						exec((DashAST) size);
-						if (size.token.getType() == DashLexer.EXPR) {
-							DashAST size_value = (DashAST) size.getChild(0);
-							if (size_value.token.getType() == DashLexer.INTEGER) {
-								int s = Integer.parseInt(size_value.getText().replaceAll("_", ""));
-								vector.size = s;
-							}
-						}
-					}
-				}
-			}
-			break;
-		}
+//		case DashLexer.ID: {
+//			if (t.symbol != null) {
+//				if (t.symbol.type != null) {
+//					if (t.symbol.type.getClass() == VectorType.class) {
+//						VectorType vector = (VectorType) t.symbol.type;
+//						DashAST size = (DashAST) vector.def.getChild(1);
+//						exec((DashAST) size);
+//						if (size.token.getType() == DashLexer.EXPR) {
+//							DashAST size_value = (DashAST) size.getChild(0);
+//							if (size_value.token.getType() == DashLexer.INTEGER) {
+//								int s = Integer.parseInt(size_value.getText().replaceAll("_", ""));
+//								vector.size = s;
+//							}
+//						}
+//					}
+//				}
+//			}
+//			break;
+//		}
 		// Binary Ops
 		case DashLexer.ADD: {
 			DashAST arg1 = (DashAST) t.getChild(0);

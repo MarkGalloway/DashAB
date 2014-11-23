@@ -34,15 +34,23 @@ public class TupleConvertNullAndIdentity {
 	}
 
 	public void check(DashAST t) {
+		DashAST arg1 = null;
+		DashAST arg2 = null;
 		switch (t.getToken().getType()) {
-		// Create update tuple declaration
 		case DashLexer.VAR_DECL:
+			arg1 = (DashAST) t.getChild(1);
+			arg2 = (DashAST) t.getChild(2);
+			
+			if (arg2 == null)
+				break;
 		case DashLexer.ASSIGN:
 		// Create update for == and !=
 		case DashLexer.EQUALITY:
 		case DashLexer.INEQUALITY: {
-			DashAST arg1 = (DashAST) t.getChild(0);
-			DashAST arg2 = (DashAST) t.getChild(1);
+			if (arg1 == null) {
+				arg1 = (DashAST) t.getChild(0);
+				arg2 = (DashAST) t.getChild(1);
+			}
 			
 			boolean arg1_list = arg1.getToken().getType() == DashLexer.TUPLE_LIST;
 			boolean arg2_list = arg2.getToken().getType() == DashLexer.TUPLE_LIST;

@@ -197,7 +197,7 @@ public class LLVMIRGenerator {
 
 			List<StringTemplate> args = new ArrayList<StringTemplate>();
 			for (int i = 1; i < t.getChildCount() - 1; i++) {
-				DashAST argument_node = ((DashAST) t.getChild(i).getChild(0));
+				DashAST argument_node = ((DashAST) t.getChild(i).getChild(1));
 				VariableSymbol arg_var = (VariableSymbol)argument_node.symbol;
 				Type arg_type = arg_var.type;
 				StringTemplate type_template = getType(arg_type);
@@ -741,7 +741,7 @@ public class LLVMIRGenerator {
 			
 		case DashLexer.VAR_DECL:
 		{
-			Symbol sym = ((DashAST)t.getChild(0)).symbol;
+			Symbol sym = ((DashAST)t.getChild(1)).symbol;
 			Scope scope = sym.scope;
 			int sym_id = sym.id;
 			
@@ -749,7 +749,7 @@ public class LLVMIRGenerator {
 			
 			int id = ((DashAST)t).llvmResultID;
 			int type = sym.type.getTypeIndex();
-			DashAST child = (DashAST)t.getChild(1);
+			DashAST child = (DashAST)t.getChild(2);
 			if (child != null) {
 				StringTemplate expr = exec(child);
 				int expr_id = ((DashAST)child.getChild(0)).llvmResultID;

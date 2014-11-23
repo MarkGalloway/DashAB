@@ -31,7 +31,7 @@ bottomup
 
 // add null initialization for each non-initializaed variable declaration
 varDeclaration
-  : ^(var_node = VAR_DECL id=ID)
+  : ^(var_node = VAR_DECL . id=ID)
     { 
       // if tuple declaration add ^(EXPR ^(TUPLE_LIST ^(EXPR AppropriateNullValue) ^(EXPR AppropriateNullValue) ...)) 
       if ($ID.symbol.type.getTypeIndex() == SymbolTable.tTUPLE) {

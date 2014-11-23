@@ -35,16 +35,30 @@ public class TuplePromotion {
 
 	public void check(DashAST t) {
 		boolean var_decl = false;
+		DashAST arg1 = null;
+		DashAST arg2 = null;
+		int index1 = 0;
+		int index2 = 1;
 		switch (t.getToken().getType()) {
 		// Create cast tuple declaration
 		case DashLexer.VAR_DECL:
+			arg1 = (DashAST) t.getChild(1);
+			arg2 = (DashAST) t.getChild(2);
+			
+			index1 = 1;
+			index2 = 2;
+			
+			if (arg2 == null)
+				break;
 		case DashLexer.ASSIGN:
 			var_decl = true;
 		// Create cast for == and !=
 		case DashLexer.EQUALITY:
 		case DashLexer.INEQUALITY: {
-			DashAST arg1 = (DashAST) t.getChild(0);
-			DashAST arg2 = (DashAST) t.getChild(1);
+			if (arg1 == null) {
+				arg1 = (DashAST) t.getChild(0);
+				arg2 = (DashAST) t.getChild(1);
+			}
 			
 			if (arg1.evalType.getTypeIndex() == SymbolTable.tTUPLE &&
 					arg2.evalType.getTypeIndex() == SymbolTable.tTUPLE) {
@@ -97,7 +111,7 @@ public class TuplePromotion {
 					typecast.evalType = cast1;
 					typecast.addChild(expr);
 					
-					t.replaceChildren(0, 0, typecast);
+					t.replaceChildren(index1, index1, typecast);
 				}
 				
 				if (promotion2 && !var_decl) {
@@ -109,7 +123,7 @@ public class TuplePromotion {
 					typecast.evalType = cast2;
 					typecast.addChild(expr);
 					
-					t.replaceChildren(1, 1, typecast);
+					t.replaceChildren(index2, index2, typecast);
 				}
 				
 				if (promotion2 && var_decl) {
@@ -121,7 +135,7 @@ public class TuplePromotion {
 					expr.evalType = cast2;
 					expr.addChild(typecast);
 					
-					t.replaceChildren(1, 1, expr);
+					t.replaceChildren(index2, index2, expr);
 				}
 			}
 		}
