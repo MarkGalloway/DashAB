@@ -8,6 +8,7 @@ program(type_defs, globals, global_code, code) ::= <<
 target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v64:64:64-v128:128:128-a0:0:64-s0:64:64-f80:128:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
+<runtime_library()>
 <externs()>
 
 <type_defs; separator="\n">
@@ -60,13 +61,54 @@ vloop_done(id) ::= <<
 loop.done_<id>_
 >>
 
-externs() ::= <<
+runtime_library() ::= <<
 declare i32 @powi(i32 %a, i32 %n)
 declare i1 @readBoolean()
 declare i8 @readCharacter()
 declare i32 @readInteger()
 declare float @readReal()
 declare i32 @getStreamState()
+
+declare i8*  allocVector()
+declare void int_allocInterval(i8*, i32, i32)
+declare void int_IntervalAdd(i8*, i8*, i8*)
+declare void int_IntervalSubtract(i8*, i8*, i8*)
+declare void int_IntervalMultiply(i8*, i8*, i8*)
+declare void int_IntervalDivide(i8*, i8*, i8*)
+declare void int_IntervalUniaryMinus(i8*, i8*)
+declare i32  int_IntervalEq(i8*, i8*)
+declare i32  int_IntervalNe(i8*, i8*)
+declare i32  int_IntervalBy(i8*, i8*, i32 by)
+declare void bool_allocVector(i8*, i32)
+declare void bool_VectorNot(i8*, i8*)
+declare i32  bool_VectorOrVector(i8*, i8*, i8*)
+declare i32  bool_VectorXOrVector(i8*, i8*, i8*)
+declare i32  bool_VectorAndVector(i8*, i8*, i8*)
+declare void bool_VectorOrExpr(i8*, i8*, i8)
+declare void bool_VectorXOrExpr(i8*, i8*, i8)
+declare void bool_VectorAndExpr(i8*, i8*, i8)
+declare i32  bool_VectorEq(i8*, i8*)
+declare i32  bool_VectorNe(i8*, i8*)
+declare void char_allocVector(i8*, i32)
+declare i32  char_VectorEq(i8*, i8*)
+declare i32  char_VectorNe(i8*, i8*)
+declare void int_allocVector(i8*, i32)
+declare i32  int_VectorAddVector(i8*, i8*, i8*)
+declare i32  int_VectorSubtractVector(i8*, i8*, i8*)
+declare i32  int_VectorMultiplyVector(i8*, i8*, i8*)
+declare i32  int_VectorDivideVector(i8*, i8*, i8*)
+declare i32  int_VectorModulusVector(i8*, i8*, i8*)
+declare i32  int_VectorPowerVector(i8*, i8*, i8*)
+declare void int_VectorUniaryMinus(i8*, i8*)
+declare i32  int_VectorDot(i32*, i8*, i8*)
+declare i32  int_VectorEq(i8*, i8*)
+declare i32  int_VectorNe(i8*, i8*)
+declare i32  getVectorSize(i8*)
+declare void releaseVector(i8*)
+
+>>
+
+externs() ::= <<
 declare i32 @printf(i8*, ...)
 declare float @llvm.pow.f32(float, float) nounwind readonly
 declare float @llvm.floor.f32(float)
