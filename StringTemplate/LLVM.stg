@@ -23,8 +23,6 @@ define void @initGlobals() {
 }
 
 <code>
-
-<utils()>
 >>
 
 void_type() ::= <<
@@ -140,10 +138,6 @@ string_constants() ::= <<
 @.str.input.char = private unnamed_addr constant [4 x i8] c"%c\0A\00", align 1
 @.str.input.int = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
 @.str.input.real = private unnamed_addr constant [4 x i8] c"%g\0A\00", align 1
->>
-
-utils() ::= <<
-
 >>
 
 function_main(id, code) ::= <<
