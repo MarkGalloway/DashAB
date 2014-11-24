@@ -42,6 +42,9 @@ public class BaseTest {
         base_globals.add("var");
         base_globals.add("null");
         base_globals.add("identity");
+        base_globals.add("interval");
+        base_globals.add("vector");
+        base_globals.add("matrix");
     }
 
     @After

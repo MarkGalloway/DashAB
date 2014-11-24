@@ -35,6 +35,7 @@ tokens {
   VECTOR_INDEX;
   INFERRED;
   MATRIX;
+  MATRIX_INDEX;
 }
 
 // Parser Rules
@@ -121,7 +122,7 @@ line
 
 type
 	:	tupleType
-	| primitiveType
+	| 	primitiveType
 	|	ID
 	;
 
@@ -134,7 +135,7 @@ tupleType
 tupleMember
   : type ID? -> ^(FIELD_DECL Var["var"] type ID?)
   ;
-
+  
 primitiveType
 	: REAL_TYPE
   | INTEGER_TYPE
@@ -428,6 +429,7 @@ postfixExpression
     (
     	(	DOT^ (INTEGER | ID | {emitErrorMessage("line " + $DOT.getLine() + ": Only integers and identifiers are allowed to index tuples.");})
     	|	r=LPAREN^ expressionList RPAREN!	{ $r.setType(CALL); $r.setText("CALL"); }
+    	|	r=LBRACK^ expr ','! expr RBRACK!	{ $r.setType(MATRIX_INDEX); $r.setText("MATRIX_INDEX");}
     	|	r=LBRACK^ expr RBRACK!				{ $r.setType(VECTOR_INDEX); $r.setText("VECTOR_INDEX");}
     	)*
     )
