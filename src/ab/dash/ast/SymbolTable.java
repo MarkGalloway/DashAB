@@ -432,30 +432,13 @@ public class SymbolTable {
         } else if (at.getTypeIndex() == tMATRIX) {
         	at = ((MatrixType)at).elementType;
         }
+        
         if ( !(at.getTypeIndex() == tINTEGER || 
-        		at.getTypeIndex() == tREAL) ) {
+        		at.getTypeIndex() == tREAL ||
+        		at.getTypeIndex() == tNULL ||
+        		at.getTypeIndex() == tIDENTITY) ) {
             error("line " + a.getLine() + ": " +
             		text(a)+" must have integer or real type in "+
-                           text((DashAST)a.getParent()));
-            return null;
-        }
-        return a.evalType;
-    }
-    
-    public Type upositive(DashAST a) {
-        Type at = a.evalType;
-        if (at.getTypeIndex() == tINTERVAL) {
-        	at = _integer;
-        } else if (at.getTypeIndex() == tVECTOR) {
-        	at = ((VectorType)at).elementType;
-        } else if (at.getTypeIndex() == tMATRIX) {
-        	at = ((MatrixType)at).elementType;
-        }
-
-        if ( !(at.getTypeIndex() == tINTEGER || 
-        		at.getTypeIndex() == tREAL) ) {
-            error("line " + a.getLine() + ": " +
-                    text(a)+" must have integer or real type in "+
                            text((DashAST)a.getParent()));
             return null;
         }

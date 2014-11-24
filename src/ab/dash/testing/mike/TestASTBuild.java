@@ -87,6 +87,10 @@ public class TestASTBuild {
 		nodes.reset();
 		Types typeComp = new Types(nodes, symtab);
 		typeComp.downup(tree); // trigger resolve/type computation actions
+		
+		System.out.println("\nTree:");
+		System.out.println(tree.toStringTree());
+		System.out.println();
 
 		System.err.flush();
 		System.out.flush();

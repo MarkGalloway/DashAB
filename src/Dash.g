@@ -20,7 +20,6 @@ tokens {
 	ELIST;       	// expression list
 	EXPR; 	   		// root of an expression
 	UNARY_MINUS;
-	UNARY_POSITIVE;
 	DECL_OUTSTREAM;
   DECL_INSTREAM;
   PRINT;
@@ -412,7 +411,7 @@ powerExpression
 	;
 	
 unaryExpression
-	:	op=ADD unaryExpression -> ^(UNARY_POSITIVE[$op] unaryExpression)
+	:	op=ADD unaryExpression -> unaryExpression
 	|	op=SUBTRACT unaryExpression -> ^(UNARY_MINUS[$op] unaryExpression)
 	|	Not unaryExpression -> ^(Not unaryExpression)
 	|	rangeExpression

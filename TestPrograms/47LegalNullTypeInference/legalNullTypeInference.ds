@@ -15,8 +15,8 @@ procedure main() returns integer {
 	boolean a8 = 0 == null;
 	var a9 = 0 != null;
 	var a10 = testNull();
-	var a11 = -null;
-	var a12 = +null;
+	var integer a11 = -null;
+	var integer a12 = +null;
 	var a13 = not null;
 	
 	a1 -> out; '\n' -> out;
