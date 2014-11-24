@@ -157,13 +157,10 @@ call returns [Type type]
     ;
     
 index returns [Type type]
-	:	^(VECTOR_INDEX id=expr m=.)	
+	:	^(VECTOR_INDEX id=expr m=expr)
 		{
-			if ($id.type.getClass() == VectorType.class) {
-				VectorType vt = (VectorType) $id.type;
-				$type = vt.elementType;
-				$start.evalType = $type;
-			}
+			$type = symtab.vectorIndex($id.start, $m.start);
+			$start.evalType = $type;
 		}
     ;
 	

@@ -10,5 +10,15 @@ public class MatrixType extends Symbol implements Type {
         this.rows = rows;
         this.columns = columns;
     }
-    public int getTypeIndex() { return elementType.getTypeIndex(); }
+    
+    public String getName() 
+    { 
+        return elementType+"[][]";
+    }
+    
+    public String toString() {
+    	return getName();
+    }
+    
+    public int getTypeIndex() { return SymbolTable.tMATRIX; }
 }

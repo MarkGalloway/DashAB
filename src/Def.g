@@ -434,12 +434,12 @@ type_tyepdef returns [Type type]
    $type = stype;
   }
   |
-  ^(Matrix typeElement row=. column=.)
+  ^(MATRIX typeElement row=. column=.)
   
   {
    MatrixType stype = new MatrixType($typeElement.type, 0, 0);
-   $Matrix.symbol = stype;
-   stype.def = $Matrix;
+   $MATRIX.symbol = stype;
+   stype.def = $MATRIX;
    stype.scope = currentScope;
    $type = stype;
   }

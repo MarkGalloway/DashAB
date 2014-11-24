@@ -46,6 +46,9 @@ public class SymbolTable {
     public static final int tINSTREAM = 6;
     public static final int tNULL = 7;
     public static final int tIDENTITY = 8;
+    public static final int tINTERVAL = 9;
+    public static final int tVECTOR = 10;
+    public static final int tMATRIX = 11;
     
     public static final BuiltInTypeSymbol _tuple =
             new BuiltInTypeSymbol("tuple", tTUPLE);
@@ -65,6 +68,12 @@ public class SymbolTable {
             new BuiltInTypeSymbol("null", tNULL);
     public static final BuiltInTypeSymbol _identity =
             new BuiltInTypeSymbol("identity", tIDENTITY);
+    public static final BuiltInTypeSymbol _interval =
+            new BuiltInTypeSymbol("interval", tINTERVAL);
+    public static final BuiltInTypeSymbol _vector =
+            new BuiltInTypeSymbol("vector", tVECTOR);
+    public static final BuiltInTypeSymbol _matrix =
+            new BuiltInTypeSymbol("matrix", tMATRIX);
     
     public static final BuiltInSpecifierSymbol _const =
     	new BuiltInSpecifierSymbol("const", sCONST);
@@ -85,8 +94,8 @@ public class SymbolTable {
 
     /** arithmetic types defined in order from narrowest to widest */
     public static final Type[] indexToType = {
-        // 0, 	1,        2,     	  3,    	4,		5,				6,      7,	8
-    	_tuple, _boolean, _character, _integer, _real, _outstream, _instream, _null, _identity
+        // 0, 	1,        2,     	  3,    	4,		5,				6,      7,	8,			9,			10,		11
+    	_tuple, _boolean, _character, _integer, _real, _outstream, _instream, _null, _identity, _interval, _vector, _matrix
     };
     
     public static final Specifier[] indexToSpecifier = {
@@ -96,68 +105,83 @@ public class SymbolTable {
 
     /** Map t1 op t2 to result type (null implies illegal) */
     public static final Type[][] arithmeticResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null},
-        /*boolean*/ 	{null,		null,    	null,   	null,   	null, 	null, 	null,         null,      null},
-        /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
-        /*integer*/     {null,		null,  		null,    	_integer,   _real,	null,	null,         _integer,  _integer},
-        /*real*/   		{null,		null,  		null,    	_real,   	_real,	null,	null,         _real,     _real},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
-        /*null*/        {null,      null,       null,       _integer,   _real,  null,   null,         null,      null},
-        /*identity*/    {null,      null,       null,       _integer,   _real,  null,   null,         null,      null}
+    	/*          	tuple		boolean  	character 	integer 	real		outstream	instream  null       identity	interval	vector		matrix*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,		null,	null,         null,      null,		null,		null,		null},
+        /*boolean*/ 	{null,		null,    	null,   	null,   	null, 		null, 	null,         null,      null,		null,		_vector,	_matrix},
+        /*character*/   {null,		null,  		null,    	null,   	null, 		null,	null,         null,      null,		null,		_vector,	_matrix},
+        /*integer*/     {null,		null,  		null,    	_integer,   _real,		null,	null,         _integer,  _integer,	null,		_vector,	_matrix},
+        /*real*/   		{null,		null,  		null,    	_real,   	_real,		null,	null,         _real,     _real,		null,		_vector,	_matrix},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 		null,	null,         null,      null,		null,		null,		null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 		null,	null,         null,      null,		null,		null,		null},
+        /*null*/        {null,      null,       null,       _integer,   _real,  	null,   null,         null,      null,		null,		null,		null},
+        /*identity*/    {null,      null,       null,       _integer,   _real,  	null,   null,         null,      null,		null,		null,		null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,		null,	null,         null,      null,		null,		_vector,	_matrix},
+        /*vector*/		{null,		_vector,    _vector,   	_vector,   	_vector,	null,	null,         null,      null,		_vector,	_vector,	_matrix},
+        /*matrix*/		{null,		_matrix,    _matrix,   	_matrix,   	_matrix,	null,	null,         null,      null,		_matrix,	_matrix,	_matrix}
     };
     
     public static final Type[][] logicResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null},
-        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null,         _boolean,   _boolean},
-        /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
-        /*integer*/     {null,		null,  		null,    	null,   	null,	null,	null,         null,      null},
-        /*real*/   		{null,		null,  		null,    	null,   	null,	null,	null,         null,      null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,         null,      null},
-        /*null*/        {null,    	_boolean,   null,       null,       null,   null,   null,         null,      null},
-        /*identity*/    {null,    	_boolean,   null,       null,       null,   null,   null,         null,      null}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity	interval	vector		matrix*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,		null,		null,		null},
+        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null,         _boolean,   _boolean,	null,		_vector,	_matrix},
+        /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null,		null,		null,		null},
+        /*integer*/     {null,		null,  		null,    	null,   	null,	null,	null,         null,      null,		null,		null,		null},
+        /*real*/   		{null,		null,  		null,    	null,   	null,	null,	null,         null,      null,		null,		null,		null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null,		null,		null,		null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,         null,      null,		null,		null,		null},
+        /*null*/        {null,    	_boolean,   null,       null,       null,   null,   null,         null,      null,		null,		null,		null},
+        /*identity*/    {null,    	_boolean,   null,       null,       null,   null,   null,         null,      null,		null,		null,		null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,		null,		null,		null},
+        /*vector*/		{null,		_vector,   	null,   	null,   	null,	null,	null,         null,      null,		null,		null,		null},
+        /*matrix*/		{null,		_matrix,   	null,   	null,   	null,	null,	null,         null,      null,		null,		null,		null}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,       null,	null,     _boolean,      _boolean},
-        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    null,	null,     _boolean,      _boolean},
-        /*character*/   {null,		null,  		_boolean,   null,   	null,	    null,	null,     _boolean,      _boolean},
-        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean},
-        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null},
-        /*null*/        {null,   	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null},
-        /*identity*/    {null,    	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity		interval	vector	matrix*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,       null,	null,     _boolean,      _boolean,	null,		null,	null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    null,	null,     _boolean,      _boolean,	null,		null,	null},
+        /*character*/   {null,		null,  		_boolean,   null,   	null,	    null,	null,     _boolean,      _boolean,	null,		null,	null},
+        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean,	null,		null,	null},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean,	null,		null,	null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null,		null,		null,	null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null,		null,		null,	null},
+        /*null*/        {null,   	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null,		null,		null,	null},
+        /*identity*/    {null,    	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null,		null,		null,	null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			null,		null,	null},
+        /*vector*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			null,		null,	null},
+        /*matrix*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			null,		null,	null}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream null       identity*/
-    	/*tuple*/		{_boolean,	null,    	null,   	null,   	null,	    null,	null,    _boolean,      _boolean},
-        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    null,	null,    _boolean,      _boolean},
-        /*character*/   {null,		null,  		_boolean,   null,   	null,	    null,	null,    _boolean,      _boolean},
-        /*integer*/     {null,		null,  		null,    	_boolean,	_boolean,	null,	null,    _boolean,      _boolean},
-        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,    _boolean,      _boolean},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,    null,          null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,    null,          null},
-        /*null*/        {_boolean,  _boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
-        /*identity*/    {_boolean,  _boolean,       _boolean,   _boolean,   _boolean,   null,   null,    null,          null},
+    	/*          	tuple		boolean  	character 	integer 	real	outstream		instream 	null       identity		interval	vector		matrix*/
+    	/*tuple*/		{_boolean,	null,    	null,   	null,   	null,	    	null,		null,    _boolean,	_boolean,	null,		null,		null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    	null,		null,    _boolean,	_boolean,	null,		null,		null},
+        /*character*/   {null,		null,  		_boolean,   null,   	null,	    	null,		null,    _boolean,	_boolean,	null,		null,		null},
+        /*integer*/     {null,		null,  		null,    	_boolean,	_boolean,		null,		null,    _boolean,	_boolean,	null,		null,		null},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,		null,		null,    _boolean,	_boolean,	null,		null,		null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    	null,		null,    null,		null,		null,		null,		null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    	null,		null,    null,		null,		null,		null,		null},
+        /*null*/        {_boolean,  _boolean,   _boolean,   _boolean,   _boolean,   	null,   	null,    null,		null,		null,		null,		null},
+        /*identity*/    {_boolean,  _boolean,   _boolean,   _boolean,   _boolean,   	null,   	null,    null,		null,		null,		null,		null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		null,		null,		null},
+        /*vector*/		{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		null,		_boolean,	null},
+        /*matrix*/		{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		null,		null,		_boolean}
     };
     
     public static final Type[][] castResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream null       identity*/
-    	/*tuple*/		{_tuple,	null,    	null,   	null,   	null,	null,	null,        null,      null},
-        /*boolean*/ 	{null,		_boolean,  _character, _integer,   	_real,	null,	null,        null,      null},
-        /*character*/   {null,		_boolean,  _character,	_integer,   _real,	null,	null,        null,      null},
-        /*integer*/     {null,		_boolean,  _character, _integer,   	_real,	null,	null,        null,      null},
-        /*real*/   		{null,		null,  		null,    	_integer,   _real,	null,	null,        null,      null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,        null,      null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,        null,      null},
-        /*null*/        {_tuple,    _boolean,  _character,  _integer,   _real,  null,   null,        null,      null},
-        /*identity*/    {_tuple,    _boolean,  _character,  _integer,   _real,  null,   null,        null,      null},
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream null       identity	interval	vector	matrix*/
+    	/*tuple*/		{_tuple,	null,    	null,   	null,   	null,	null,	null,        null,      null,		null,		null,	null},
+        /*boolean*/ 	{null,		_boolean,  _character, _integer,   	_real,	null,	null,        null,      null,		null,		null,	null},
+        /*character*/   {null,		_boolean,  _character,	_integer,   _real,	null,	null,        null,      null,		null,		null,	null},
+        /*integer*/     {null,		_boolean,  _character, _integer,   	_real,	null,	null,        null,      null,		null,		null,	null},
+        /*real*/   		{null,		null,  		null,    	_integer,   _real,	null,	null,        null,      null,		null,		null,	null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	null,        null,      null,		null,		null,	null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,        null,      null,		null,		null,	null},
+        /*null*/        {_tuple,    _boolean,  _character,  _integer,   _real,  null,   null,        null,      null,		null,		null,	null},
+        /*identity*/    {_tuple,    _boolean,  _character,  _integer,   _real,  null,   null,        null,      null,		null,		null,	null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,		null,		null,	null},
+        /*vector*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,		null,		null,	null},
+        /*matrix*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,		null,		null,	null}
    };
 
     /** Indicate whether a type needs a promotion to a wider type.
@@ -166,16 +190,19 @@ public class SymbolTable {
      *  arithmetic, equality, and relational operators in Dash.
      */
     public static final Type[][] promoteFromTo = new Type[][] {
-        /*          	tuple		boolean  	character 	integer 	real	outstream	instream   null       identity*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	    null,      null,      null},
-        /*boolean*/ 	{null,		null,    	null,   	null,   	null,	null,	    null,      null,      null},
-        /*character*/   {null,		null,  		null,    	null,   	null,	null,	    null,      null,      null},
-        /*integer*/     {null,		null,  		null,    	null,   	_real,	null,	    null,      null,      null},
-        /*real*/   		{null,		null,  		null,    	null,   	null, 	null,       null,      null,      null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null},
-        /*null*/        {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null},
-        /*identity*/    {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null},
+        /*          	tuple		boolean  	character 	integer 	real	outstream	instream   null       identity	interval	vector	matri*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	    null,      null,      null,		null,		null,	null},
+        /*boolean*/ 	{null,		null,    	null,   	null,   	null,	null,	    null,      null,      null,		null,		null,	null},
+        /*character*/   {null,		null,  		null,    	null,   	null,	null,	    null,      null,      null,		null,		null,	null},
+        /*integer*/     {null,		null,  		null,    	null,   	_real,	null,	    null,      null,      null,		null,		null,	null},
+        /*real*/   		{null,		null,  		null,    	null,   	null, 	null,       null,      null,      null,		null,		null,	null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null,		null,		null,	null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null,		null,		null,	null},
+        /*null*/        {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		null,		null,	null},
+        /*identity*/    {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		null,		null,	null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,	null,		null,         null,      null,		null,		null,	null},
+        /*vector*/		{null,		null,    	null,   	null,   	null,	null,		null,         null,      null,		null,		null,	null},
+        /*matrix*/		{null,		null,    	null,   	null,   	null,	null,		null,         null,      null,		null,		null,	null}
     };    
 
     
@@ -457,27 +484,24 @@ public class SymbolTable {
         return a.evalType;
     }
 
-//    public Type arrayIndex(DashAST id, DashAST index) {
-//        Symbol s = id.scope.resolve(id.getText());
-//        id.symbol = s;                               // annotate AST
-//        if ( s.getClass() != VariableSymbol.class || // ensure it's an array
-//             s.type.getClass() != ArrayType.class )
-//        {
-//            error(text(id)+" must be an array variable in "+
-//                           text((DashAST)id.getParent()));
-//            return null;
-//        }
-//        VariableSymbol vs = (VariableSymbol)s;
-//        Type t = ((ArrayType)vs.type).elementType;   // get element type
-//        int texpr = index.evalType.getTypeIndex();
-//        // promote the index expr if necessary to int
-//        index.promoteToType = promoteFromTo[texpr][tINT];
-//        if ( !canAssignTo(index.evalType, _integer, index.promoteToType) ) {
-//            error(text(index)+" index must have integer type in "+
-//                           text((DashAST)id.getParent()));
-//        }        
-//        return t;
-//    }
+    public Type vectorIndex(DashAST id, DashAST index) {
+    	System.out.println(id.toStringTree());
+        Type t = id.evalType;
+        if ( t.getTypeIndex() != tVECTOR )
+        {
+            error(text(id)+" must be an vector variable in "+
+                           text((DashAST)id.getParent()));
+            return null;
+        }
+        
+        int texpr = index.evalType.getTypeIndex();
+        
+        if (texpr == tVECTOR) {
+        	return t;
+        }
+        
+        return ((VectorType)t).elementType;
+    }
 
     public Type call(DashAST id, List<?> args) {
         Symbol s = id.scope.resolve(id.getText());
@@ -867,6 +891,13 @@ public class SymbolTable {
         	}
         	
         	return true;
+    	}
+    	
+    	if (valueType.getTypeIndex() == tINTERVAL  && destType.getTypeIndex() == tVECTOR) {
+    		if (((VectorType)destType).elementType.getTypeIndex() == tINTEGER)
+    			return true;
+    		
+    		return false;
     	}
     	
     	if (promotion == null)

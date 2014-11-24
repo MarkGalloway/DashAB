@@ -8,5 +8,15 @@ public class IntervalType extends Symbol implements Type {
         this.lower = lower;
         this.upper = upper;
     }
-    public int getTypeIndex() { return SymbolTable.tINTEGER; }
+    
+    public String getName() 
+    { 
+        return "interval";
+    }
+    
+    public String toString() {
+    	return getName();
+    }
+    
+    public int getTypeIndex() { return SymbolTable.tINTERVAL; }
 }

@@ -8,5 +8,15 @@ public class VectorType extends Symbol implements Type {
         this.elementType = elementType;
         this.size = size;
     }
-    public int getTypeIndex() { return elementType.getTypeIndex(); }
+    
+    public String getName() 
+    { 
+        return elementType+"[]";
+    }
+    
+    public String toString() {
+    	return getName();
+    }
+    
+    public int getTypeIndex() { return SymbolTable.tVECTOR; }
 }

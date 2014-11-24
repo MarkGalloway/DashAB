@@ -918,4 +918,12 @@ public class TestLLVM extends BaseTest {
         sb.append("2\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void gaussianElimination() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/68GaussianElimination/gaussianElimination.ds", "TestPrograms/68GaussianElimination/input.in"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
