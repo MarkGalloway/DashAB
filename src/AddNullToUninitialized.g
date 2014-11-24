@@ -57,10 +57,9 @@ varDeclaration
       // otherwise add ^(EXPR AppropriateNullValue)
       else {
         DashAST expr = SymbolTable.getExprForNull($ID.symbol.type);
-        if (expr == null) {
-          symtab.error("line " + $ID.getLine() + ": type cannot be inferred for " + $ID.text); 
+        if (expr != null) {
+          var_node.addChild(expr);
         }
-        var_node.addChild(expr);
       }
       
     } 

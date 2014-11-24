@@ -109,13 +109,13 @@ public class SymbolTable {
     	/*tuple*/		{null,		null,    	null,   	null,   	null,		null,	null,         null,      null,		null,		null,		null},
         /*boolean*/ 	{null,		null,    	null,   	null,   	null, 		null, 	null,         null,      null,		null,		_vector,	_matrix},
         /*character*/   {null,		null,  		null,    	null,   	null, 		null,	null,         null,      null,		null,		_vector,	_matrix},
-        /*integer*/     {null,		null,  		null,    	_integer,   _real,		null,	null,         _integer,  _integer,	null,		_vector,	_matrix},
+        /*integer*/     {null,		null,  		null,    	_integer,   _real,		null,	null,         _integer,  _integer,	_interval,	_vector,	_matrix},
         /*real*/   		{null,		null,  		null,    	_real,   	_real,		null,	null,         _real,     _real,		null,		_vector,	_matrix},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 		null,	null,         null,      null,		null,		null,		null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 		null,	null,         null,      null,		null,		null,		null},
         /*null*/        {null,      null,       null,       _integer,   _real,  	null,   null,         null,      null,		null,		null,		null},
         /*identity*/    {null,      null,       null,       _integer,   _real,  	null,   null,         null,      null,		null,		null,		null},
-        /*interval*/	{null,		null,    	null,   	null,   	null,		null,	null,         null,      null,		null,		_vector,	_matrix},
+        /*interval*/	{null,		null,    	null,   	_interval,   null,		null,	null,         null,      null,		_interval,	_vector,	_matrix},
         /*vector*/		{null,		_vector,    _vector,   	_vector,   	_vector,	null,	null,         null,      null,		_vector,	_vector,	_matrix},
         /*matrix*/		{null,		_matrix,    _matrix,   	_matrix,   	_matrix,	null,	null,         null,      null,		_matrix,	_matrix,	_matrix}
     };
@@ -163,8 +163,8 @@ public class SymbolTable {
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	    	null,		null,    null,		null,		null,		null,		null},
         /*null*/        {_boolean,  _boolean,   _boolean,   _boolean,   _boolean,   	null,   	null,    null,		null,		null,		null,		null},
         /*identity*/    {_boolean,  _boolean,   _boolean,   _boolean,   _boolean,   	null,   	null,    null,		null,		null,		null,		null},
-        /*interval*/	{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		null,		null,		null},
-        /*vector*/		{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		null,		_boolean,	null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		_boolean,	_boolean,	null},
+        /*vector*/		{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		_boolean,	_boolean,	null},
         /*matrix*/		{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		null,		null,		_boolean}
     };
     
@@ -401,12 +401,16 @@ public class SymbolTable {
     }
     
     public Type range(DashAST a, DashAST b) {
-        if (a.evalType.getTypeIndex() != tINTEGER) {
+        if (!(a.evalType.getTypeIndex() == tINTEGER ||
+        		a.evalType.getTypeIndex() == tNULL ||
+        		a.evalType.getTypeIndex() == tIDENTITY)) {
         	error("line " + a.getLine() + ": Left hand side of range needs to evaluate to an integer.");
         	return null;
         }
         
-        if (b.evalType.getTypeIndex() != tINTEGER) {
+        if (!(b.evalType.getTypeIndex() == tINTEGER ||
+        		b.evalType.getTypeIndex() == tNULL ||
+        		b.evalType.getTypeIndex() == tIDENTITY)) {
         	error("line " + b.getLine() + ": Right hand side of range needs to evaluate to an integer.");
 	    	return null;
 	    }
@@ -419,19 +423,17 @@ public class SymbolTable {
     }
 
     public Type uminus(DashAST a) {
-        if (a.evalType  == _null) { 
-            CommonToken token = convertFromNull(_integer);
-            a.evalType = _integer;
-            a.token = token;
-        }  
-        
-        if (a.evalType  == _identity) { 
-            CommonToken token = convertFromIdentity(_integer);
-            a.evalType = _integer;
-            a.token = token;
-        }  
-
-        if ( !(a.evalType==_integer || a.evalType==_real) ) {
+    
+        Type at = a.evalType;
+        if (at.getTypeIndex() == tINTERVAL) {
+        	at = _integer;
+        } else if (at.getTypeIndex() == tVECTOR) {
+        	at = ((VectorType)at).elementType;
+        } else if (at.getTypeIndex() == tMATRIX) {
+        	at = ((MatrixType)at).elementType;
+        }
+        if ( !(at.getTypeIndex() == tINTEGER || 
+        		at.getTypeIndex() == tREAL) ) {
             error("line " + a.getLine() + ": " +
             		text(a)+" must have integer or real type in "+
                            text((DashAST)a.getParent()));
@@ -441,19 +443,17 @@ public class SymbolTable {
     }
     
     public Type upositive(DashAST a) {
-        if (a.evalType  == _null) { 
-            CommonToken token = convertFromNull(_integer);
-            a.evalType = _integer;
-            a.token = token;
-        }  
-        
-        if (a.evalType  == _identity) { 
-            CommonToken token = convertFromIdentity(_integer);
-            a.evalType = _integer;
-            a.token = token;
-        }  
+        Type at = a.evalType;
+        if (at.getTypeIndex() == tINTERVAL) {
+        	at = _integer;
+        } else if (at.getTypeIndex() == tVECTOR) {
+        	at = ((VectorType)at).elementType;
+        } else if (at.getTypeIndex() == tMATRIX) {
+        	at = ((MatrixType)at).elementType;
+        }
 
-        if ( !(a.evalType==_integer || a.evalType==_real) ) {
+        if ( !(at.getTypeIndex() == tINTEGER || 
+        		at.getTypeIndex() == tREAL) ) {
             error("line " + a.getLine() + ": " +
                     text(a)+" must have integer or real type in "+
                            text((DashAST)a.getParent()));

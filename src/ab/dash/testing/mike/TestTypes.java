@@ -25,7 +25,7 @@ import ab.dash.ast.SymbolTable;
 
 public class TestTypes {
 	public static void parseFile(String name, String file)
-			throws RecognitionException {
+			throws RecognitionException, RuntimeException {
 		CharStream input = null;
 		try {
 			input = new ANTLRFileStream(file);
@@ -168,7 +168,11 @@ public class TestTypes {
 	        	    
 	        	    if (extension.equals("ds")) {
 		        	    System.out.println("File: " + file.getName());
-			            parseFile(file.getName(), file.getPath());
+		        	    try {
+		        	    	parseFile(file.getName(), file.getPath());
+		        	    } catch (RuntimeException e) {
+		        	    	System.err.println("Runtime Error.");
+		        	    }
 	        	    }
 	        	}
 			}
