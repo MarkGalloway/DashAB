@@ -330,7 +330,7 @@ public class SymbolTable {
         }
         return result;
     }
-
+    // TODO: Doesn't work with correctly for vectors and matrices.
     private Type op(Type[][] typeTable, DashAST a, DashAST b) {
     	Type type =  getResultType(typeTable, a, b);
     	
