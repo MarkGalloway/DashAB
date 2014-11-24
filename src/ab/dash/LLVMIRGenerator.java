@@ -442,6 +442,12 @@ public class LLVMIRGenerator {
 
 			return template;
 		}
+
+		case DashLexer.VECTOR_LIST:
+		{
+			/* TODO: Implement. */
+			return new StringTemplate("");
+		}
 			
 		case DashLexer.EXPR:
 			return exec((DashAST)t.getChild(0));
@@ -768,6 +774,9 @@ public class LLVMIRGenerator {
 						template = stg.getInstanceOf("char_global_assign");
 					} else if (type == SymbolTable.tBOOLEAN) {
 						template = stg.getInstanceOf("bool_global_assign");
+					} else {
+						/* TODO: Implement. */
+						return new StringTemplate("");
 					}
 				} else {
 					if (type == SymbolTable.tINTEGER) {
@@ -778,6 +787,9 @@ public class LLVMIRGenerator {
 						template = stg.getInstanceOf("char_local_assign");
 					} else if (type == SymbolTable.tBOOLEAN) {
 						template = stg.getInstanceOf("bool_local_assign");
+					} else {
+						/* TODO: Implement. */
+						return new StringTemplate("");
 					}
 				}
 				
@@ -818,6 +830,9 @@ public class LLVMIRGenerator {
 					template = stg.getInstanceOf("char_tuple_assign");
 				} else if (type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("bool_tuple_assign");
+				} else {
+					/* TODO: Implement. */
+					return new StringTemplate("");
 				}
 				
 				StringTemplate getLocalTuple = stg.getInstanceOf("tuple_get_local");
@@ -835,6 +850,11 @@ public class LLVMIRGenerator {
 				return template;
 			}
 			
+			if (node.getType() == DashLexer.VECTOR_INDEX) {
+				/* TODO: Implement. */
+				return new StringTemplate("");
+			}
+
 			Symbol sym = node.symbol;
 			int sym_id = sym.id;
 			
@@ -854,6 +874,9 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("bool_local_assign");
 			} else if (type == SymbolTable.tTUPLE) {
 				return assignTuple(id, (VariableSymbol)sym, arg_id, expr);
+			} else {
+				/* TODO: Implement. */
+				return new StringTemplate("");
 			}
 			
 			template.setAttribute("expr_id", arg_id);
@@ -989,6 +1012,12 @@ public class LLVMIRGenerator {
 			template.setAttribute("tuple_expr", tuple_expr);
 			template.setAttribute("id", id);
 			return template;
+		}
+
+		case DashLexer.VECTOR_INDEX:
+		{
+			/* TODO: Implement. */
+			return new StringTemplate("");
 		}
 		
 		case DashLexer.TYPECAST:
