@@ -468,22 +468,97 @@ public class SymbolTable {
     }
 
     public Type vectorIndex(DashAST id, DashAST index) {
-    	System.out.println(id.toStringTree());
         Type t = id.evalType;
         if ( t.getTypeIndex() != tVECTOR )
         {
-            error(text(id)+" must be an vector variable in "+
-                           text((DashAST)id.getParent()));
+            error("line " + id.getLine() + " : " + 
+            		text(id)+" must be an vector variable in "+
+                    text((DashAST)id.getParent()));
             return null;
         }
         
         int texpr = index.evalType.getTypeIndex();
         
         if (texpr == tVECTOR) {
-        	return t;
+        	VectorType vectorType = (VectorType)index.evalType;
+        	if (vectorType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + index.getLine() + " : " + 
+        				text(index)+" indexing vector must be of type integer in "+
+                        text((DashAST)index.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (texpr != tINTEGER) {
+        	error("line " + index.getLine() + " : " + 
+    				text(index)+" index must be of type integer in "+
+                    text((DashAST)index.getParent()));
+    		return null;
         }
         
         return ((VectorType)t).elementType;
+    }
+    
+    public Type matrixIndex(DashAST id, DashAST row, DashAST column) {
+        Type t = id.evalType;
+        if ( t.getTypeIndex() != tMATRIX )
+        {
+            error(text(id)+" must be an matrix variable in "+
+                           text((DashAST)id.getParent()));
+            return null;
+        }
+        
+        int trow = row.evalType.getTypeIndex();
+        int tcolumn = column.evalType.getTypeIndex();
+        
+        if (trow == tVECTOR && tcolumn == tVECTOR) {
+        	VectorType rowType = (VectorType)row.evalType;
+        	VectorType columnType = (VectorType)column.evalType;
+        	if (rowType.elementType.getTypeIndex() == tINTEGER &&
+        			columnType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (trow == tVECTOR && tcolumn == tINTEGER) {
+        	VectorType rowType = (VectorType)row.evalType;
+        	if (rowType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector for row must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (tcolumn == tVECTOR && trow == tINTEGER) {
+        	VectorType columnType = (VectorType)column.evalType;
+        	if (columnType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector for column must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (trow != tINTEGER || tcolumn != tINTEGER) {
+        	error("line " + row.getLine() + " : " + 
+    				text(row)+" index must be of type integer in "+
+                    text((DashAST)row.getParent()));
+        	 return null;
+        }
+        
+        return ((MatrixType)t).elementType;
     }
 
     public Type call(DashAST id, List<?> args) {

@@ -151,6 +151,11 @@ index returns [Type type]
 			$type = symtab.vectorIndex($id.start, $m.start);
 			$start.evalType = $type;
 		}
+	|	^(MATRIX_INDEX id=expr opt1=expr opt2=expr)
+		{
+			$type = symtab.matrixIndex($id.start, $opt1.start, $opt2.start);
+			$start.evalType = $type;
+		}
     ;
 	
 tuple_list returns [Type type]
