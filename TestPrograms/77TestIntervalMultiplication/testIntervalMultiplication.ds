@@ -1,0 +1,21 @@
+//8.5.4 Operations: [a, b] / [c, d] = min(a*c, a*d, b/*c, b*d), max(a*c, a*d, b*c, b*d)
+
+const out = std_output();
+
+procedure main() returns integer {
+	integer interval a = 2..4;
+	integer interval b = 1..2;
+	integer interval z = a * b;
+	
+	integer vector c = z; // min(2, 4, 4, 8), max(2, 4, 4, 8) = 2, 8
+		
+	c[1] -> out; '\n' -> out;	
+	c[2] -> out; '\n' -> out;	
+	c[3] -> out; '\n' -> out;
+	c[4] -> out; '\n' -> out;
+	c[5] -> out; '\n' -> out;
+	c[6] -> out; '\n' -> out;
+	c[7] -> out;
+	
+	return 0;
+}

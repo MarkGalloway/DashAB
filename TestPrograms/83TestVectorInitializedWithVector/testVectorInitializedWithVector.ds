@@ -1,0 +1,13 @@
+// 8.6.1 Declarations - A vector can be initialized with another vector
+// if it's too small then the resulting vector is null padded
+
+const out = std_output();
+procedure main() returns integer {
+	
+	integer v1[3] = [1, 2, 3];
+	integer v2[4] = v1; // Should be null padded for the remainder
+	
+	v2[4] -> out; // 0
+
+	return 0;
+}

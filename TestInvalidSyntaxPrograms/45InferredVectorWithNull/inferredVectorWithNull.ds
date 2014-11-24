@@ -1,0 +1,7 @@
+// 8.6.1 null and identity require that the size of the vector to which they are assigned be known. T
+// Thus, they can not be used to initialize an inferred vector.
+
+procedure main() returns integer {
+	boolean vector v1 = null;
+	return 0;
+}
