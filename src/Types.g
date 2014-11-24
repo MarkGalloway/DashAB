@@ -200,7 +200,8 @@ binaryOps returns [Type type]
 		|	^(lop a=expr b=expr)    {$type=symtab.lop($a.start, $b.start);}
 		|	^(relop a=expr b=expr)  {$type=symtab.relop($a.start, $b.start);}
 		|	^(eqop a=expr b=expr)   {$type=symtab.eqop($a.start, $b.start);}
-		|	^(RANGE a=expr b=expr)   {$type=symtab.range($a.start, $b.start);}
+		|	^(RANGE a=expr b=expr)  {$type=symtab.range($a.start, $b.start);}
+		|	^(By a=expr b=expr) 	{$type=symtab.by($a.start, $b.start);}
 		)
 	;
 	

@@ -816,6 +816,26 @@ public class SymbolTable {
         }
     }
     
+    public Type by(DashAST interval, DashAST by) {
+    	if ( interval.evalType.getTypeIndex() != tINTERVAL ) {
+            error("line " + interval.getLine() + ": " +
+            		" left hand side of by statement" +
+                           " must be of type interval in "+
+                           text((DashAST)interval.getParent()));
+            return null;
+        }
+    	
+    	if ( by.evalType.getTypeIndex() != tINTEGER) {
+            error("line " + by.getLine() + ": " +
+            		" right hand side of by statement" +
+                           " must be of type integer in "+
+                           text((DashAST)by.getParent()));
+            return null;
+        }
+    	
+    	return new VectorType(_integer, 0);
+    }
+    
     public boolean typeCast(DashAST typecast, DashAST list) {
     	
     	if (typecast.evalType.getTypeIndex() == tTUPLE) {
