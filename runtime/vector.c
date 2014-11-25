@@ -454,6 +454,86 @@ void int_VectorDot(int32_t *result, struct Vector* lhs, struct Vector* rhs) {
 		*result += lhs_data[i]*rhs_data[i];
 }
 
+void int_VectorAddScalar(struct Vector* out, struct Vector* lhs, int32_t rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] + rhs;
+}
+
+void int_VectorSubtractScalar(struct Vector* out, struct Vector* lhs, int32_t rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] - rhs;
+}
+
+void int_ScalarSubtractVector(struct Vector* out, int32_t lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs - rhs_data[i];
+}
+
+void int_VectorMultiplyScalar(struct Vector* out, struct Vector* lhs, int32_t rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i]*rhs;
+}
+
+void int_VectorDivideScalar(struct Vector* out, struct Vector* lhs, int32_t rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i]/rhs;
+}
+
+void int_ScalarDivideVector(struct Vector* out, int32_t lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs/rhs_data[i];
+}
+
+void int_VectorModulusScalar(struct Vector* out, struct Vector* lhs, int32_t rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] % rhs;
+}
+
+void int_ScalarModulusVector(struct Vector* out, int32_t lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs % rhs_data[i];
+}
+
+void int_VectorPowerScalar(struct Vector* out, struct Vector* lhs, int32_t rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] ^ rhs;
+}
+
+void int_ScalarPowerVector(struct Vector* out, int32_t lhs, struct Vector* rhs) {
+	int32_t *out_data = (int32_t*) out->data;	
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs ^ rhs_data[i];
+}
+
 int int_VectorEq(struct Vector* lhs, struct Vector* rhs) {
 	int32_t *lhs_data = (int32_t*) lhs->data;
 	int32_t *rhs_data = (int32_t*) rhs->data;
