@@ -449,7 +449,7 @@ primary
     : r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
     |	REAL
     |	CHARACTER
-    | STRING_LIT
+    | STRING
     |	True
     |	False
     | Identity
@@ -610,7 +610,7 @@ REAL
 		| {!member_access}?=> (DOT (DIGIT | UNDERSCORE)*) DecimalExponent1? FloatTypeSuffix?
 	;
 
-STRING_LIT
+STRING
 @after {
   setText(getText().substring(1, getText().length()-1).replaceAll("\\\\(\")", "$1"));
 }
