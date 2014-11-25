@@ -1,0 +1,7 @@
+procedure main() returns integer {
+  var x = filter(i in 1..5 | i == 3, i==2, i%2==0); //valid
+  var y = filter(i in 1..5 | i % 2 == 1); //valid
+  var z = filter(i in 1..5 | ); // invalid, there must be at least one predicate
+  
+  return 0;
+}

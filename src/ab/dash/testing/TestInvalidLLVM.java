@@ -545,4 +545,13 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
+    @Test // interval invalid range  - EXCEPTION CASE NOT YET IMPLEMENTED - SHOULD FAIL
+    public void filterWithNoPredicateTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/54FilterWithNoPredicate/filterWithNoPredicate.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 4: Filters must have at least one predicate.");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
 }

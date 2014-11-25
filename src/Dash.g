@@ -458,6 +458,7 @@ primary
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
     | LBRACK domainExpression (',' domainExpression)? PIPE expression RBRACK -> ^(GENERATOR domainExpression+ expression)
     | LBRACK expression (',' expression)* RBRACK -> ^(VECTOR_LIST expression+)
+    | Filter LPAREN domainExpression PIPE RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Filters must have at least one predicate.");}
     | Filter LPAREN domainExpression PIPE expressionList RPAREN -> ^(FILTER domainExpression expressionList)
     | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
