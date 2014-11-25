@@ -1,0 +1,6 @@
+// 8.6.4 Operations: Out of bounds indexing should cause an error.
+
+procedure main() returns integer {
+	integer vector v1[1] = 1;
+	integer m = v1[2]; // should raise an error at runtime
+}

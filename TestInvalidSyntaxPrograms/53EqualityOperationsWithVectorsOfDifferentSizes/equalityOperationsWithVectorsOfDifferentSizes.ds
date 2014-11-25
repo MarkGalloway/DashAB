@@ -1,0 +1,8 @@
+// 8.6.4 Operations: Ops with integers of different sizes is an error
+
+procedure main() returns integer {
+	integer vector v1[1] = [1];
+	integer vector v2[2] = [1,1];
+	boolean b1 = v1 == v2; // should raise a runtime error
+	return 0;
+}

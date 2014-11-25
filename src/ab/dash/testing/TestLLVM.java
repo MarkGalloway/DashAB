@@ -947,7 +947,7 @@ public class TestLLVM extends BaseTest {
     
     @Test
     public void vectorLiteralsAssignmentsAccesses() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/88VectorLiteralsAssignmentsAccesses/vectorLiteralsAssignmentsAccesses.ds"};
+        String[] args = new String[] {"TestPrograms/100VectorLiteralsAssignmentsAccesses/vectorLiteralsAssignmentsAccesses.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 

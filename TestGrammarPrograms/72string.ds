@@ -1,0 +1,14 @@
+typedef string str;
+
+procedure main() returns integer {
+  string s1;
+  const string s2 = ['s','t','r','i','n','g'];
+
+  var string s3 = "The cat said \"Meow!\"\nThat was a good day.\n";
+
+  string s4 = "'Hello' \a \b \t \r \\\\\\\\\\ \0";
+
+  str s5 = "I'm a typdef!";
+
+  return 0;
+}

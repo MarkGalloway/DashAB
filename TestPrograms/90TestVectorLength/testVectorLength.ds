@@ -1,0 +1,11 @@
+// 8.6.5 Vector Operations Length
+const out = std_output();
+
+procedure main() returns integer {
+	integer vector v = [8, 9, 6];
+	integer elements = length(v);
+	
+	elements -> out;
+
+	return 0;
+}

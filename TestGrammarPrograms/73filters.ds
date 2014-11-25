@@ -1,0 +1,6 @@
+procedure main() returns integer {
+  var x = filter(i in 1..5 | i == 3, i==2, i%2==0);
+  var y = filter(i in 1..5 | i % 2 == 1);
+
+  return 0;
+}

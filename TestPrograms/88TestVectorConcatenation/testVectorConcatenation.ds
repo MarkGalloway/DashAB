@@ -1,0 +1,29 @@
+// 8.6.5 Vector Operations: concatenation
+const out = std_output();
+
+procedure main() returns integer {
+	integer vector v1 = [1, 2, 3];
+	integer vector v2 = [4, 5];
+	
+	integer vector v3 = v1 || v2; //should be 1, 2, 3, 4, 5
+	integer vector v4 = v1 || 4; // should be 1, 2, 3, 4
+	real vector v5 = v1 || 4.1; // should be 1.0, 2.0, 3.0, 4.1
+	
+	v3[1] -> out; '\n' -> out;
+	v3[2] -> out; '\n' -> out;
+	v3[3] -> out; '\n' -> out;
+	v3[4] -> out; '\n' -> out;
+	v3[5] -> out; '\n' -> out;
+
+	v4[1] -> out; '\n' -> out;
+	v4[2] -> out; '\n' -> out;
+	v4[3] -> out; '\n' -> out;
+	v4[4] -> out; '\n' -> out;
+	
+	v5[1] -> out; '\n' -> out;
+	v5[2] -> out; '\n' -> out;
+	v5[3] -> out; '\n' -> out;
+	v5[4] -> out; '\n' -> out;
+
+	return 0;
+}

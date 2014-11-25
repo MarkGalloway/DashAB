@@ -1,0 +1,66 @@
+// 8.6.5 Vector Operations
+const out = std_output();
+
+procedure main() returns integer {
+	integer vector a1 = [1, 2];
+	integer vector b1 = [2, 1];
+	boolean vector a2 = [true, false];
+	boolean vector b2 = [false, true];
+	
+	integer vector c1 = a1 ^ b1; // [1, 2]
+	integer vector c2 = a1 + b1; // [3, 3]
+	integer vector c3 = a1 - b1; // [-1, 1]
+	integer vector c4 = a1 * b1; // [2, 2]
+	integer vector c5 = a1 / b1; // [0, 2]
+	integer vector c6 = a1 % b1; // [1, 0]
+	
+	boolean vector c7 = a1 < b1; // [true, false]
+	boolean vector c8 = a1 <= b1; // [true, false]
+	boolean vector c9 = a1 > b1; // [false, true]
+	boolean vector c10 = a1 >= b1; // [false, true]
+	
+	boolean vector c11 = a2 or b2; // [true, true]
+	boolean vector c12 = a2 xor b2; // [true, true]
+	boolean vector c13 = a2 and b2; // [false, false]
+	
+	c1[1] -> out; '\n' -> out; 
+	c1[2] -> out; '\n' -> out;
+	
+	c2[1] -> out; '\n' -> out;
+	c2[2] -> out; '\n' -> out;
+	
+	c3[1] -> out; '\n' -> out;
+	c3[2] -> out; '\n' -> out;
+	
+	c4[1] -> out; '\n' -> out;
+	c4[2] -> out; '\n' -> out;
+	
+	c5[1] -> out; '\n' -> out;
+	c5[2] -> out; '\n' -> out;
+	
+	c6[1] -> out; '\n' -> out;
+	c6[2] -> out; '\n' -> out;
+	
+	c7[1] -> out; '\n' -> out;
+	c7[2] -> out; '\n' -> out;
+	
+	c8[1] -> out; '\n' -> out;
+	c8[2] -> out; '\n' -> out;
+	
+	c9[1] -> out; '\n' -> out;
+	c9[2] -> out; '\n' -> out;
+	
+	c10[1] -> out; '\n' -> out;
+	c10[2] -> out; '\n' -> out;
+	
+	c11[1] -> out; '\n' -> out;
+	c11[2] -> out; '\n' -> out;
+	
+	c12[1] -> out; '\n' -> out;
+	c12[2] -> out; '\n' -> out;
+	
+	c13[1] -> out; '\n' -> out;
+	c13[2] -> out; '\n' -> out;
+
+	return 0;
+}

@@ -36,6 +36,7 @@ tokens {
   INFERRED;
   MATRIX;
   MATRIX_INDEX;
+  FILTER;
 }
 
 // Parser Rules
@@ -122,7 +123,8 @@ line
 
 type
 	:	tupleType
-	| 	primitiveType
+	| String
+	| primitiveType
 	|	ID
 	;
 
@@ -445,6 +447,7 @@ primary
     : r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
     |	REAL
     |	CHARACTER
+    | STRING_LIT
     |	True
     |	False
     | Identity
@@ -452,6 +455,7 @@ primary
     | LPAREN expr RPAREN -> expr
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
     | LBRACK expression (',' expression)* RBRACK -> ^(VECTOR_LIST expression+)
+    | Filter LPAREN ID In expression PIPE expressionList RPAREN -> ^(FILTER ID expression expressionList)
     | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
@@ -496,14 +500,14 @@ Not : 'not';
 And : 'and';
 Or : 'or';
 Xor : 'xor';
-Rows : 'rows';
-Columns : 'columns';
+//Rows : 'rows';
+//Columns : 'columns';
 //Length : 'length'; built in function
 //Out : 'out';
 //Inp : 'inp';
 Tuple : 'tuple';
 //Stream_state : 'stream_state';
-Revserse : 'reverse';
+//Reverse : 'reverse';
 Identity : 'identity';
 Null : 'null';
 
@@ -541,7 +545,12 @@ CONCAT : '||';
 
 ID : (UNDERSCORE | LETTER) (UNDERSCORE |LETTER | DIGIT)*;
 INTEGER : DIGIT+;
-INTEGER_UNDERSCORES : DIGIT (DIGIT | UNDERSCORE)*;
+INTEGER_UNDERSCORES
+@after {
+  setText(getText().replaceAll("_", ""));
+}
+  : DIGIT (DIGIT | UNDERSCORE)*
+  ;
 
 /*
 How to read diagram: 
@@ -581,7 +590,10 @@ Examples:
 	6.e10 				60000000000
 */
 
-REAL 
+REAL
+@after {
+  setText(getText().replaceAll("_", ""));
+}
 	: 	DIGIT (DIGIT | UNDERSCORE)* 
 	(
 		(DOT (DIGIT | UNDERSCORE | DecimalExponent1))=> DOT (DIGIT | UNDERSCORE)* DecimalExponent1? FloatTypeSuffix?
@@ -590,6 +602,13 @@ REAL
 	)
 		| {!member_access}?=> (DOT (DIGIT | UNDERSCORE)*) DecimalExponent1? FloatTypeSuffix?
 	;
+
+STRING_LIT
+@after {
+  setText(getText().substring(1, getText().length()-1).replaceAll("\\\\(\")", "$1"));
+}
+  : '"' (~('"' | '\\') | '\\' ('\\' | '"'| 'a' | 'b' | 'n' | 'r' | 't' | '0'))* '"'
+  ;
 
 fragment Quote : 	'\'';
 //CHARACTER :	'\'' '\\'? . '\'' ;

@@ -1,0 +1,1 @@
+(PROGRAM (PROCEDURE_DECL integer main (BLOCK (VAR_DECL var x (EXPR (FILTER i (EXPR (.. 1 5)) (ELIST (EXPR (== i 3)) (EXPR (== i 2)) (EXPR (== (% i 2) 0)))))) (VAR_DECL var y (EXPR (FILTER i (EXPR (.. 1 5)) (ELIST (EXPR (== (% i 2) 1)))))) (return (EXPR 0)))))

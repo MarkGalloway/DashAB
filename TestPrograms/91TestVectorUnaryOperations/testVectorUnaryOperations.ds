@@ -1,0 +1,20 @@
+// 8.6.5 Vector Operations
+const out = std_output();
+
+procedure main() returns integer {
+	integer vector a1 = [8, 9];
+	integer vector a2 = +a1; // 8, 9
+	integer vector a3 = -a1; // -8, -9
+	
+	boolean vector b1 = [true, false] ;
+	boolean vector b2 = not b1; // false, true
+	
+	a2[1] -> out; '\n' -> out;
+	a2[2] -> out; '\n' -> out;
+	a3[1] -> out; '\n' -> out;
+	a3[2] -> out; '\n' -> out;
+	b2[1] -> out; '\n' -> out;
+	b2[2] -> out; '\n' -> out;
+
+	return 0;
+}
