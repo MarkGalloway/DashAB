@@ -456,7 +456,7 @@ primary
     | Null
     | LPAREN expr RPAREN -> expr
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
-    | LBRACK domainExpression (',' domainExpression)? PIPE expression RBRACK -> ^(GENERATOR domainExpression+ expression)
+    | generator
     | LBRACK expression (',' expression)* RBRACK -> ^(VECTOR_LIST expression+)
     | Filter LPAREN domainExpression PIPE RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Filters must have at least one predicate.");}
     | Filter LPAREN domainExpression PIPE expressionList RPAREN -> ^(FILTER domainExpression expressionList)
@@ -466,6 +466,13 @@ primary
     | LPAREN RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Empty tuple lists are not allowed.");}
     | LBRACK RBRACK {emitErrorMessage("line " + $LBRACK.getLine() + ": Empty vector construction is not allowed.");}
     ;
+
+
+generator
+  : LBRACK d+=domainExpression (',' d+=domainExpression)* PIPE expression RBRACK 
+        {if($d.size() > 2) emitErrorMessage("line " + $LBRACK.getLine() + ": Generators cannot have more than two domain expressions.");} 
+        -> ^(GENERATOR domainExpression+ expression)
+  ;
 
 domainExpression
   : ID In expression -> ^(IN ID expression)

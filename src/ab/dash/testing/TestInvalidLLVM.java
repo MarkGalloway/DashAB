@@ -554,4 +554,13 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
+    @Test // generator - more than two domain expressions
+    public void generatorWithMoreThanTwoDomainExpressions() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/56GeneratorWithMoreThanTwoDomainExpressions/generatorWithMoreThanTwoDomainExpressions.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 7: Generators cannot have more than two domain expressions.");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
 }
