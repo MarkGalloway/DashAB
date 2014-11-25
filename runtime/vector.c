@@ -147,6 +147,24 @@ void bool_allocVector(struct Vector* vector, int32_t size) {
 	vector->data = malloc(sizeof(int8_t) * size);
 }
 
+int bool_getElement(int8_t* out, struct Vector* vector, int32_t index) {
+	if (index > vector->size || index < 1)
+		return 1;
+
+	*out = ((int8_t*)vector->data)[index - 1];
+	
+	return 0;
+}
+
+int bool_setElement(struct Vector* vector, int32_t index, int8_t value) {
+	if (index > vector->size || index < 1)
+		return 1;
+
+	((int8_t*)vector->data)[index - 1] = value;
+	
+	return 0;
+}
+
 void bool_VectorNot(struct Vector* out, struct Vector* lhs) {
 	int8_t *out_data = (int8_t*) out->data;
 	int8_t *lhs_data = (int8_t*) lhs->data;
@@ -268,6 +286,24 @@ void char_copyVector(struct Vector* to, struct Vector* from) {
 	copyVector(to, from, sizeof(int8_t));
 }
 
+int char_getElement(int8_t* out, struct Vector* vector, int32_t index) {
+	if (index > vector->size || index < 1)
+		return 1;
+
+	*out = ((int8_t*)vector->data)[index - 1];
+	
+	return 0;
+}
+
+int char_setElement(struct Vector* vector, int32_t index, int8_t value) {
+	if (index > vector->size || index < 1)
+		return 1;
+
+	((int8_t*)vector->data)[index - 1] = value;
+	
+	return 0;
+}
+
 int char_VectorEq(struct Vector* lhs, struct Vector* rhs) {
 	int8_t *lhs_data = (int8_t*) lhs->data;
 	int8_t *rhs_data = (int8_t*) rhs->data;
@@ -313,6 +349,24 @@ void int_allocVector(struct Vector* vector, int32_t size) {
 
 void int_copyVector(struct Vector* to, struct Vector* from) {
 	copyVector(to, from, sizeof(int32_t));
+}
+
+int int_getElement(int32_t* out, struct Vector* vector, int32_t index) {
+	if (index > vector->size || index < 1)
+		return 1;
+
+	*out = ((int32_t*)vector->data)[index - 1];
+	
+	return 0;
+}
+
+int int_setElement(struct Vector* vector, int32_t index, int32_t value) {
+	if (index > vector->size || index < 1)
+		return 1;
+
+	((int32_t*)vector->data)[index - 1] = value;
+	
+	return 0;
 }
 
 int int_VectorAddVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
