@@ -208,8 +208,6 @@ public class TestUnimplemented extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
      
-     
-     
      // Invalid Syntax Test
      @Test 
      public void testInvalidByInterval() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
@@ -241,4 +239,58 @@ public class TestUnimplemented extends BaseTest {
        Runner.llvmMain(args);
        assertEquals("line 5: cannot use scalar to instantiate an un-sized vector", outErrIntercept.toString().trim());
    }
+    
+    @Test 
+    public void testVectorLength() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/87TestVectorLength/testVectorLength.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("3");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorConcatenation() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/88TestVectorConcatenation/testVectorConcatenation.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4\n");
+       sb.append("5\n");
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4\n");
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4.1\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorIndexing() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/89TestVectorIndexing/testVectorIndexing.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("5\n");
+       sb.append("5\n");
+       sb.append("6\n");
+       sb.append("6\n");
+       sb.append("4\n");
+       sb.append("5\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    // Invalid Runtime Test
+    @Test 
+    public void testVectorOutOfRange() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/49VectorOutOfRange/vectorOutOfRange.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       assertEquals("Runtime Error: index out of bounds", outErrIntercept.toString().trim());
+   }
+    
 }
