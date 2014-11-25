@@ -2,28 +2,28 @@ vector_type() ::= <<
 i8*
 >>
 
-vec_init_local(sym_id) ::= <<
+vector_init_local(sym_id) ::= <<
 <vlocal_symbol(sym_id)> = alloca i8*
 >>
 
-vec_init_global(sym_id) ::= <<
-<vglobalSymbol(sym_id)> = private unnamed_addr global i8* 0
+vector_init_global(sym_id) ::= <<
+<vglobalSymbol(sym_id)> = private unnamed_addr global i8* null
 >>
 
-vec_get_local(id, sym_id) ::= <<
+vector_get_local(id, sym_id) ::= <<
 <vlocal_result(id)> = load i8*  <vlocal_symbol(sym_id)>
 >>
 
-vec_get_global(id, sym_id) ::= <<
+vector_get_global(id, sym_id) ::= <<
 <vlocal_result(id)> = load i8*  <vglobalSymbol(sym_id)>
 >>
 
-vec_local_assign(id, sym_id, expr, expr_id) ::= <<
+vector_local_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
 ; TODO: Implement
 >>
 
-vec_global_assign(id, sym_id, expr, expr_id) ::= <<
+vector_global_assign(id, sym_id, expr, expr_id) ::= <<
 <expr>
 ; TODO: Implement
 >>
