@@ -36,6 +36,7 @@ tokens {
   INFERRED;
   MATRIX;
   MATRIX_INDEX;
+  FILTER;
 }
 
 // Parser Rules
@@ -454,6 +455,7 @@ primary
     | LPAREN expr RPAREN -> expr
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
     | LBRACK expression (',' expression)* RBRACK -> ^(VECTOR_LIST expression+)
+    | Filter LPAREN ID In expression PIPE expressionList RPAREN -> ^(FILTER ID expression expressionList)
     | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
