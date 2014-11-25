@@ -123,6 +123,8 @@ public class LLVMIRGenerator {
 							
 							template.setAttribute("init", init);
 							template.setAttribute("type_id", tuple.tupleTypeIndex);
+						} else if (type == SymbolTable.tVECTOR){
+							template = stg.getInstanceOf("vector_init_global");
 						}
 						
 						if (template != null) {
@@ -479,6 +481,9 @@ public class LLVMIRGenerator {
 				} else if (type == SymbolTable.tTUPLE) {
 					template = stg.getInstanceOf("tuple_init_local");
 					template.setAttribute("type_id", ((TupleTypeSymbol)s.type).tupleTypeIndex);
+					valid_symbol = true;
+				} else if (type == SymbolTable.tVECTOR){
+					template = stg.getInstanceOf("vector_init_local");
 					valid_symbol = true;
 				}
 				
@@ -1460,6 +1465,8 @@ public class LLVMIRGenerator {
 			} else if (type == SymbolTable.tTUPLE) {
 				template = stg.getInstanceOf("tuple_get_global");
 				template.setAttribute("type_id", ((TupleTypeSymbol)sym.type).tupleTypeIndex);
+			} else if (type == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("vector_get_global");
 			}
 		} else {
 			if (type == SymbolTable.tINTEGER) {
@@ -1473,6 +1480,8 @@ public class LLVMIRGenerator {
 			} else if (type == SymbolTable.tTUPLE) {
 				template = stg.getInstanceOf("tuple_get_local");
 				template.setAttribute("type_id", ((TupleTypeSymbol)sym.type).tupleTypeIndex);
+			} else if (type == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("vector_get_local");
 			}
 		}
 		template.setAttribute("sym_id", sym_id);
