@@ -505,7 +505,7 @@ Xor : 'xor';
 //Inp : 'inp';
 Tuple : 'tuple';
 //Stream_state : 'stream_state';
-Revserse : 'reverse';
+//Reverse : 'reverse';
 Identity : 'identity';
 Null : 'null';
 
