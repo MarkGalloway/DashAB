@@ -946,11 +946,18 @@ public class TestLLVM extends BaseTest {
     }
     
     @Test
-    public void vectorGlobalDeclaration() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/88VectorGlobalDeclaration/vectorGlobalDeclaration.ds"};
+    public void vectorLiteralsAssignmentsAccesses() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/88VectorLiteralsAssignmentsAccesses/vectorLiteralsAssignmentsAccesses.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        
+
+        sb.append("8\n");
+        sb.append("9\n");
+        sb.append("10\n");
+        sb.append("4\n");
+        sb.append("5\n");
+        sb.append("6\n");
+
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }

@@ -1,0 +1,17 @@
+const out = std_output();
+const inp = std_input();
+const integer vector vglobal[3] = [8, 9, 10];
+
+procedure main() returns integer {
+    integer vector vlocal[3] = [4, 5, 6];
+
+    vglobal[1] -> out; '\n' -> out;
+    vglobal[2] -> out; '\n' -> out;
+    vglobal[3] -> out; '\n' -> out;
+
+    vlocal[1] -> out; '\n' -> out;
+    vlocal[2] -> out; '\n' -> out;
+    vlocal[3] -> out; '\n' -> out;
+
+	return 0;
+}
