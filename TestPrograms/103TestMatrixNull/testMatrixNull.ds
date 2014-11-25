@@ -1,0 +1,14 @@
+// 8.8.2 Matrix Null
+const out = std_output();
+
+procedure main() returns integer {
+
+	integer matrix B[2, 2] = null;
+    
+    B[1, 1] -> out; 
+    B[1, 2] -> out;
+    B[2, 1] -> out; 
+    B[2, 2] -> out; '\n' -> out;
+
+	return 0;
+}
