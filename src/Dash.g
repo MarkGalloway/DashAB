@@ -340,10 +340,10 @@ loopStatement
   | Loop statement While expression RPAREN { emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); } 
   | Loop {loopDepth++;} statement While expression {loopDepth--;} -> ^(DOWHILE expression statement)
   | Loop {loopDepth++;} statement {loopDepth--;} -> ^(Loop statement) // infinite loop
-  |	Loop {loopDepth++;} LPAREN ID In expression RPAREN statement {loopDepth--;} -> ^(ITERATOR ID expression statement)
+  |	Loop {loopDepth++;} LPAREN domainExpression (',' domainExpression)* RPAREN statement {loopDepth--;} -> ^(ITERATOR domainExpression+ statement)
   | Loop LPAREN ID In  expression statement { emitErrorMessage("line " + $Loop.getLine() + ": Missing right parenthesis."); }
   | Loop ID In expression RPAREN statement { emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); } 
-  | Loop {loopDepth++;} ID In expression statement {loopDepth--;} -> ^(ITERATOR ID expression statement)
+  | Loop {loopDepth++;} domainExpression (',' domainExpression)* statement {loopDepth--;} -> ^(ITERATOR domainExpression+ statement)
   ;
 
 lhs 

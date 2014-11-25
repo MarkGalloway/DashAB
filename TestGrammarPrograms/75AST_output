@@ -1,0 +1,1 @@
+(PROGRAM (PROCEDURE_DECL integer main (BLOCK (VAR_DECL var integer i (EXPR 7)) (ITERATOR (IN i (EXPR (.. 1 i))) (BLOCK (PRINT out (EXPR i)))) (ITERATOR (IN i (EXPR (.. 1 i))) (IN j (EXPR (.. 1 j))) (BLOCK (PRINT out (EXPR (* i j))))) (return (EXPR 0)))))
