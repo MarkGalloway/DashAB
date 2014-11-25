@@ -484,4 +484,13 @@ public class TestUnimplemented extends BaseTest {
        sb.append("1234\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
+    
+    @Test 
+    public void testMatrixIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/102TestMatrixIdentity/testMatrixIdentity.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("1111\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
 }
