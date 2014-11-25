@@ -438,6 +438,10 @@ int int_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 // 	GENERIC  	//
 //////////////////////////
 
+void* getData(struct Vector* v) {
+    return v->data;
+}
+
 struct Vector* allocVector() {
     return (struct Vector*) malloc(sizeof(struct Vector));
 }
