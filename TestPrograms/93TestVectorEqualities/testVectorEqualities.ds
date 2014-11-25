@@ -1,0 +1,20 @@
+// 8.6.5 Vector Operations
+
+const out = std_output();
+
+procedure main() returns integer {
+	integer vector v1 = [1, 2];
+	integer vector v2 = [2, 1];
+	integer vector v3 = [1, 2];
+	
+	boolean b1 = v1 == v2;
+	boolean b2 = v1 == v3;
+	boolean b3 = v1 != v3;
+	boolean b4 = v1 != v2;
+	
+	b1 -> out; '\n' -> out; 
+	b2 -> out; '\n' -> out;
+	b3 -> out; '\n' -> out; 
+	b4 -> out; '\n' -> out;
+	return 0;
+}

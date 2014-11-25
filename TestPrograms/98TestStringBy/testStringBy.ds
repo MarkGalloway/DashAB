@@ -1,0 +1,13 @@
+// 8.7.4 String Operators
+
+const out = std_output();
+
+procedure main() returns integer {
+	string hello = "hello";
+	string hl = hello by 2;
+	
+	h1[1] -> out;
+	h2[2] -> out;
+	
+	return 0;
+}

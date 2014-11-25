@@ -1,0 +1,8 @@
+// 8.7.2 String Null
+
+const out = std_output();
+
+procedure main() returns integer {
+	string s = null; // length is unknown so this is invalid
+	return 0;
+}
