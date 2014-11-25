@@ -455,14 +455,18 @@ primary
     | LPAREN expr RPAREN -> expr
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
     | LBRACK expression (',' expression)* RBRACK -> ^(VECTOR_LIST expression+)
-    | Filter LPAREN ID In expression PIPE expressionList RPAREN -> ^(FILTER ID expression expressionList)
+    | Filter LPAREN domainExpression PIPE expressionList RPAREN -> ^(FILTER domainExpression expressionList)
     | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
     | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
     | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
     | LPAREN RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Empty tuple lists are not allowed.");}
     | LBRACK RBRACK {emitErrorMessage("line " + $LBRACK.getLine() + ": Empty vector construction is not allowed.");}
     ;
-    
+
+domainExpression
+  : ID In expression -> ^(IN ID expression)
+  ;
+   
 /* END EXPRESSIONS */
 
 
