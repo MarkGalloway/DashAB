@@ -54,6 +54,7 @@ void int_allocVector(struct Vector* vector, int32_t size);
 //////////////////////////
 
 void int_allocInterval(struct Interval* interval, int32_t lower, int32_t upper) {
+	interval = (struct Interval*) malloc(sizeof(struct Interval));
 	interval->lower = lower;
 	interval->upper = upper;
 }
@@ -132,6 +133,10 @@ int int_IntervalBy(struct Vector* out, struct Interval* lhs, int32_t by) {
 		out_data[i] = lhs->lower + i*by;
 
 	return 0;
+}
+
+void int_releaseInterval(struct Interval* interval) {
+	free(interval);
 }
 
 //////////////////////////
