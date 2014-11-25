@@ -1,0 +1,38 @@
+// 8.8.1 Matrix Declaration
+const out = std_output();
+
+procedure main() returns integer {
+
+    integer matrix A = [[1, 2], [3, 4]];
+	integer matrix B[2, 2] = [[1, 2], [3, 4]];
+	integer matrix C[2, *] = [[1, 2], [3, 4]];
+	integer matrix D[*, 2] = [[1, 2], [3, 4]];
+	integer matrix E[*, *] = [[1, 2], [3, 4]];
+	
+    A[1, 1] -> out; 
+    A[1, 2] -> out;
+    A[2, 1] -> out; 
+    A[2, 2] -> out; '\n' -> out;
+    
+    B[1, 1] -> out; 
+    B[1, 2] -> out;
+    B[2, 1] -> out; 
+    B[2, 2] -> out; '\n' -> out;
+    
+    C[1, 1] -> out; 
+    C[1, 2] -> out;
+    C[2, 1] -> out; 
+    C[2, 2] -> out; '\n' -> out;
+    
+    D[1, 1] -> out; 
+    D[1, 2] -> out;
+    D[2, 1] -> out; 
+    D[2, 2] -> out; '\n' -> out;
+    
+    E[1, 1] -> out; 
+    E[1, 2] -> out;
+    E[2, 1] -> out; 
+    E[2, 2] -> out; '\n' -> out;
+
+	return 0;
+}

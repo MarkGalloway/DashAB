@@ -472,4 +472,16 @@ public class TestUnimplemented extends BaseTest {
        Runner.llvmMain(args);
        assertEquals("Runtime Error: vector size mismatch", outErrIntercept.toString().trim());
    }
+    
+    @Test 
+    public void testMatrixDeclaration() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/101TestMatrixDeclaration/testMatrixDeclaration.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("1234\n");
+       sb.append("1234\n");
+       sb.append("1234\n");
+       sb.append("1234\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
 }
