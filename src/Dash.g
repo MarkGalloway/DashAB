@@ -37,6 +37,8 @@ tokens {
   MATRIX;
   MATRIX_INDEX;
   FILTER;
+  IN;
+  GENERATOR;
 }
 
 // Parser Rules
@@ -454,6 +456,7 @@ primary
     | Null
     | LPAREN expr RPAREN -> expr
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
+    | LBRACK domainExpression (',' domainExpression)? PIPE expression RBRACK -> ^(GENERATOR domainExpression+ expression)
     | LBRACK expression (',' expression)* RBRACK -> ^(VECTOR_LIST expression+)
     | Filter LPAREN domainExpression PIPE expressionList RPAREN -> ^(FILTER domainExpression expressionList)
     | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
