@@ -1,0 +1,1 @@
+(PROGRAM (PROCEDURE_DECL integer main (BLOCK (VAR_DECL var (MATRIX integer INFERRED) M (EXPR (VECTOR_LIST (EXPR (VECTOR_LIST (EXPR 2) (EXPR 2))) (EXPR (VECTOR_LIST (EXPR 3) (EXPR 3)))))) (VAR_DECL var integer r (EXPR (CALL rows (ELIST (EXPR M))))) (VAR_DECL var integer c (EXPR (CALL columns (ELIST (EXPR M))))) (return (EXPR 0)))))
