@@ -136,8 +136,8 @@ public class TestUnimplemented extends BaseTest {
     }
      
      @Test 
-     public void testIntervalUrnaryPostive() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/80TestIntervalUranaryPlus/testIntervalUranaryPlus.ds"};
+     public void testIntervalUnaryPostive() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/80TestIntervalUnaryPlus/testIntervalUnaryPlus.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         sb.append("-1\n");
@@ -280,7 +280,6 @@ public class TestUnimplemented extends BaseTest {
     public void testVectorOutOfRange() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
        String[] args = new String[] {"TestInvalidSyntaxPrograms/49VectorOutOfRange/vectorOutOfRange.ds"};
        Runner.llvmMain(args);
-       StringBuffer sb = new StringBuffer();
        assertEquals("Runtime Error: index out of bounds", outErrIntercept.toString().trim());
    }
     
@@ -293,4 +292,184 @@ public class TestUnimplemented extends BaseTest {
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     
+    @Test 
+    public void testVectorUnaryOperations() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/91TestVectorUnaryOperations/testVectorUnaryOperations.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("8\n");
+       sb.append("9\n");
+       sb.append("-8\n");
+       sb.append("-9\n");
+       sb.append("F\n");
+       sb.append("T\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorBinaryOperations() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/92TestVectorBinaryOperations/testVectorBinaryOperations.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       
+       // exponents
+       sb.append("1\n");
+       sb.append("2\n");
+       
+       // addition
+       sb.append("3\n");
+       sb.append("3\n");
+       
+       // subtraction
+       sb.append("-1\n");
+       sb.append("1\n");
+       
+       // multiplication
+       sb.append("2\n");
+       sb.append("2\n");
+       
+       // division
+       sb.append("0\n");
+       sb.append("2\n");
+       
+       // modulus
+       sb.append("1\n");
+       sb.append("0\n");
+       
+       // less than
+       sb.append("T\n");
+       sb.append("F\n");
+       
+       // less than or equal to
+       sb.append("T\n");
+       sb.append("F\n");
+       
+       // greater than
+       sb.append("F\n");
+       sb.append("T\n");
+       
+       // greater than or equal to
+       sb.append("F\n");
+       sb.append("T\n");
+       
+       // or
+       sb.append("T\n");
+       sb.append("T\n");
+       
+       // xor
+       sb.append("T\n");
+       sb.append("T\n");
+       
+       // and
+       sb.append("F\n");
+       sb.append("F\n");
+       
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorEqualities() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/93TestVectorEqualities/testVectorEqualities.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("F\n");
+       sb.append("T\n");
+       sb.append("F\n");
+       sb.append("T\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testStringNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/94TestStringNull/testStringNull.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append((char)0 + "\n");
+       sb.append((char)0 + "\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testStringIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/94TestStringNull/testStringNull.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append((char)1 + "\n");
+       sb.append((char)1 + "\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    // Invalid Syntax Test
+    @Test 
+    public void testInferredStringLengthWithNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/50InferredStringLengthWithNull/inferredStringLengthWithNull.ds"};
+       Runner.llvmMain(args);
+       // strings are vectors so we could use the same error message
+       assertEquals("line 6: cannot use null to instantiate an un-sized vector", outErrIntercept.toString().trim());
+   }
+    
+    // Invalid Syntax Test
+    @Test 
+    public void testInferredStringLengthWithIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/51InferredStringLengthWithIdentity/inferredStringLengthWithIdentity.ds"};
+       Runner.llvmMain(args);
+       assertEquals("line 6: cannot use null to instantiate an un-sized vector", outErrIntercept.toString().trim());
+   }
+    
+    // Invalid Syntax Test
+    @Test 
+    public void testStringLiteral() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/96TestStringLiteral/testStringLiteral.ds"};
+       Runner.llvmMain(args);
+       assertEquals("\"World\"", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testStringEqualities() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/97TestStringEqualities/testStringEqualities.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("T\n");
+       sb.append("T\n");
+       sb.append("T\n");
+       sb.append("T\n");
+       sb.append("F\n");
+       sb.append("F\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testStringBy() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/98TestStringBy/testStringBy.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("hl");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorBy() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/99TestVectorBy/testVectorBy.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("12345\n");
+       sb.append("12345\n");
+       sb.append("135\n");
+       sb.append("14\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testBinaryOpsDifferentSizeVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/52BinaryOperationsWithVectorsOfDifferentSizes/binaryOperationsWithVectorsOfDifferentSizes.ds"};
+       Runner.llvmMain(args);
+       assertEquals("Runtime Error: vector size mismatch", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testEqualityOpsDifferentSizeVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/53EqualityOperationsWithVectorsOfDifferentSizes/equalityOperationsWithVectorsOfDifferentSizes.ds"};
+       Runner.llvmMain(args);
+       assertEquals("Runtime Error: vector size mismatch", outErrIntercept.toString().trim());
+   }
 }
