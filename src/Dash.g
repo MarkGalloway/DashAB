@@ -543,7 +543,12 @@ CONCAT : '||';
 
 ID : (UNDERSCORE | LETTER) (UNDERSCORE |LETTER | DIGIT)*;
 INTEGER : DIGIT+;
-INTEGER_UNDERSCORES : DIGIT (DIGIT | UNDERSCORE)*;
+INTEGER_UNDERSCORES
+@after {
+  setText(getText().replaceAll("_", ""));
+}
+  : DIGIT (DIGIT | UNDERSCORE)*
+  ;
 
 /*
 How to read diagram: 
@@ -583,7 +588,10 @@ Examples:
 	6.e10 				60000000000
 */
 
-REAL 
+REAL
+@after {
+  setText(getText().replaceAll("_", ""));
+}
 	: 	DIGIT (DIGIT | UNDERSCORE)* 
 	(
 		(DOT (DIGIT | UNDERSCORE | DecimalExponent1))=> DOT (DIGIT | UNDERSCORE)* DecimalExponent1? FloatTypeSuffix?
