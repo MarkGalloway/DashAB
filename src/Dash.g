@@ -496,8 +496,8 @@ Not : 'not';
 And : 'and';
 Or : 'or';
 Xor : 'xor';
-Rows : 'rows';
-Columns : 'columns';
+//Rows : 'rows';
+//Columns : 'columns';
 //Length : 'length'; built in function
 //Out : 'out';
 //Inp : 'inp';

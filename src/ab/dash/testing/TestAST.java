@@ -548,5 +548,12 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/69AST_output"), outErrIntercept.toString().trim());
     }
-
+    
+    @Test // matrix parsing
+    public void matrixRowsColumnsParse() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/70rowsColumns.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/70AST_output"), outErrIntercept.toString().trim());
+    }
+    
 }

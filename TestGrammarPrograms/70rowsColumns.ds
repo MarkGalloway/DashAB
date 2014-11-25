@@ -1,0 +1,8 @@
+procedure main() returns integer {
+  integer matrix M = [[2,2],[3,3]];
+
+  integer r = rows(M);
+  integer c = columns(M); 
+
+  return 0;
+}
