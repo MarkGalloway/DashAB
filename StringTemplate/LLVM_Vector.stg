@@ -10,6 +10,29 @@ vector_init_global(sym_id) ::= <<
 <vglobalSymbol(sym_id)> = private unnamed_addr global i8* null
 >>
 
+vector_init_literal(id, type_name, size_expr, size_expr_id, element_exprs) ::= <<
+<size_expr>
+  <vlocal_result(id)> = call i8* @allocVector()
+  call @<type_name>_allocVector(i8* <vlocal_result(id)>, <vlocal_result(size_expr_id)>)
+<element_exprs; separator="\n">
+>>
+
+vector_assign(id, vector_expr, vector_expr_id, element_type, index_expr, index_expr_id, expr, expr_id) ::= <<
+<expr>
+<vector_expr>
+<index_expr>
+  <vlocal(id)>addr = getelementptr <element_type>* <vlocal_result(tuple_expr_id)>, i32 <vlocal_result(index_expr_id)>
+  store <element_type> <vlocal_result(expr_id)>, <element_type>* <vlocal(id)>addr
+>>
+
+vector_assign_known_index(id, vector_expr, vector_expr_id, element_type, index, expr, expr_id) ::= <<
+<expr>
+<vector_expr>
+<index_expr>
+  <vlocal(id)>addr = getelementptr <element_type>* <vlocal_result(tuple_expr_id)>, i32 <index>
+  store <element_type> <vlocal_result(expr_id)>, <element_type>* <vlocal(id)>addr
+>>
+
 vector_get_local(id, sym_id) ::= <<
 <vlocal_result(id)> = load i8*  <vlocal_symbol(sym_id)>
 >>

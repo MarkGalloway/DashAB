@@ -1,22 +1,18 @@
 package ab.dash;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import ab.dash.DashLexer;
-import ab.dash.ast.DashAST;
-import ab.dash.ast.MethodSymbol;
-import ab.dash.ast.Scope;
-import ab.dash.ast.Symbol;
-import ab.dash.ast.SymbolTable;
-import ab.dash.ast.TupleTypeSymbol;
-import ab.dash.ast.Type;
-import ab.dash.ast.VariableSymbol;
+import ab.dash.ast.*;
 
 
 public class LLVMIRGenerator {
@@ -24,6 +20,7 @@ public class LLVMIRGenerator {
 	private StringTemplate template;
 	private SymbolTable symtab;
 	private Stack<Integer> loop_stack;
+	private Map<Integer, String> typeIndexToName;
 	
 	private boolean debug_mode = false;
 	
@@ -35,6 +32,16 @@ public class LLVMIRGenerator {
 		this.stg = stg;
 		this.symtab = symtab;
 		this.loop_stack = new Stack<Integer>();
+		
+		/*
+		 * These are the prefixes to the vector operation string template
+		 * methods and to the <type>_type() string template methods.
+		 */
+		typeIndexToName = new HashMap<Integer, String>();
+		typeIndexToName.put(SymbolTable.tBOOLEAN, "bool");
+		typeIndexToName.put(SymbolTable.tCHARACTER, "char");
+		typeIndexToName.put(SymbolTable.tINTEGER, "int");
+		typeIndexToName.put(SymbolTable.tREAL, "real");
 	}
 	
 	public String toString() {
@@ -447,8 +454,48 @@ public class LLVMIRGenerator {
 
 		case DashLexer.VECTOR_LIST:
 		{
-			/* TODO: Implement. */
-			return new StringTemplate("");
+			VectorType vtype = (VectorType)t.evalType;
+			int elementTypeIndex = vtype.elementType.getTypeIndex();
+			int size = t.getChildCount();
+
+			StringTemplate template = stg.getInstanceOf("vector_init_literal");
+			template.setAttribute("id", t.llvmResultID);
+			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+
+			StringTemplate sizeExpr = stg.getInstanceOf("int_literal");
+			sizeExpr.setAttribute("id", SymbolTable.getID());
+			sizeExpr.setAttribute("val", size);
+
+			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+			template.setAttribute("size_expr", sizeExpr);
+			template.setAttribute("size_expr_id", sizeExpr.getAttribute("id"));
+
+			List<StringTemplate> element_exprs = new ArrayList<StringTemplate>();
+
+			for (int i = 0; i < t.getChildCount(); i++) {
+				DashAST element_node = (DashAST)t.getChild(i);
+				int element_expr_id = ((DashAST)element_node.getChild(0)).llvmResultID;
+
+				StringTemplate memberAssign = null;
+
+				int type = element_node.evalType.getTypeIndex();
+				memberAssign = stg.getInstanceOf("vector_assign_known_index");
+				memberAssign.setAttribute("id", DashAST.getUniqueId());
+				
+				StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(type) + "_type");
+				memberAssign.setAttribute("element_type", llvmType);
+
+				memberAssign.setAttribute("vector_expr_id", t.llvmResultID);
+				memberAssign.setAttribute("index", i);
+				memberAssign.setAttribute("expr", exec(element_node));
+				memberAssign.setAttribute("expr_id", element_expr_id);
+
+				element_exprs.add(memberAssign);
+			}
+			
+			template.setAttribute("element_exprs", element_exprs);
+
+			return template;
 		}
 			
 		case DashLexer.EXPR:
