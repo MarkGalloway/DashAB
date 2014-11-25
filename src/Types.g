@@ -55,7 +55,7 @@ loopstat
   ;
   
 iterator
-	:^(ITERATOR id=ID e=exprRoot s=.) {symtab.iterator($id, $e.start);}
+	:^(ITERATOR (^(IN id=ID e=exprRoot) {symtab.iterator($id, $e.start);})+ .)
 	;
 
 decl

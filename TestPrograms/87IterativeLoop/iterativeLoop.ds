@@ -5,5 +5,9 @@ procedure main() returns integer {
 		i -> out; '\n' -> out;
 	}
 	
+	loop i in 1..5, j in 1..2 {
+		j*i -> out; '\n' -> out;
+	}
+	
 	return 0;
 }
