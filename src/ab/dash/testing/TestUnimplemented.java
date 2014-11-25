@@ -413,7 +413,7 @@ public class TestUnimplemented extends BaseTest {
     public void testInferredStringLengthWithIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
        String[] args = new String[] {"TestInvalidSyntaxPrograms/51InferredStringLengthWithIdentity/inferredStringLengthWithIdentity.ds"};
        Runner.llvmMain(args);
-       assertEquals("line 6: cannot use null to instantiate an un-sized vector", outErrIntercept.toString().trim());
+       assertEquals("line 6: cannot use identity to instantiate an un-sized vector", outErrIntercept.toString().trim());
    }
     
     // Invalid Syntax Test
@@ -500,6 +500,33 @@ public class TestUnimplemented extends BaseTest {
        Runner.llvmMain(args);
        StringBuffer sb = new StringBuffer();
        sb.append("0000\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    
+    // Invalid Syntax Test
+    @Test 
+    public void testInferredMatrixLengthWithNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/54InferredMatrixLengthWithNull/testInferredMatrixLengthWithNull.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("line 6: cannot use null to instantiate an un-sized matrix\n");
+       sb.append("line 7: cannot use null to instantiate an un-sized matrix\n");
+       sb.append("line 8: cannot use null to instantiate an un-sized matrix\n");
+       sb.append("line 9: cannot use null to instantiate an un-sized matrix\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    // Invalid Syntax Test
+    @Test 
+    public void testInferredMatrixLengthWithIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/55InferredMatrixLengthWithIdentity/testInferredMatrixLengthWithIdentity.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("line 6: cannot use identity to instantiate an un-sized matrix\n");
+       sb.append("line 7: cannot use identity to instantiate an un-sized matrix\n");
+       sb.append("line 8: cannot use identity to instantiate an un-sized matrix\n");
+       sb.append("line 9: cannot use identity to instantiate an un-sized matrix\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
 }

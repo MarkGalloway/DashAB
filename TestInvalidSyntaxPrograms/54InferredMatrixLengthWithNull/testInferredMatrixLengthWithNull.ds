@@ -1,0 +1,12 @@
+// 8.8.2 Matrix Null
+procedure main() returns integer {
+
+	// None of these are valid as matrix size cannot be determined
+	// Compile time error
+	integer matrix A = null;
+	integer matrix C[2, *] = null;
+	integer matrix D[*, 2] = null;
+	integer matrix E[*, *] = null;
+
+	return 0;
+}

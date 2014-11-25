@@ -1,0 +1,12 @@
+// 8.8.3 Matrix Identity
+procedure main() returns integer {
+
+	// None of these are valid as matrix size cannot be determined
+	// Compile time error
+	integer matrix A = identity;
+	integer matrix C[2, *] = identity;
+	integer matrix D[*, 2] = identity;
+	integer matrix E[*, *] = identity;
+
+	return 0;
+}
