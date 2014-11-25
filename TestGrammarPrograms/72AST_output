@@ -1,0 +1,1 @@
+(PROGRAM (PROCEDURE_DECL integer main (BLOCK (VAR_DECL var string s1) (VAR_DECL const string s2 (EXPR (VECTOR_LIST (EXPR 's') (EXPR 't') (EXPR 'r') (EXPR 'i') (EXPR 'n') (EXPR 'g')))) (VAR_DECL var string s3 (EXPR The cat said "Meow!"\nThat was a good day.\n)) (VAR_DECL var string s4 (EXPR 'Hello' \a \b \t \r \\\\\\\\\\ \0)) (return (EXPR 0)))))

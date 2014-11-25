@@ -563,4 +563,11 @@ public class TestAST extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/71AST_output"), outErrIntercept.toString().trim());
     }
     
+    @Test // string parsing
+    public void stringParse() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/72string.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/72AST_output"), outErrIntercept.toString().trim());
+    }
+    
 }

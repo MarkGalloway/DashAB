@@ -122,7 +122,8 @@ line
 
 type
 	:	tupleType
-	| 	primitiveType
+	| String
+	| primitiveType
 	|	ID
 	;
 
@@ -445,6 +446,7 @@ primary
     : r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
     |	REAL
     |	CHARACTER
+    | STRING_LIT
     |	True
     |	False
     | Identity
@@ -590,6 +592,13 @@ REAL
 	)
 		| {!member_access}?=> (DOT (DIGIT | UNDERSCORE)*) DecimalExponent1? FloatTypeSuffix?
 	;
+
+STRING_LIT
+@after {
+  setText(getText().substring(1, getText().length()-1).replaceAll("\\\\(\")", "$1"));
+}
+  : '"' (~('"' | '\\') | '\\' ('\\' | '"'| 'a' | 'b' | 'n' | 'r' | 't' | '0'))* '"'
+  ;
 
 fragment Quote : 	'\'';
 //CHARACTER :	'\'' '\\'? . '\'' ;
