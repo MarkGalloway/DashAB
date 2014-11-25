@@ -1,0 +1,11 @@
+procedure main() returns integer {
+  integer matrix M = [[2,2,2],[3,3,3]];
+
+  integer vector v = M[2,2..3]; // [3,3] 
+
+  integer matrix M2 = M[[1,2],[1,2]];  // [[2,2],[3,3]]
+
+  M[1,2] -> out;
+
+  return 0;
+}
