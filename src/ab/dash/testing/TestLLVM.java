@@ -944,4 +944,13 @@ public class TestLLVM extends BaseTest {
         sb.append("10\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void vectorGlobalDeclaration() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/88VectorGlobalDeclaration/vectorGlobalDeclaration.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

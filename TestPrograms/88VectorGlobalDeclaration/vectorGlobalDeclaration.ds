@@ -1,0 +1,7 @@
+const out = std_output();
+const inp = std_input();
+const integer vector vglob[3] = [8, 9, 10];
+
+procedure main() returns integer {
+	return 0;
+}
