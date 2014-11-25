@@ -458,20 +458,28 @@ primary
     | LPAREN expression (',' expression)+ RPAREN -> ^(TUPLE_LIST expression+)
     | generator
     | LBRACK expression (',' expression)* RBRACK -> ^(VECTOR_LIST expression+)
-    | Filter LPAREN domainExpression PIPE RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Filters must have at least one predicate.");}
-    | Filter LPAREN domainExpression PIPE expressionList RPAREN -> ^(FILTER domainExpression expressionList)
-    | As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
-    | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
+    | filter
+    | typecast
     | INVALID_CHARACTER {emitErrorMessage("line " + $INVALID_CHARACTER.getLine() + ": expected single quotes for character");}
     | LPAREN RPAREN {emitErrorMessage("line " + $LPAREN.getLine() + ": Empty tuple lists are not allowed.");}
     | LBRACK RBRACK {emitErrorMessage("line " + $LBRACK.getLine() + ": Empty vector construction is not allowed.");}
     ;
 
+filter
+  : Filter LPAREN domainExpression PIPE RPAREN 
+      {emitErrorMessage("line " + $LPAREN.getLine() + ": Filters must have at least one predicate.");}
+  | Filter LPAREN domainExpression PIPE expressionList RPAREN -> ^(FILTER domainExpression expressionList)
+  ;
 
 generator
   : LBRACK d+=domainExpression (',' d+=domainExpression)* PIPE expression RBRACK 
         {if($d.size() > 2) emitErrorMessage("line " + $LBRACK.getLine() + ": Generators cannot have more than two domain expressions.");} 
         -> ^(GENERATOR domainExpression+ expression)
+  ;
+
+typecast
+  : As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
+  | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
   ;
 
 domainExpression
