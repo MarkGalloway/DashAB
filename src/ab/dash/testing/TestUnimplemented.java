@@ -241,15 +241,6 @@ public class TestUnimplemented extends BaseTest {
    }
     
     @Test 
-    public void testVectorLength() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-       String[] args = new String[] {"TestPrograms/87TestVectorLength/testVectorLength.ds"};
-       Runner.llvmMain(args);
-       StringBuffer sb = new StringBuffer();
-       sb.append("3");
-       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
-   }
-    
-    @Test 
     public void testVectorConcatenation() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
        String[] args = new String[] {"TestPrograms/88TestVectorConcatenation/testVectorConcatenation.ds"};
        Runner.llvmMain(args);
@@ -291,6 +282,15 @@ public class TestUnimplemented extends BaseTest {
        Runner.llvmMain(args);
        StringBuffer sb = new StringBuffer();
        assertEquals("Runtime Error: index out of bounds", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorLength() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/90TestVectorLength/testVectorLength.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("3");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     
 }
