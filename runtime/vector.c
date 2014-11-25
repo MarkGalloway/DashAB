@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <math.h>
 
 #include "types.h"
@@ -32,6 +33,14 @@ inline int32_t max(int32_t a, int32_t b) {
 	if (a > b)
 		return a;
 	return b;
+}
+
+/*
+ * Assumes that the vector 'to' has been initialized to the correct size and
+ * element type (to be the same as vector 'from').
+ */
+inline void copyVector(struct Vector* to, struct Vector* from, size_t element_size) {
+	memcpy(to->data, from->data, from->size * element_size);
 }
 
 // Declarations
@@ -128,6 +137,10 @@ int int_IntervalBy(struct Vector* out, struct Interval* lhs, int32_t by) {
 //////////////////////////
 // 	BOOLEAN  	//
 //////////////////////////
+
+void bool_copyVector(struct Vector* to, struct Vector* from) {
+	copyVector(to, from, sizeof(int8_t));
+}
 
 void bool_allocVector(struct Vector* vector, int32_t size) {
 	vector->size = size;
@@ -251,6 +264,10 @@ void char_allocVector(struct Vector* vector, int32_t size) {
 	vector->data = malloc(sizeof(int8_t) * size);
 }
 
+void char_copyVector(struct Vector* to, struct Vector* from) {
+	copyVector(to, from, sizeof(int8_t));
+}
+
 int char_VectorEq(struct Vector* lhs, struct Vector* rhs) {
 	int8_t *lhs_data = (int8_t*) lhs->data;
 	int8_t *rhs_data = (int8_t*) rhs->data;
@@ -292,6 +309,10 @@ int char_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 void int_allocVector(struct Vector* vector, int32_t size) {
 	vector->size = size;
 	vector->data = malloc(sizeof(int32_t) * size);
+}
+
+void int_copyVector(struct Vector* to, struct Vector* from) {
+	copyVector(to, from, sizeof(int32_t));
 }
 
 int int_VectorAddVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
@@ -454,3 +475,4 @@ void releaseVector(struct Vector* vector) {
 	free(vector->data);
 	free(vector);
 }
+
