@@ -36,6 +36,10 @@ bottomup // match subexpressions innermost to outermost
 	|	print
 	|	input
 	;
+	
+topdown
+	: iterator
+	;
 
 // promotion and type checking
 
@@ -47,7 +51,12 @@ ifstat
 loopstat 
   : ^(Loop s=.)
   | ^(WHILE cond=. s=.) {symtab.loopstat($cond);} 
-  | ^(DOWHILE cond=. s=.) {symtab.loopstat($cond);} ;
+  | ^(DOWHILE cond=. s=.) {symtab.loopstat($cond);}
+  ;
+  
+iterator
+	:^(ITERATOR id=ID e=exprRoot s=.) {symtab.iterator($id, $e.start);}
+	;
 
 decl
 	: ^(var_node=VAR_DECL . ID (init=.)?) 

@@ -926,4 +926,22 @@ public class TestLLVM extends BaseTest {
         StringBuffer sb = new StringBuffer();
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void iterativeLoop() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/87IterativeLoop/iterativeLoop.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("1\n");
+        sb.append("2\n");
+        sb.append("3\n");
+        sb.append("4\n");
+        sb.append("5\n");
+        sb.append("6\n");
+        sb.append("7\n");
+        sb.append("8\n");
+        sb.append("9\n");
+        sb.append("10\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

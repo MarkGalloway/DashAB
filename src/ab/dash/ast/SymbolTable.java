@@ -891,6 +891,28 @@ public class SymbolTable {
         }
     }
     
+    public void iterator(DashAST id, DashAST vector) {
+        if ( vector.evalType.getTypeIndex() != tVECTOR &&
+        		vector.evalType.getTypeIndex() != tINTERVAL) {
+            error("line " + vector.getLine() + ": " +
+            		"loop vector "+text(vector)+
+                           " must have vector or interval type in "+
+                           text((DashAST)vector.getParent()));
+            return;
+        }
+        
+        if (vector.evalType.getTypeIndex() == tINTERVAL) {
+        	id.symbol.type = _integer;
+        	id.evalType = _integer;
+        }
+        
+        if (vector.evalType.getTypeIndex() == tVECTOR) {
+        	VectorType vType = (VectorType) vector.evalType;
+        	id.symbol.type = vType.elementType;
+        	id.evalType = vType.elementType;
+        }
+    }
+    
     public Type by(DashAST interval, DashAST by) {
     	if ( interval.evalType.getTypeIndex() != tINTERVAL ) {
             error("line " + interval.getLine() + ": " +

@@ -3,10 +3,8 @@ const inp = std_input();
 
 function solveDiagonal(real matrix A[4, 4], real vector y[4]) returns real vector[4] {
 	real vector x[4];
-	var i = 1;
-	loop i <= 4 {
+	loop while i in 1..4 {
 		x[i] = y[i]/A[i, i];
-		i = i + 1;
 	}
 	
 	return x;
@@ -17,37 +15,25 @@ procedure main() returns integer {
 	real vector x[4];
 	real vector y[4];
 	
-	integer i;
-	integer j;
-	
 	// Get Matrix
-	j = 1;
-	loop j <= 4 {
-		var i = 1;
-		loop i <= 4 {
+	loop j in 1..4 {
+		loop i in 1..4 {
 			real value;
 			value <- inp;
 			A[i, j] = value;
-			i = i + 1;
 		}
-		j = j + 1;
 	}
 	
 	// Get Vector
-	i = 1;
-	loop i <= 4 {
+	loop i in 1..4  {
 		real value;
 		value <- inp;
-		y[i] = value;
-		i = i + 1;
 	}
 	
 	x = solveDiagonal(A, y);
 	
-	i = 1;
-	loop i <= 4 {
+	loop while i in 1..4 {
 		x[i] -> out;
-		i = i + 1;
 	}
 	
 	return 0;

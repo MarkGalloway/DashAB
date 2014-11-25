@@ -2,7 +2,7 @@
 const out = std_output();
 
 procedure main() returns integer {
-	boolean v1[2] = null
+	boolean v1[2] = null;
 	
 	v1[1] -> out; '\n' ->out;
 	v1[2] -> out; '\n' ->out;

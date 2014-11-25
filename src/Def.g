@@ -45,6 +45,7 @@ private void debug(String msg) {
 topdown
   :
   enterBlock
+  | enterIterator
   | enterMethod
   | typecast
   | typeDef
@@ -59,6 +60,7 @@ topdown
 bottomup
   :
   exitBlock
+  | exitIterator
   | exitMethod
   ;
 
@@ -81,6 +83,41 @@ exitBlock
         currentScope = currentScope.getEnclosingScope(); // pop scope
        }
   ;
+
+enterIterator
+	:
+	^(ITERATOR ID . .)
+		{
+        currentScope = new LocalScope(currentScope);
+        $ITERATOR.scope = currentScope;
+        
+        debug("line " + $ID.getLine() + ": def " + $ID.text + " type ( unknown ) "
+        + " specifier ( const )");
+   
+	   // test for double declaration
+	   Symbol s = currentScope.resolveInCurrentScope($ID.text);
+	   if (s != null) {
+	   	symtab.error("line " + $ID.getLine() + ": Identifier " + $ID.text
+	   			+ " declared twice in the same scope.");
+	   }
+	   
+	   VariableSymbol vs = new VariableSymbol($ID.text, null, SymbolTable._const);
+	   vs.def = $ID; // track AST location of def's ID
+	   vs.scope = currentScope;
+	   $ID.symbol = vs; // track in AST
+	   
+	   currentScope.define(vs);
+       } // push scope
+    ;
+    
+exitIterator
+	:
+	ITERATOR
+		{
+        debug("locals: " + currentScope);
+        currentScope = currentScope.getEnclosingScope(); // pop scope
+       } // push scope
+    ;
 
 // START: tuple
 
