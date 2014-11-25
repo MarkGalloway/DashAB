@@ -1,0 +1,17 @@
+// 8.5.4 Operations
+
+const out = std_output();
+
+procedure main() returns integer {
+	integer interval a = 1..5;
+	integer interval b = 1..5;
+	integer interval c = 1..2;
+	
+	boolean f = a != b;
+	boolean t = a != c;
+	
+	f -> out; '\n' -> out;
+	t -> out;
+	
+	return 0;
+}

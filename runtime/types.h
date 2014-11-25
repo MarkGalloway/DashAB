@@ -8,4 +8,10 @@ struct Vector {
 	void* 	data;
 };
 
+struct Matrix {
+	int32_t rows;
+	int32_t columns;
+	void* 	data;
+};
+
 enum type { BOOLEAN, CHARACTER, INTEGER, REAL};

@@ -16,14 +16,22 @@ import org.antlr.runtime.tree.TreeVisitorAction;
 
 import org.antlr.runtime.CommonToken;
 
+import ab.dash.AddNullToUninitialized;
+import ab.dash.ConvertNullAndIdentity;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
+import ab.dash.DefineTupleTypes;
+import ab.dash.MethodCheck;
+import ab.dash.TupleConvertNullAndIdentity;
+import ab.dash.TuplePromotion;
 import ab.dash.Types;
 import ab.dash.ast.DashAST;
 import ab.dash.ast.SymbolTable;
+import ab.dash.exceptions.SymbolTableException;
+import ab.dash.opt.Optimization;
 
-public class TestTypes {
+public class TestASTBuild {
 	public static void parseFile(String name, String file)
 			throws RecognitionException, RuntimeException {
 		CharStream input = null;
@@ -62,6 +70,15 @@ public class TestTypes {
 		System.out.println("\nTree:");
 		System.out.println(tree.toStringTree());
 		System.out.println();
+		
+		System.out.println("Add Null:");
+		System.out.flush();
+		nodes.reset();
+        AddNullToUninitialized addNull = new AddNullToUninitialized(nodes, symtab);
+        addNull.downup(tree); 
+        
+        System.err.flush();
+		System.out.flush();
 
 		System.out.println("Type Step:");
 		System.out.flush();
@@ -70,9 +87,68 @@ public class TestTypes {
 		nodes.reset();
 		Types typeComp = new Types(nodes, symtab);
 		typeComp.downup(tree); // trigger resolve/type computation actions
+		
+		System.out.println("\nTree:");
+		System.out.println(tree.toStringTree());
+		System.out.println();
 
 		System.err.flush();
 		System.out.flush();
+		
+		System.out.println("Tuple Convert Null And Identity:");
+		System.out.flush();
+		nodes.reset();
+
+		TupleConvertNullAndIdentity tupleUpdate = new TupleConvertNullAndIdentity();
+		tupleUpdate.check(tree);
+
+		nodes.reset();
+
+		TuplePromotion tupleTypePromotion = new TuplePromotion();
+		tupleTypePromotion.check(tree);
+  
+        System.err.flush();
+		System.out.flush();
+		
+		System.out.println("Define Tuple Types:");
+		System.out.flush();
+		
+		nodes.reset();
+        DefineTupleTypes tupleTypeComp = new DefineTupleTypes(symtab);
+        tupleTypeComp.debug_off();
+        tupleTypeComp.define(tree);
+        
+        System.err.flush();
+		System.out.flush();
+		
+		System.out.println("Convert Null And Identity:");
+		System.out.flush();
+		nodes.reset();
+        ConvertNullAndIdentity convert = new ConvertNullAndIdentity(nodes, symtab);
+        convert.downup(tree);  
+        
+        System.err.flush();
+		System.out.flush();
+		
+		System.out.println("Optimization:");
+		System.out.flush();
+		nodes.reset();
+        
+        Optimization opt = new Optimization(nodes, tree, symtab);
+        opt.optimize();
+        
+        System.err.flush();
+		System.out.flush();
+		
+		System.out.println("Method Check:");
+		System.out.flush();
+		nodes.reset();
+        MethodCheck checker = new MethodCheck();
+        checker.check(tree);
+        
+        System.err.flush();
+		System.out.flush();
+		
 
 		if (symtab.getErrorCount() == 0) {
 			// WALK TREE TO DUMP SUBTREE TYPES
@@ -107,6 +183,8 @@ public class TestTypes {
 		System.out.println("\nTree:");
 		System.out.println(tree.toStringTree());
 		System.out.println();
+		
+		
 		
 		System.out.println("\nCode:");
 		System.out.println(tokens);

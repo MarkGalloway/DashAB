@@ -15,8 +15,8 @@ procedure main() returns integer {
 	boolean a8 = 0 == identity;
 	var a9 = 0 != identity;
 	var a10 = testIdentity();
-	var a11 = -identity;
-	var a12 = +identity;
+	var integer a11 = -identity;
+	var integer a12 = +identity;
 	var a13 = not identity;
 	
 	a1 -> out; '\n' -> out;

@@ -1,0 +1,5 @@
+// 8.5.1 Declaration of intervals
+procedure main() returns integer {
+	integer interval i = 1..5;
+	return 0;
+}

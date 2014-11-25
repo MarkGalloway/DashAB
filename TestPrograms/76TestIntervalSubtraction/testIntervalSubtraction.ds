@@ -1,0 +1,19 @@
+//8.5.4 Operations: [a, b] - [c, d] = [a-d, b-c]
+
+const out = std_output();
+
+procedure main() returns integer {
+	integer interval a = 10..11;
+	integer interval b = 1..5;
+	integer interval z = a - b;
+	integer vector c = z; // 5..10
+		
+	c[1] -> out; '\n' -> out;	
+	c[2] -> out; '\n' -> out;	
+	c[3] -> out; '\n' -> out;	
+	c[4] -> out; '\n' -> out;
+	c[5] -> out; '\n' -> out;
+	c[6] -> out; '\n' -> out;	
+	
+	return 0;
+}

@@ -109,13 +109,13 @@ public class SymbolTable {
     	/*tuple*/		{null,		null,    	null,   	null,   	null,		null,	null,         null,      null,		null,		null,		null},
         /*boolean*/ 	{null,		null,    	null,   	null,   	null, 		null, 	null,         null,      null,		null,		_vector,	_matrix},
         /*character*/   {null,		null,  		null,    	null,   	null, 		null,	null,         null,      null,		null,		_vector,	_matrix},
-        /*integer*/     {null,		null,  		null,    	_integer,   _real,		null,	null,         _integer,  _integer,	null,		_vector,	_matrix},
+        /*integer*/     {null,		null,  		null,    	_integer,   _real,		null,	null,         _integer,  _integer,	_interval,	_vector,	_matrix},
         /*real*/   		{null,		null,  		null,    	_real,   	_real,		null,	null,         _real,     _real,		null,		_vector,	_matrix},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 		null,	null,         null,      null,		null,		null,		null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 		null,	null,         null,      null,		null,		null,		null},
         /*null*/        {null,      null,       null,       _integer,   _real,  	null,   null,         null,      null,		null,		null,		null},
         /*identity*/    {null,      null,       null,       _integer,   _real,  	null,   null,         null,      null,		null,		null,		null},
-        /*interval*/	{null,		null,    	null,   	null,   	null,		null,	null,         null,      null,		null,		_vector,	_matrix},
+        /*interval*/	{null,		null,    	null,   	_interval,   null,		null,	null,         null,      null,		_interval,	_vector,	_matrix},
         /*vector*/		{null,		_vector,    _vector,   	_vector,   	_vector,	null,	null,         null,      null,		_vector,	_vector,	_matrix},
         /*matrix*/		{null,		_matrix,    _matrix,   	_matrix,   	_matrix,	null,	null,         null,      null,		_matrix,	_matrix,	_matrix}
     };
@@ -163,8 +163,8 @@ public class SymbolTable {
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	    	null,		null,    null,		null,		null,		null,		null},
         /*null*/        {_boolean,  _boolean,   _boolean,   _boolean,   _boolean,   	null,   	null,    null,		null,		null,		null,		null},
         /*identity*/    {_boolean,  _boolean,   _boolean,   _boolean,   _boolean,   	null,   	null,    null,		null,		null,		null,		null},
-        /*interval*/	{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		null,		null,		null},
-        /*vector*/		{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		null,		_boolean,	null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		_boolean,	_boolean,	null},
+        /*vector*/		{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		_boolean,	_boolean,	null},
         /*matrix*/		{null,		null,    	null,   	null,   	null,			null,		null,    null,      null,		null,		null,		_boolean}
     };
     
@@ -401,12 +401,16 @@ public class SymbolTable {
     }
     
     public Type range(DashAST a, DashAST b) {
-        if (a.evalType.getTypeIndex() != tINTEGER) {
+        if (!(a.evalType.getTypeIndex() == tINTEGER ||
+        		a.evalType.getTypeIndex() == tNULL ||
+        		a.evalType.getTypeIndex() == tIDENTITY)) {
         	error("line " + a.getLine() + ": Left hand side of range needs to evaluate to an integer.");
         	return null;
         }
         
-        if (b.evalType.getTypeIndex() != tINTEGER) {
+        if (!(b.evalType.getTypeIndex() == tINTEGER ||
+        		b.evalType.getTypeIndex() == tNULL ||
+        		b.evalType.getTypeIndex() == tIDENTITY)) {
         	error("line " + b.getLine() + ": Right hand side of range needs to evaluate to an integer.");
 	    	return null;
 	    }
@@ -419,43 +423,22 @@ public class SymbolTable {
     }
 
     public Type uminus(DashAST a) {
-        if (a.evalType  == _null) { 
-            CommonToken token = convertFromNull(_integer);
-            a.evalType = _integer;
-            a.token = token;
-        }  
+    
+        Type at = a.evalType;
+        if (at.getTypeIndex() == tINTERVAL) {
+        	at = _integer;
+        } else if (at.getTypeIndex() == tVECTOR) {
+        	at = ((VectorType)at).elementType;
+        } else if (at.getTypeIndex() == tMATRIX) {
+        	at = ((MatrixType)at).elementType;
+        }
         
-        if (a.evalType  == _identity) { 
-            CommonToken token = convertFromIdentity(_integer);
-            a.evalType = _integer;
-            a.token = token;
-        }  
-
-        if ( !(a.evalType==_integer || a.evalType==_real) ) {
+        if ( !(at.getTypeIndex() == tINTEGER || 
+        		at.getTypeIndex() == tREAL ||
+        		at.getTypeIndex() == tNULL ||
+        		at.getTypeIndex() == tIDENTITY) ) {
             error("line " + a.getLine() + ": " +
             		text(a)+" must have integer or real type in "+
-                           text((DashAST)a.getParent()));
-            return null;
-        }
-        return a.evalType;
-    }
-    
-    public Type upositive(DashAST a) {
-        if (a.evalType  == _null) { 
-            CommonToken token = convertFromNull(_integer);
-            a.evalType = _integer;
-            a.token = token;
-        }  
-        
-        if (a.evalType  == _identity) { 
-            CommonToken token = convertFromIdentity(_integer);
-            a.evalType = _integer;
-            a.token = token;
-        }  
-
-        if ( !(a.evalType==_integer || a.evalType==_real) ) {
-            error("line " + a.getLine() + ": " +
-                    text(a)+" must have integer or real type in "+
                            text((DashAST)a.getParent()));
             return null;
         }
@@ -485,22 +468,97 @@ public class SymbolTable {
     }
 
     public Type vectorIndex(DashAST id, DashAST index) {
-    	System.out.println(id.toStringTree());
         Type t = id.evalType;
         if ( t.getTypeIndex() != tVECTOR )
         {
-            error(text(id)+" must be an vector variable in "+
-                           text((DashAST)id.getParent()));
+            error("line " + id.getLine() + " : " + 
+            		text(id)+" must be an vector variable in "+
+                    text((DashAST)id.getParent()));
             return null;
         }
         
         int texpr = index.evalType.getTypeIndex();
         
         if (texpr == tVECTOR) {
-        	return t;
+        	VectorType vectorType = (VectorType)index.evalType;
+        	if (vectorType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + index.getLine() + " : " + 
+        				text(index)+" indexing vector must be of type integer in "+
+                        text((DashAST)index.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (texpr != tINTEGER) {
+        	error("line " + index.getLine() + " : " + 
+    				text(index)+" index must be of type integer in "+
+                    text((DashAST)index.getParent()));
+    		return null;
         }
         
         return ((VectorType)t).elementType;
+    }
+    
+    public Type matrixIndex(DashAST id, DashAST row, DashAST column) {
+        Type t = id.evalType;
+        if ( t.getTypeIndex() != tMATRIX )
+        {
+            error(text(id)+" must be an matrix variable in "+
+                           text((DashAST)id.getParent()));
+            return null;
+        }
+        
+        int trow = row.evalType.getTypeIndex();
+        int tcolumn = column.evalType.getTypeIndex();
+        
+        if (trow == tVECTOR && tcolumn == tVECTOR) {
+        	VectorType rowType = (VectorType)row.evalType;
+        	VectorType columnType = (VectorType)column.evalType;
+        	if (rowType.elementType.getTypeIndex() == tINTEGER &&
+        			columnType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (trow == tVECTOR && tcolumn == tINTEGER) {
+        	VectorType rowType = (VectorType)row.evalType;
+        	if (rowType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector for row must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (tcolumn == tVECTOR && trow == tINTEGER) {
+        	VectorType columnType = (VectorType)column.evalType;
+        	if (columnType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector for column must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (trow != tINTEGER || tcolumn != tINTEGER) {
+        	error("line " + row.getLine() + " : " + 
+    				text(row)+" index must be of type integer in "+
+                    text((DashAST)row.getParent()));
+        	 return null;
+        }
+        
+        return ((MatrixType)t).elementType;
     }
 
     public Type call(DashAST id, List<?> args) {
@@ -831,6 +889,48 @@ public class SymbolTable {
                            " must have boolean type in "+
                            text((DashAST)cond.getParent()));
         }
+    }
+    
+    public void iterator(DashAST id, DashAST vector) {
+        if ( vector.evalType.getTypeIndex() != tVECTOR &&
+        		vector.evalType.getTypeIndex() != tINTERVAL) {
+            error("line " + vector.getLine() + ": " +
+            		"loop vector "+text(vector)+
+                           " must have vector or interval type in "+
+                           text((DashAST)vector.getParent()));
+            return;
+        }
+        
+        if (vector.evalType.getTypeIndex() == tINTERVAL) {
+        	id.symbol.type = _integer;
+        	id.evalType = _integer;
+        }
+        
+        if (vector.evalType.getTypeIndex() == tVECTOR) {
+        	VectorType vType = (VectorType) vector.evalType;
+        	id.symbol.type = vType.elementType;
+        	id.evalType = vType.elementType;
+        }
+    }
+    
+    public Type by(DashAST interval, DashAST by) {
+    	if ( interval.evalType.getTypeIndex() != tINTERVAL ) {
+            error("line " + interval.getLine() + ": " +
+            		" left hand side of by statement" +
+                           " must be of type interval in "+
+                           text((DashAST)interval.getParent()));
+            return null;
+        }
+    	
+    	if ( by.evalType.getTypeIndex() != tINTEGER) {
+            error("line " + by.getLine() + ": " +
+            		" right hand side of by statement" +
+                           " must be of type integer in "+
+                           text((DashAST)by.getParent()));
+            return null;
+        }
+    	
+    	return new VectorType(_integer, 0);
     }
     
     public boolean typeCast(DashAST typecast, DashAST list) {

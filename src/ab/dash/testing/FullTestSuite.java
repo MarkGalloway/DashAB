@@ -10,6 +10,7 @@ import org.junit.runners.Suite;
    TestNull.class,
    TestType.class,
    TestLLVM.class,
+   TestUnimplemented.class,
    TestInvalidLLVM.class,
 })
 

@@ -20,7 +20,6 @@ tokens {
 	ELIST;       	// expression list
 	EXPR; 	   		// root of an expression
 	UNARY_MINUS;
-	UNARY_POSITIVE;
 	DECL_OUTSTREAM;
   DECL_INSTREAM;
   PRINT;
@@ -28,6 +27,7 @@ tokens {
   TYPEDEF;
   WHILE;
   DOWHILE;
+  ITERATOR;
   UNPACK;
   TYPECAST;
   VECTOR_LIST;
@@ -336,6 +336,10 @@ loopStatement
   | Loop statement While expression RPAREN { emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); } 
   | Loop {loopDepth++;} statement While expression {loopDepth--;} -> ^(DOWHILE expression statement)
   | Loop {loopDepth++;} statement {loopDepth--;} -> ^(Loop statement) // infinite loop
+  |	Loop {loopDepth++;} LPAREN ID In expression RPAREN statement {loopDepth--;} -> ^(ITERATOR ID expression statement)
+  | Loop LPAREN ID In  expression statement { emitErrorMessage("line " + $Loop.getLine() + ": Missing right parenthesis."); }
+  | Loop ID In expression RPAREN statement { emitErrorMessage("line " + $Loop.getLine() + ": Missing left parenthesis."); } 
+  | Loop {loopDepth++;} ID In expression statement {loopDepth--;} -> ^(ITERATOR ID expression statement)
   ;
 
 lhs 
@@ -412,7 +416,7 @@ powerExpression
 	;
 	
 unaryExpression
-	:	op=ADD unaryExpression -> ^(UNARY_POSITIVE[$op] unaryExpression)
+	:	op=ADD unaryExpression -> unaryExpression
 	|	op=SUBTRACT unaryExpression -> ^(UNARY_MINUS[$op] unaryExpression)
 	|	Not unaryExpression -> ^(Not unaryExpression)
 	|	rangeExpression

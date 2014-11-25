@@ -1,0 +1,6 @@
+// 8.5.4 An error must be produced whenever the offset has a value lower than 1. For instance v by 0 and v by -1 are not legal.
+
+procedure main() returns integer {
+	integer vector v1 = 3..6 by -1;
+	return 0;
+}

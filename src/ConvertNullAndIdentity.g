@@ -26,13 +26,32 @@ options {
 }
 
 bottomup
-  : identExpr
+  : 	identExpr
 	|	nullExpr
 	;
 	
 
 nullExpr
-  : ^(node = EXPR Null)
+  : ^(EXPR ^(UNARY_MINUS Null))
+  {
+    $EXPR.evalType = $EXPR.promoteToType;
+    $EXPR.promoteToType = null;
+    
+    if ($EXPR.evalType == null)
+      $EXPR.evalType = ((DashAST)$EXPR.getChild(0)).promoteToType;
+      
+    DashAST expr = SymbolTable.getExprForNull($EXPR.evalType);
+    DashAST minus = new DashAST(new CommonToken(DashLexer.UNARY_MINUS, "-"));
+    if (expr != null) {
+      ((DashAST)expr.getChild(0)).evalType = $EXPR.evalType;
+      //((DashAST)expr.getChild(0)).promoteToType = null;
+      minus.addChild(expr.getChild(0));
+      minus.evalType = $EXPR.evalType;
+      $EXPR.deleteChild(0);
+      $EXPR.addChild(minus);
+    }
+  } 
+  |	^(node = EXPR Null)
   { 
     $node.evalType = $node.promoteToType;
     $node.promoteToType = null;
@@ -41,10 +60,7 @@ nullExpr
       $node.evalType = ((DashAST)$node.getChild(0)).promoteToType;
       
     DashAST expr = SymbolTable.getExprForNull($node.evalType);
-    if (expr == null) {
-      symtab.error("line " + $EXPR.getLine() + ": type cannot be inferred"); 
-    }
-    else {
+    if (expr != null) {
       ((DashAST)expr.getChild(0)).evalType = $node.evalType;
       //((DashAST)expr.getChild(0)).promoteToType = null;
       $node.deleteChild(0);
@@ -54,7 +70,26 @@ nullExpr
   ;
   
 identExpr
-  : ^(node = EXPR Identity)
+  : ^(EXPR ^(UNARY_MINUS Identity))
+  {
+    $EXPR.evalType = $EXPR.promoteToType;
+    $EXPR.promoteToType = null;
+    
+    if ($EXPR.evalType == null)
+      $EXPR.evalType = ((DashAST)$EXPR.getChild(0)).promoteToType;
+      
+    DashAST expr = SymbolTable.getExprForIdentity($EXPR.evalType);
+    DashAST minus = new DashAST(new CommonToken(DashLexer.UNARY_MINUS, "-"));
+    if (expr != null) {
+      ((DashAST)expr.getChild(0)).evalType = $EXPR.evalType;
+      //((DashAST)expr.getChild(0)).promoteToType = null;
+      minus.addChild(expr.getChild(0));
+      minus.evalType = $EXPR.evalType;
+      $EXPR.deleteChild(0);
+      $EXPR.addChild(minus);
+    }
+  } 
+  |	^(node = EXPR Identity)
   { 
     $node.evalType = $node.promoteToType;
     $node.promoteToType = null;
@@ -63,10 +98,7 @@ identExpr
       $node.evalType = ((DashAST)$node.getChild(0)).promoteToType;
       
     DashAST expr = SymbolTable.getExprForIdentity($node.evalType);
-    if (expr == null) {
-      symtab.error("line " + $EXPR.getLine() + ": type cannot be inferred"); 
-    }
-    else {
+    if (expr != null) {
       ((DashAST)expr.getChild(0)).evalType = $node.evalType;
       //((DashAST)expr.getChild(0)).promoteToType = null;
       $node.deleteChild(0);

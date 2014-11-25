@@ -36,6 +36,10 @@ bottomup // match subexpressions innermost to outermost
 	|	print
 	|	input
 	;
+	
+topdown
+	: iterator
+	;
 
 // promotion and type checking
 
@@ -47,7 +51,12 @@ ifstat
 loopstat 
   : ^(Loop s=.)
   | ^(WHILE cond=. s=.) {symtab.loopstat($cond);} 
-  | ^(DOWHILE cond=. s=.) {symtab.loopstat($cond);} ;
+  | ^(DOWHILE cond=. s=.) {symtab.loopstat($cond);}
+  ;
+  
+iterator
+	:^(ITERATOR id=ID e=exprRoot s=.) {symtab.iterator($id, $e.start);}
+	;
 
 decl
 	: ^(var_node=VAR_DECL . ID (init=.)?) 
@@ -105,17 +114,6 @@ expr returns [Type type]
     	}
     }
     |   ^(UNARY_MINUS a=expr)   {$type=symtab.uminus($a.start);}
-    |   ^(posNode = UNARY_POSITIVE a=expr)   
-      { 
-        $type=symtab.upositive($a.start); 
-        //DashAST child = (DashAST)$UNARY_POSITIVE.getChild(1);
-        //$UNARY_POSITIVE = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
-        //$UNARY_POSITIVE.token = new CommonToken(DashLexer.EXPR, "EXPR");
-        //$UNARY_POSITIVE.addChild(child);
-        //DashAST parent = (DashAST)$UNARY_POSITIVE.getParent();
-        //parent.deleteChild($UNARY_POSITIVE.getChildIndex());
-        
-      } -> expr
     |   ^(Not a=expr) {$type=symtab.unot($a.start);}
     |	tuple_list	{$type = $tuple_list.type;}
     |	vector_list {$type = $vector_list.type;}
@@ -160,6 +158,11 @@ index returns [Type type]
 	:	^(VECTOR_INDEX id=expr m=expr)
 		{
 			$type = symtab.vectorIndex($id.start, $m.start);
+			$start.evalType = $type;
+		}
+	|	^(MATRIX_INDEX id=expr opt1=expr opt2=expr)
+		{
+			$type = symtab.matrixIndex($id.start, $opt1.start, $opt2.start);
 			$start.evalType = $type;
 		}
     ;
@@ -211,7 +214,8 @@ binaryOps returns [Type type]
 		|	^(lop a=expr b=expr)    {$type=symtab.lop($a.start, $b.start);}
 		|	^(relop a=expr b=expr)  {$type=symtab.relop($a.start, $b.start);}
 		|	^(eqop a=expr b=expr)   {$type=symtab.eqop($a.start, $b.start);}
-		|	^(RANGE a=expr b=expr)   {$type=symtab.range($a.start, $b.start);}
+		|	^(RANGE a=expr b=expr)  {$type=symtab.range($a.start, $b.start);}
+		|	^(By a=expr b=expr) 	{$type=symtab.by($a.start, $b.start);}
 		)
 	;
 	

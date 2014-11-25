@@ -1,0 +1,6 @@
+// 8.6.1 Scalar values can not be used to instantiate a vector with inferred length.
+
+procedure main() returns integer {
+	integer vector v1 = 1;
+	return 0;
+}

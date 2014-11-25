@@ -1,0 +1,12 @@
+// 8.5.3 identity will be 1..1 for DashAB's integer intervals.
+
+const out = std_output();
+
+procedure main() returns integer {
+	integer interval i = identity..identity;
+	integer vector v = i;
+	
+	v[1] -> out;
+	
+	return 0;
+}
