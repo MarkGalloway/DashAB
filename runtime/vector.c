@@ -220,7 +220,7 @@ int bool_VectorAndVector(struct Vector* out, struct Vector* lhs, struct Vector* 
 	return 0;
 }
 
-void bool_VectorOrExpr(struct Vector* out, struct Vector* lhs, int8_t rhs) {
+void bool_VectorOrScalar(struct Vector* out, struct Vector* lhs, int8_t rhs) {
 	int8_t *out_data = (int8_t*) out->data;
 	int8_t *lhs_data = (int8_t*) lhs->data;
 	
@@ -228,7 +228,7 @@ void bool_VectorOrExpr(struct Vector* out, struct Vector* lhs, int8_t rhs) {
 		out_data[i] = (lhs_data[i] || rhs) & 1;
 }
 
-void bool_VectorXOrExpr(struct Vector* out, struct Vector* lhs, int8_t rhs) {
+void bool_VectorXOrScalar(struct Vector* out, struct Vector* lhs, int8_t rhs) {
 	int8_t *out_data = (int8_t*) out->data;
 	int8_t *lhs_data = (int8_t*) lhs->data;
 	
@@ -236,7 +236,7 @@ void bool_VectorXOrExpr(struct Vector* out, struct Vector* lhs, int8_t rhs) {
 		out_data[i] = (lhs_data[i] ^ rhs) & 1; 
 }
 
-void bool_VectorAndExpr(struct Vector* out, struct Vector* lhs, int8_t rhs) {
+void bool_VectorAndScalar(struct Vector* out, struct Vector* lhs, int8_t rhs) {
 	int8_t *out_data = (int8_t*) out->data;
 	int8_t *lhs_data = (int8_t*) lhs->data;
 	
