@@ -190,19 +190,19 @@ public class SymbolTable {
      *  arithmetic, equality, and relational operators in Dash.
      */
     public static final Type[][] promoteFromTo = new Type[][] {
-        /*          	tuple		boolean  	character 	integer 	real	outstream	instream   null       identity	interval	vector	matri*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	    null,      null,      null,		null,		null,	null},
-        /*boolean*/ 	{null,		null,    	null,   	null,   	null,	null,	    null,      null,      null,		null,		null,	null},
-        /*character*/   {null,		null,  		null,    	null,   	null,	null,	    null,      null,      null,		null,		null,	null},
-        /*integer*/     {null,		null,  		null,    	null,   	_real,	null,	    null,      null,      null,		null,		null,	null},
-        /*real*/   		{null,		null,  		null,    	null,   	null, 	null,       null,      null,      null,		null,		null,	null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null,		null,		null,	null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null,		null,		null,	null},
-        /*null*/        {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		null,		null,	null},
-        /*identity*/    {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		null,		null,	null},
-        /*interval*/	{null,		null,    	null,   	null,   	null,	null,		null,         null,      null,		null,		null,	null},
-        /*vector*/		{null,		null,    	null,   	null,   	null,	null,		null,         null,      null,		null,		null,	null},
-        /*matrix*/		{null,		null,    	null,   	null,   	null,	null,		null,         null,      null,		null,		null,	null}
+        /*          	tuple		boolean  	character 	integer 	real	outstream	instream   null       identity	interval	vector		matrix*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	    null,      null,      null,		null,		null,		null},
+        /*boolean*/ 	{null,		null,    	null,   	null,   	null,	null,	    null,      null,      null,		null,		null,		null},
+        /*character*/   {null,		null,  		null,    	null,   	null,	null,	    null,      null,      null,		null,		null,		null},
+        /*integer*/     {null,		null,  		null,    	null,   	_real,	null,	    null,      null,      null,		null,		null,		null},
+        /*real*/   		{null,		null,  		null,    	null,   	null, 	null,       null,      null,      null,		null,		null,		null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null,		null,		null,		null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null,		null,		null,		null},
+        /*null*/        {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		null,		null,		null},
+        /*identity*/    {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		null,		null,		null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,	null,		null,      null,      null,		null,		_vector,	null},
+        /*vector*/		{null,		null,    	null,   	null,   	null,	null,		null,      null,      null,		null,		_vector,	null},
+        /*matrix*/		{null,		null,    	null,   	null,   	null,	null,		null,      null,      null,		null,		null,		_matrix}
     };    
 
     
@@ -286,6 +286,55 @@ public class SymbolTable {
    			 text(a)+ " is not defined in the program.");
         return false;
     }
+	
+	private Type getElementType(Type type) {
+		if (type.getTypeIndex() == tINTERVAL) {
+			return _integer;
+		} else if (type.getTypeIndex() == tVECTOR) {
+			return ((VectorType)type).elementType;
+		} else if (type.getTypeIndex() == tMATRIX) {
+			return ((MatrixType)type).elementType;
+		}
+		
+		return type;
+	}
+	
+	private Type getPromoteType(Type from, Type to) {
+		Type fType = getElementType(from);
+		Type tType = getElementType(to);
+		
+		int tf = fType.getTypeIndex();
+		int tt = tType.getTypeIndex();
+		
+		Type type = promoteFromTo[tf][tt];
+		
+		if (from.getTypeIndex() == tINTERVAL) {
+			return new VectorType(type, 0);
+		} else if (from.getTypeIndex() == tVECTOR) {
+			return new VectorType(type, 0);
+		} else if (from.getTypeIndex() == tMATRIX) {
+			return new MatrixType(type, 0, 0);
+		}
+		
+		return type;
+	}
+	
+	private Type promote(Type from, Type to) {
+		int tf = from.getTypeIndex();
+		int tt = to.getTypeIndex();
+		
+		Type type = promoteFromTo[tf][tt];
+		
+		if (type != null) {
+			if (type.getTypeIndex() == tVECTOR) {
+				return getPromoteType(from, to);
+			} else if (type.getTypeIndex() == tVECTOR) {
+				return getPromoteType(from, to);
+			}
+		}
+		
+		return type;
+	}
 
     public Type getResultType(Type[][] typeTable, DashAST a, DashAST b) {
     	 Type aType = a.evalType; // type of left operand
@@ -317,139 +366,69 @@ public class SymbolTable {
              }  
          }
         
-        Type result = typeTable[ta][tb];    // operation result type
-        if ( result==null ) {
+        Type result = null;
+        Type type = typeTable[ta][tb];    // operation result typenull
+        if ( type==null ) {
             error("line " + a.getLine() + ": " +
             		text(a)+", "+
                     text(b)+" have incompatible types in "+
                     text((DashAST)a.getParent()));
         }
         else {
-            a.promoteToType = promoteFromTo[ta][tb];
-            b.promoteToType = promoteFromTo[tb][ta];
+        	if (type.getTypeIndex() == tINTERVAL) {
+        		result = new IntervalType(0, 0);
+        	} else if (type.getTypeIndex() == tVECTOR || 
+        			type.getTypeIndex() == tMATRIX) {
+        		
+        		Type aElementType = getElementType(aType);
+        		Type bElementType  = getElementType(bType);
+        		
+        		ta = aElementType.getTypeIndex();
+        		tb = bElementType.getTypeIndex();
+        		
+        		Type elementType = typeTable[ta][tb];    // operation result type
+        		if ( elementType==null ) {
+                    error("line " + a.getLine() + ": " +
+                    		text(a)+", "+
+                            text(b)+" have incompatible types in "+
+                            text((DashAST)a.getParent()));
+                }
+                else {
+                    a.promoteToType = promote(aType, bType);
+                    b.promoteToType = promote(bType, aType);
+                }
+                
+        		if (type.getTypeIndex() == tVECTOR)
+        			result = new VectorType(elementType, 0);
+        		else if (type.getTypeIndex() == tMATRIX)
+        			result = new MatrixType(elementType, 0, 0);
+        	} else {
+        		a.promoteToType = promoteFromTo[ta][tb];
+                b.promoteToType = promoteFromTo[tb][ta];
+                
+        		result = type;
+        	}
         }
         return result;
     }
-    // TODO: Doesn't work with correctly for vectors and matrices.
-    private Type op(Type[][] typeTable, DashAST a, DashAST b) {
-    	Type type =  getResultType(typeTable, a, b);
-    	
-    	if (type == null)
-    		return null;
-    	
-    	if (type.getTypeIndex() == tINTERVAL) {
-    		return new IntervalType(0, 0);
-    	} else if (type.getTypeIndex() == tVECTOR) {
-    		Type at = a.evalType;
-    		Type bt = b.evalType;
-    		
-    		if (at.getTypeIndex() == tINTERVAL) {
-    			at = _integer;
-    		} else if (at.getTypeIndex() == tVECTOR) {
-    			at = ((VectorType)at).elementType;
-    		} else if (at.getTypeIndex() == tMATRIX) {
-    			at = ((MatrixType)at).elementType;
-    		}
-    		
-    		if (bt.getTypeIndex() == tINTERVAL) {
-    			bt = _integer;
-    		} else if (bt.getTypeIndex() == tVECTOR) {
-    			bt = ((VectorType)bt).elementType;
-    		} else if (at.getTypeIndex() == tMATRIX) {
-    			bt = ((MatrixType)bt).elementType;
-    		}
-    		
-    		int ta = at.getTypeIndex();
-    		int tb = bt.getTypeIndex();
-    		
-    		Type result = typeTable[ta][tb];    // operation result type
-    		if ( result==null ) {
-                error("line " + a.getLine() + ": " +
-                		text(a)+", "+
-                        text(b)+" have incompatible types in "+
-                        text((DashAST)a.getParent()));
-            }
-            else {
-                a.promoteToType = promoteFromTo[ta][tb];
-                b.promoteToType = promoteFromTo[tb][ta];
-                
-                if (at.getTypeIndex() == tINTERVAL) {
-        			VectorType pa = new VectorType(a.promoteToType, 0);
-        			a.promoteToType = pa;
-        		} else if (at.getTypeIndex() == tVECTOR) {
-        			VectorType pa = new VectorType(a.promoteToType, 0);
-        			a.promoteToType = pa;
-        		} else if (at.getTypeIndex() == tMATRIX) {
-        			MatrixType pa = new MatrixType(a.promoteToType, 0, 0);
-        			a.promoteToType = pa;
-        		}
-                
-                if (bt.getTypeIndex() == tINTERVAL) {
-        			VectorType pb = new VectorType(b.promoteToType, 0);
-        			b.promoteToType = pb;
-        		} else if (bt.getTypeIndex() == tVECTOR) {
-        			VectorType pb = new VectorType(b.promoteToType, 0);
-        			b.promoteToType = pb;
-        		} else if (bt.getTypeIndex() == tMATRIX) {
-        			MatrixType pb = new MatrixType(b.promoteToType, 0, 0);
-        			b.promoteToType = pb;
-        		}
-            }
-            
-    		return new VectorType(result, 0);
-    	} else if (type.getTypeIndex() == tMATRIX) {
-    		Type at = a.evalType;
-    		Type bt = b.evalType;
-    		
-    		if (at.getTypeIndex() == tINTERVAL) {
-    			at = _integer;
-    		} else if (at.getTypeIndex() == tVECTOR) {
-    			at = ((VectorType)at).elementType;
-    		} else if (at.getTypeIndex() == tMATRIX) {
-    			at = ((MatrixType)at).elementType;
-    		}
-    		
-    		if (bt.getTypeIndex() == tINTERVAL) {
-    			bt = _integer;
-    		} else if (bt.getTypeIndex() == tVECTOR) {
-    			bt = ((VectorType)bt).elementType;
-    		} else if (at.getTypeIndex() == tMATRIX) {
-    			bt = ((MatrixType)bt).elementType;
-    		}
-    		
-    		int ta = at.getTypeIndex();
-    		int tb = bt.getTypeIndex();
-    		
-    		Type result = typeTable[ta][tb];    // operation result type
-            if ( result==null )
-                error("line " + a.getLine() + ": " +
-                		text(a)+", "+
-                        text(b)+" have incompatible types in "+
-                        text((DashAST)a.getParent()));
-    		
-    		return new MatrixType(result, 0, 0);
-    	}
-    	
-    	return type;
-    }
-    
+
     public Type bop(DashAST a, DashAST b) {
-    	return op(arithmeticResultType, a, b);
+    	return getResultType(arithmeticResultType, a, b);
     }
     
     public Type lop(DashAST a, DashAST b) {
-        return op(logicResultType, a, b);
+        return getResultType(logicResultType, a, b);
     }
     
     public Type relop(DashAST a, DashAST b) {
-    	op(relationalResultType, a, b);
+    	getResultType(relationalResultType, a, b);
         // even if the operands are incompatible, the type of
         // this operation must be boolean
         return _boolean;
     }
     
     public Type eqop(DashAST a, DashAST b) {
-    	op(equalityResultType, a, b);
+    	getResultType(equalityResultType, a, b);
         // even if the operands are incompatible, the type of
         // this operation must be boolean
         return _boolean;
@@ -656,11 +635,9 @@ public class SymbolTable {
             // get argument expression type and expected type
             Type actualArgType = argAST.evalType;
             Type formalArgType = ((VariableSymbol)a).type;
-            int targ = actualArgType.getTypeIndex();
-            int tformal = formalArgType.getTypeIndex();
 			
             // do we need to promote argument type to defined type?
-            argAST.promoteToType = promoteFromTo[targ][tformal];
+            argAST.promoteToType = promote(actualArgType, formalArgType);
             if ( !canAssignTo(actualArgType, formalArgType,
                               argAST.promoteToType) ) {
                 error("line " + id.getLine() + ": argument "+
@@ -706,9 +683,8 @@ public class SymbolTable {
     public void ret(MethodSymbol ms, DashAST expr) {
         Type retType = ms.type; // promote return expr to function decl type?
         Type exprType = expr.evalType;
-        int texpr = exprType.getTypeIndex();
-        int tret = retType.getTypeIndex(); 
-        expr.promoteToType = promoteFromTo[texpr][tret];
+        
+        expr.promoteToType = promote(exprType, retType);
         if ( !canAssignTo(exprType, retType, expr.promoteToType) ) {
             error("line " + expr.getLine() + ": " +
             		text(expr)+", "+
@@ -778,10 +754,12 @@ public class SymbolTable {
         	}
         } 
         
-		int tdecl = declID.symbol.type.getTypeIndex();
+        
+		Type tdecl = declID.symbol.type;
 		declID.evalType = declID.symbol.type;
-		init.promoteToType = promoteFromTo[te][tdecl];
-		if (!canAssignTo(init.evalType, declID.symbol.type, init.promoteToType)) {
+		
+		init.promoteToType = promote(init.evalType, tdecl);
+		if (!canAssignTo(init.evalType, tdecl, init.promoteToType)) {
 			error("line " + declID.getLine() + ": " + declID.evalType + " "
 					+ declID.getText() + " is incompatible with "
 					+ init.evalType + " type");
@@ -851,9 +829,7 @@ public class SymbolTable {
 			return;
 		}
     	
-        int tlhs = lhs.evalType.getTypeIndex(); // promote right to left type?
-        int trhs = rhs.evalType.getTypeIndex();
-        rhs.promoteToType = promoteFromTo[trhs][tlhs];
+        rhs.promoteToType = promote(rhs.evalType, lhs.evalType);
         if ( !canAssignTo(rhs.evalType, lhs.evalType, rhs.promoteToType) ) {
             error("line " + lhs.getLine() + ": " +
             			text(lhs)+", "+
@@ -1051,10 +1027,7 @@ public class SymbolTable {
         		Type f = f_var.type;
         		Type a = a_var.type;
         		
-        		int tf = f.getTypeIndex();
-        		int ta = a.getTypeIndex();
-        		
-        		Type promoteToType = promoteFromTo[tf][ta];
+        		Type promoteToType = promote(f, a);
         		
                 if ( !canAssignTo(f, a, promoteToType) ) {
         			return false;
@@ -1064,7 +1037,14 @@ public class SymbolTable {
         	return true;
     	}
     	
-    	if (valueType.getTypeIndex() == tINTERVAL  && destType.getTypeIndex() == tVECTOR) {
+    	Type rhsType = promotion;
+    	
+    	if (rhsType == null) {
+    		promotion = _null;
+    		rhsType = valueType;
+    	}
+    	
+    	if (rhsType.getTypeIndex() == tINTERVAL  && destType.getTypeIndex() == tVECTOR) {
     		if (((VectorType)destType).elementType.getTypeIndex() == tINTEGER)
     			return true;
     		
@@ -1072,42 +1052,42 @@ public class SymbolTable {
     	}
     	
     	if (destType.getTypeIndex() == tINTERVAL) {
-			if (valueType.getTypeIndex() == tINTERVAL)
+			if (rhsType.getTypeIndex() == tINTERVAL)
 				return true;
 			
 			return false;
 		} else if (destType.getTypeIndex() == tVECTOR) {
-			if (valueType.getTypeIndex() == tMATRIX)
+			if (rhsType.getTypeIndex() == tMATRIX)
 				return false;
 			
 			Type element = ((VectorType)destType).elementType;
 			
-			if (valueType.getTypeIndex() == tINTERVAL) {
+			if (rhsType.getTypeIndex() == tINTERVAL) {
 				if (element.getTypeIndex() == tINTEGER)
 					return true;
 				
 				return false;
 			}
 			
-			if (valueType.getTypeIndex() == tVECTOR) {
-				Type element2 = ((VectorType)valueType).elementType;
+			if (rhsType.getTypeIndex() == tVECTOR) {
+				Type element2 = ((VectorType)rhsType).elementType;
 				return element.getTypeIndex() == element2.getTypeIndex();
 			}
 			
-			return element.getTypeIndex() == valueType.getTypeIndex();
+			return element.getTypeIndex() == rhsType.getTypeIndex();
 		} else if (destType.getTypeIndex() == tMATRIX) {
-			if (valueType.getTypeIndex() == tVECTOR ||
-					valueType.getTypeIndex() == tINTERVAL)
+			if (rhsType.getTypeIndex() == tVECTOR ||
+					rhsType.getTypeIndex() == tINTERVAL)
 				return false;
 			
 			Type element = ((MatrixType)destType).elementType;
 
-			if (valueType.getTypeIndex() == tMATRIX) {
-				Type element2 = ((MatrixType)valueType).elementType;
+			if (rhsType.getTypeIndex() == tMATRIX) {
+				Type element2 = ((MatrixType)rhsType).elementType;
 				return element.getTypeIndex() == element2.getTypeIndex();
 			}
 			
-			return element.getTypeIndex() == valueType.getTypeIndex();
+			return element.getTypeIndex() == rhsType.getTypeIndex();
 		}
     	
     	if (promotion == null)
