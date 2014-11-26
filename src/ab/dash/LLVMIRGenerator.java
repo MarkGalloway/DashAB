@@ -1092,8 +1092,31 @@ public class LLVMIRGenerator {
 
 		case DashLexer.VECTOR_INDEX:
 		{
-			/* TODO: Implement. */
-			return new StringTemplate("");
+			DashAST varNode = (DashAST) t.getChild(0);
+			DashAST indexNode = (DashAST) t.getChild(1);
+
+			VectorType vecType = (VectorType) varNode.evalType;
+			VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
+			int elementTypeIndex = vecType.elementType.getTypeIndex();
+
+			StringTemplate getVector = stg.getInstanceOf("vector_get_local");
+			getVector.setAttribute("id", DashAST.getUniqueId());
+			getVector.setAttribute("sym_id", varSymbol.id);
+
+			StringTemplate template = stg.getInstanceOf("vector_get_element");
+			template.setAttribute("id", t.llvmResultID);
+			template.setAttribute("vector_expr", getVector);
+			template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
+
+			StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
+			template.setAttribute("llvm_type", llvmType);
+			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+
+			StringTemplate indexExpr = exec(indexNode);
+			template.setAttribute("index_expr", indexExpr);
+			template.setAttribute("index_expr_id", indexExpr.getAttribute("id"));
+
+			return template;
 		}
 		
 		case DashLexer.TYPECAST:
