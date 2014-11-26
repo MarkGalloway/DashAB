@@ -23,7 +23,7 @@ vector_assign(id, type_name, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_
   <vlocal(id)>_old_vec = load i8** <vlocal_result(vector_var_expr_id)>
 
   ;// Free old lhs vector
-  call void @releaseVector(i8* <vlocal(id)>_old_vec)
+  ;call void @releaseVector(i8* <vlocal(id)>_old_vec)
 
   ;// Alloc new lhs vector with right size
   i32 <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_expr_id)>)
