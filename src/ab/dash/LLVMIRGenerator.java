@@ -483,7 +483,8 @@ public class LLVMIRGenerator {
 				memberAssign.setAttribute("id", DashAST.getUniqueId());
 				
 				StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(type) + "_type");
-				memberAssign.setAttribute("element_type", llvmType);
+				memberAssign.setAttribute("llvm_type", llvmType);
+				memberAssign.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 
 				memberAssign.setAttribute("vector_expr_id", t.llvmResultID);
 				memberAssign.setAttribute("index", i);
@@ -926,9 +927,8 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("bool_local_assign");
 			} else if (type == SymbolTable.tTUPLE) {
 				return assignTuple(id, (VariableSymbol)sym, arg_id, expr);
-			} else {
-				/* TODO: Implement. */
-				return new StringTemplate("");
+			} else if (type == SymbolTable.tVECTOR) {
+				return assignVector(t);
 			}
 			
 			template.setAttribute("expr_id", arg_id);
@@ -1419,6 +1419,38 @@ public class LLVMIRGenerator {
 		template.setAttribute("lhs_expr", getLocalTuple);
 		template.setAttribute("rhs_expr", rhsExpr);
 		template.setAttribute("element_assigns", element_assigns);
+		return template;
+	}
+
+	private StringTemplate assignVector(DashAST t) {
+		DashAST lhs = (DashAST)t.getChild(0);
+		DashAST rhs = (DashAST)t.getChild(1);
+		VariableSymbol varSymbol = (VariableSymbol) lhs.symbol;
+		VectorType vecType = (VectorType) varSymbol.type;
+		Scope scope = varSymbol.scope;
+		int elementTypeIndex = vecType.elementType.getTypeIndex();
+
+		template = stg.getInstanceOf("vector_assign");
+
+		StringTemplate getVector = null;
+		if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
+			getVector = stg.getInstanceOf("vector_get_global");
+		} else {
+			getVector = stg.getInstanceOf("vector_get_local");
+		}
+
+		getVector.setAttribute("id", DashAST.getUniqueId());
+		getVector.setAttribute("sym_id", varSymbol.id);
+
+		StringTemplate rhsExpr = exec(rhs);
+
+		template.setAttribute("id", t.llvmResultID);
+		template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+		template.setAttribute("lhs_expr", getVector);
+		template.setAttribute("lhs_expr_id", getVector.getAttribute("id"));
+		template.setAttribute("rhs_expr", rhsExpr);
+		template.setAttribute("rhs_expr_id", rhsExpr.getAttribute("id"));
+
 		return template;
 	}
 

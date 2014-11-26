@@ -17,20 +17,46 @@ vector_init_literal(id, type_name, size_expr, size_expr_id, element_exprs) ::= <
 <element_exprs; separator="\n">
 >>
 
-vector_assign(id, vector_expr, vector_expr_id, element_type, index_expr, index_expr_id, expr, expr_id) ::= <<
-<expr>
-<vector_expr>
-<index_expr>
-  <vlocal(id)>addr = getelementptr <element_type>* <vlocal_result(tuple_expr_id)>, i32 <vlocal_result(index_expr_id)>
-  store <element_type> <vlocal_result(expr_id)>, <element_type>* <vlocal(id)>addr
+vector_assign(id, type_name, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
+<vector_var_expr>
+<rhs_expr>
+  <vlocal(id)>_old_vec = load i8** <vlocal_result(vector_var_expr_id)>
+
+  ;// Free old lhs vector
+  call void @releaseVector(i8* <vlocal(id)>_old_vec)
+
+  ;// Alloc new lhs vector with right size
+  i32 <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_expr_id)>)
+  <vlocal(id)>_new_vec = call i8* @allocVector()
+  call @<type_name>_allocVector(i8* <vlocal(id)>_new_vec, i32 <vlocal(id)>_size)
+  store i8* <vlocal(id)>_new_vec, i8** <vlocal_result(vector_var_expr_id)>
+
+  ;// Copy rhs vector into lhs vector
+  call void @<type_name>_copyVector(i8* <vlocal(id)>_new_vec, i8* <vlocal_result(rhs_expr_id)>)
+
+  ;// TODO: Free rhs vector
 >>
 
-vector_elem_assign_known_index(id, vector_expr, vector_expr_id, element_type, index, expr, expr_id) ::= <<
+vector_elem_assign(id, vector_expr, vector_expr_id, type_name, llvm_type, index_expr, index_expr_id, expr, expr_id) ::= <<
 <expr>
 <vector_expr>
 <index_expr>
-  <vlocal(id)>addr = getelementptr <element_type>* <vlocal_result(tuple_expr_id)>, i32 <index>
-  store <element_type> <vlocal_result(expr_id)>, <element_type>* <vlocal(id)>addr
+  <vlocal(id)>_stack = call i8* @llvm.savestack();
+  <vlocal(id)>_value = alloca <llvm_type>;
+  store <llvm_type> <vlocal_result(expr_id)>, <llvm_type>* <vlocal(id)>_value
+  <vlocal(id)>_success = call int @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <vlocal_result(index_expr_id)>, <llvm_type>* <vlocal(id)>_value)
+  call void @llvm.stackrestore(i8* <vlocal(id)>_stack);
+>>
+
+vector_elem_assign_known_index(id, vector_expr, vector_expr_id, type_name, llvm_type, index, expr, expr_id) ::= <<
+<expr>
+<vector_expr>
+<index_expr>
+  <vlocal(id)>_stack = call i8* @llvm.savestack();
+  <vlocal(id)>_value = alloca <llvm_type>;
+  store <llvm_type> <vlocal_result(expr_id)>, <llvm_type>* <vlocal(id)>_value
+  <vlocal(id)>_success = call int @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <index>, <llvm_type>* <vlocal(id)>_value)
+  call void @llvm.stackrestore(i8* <vlocal(id)>_stack);
 >>
 
 vector_get_local(id, sym_id) ::= <<
