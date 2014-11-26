@@ -479,7 +479,7 @@ public class LLVMIRGenerator {
 				StringTemplate memberAssign = null;
 
 				int type = element_node.evalType.getTypeIndex();
-				memberAssign = stg.getInstanceOf("vector_assign_known_index");
+				memberAssign = stg.getInstanceOf("vector_elem_assign_known_index");
 				memberAssign.setAttribute("id", DashAST.getUniqueId());
 				
 				StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(type) + "_type");

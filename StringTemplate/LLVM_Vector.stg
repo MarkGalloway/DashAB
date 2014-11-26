@@ -25,7 +25,7 @@ vector_assign(id, vector_expr, vector_expr_id, element_type, index_expr, index_e
   store <element_type> <vlocal_result(expr_id)>, <element_type>* <vlocal(id)>addr
 >>
 
-vector_assign_known_index(id, vector_expr, vector_expr_id, element_type, index, expr, expr_id) ::= <<
+vector_elem_assign_known_index(id, vector_expr, vector_expr_id, element_type, index, expr, expr_id) ::= <<
 <expr>
 <vector_expr>
 <index_expr>
