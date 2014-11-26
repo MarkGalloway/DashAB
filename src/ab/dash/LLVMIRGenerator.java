@@ -827,9 +827,8 @@ public class LLVMIRGenerator {
 						template = stg.getInstanceOf("char_global_assign");
 					} else if (type == SymbolTable.tBOOLEAN) {
 						template = stg.getInstanceOf("bool_global_assign");
-					} else {
-						/* TODO: Implement. */
-						return new StringTemplate("");
+					} else if (type == SymbolTable.tVECTOR) {
+						return assignVector(t);
 					}
 				} else {
 					if (type == SymbolTable.tINTEGER) {
@@ -840,9 +839,8 @@ public class LLVMIRGenerator {
 						template = stg.getInstanceOf("char_local_assign");
 					} else if (type == SymbolTable.tBOOLEAN) {
 						template = stg.getInstanceOf("bool_local_assign");
-					} else {
-						/* TODO: Implement. */
-						return new StringTemplate("");
+					} else if (type == SymbolTable.tVECTOR) {
+						return assignVector(t);
 					}
 				}
 				
@@ -1471,8 +1469,17 @@ public class LLVMIRGenerator {
 	}
 
 	private StringTemplate assignVector(DashAST t) {
-		DashAST lhs = (DashAST)t.getChild(0);
-		DashAST rhs = (DashAST)t.getChild(1);
+		DashAST lhs = null;
+		DashAST rhs = null;
+
+		if (t.getToken().getType() == DashLexer.ASSIGN) {
+			lhs = (DashAST)t.getChild(0);
+			rhs = (DashAST)t.getChild(1);
+		} else if(t.getToken().getType() == DashLexer.VAR_DECL) {
+			lhs = (DashAST)t.getChild(1);
+			rhs = (DashAST)t.getChild(2);
+		}
+
 		VariableSymbol varSymbol = (VariableSymbol) lhs.symbol;
 		VectorType vecType = (VectorType) varSymbol.type;
 		Scope scope = varSymbol.scope;
@@ -1482,9 +1489,9 @@ public class LLVMIRGenerator {
 
 		StringTemplate getVector = null;
 		if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
-			getVector = stg.getInstanceOf("vector_get_global");
+			getVector = stg.getInstanceOf("vector_get_global_var");
 		} else {
-			getVector = stg.getInstanceOf("vector_get_local");
+			getVector = stg.getInstanceOf("vector_get_local_var");
 		}
 
 		getVector.setAttribute("id", DashAST.getUniqueId());
@@ -1494,8 +1501,8 @@ public class LLVMIRGenerator {
 
 		template.setAttribute("id", t.llvmResultID);
 		template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
-		template.setAttribute("lhs_expr", getVector);
-		template.setAttribute("lhs_expr_id", getVector.getAttribute("id"));
+		template.setAttribute("vector_var_expr", getVector);
+		template.setAttribute("vector_var_expr_id", getVector.getAttribute("id"));
 		template.setAttribute("rhs_expr", rhsExpr);
 		template.setAttribute("rhs_expr_id", rhsExpr.getAttribute("id"));
 
