@@ -34,11 +34,11 @@ vector_elem_assign_known_index(id, vector_expr, vector_expr_id, element_type, in
 >>
 
 vector_get_local(id, sym_id) ::= <<
-<vlocal_result(id)> = load i8*  <vlocal_symbol(sym_id)>
+  <vlocal_result(id)> = load i8** <vlocal_symbol(sym_id)>
 >>
 
 vector_get_global(id, sym_id) ::= <<
-<vlocal_result(id)> = load i8*  <vglobalSymbol(sym_id)>
+  <vlocal_result(id)> = load i8** <vglobalSymbol(sym_id)>
 >>
 
 vector_local_assign(id, sym_id, expr, expr_id) ::= <<
