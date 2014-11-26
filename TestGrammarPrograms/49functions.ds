@@ -24,7 +24,7 @@ function g (boolean b) returns integer {
 const integer value = times_two(4);
 
 /* Function arguments are implicity const */
-function times_two(var integer x) returns integer = 2 * x; //Will be made const in the AST
+function times_two(integer x) returns integer = 2 * x; //Will be made const in the AST
 
 /*  Function with tuple argument */
 function nobodyKnowsWhatIDo(tuple(integer, real) t) returns integer = 1;

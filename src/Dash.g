@@ -179,7 +179,10 @@ informalParameters
   ;
     
 functionParameter
-	:	specifier? type ID -> ^(ARG_DECL Const["const"] type ID)
+	:	(Var { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
+	    | // fall through (const specifier or no specifier) 
+	  ) type ID 
+	    -> ^(ARG_DECL Const["const"] type ID)
 	;
 	
 procedureParameter
