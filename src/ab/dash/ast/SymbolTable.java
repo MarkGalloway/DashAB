@@ -123,7 +123,7 @@ public class SymbolTable {
     public static final Type[][] logicResultType = new Type[][] {
     	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity	interval	vector		matrix*/
     	/*tuple*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,		null,		null,		null},
-        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null,         _boolean,   _boolean,	null,		_vector,	_matrix},
+        /*boolean*/ 	{null,		_boolean,   null,   	null,   	null, 	null, 	null,         _boolean,   _boolean,	_vector,	_vector,	_matrix},
         /*character*/   {null,		null,  		null,    	null,   	null, 	null,	null,         null,      null,		null,		null,		null},
         /*integer*/     {null,		null,  		null,    	null,   	null,	null,	null,         null,      null,		null,		null,		null},
         /*real*/   		{null,		null,  		null,    	null,   	null,	null,	null,         null,      null,		null,		null,		null},
@@ -131,25 +131,25 @@ public class SymbolTable {
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	null,         null,      null,		null,		null,		null},
         /*null*/        {null,    	_boolean,   null,       null,       null,   null,   null,         null,      null,		null,		null,		null},
         /*identity*/    {null,    	_boolean,   null,       null,       null,   null,   null,         null,      null,		null,		null,		null},
-        /*interval*/	{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,		null,		null,		null},
-        /*vector*/		{null,		_vector,   	null,   	null,   	null,	null,	null,         null,      null,		null,		null,		null},
-        /*matrix*/		{null,		_matrix,   	null,   	null,   	null,	null,	null,         null,      null,		null,		null,		null}
+        /*interval*/	{null,		_vector,  	null,   	null,   	null,	null,	null,         null,      null,		_vector,	_vector,	null},
+        /*vector*/		{null,		_vector,   	null,   	null,   	null,	null,	null,         null,      null,		_vector,	_vector,	null},
+        /*matrix*/		{null,		_matrix,   	null,   	null,   	null,	null,	null,         null,      null,		null,		null,		_matrix}
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity		interval	vector	matrix*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,       null,	null,     _boolean,      _boolean,	null,		null,	null},
-        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    null,	null,     _boolean,      _boolean,	null,		null,	null},
-        /*character*/   {null,		null,  		_boolean,   null,   	null,	    null,	null,     _boolean,      _boolean,	null,		null,	null},
-        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean,	null,		null,	null},
-        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean,	null,		null,	null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null,		null,		null,	null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null,		null,		null,	null},
-        /*null*/        {null,   	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null,		null,		null,	null},
-        /*identity*/    {null,    	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null,		null,		null,	null},
-        /*interval*/	{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			null,		null,	null},
-        /*vector*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			null,		null,	null},
-        /*matrix*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			null,		null,	null}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity		interval	vector		matrix*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,       null,	null,     _boolean,      _boolean,	null,		null,		null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    null,	null,     _boolean,      _boolean,	null,		null,		null},
+        /*character*/   {null,		null,  		_boolean,   null,   	null,	    null,	null,     _boolean,      _boolean,	null,		null,		null},
+        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean,	null,		null,		null},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean,	null,		null,		null},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null,		null,		null,		null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null,		null,		null,		null},
+        /*null*/        {null,   	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null,		null,		null,		null},
+        /*identity*/    {null,    	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null,		null,		null,		null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			_vector,	_vector,	null},
+        /*vector*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			_vector,	_vector,	null},
+        /*matrix*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			null,		null,		_matrix}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
@@ -337,45 +337,73 @@ public class SymbolTable {
     	if (type == null)
     		return null;
     	
-    	if (a.evalType.getClass() == BuiltInTypeSymbol.class && 
-    			b.evalType.getClass() == BuiltInTypeSymbol.class) {
-    		return type;
+    	if (type.getTypeIndex() == tINTERVAL) {
+    		return new IntervalType(0, 0);
+    	} else if (type.getTypeIndex() == tVECTOR) {
+    		Type at = a.evalType;
+    		Type bt = b.evalType;
+    		
+    		if (at.getTypeIndex() == tINTERVAL) {
+    			at = _integer;
+    		} else if (at.getTypeIndex() == tVECTOR) {
+    			at = ((VectorType)at).elementType;
+    		} else if (at.getTypeIndex() == tMATRIX) {
+    			at = ((MatrixType)at).elementType;
+    		}
+    		
+    		if (bt.getTypeIndex() == tINTERVAL) {
+    			bt = _integer;
+    		} else if (bt.getTypeIndex() == tVECTOR) {
+    			bt = ((VectorType)bt).elementType;
+    		} else if (at.getTypeIndex() == tMATRIX) {
+    			bt = ((MatrixType)bt).elementType;
+    		}
+    		
+    		int ta = at.getTypeIndex();
+    		int tb = bt.getTypeIndex();
+    		
+    		Type result = typeTable[ta][tb];    // operation result type
+            if ( result==null )
+                error("line " + a.getLine() + ": " +
+                		text(a)+", "+
+                        text(b)+" have incompatible types in "+
+                        text((DashAST)a.getParent()));
+            
+    		return new VectorType(result, 0);
+    	} else if (type.getTypeIndex() == tMATRIX) {
+    		Type at = a.evalType;
+    		Type bt = b.evalType;
+    		
+    		if (at.getTypeIndex() == tINTERVAL) {
+    			at = _integer;
+    		} else if (at.getTypeIndex() == tVECTOR) {
+    			at = ((VectorType)at).elementType;
+    		} else if (at.getTypeIndex() == tMATRIX) {
+    			at = ((MatrixType)at).elementType;
+    		}
+    		
+    		if (bt.getTypeIndex() == tINTERVAL) {
+    			bt = _integer;
+    		} else if (bt.getTypeIndex() == tVECTOR) {
+    			bt = ((VectorType)bt).elementType;
+    		} else if (at.getTypeIndex() == tMATRIX) {
+    			bt = ((MatrixType)bt).elementType;
+    		}
+    		
+    		int ta = at.getTypeIndex();
+    		int tb = bt.getTypeIndex();
+    		
+    		Type result = typeTable[ta][tb];    // operation result type
+            if ( result==null )
+                error("line " + a.getLine() + ": " +
+                		text(a)+", "+
+                        text(b)+" have incompatible types in "+
+                        text((DashAST)a.getParent()));
+    		
+    		return new MatrixType(result, 0, 0);
     	}
     	
-    	// A
-    	if ((a.evalType.getClass() == IntervalType.class && 
-    			b.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Interval
-    			(a.evalType.getClass() == VectorType.class && 
-    			b.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Vector
-    			(a.evalType.getClass() == MatrixType.class && 
-    			b.evalType.getClass() == BuiltInTypeSymbol.class) ) 	// Matrix
-    	{
-    		return a.evalType;
-    	}
-    	
-    	// B
-    	if ((b.evalType.getClass() == IntervalType.class && 
-    			a.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Interval
-    			(b.evalType.getClass() == VectorType.class && 
-    			a.evalType.getClass() == BuiltInTypeSymbol.class) ||	// Vector
-    			(b.evalType.getClass() == MatrixType.class && 
-    			a.evalType.getClass() == BuiltInTypeSymbol.class) ) 	// Matrix
-    	{
-    		return b.evalType;
-    	}
-    	
-    	// A
-    	if ((a.evalType.getClass() == IntervalType.class && 
-    			b.evalType.getClass() == IntervalType.class) ||	// Interval
-    			(a.evalType.getClass() == VectorType.class && 
-    			b.evalType.getClass() == VectorType.class) ||	// Vector
-    			(a.evalType.getClass() == MatrixType.class && 
-    			b.evalType.getClass() == MatrixType.class) ) 	// Matrix
-    	{
-    		return a.evalType;
-    	}
-    	
-        return null;
+    	return type;
     }
     
     public Type bop(DashAST a, DashAST b) {
@@ -387,14 +415,14 @@ public class SymbolTable {
     }
     
     public Type relop(DashAST a, DashAST b) {
-        getResultType(relationalResultType, a, b);
+    	op(relationalResultType, a, b);
         // even if the operands are incompatible, the type of
         // this operation must be boolean
         return _boolean;
     }
     
     public Type eqop(DashAST a, DashAST b) {
-        getResultType(equalityResultType, a, b);
+    	op(equalityResultType, a, b);
         // even if the operands are incompatible, the type of
         // this operation must be boolean
         return _boolean;
@@ -999,6 +1027,45 @@ public class SymbolTable {
     		
     		return false;
     	}
+    	
+    	if (destType.getTypeIndex() == tINTERVAL) {
+			if (valueType.getTypeIndex() == tINTERVAL)
+				return true;
+			
+			return false;
+		} else if (destType.getTypeIndex() == tVECTOR) {
+			if (valueType.getTypeIndex() == tMATRIX)
+				return false;
+			
+			Type element = ((VectorType)destType).elementType;
+			
+			if (valueType.getTypeIndex() == tINTERVAL) {
+				if (element.getTypeIndex() == tINTEGER)
+					return true;
+				
+				return false;
+			}
+			
+			if (valueType.getTypeIndex() == tVECTOR) {
+				Type element2 = ((VectorType)valueType).elementType;
+				return element.getTypeIndex() == element2.getTypeIndex();
+			}
+			
+			return element.getTypeIndex() == valueType.getTypeIndex();
+		} else if (destType.getTypeIndex() == tMATRIX) {
+			if (valueType.getTypeIndex() == tVECTOR ||
+					valueType.getTypeIndex() == tINTERVAL)
+				return false;
+			
+			Type element = ((MatrixType)destType).elementType;
+
+			if (valueType.getTypeIndex() == tMATRIX) {
+				Type element2 = ((MatrixType)valueType).elementType;
+				return element.getTypeIndex() == element2.getTypeIndex();
+			}
+			
+			return element.getTypeIndex() == valueType.getTypeIndex();
+		}
     	
     	if (promotion == null)
     		promotion = _null;
