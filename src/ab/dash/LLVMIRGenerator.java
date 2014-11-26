@@ -1144,20 +1144,24 @@ public class LLVMIRGenerator {
 			getVector.setAttribute("id", DashAST.getUniqueId());
 			getVector.setAttribute("sym_id", varSymbol.id);
 
-			StringTemplate template = stg.getInstanceOf("vector_get_element");
-			template.setAttribute("id", t.llvmResultID);
-			template.setAttribute("vector_expr", getVector);
-			template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
+			if (indexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER) {
+				StringTemplate template = stg.getInstanceOf("vector_get_element");
+				template.setAttribute("id", t.llvmResultID);
+				template.setAttribute("vector_expr", getVector);
+				template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
 
-			StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
-			template.setAttribute("llvm_type", llvmType);
-			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+				StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
+				template.setAttribute("llvm_type", llvmType);
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 
-			StringTemplate indexExpr = exec(indexNode);
-			template.setAttribute("index_expr", indexExpr);
-			template.setAttribute("index_expr_id", indexExpr.getAttribute("id"));
+				StringTemplate indexExpr = exec(indexNode);
+				template.setAttribute("index_expr", indexExpr);
+				template.setAttribute("index_expr_id", indexExpr.getAttribute("id"));
 
-			return template;
+				return template;
+			} else if (indexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
+				/* TODO: Implement. */
+			}
 		}
 		
 		case DashLexer.TYPECAST:
