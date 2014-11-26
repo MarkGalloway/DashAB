@@ -53,10 +53,17 @@ void int_allocVector(struct Vector* vector, int32_t size);
 // 	INTERVAL  	//
 //////////////////////////
 
-void int_allocInterval(struct Interval* interval, int32_t lower, int32_t upper) {
-	interval = (struct Interval*) malloc(sizeof(struct Interval));
+struct Interval* int_allocInterval(int32_t lower, int32_t upper) {
+	struct Interval* interval = (struct Interval*) malloc(sizeof(struct Interval));
 	interval->lower = lower;
 	interval->upper = upper;
+
+	return interval;
+}
+
+void int_assignInterval(struct Interval* dest, struct Interval* value) {
+	dest->lower = value->lower;
+	dest->upper = value->upper;
 }
 
 void int_IntervalAdd(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
