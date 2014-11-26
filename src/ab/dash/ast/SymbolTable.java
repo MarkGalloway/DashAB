@@ -485,8 +485,16 @@ public class SymbolTable {
             a.evalType = _boolean;
             a.token = token;
         }  
-
-        if ( a.evalType!=_boolean ) {
+        if ( a.evalType.getTypeIndex() == tVECTOR) {
+        	Type e = ((VectorType)a.evalType).elementType;
+        	
+        	if ( e.getTypeIndex() != tBOOLEAN ) {
+                error("line " + a.getLine() + ": " +
+                		text(a)+" must have boolean[] type in "+
+                               text((DashAST)a.getParent()));
+                return _boolean; // even though wrong, assume result boolean
+            }
+        } else if ( a.evalType != _boolean ) {
             error("line " + a.getLine() + ": " +
             		text(a)+" must have boolean type in "+
                            text((DashAST)a.getParent()));
@@ -497,7 +505,7 @@ public class SymbolTable {
 
     public Type vectorIndex(DashAST id, DashAST index) {
         Type t = id.evalType;
-        if ( t.getTypeIndex() != tVECTOR )
+        if ( t.getTypeIndex() != tVECTOR && t.getTypeIndex() != tINTERVAL)
         {
             error("line " + id.getLine() + " : " + 
             		text(id)+" must be an vector variable in "+
@@ -506,11 +514,18 @@ public class SymbolTable {
         }
         
         int texpr = index.evalType.getTypeIndex();
+        Type element = null;
+        
+        if ( t.getTypeIndex() != tVECTOR)
+        	element = ((VectorType)t).elementType;
+        
+        if ( t.getTypeIndex() != tINTERVAL)
+        	element = _integer;
         
         if (texpr == tVECTOR) {
         	VectorType vectorType = (VectorType)index.evalType;
         	if (vectorType.elementType.getTypeIndex() == tINTEGER)
-        		return t;
+        		return new VectorType(element, 0);
         	else {
         		error("line " + index.getLine() + " : " + 
         				text(index)+" indexing vector must be of type integer in "+
@@ -526,7 +541,7 @@ public class SymbolTable {
     		return null;
         }
         
-        return ((VectorType)t).elementType;
+        return element;
     }
     
     public Type matrixIndex(DashAST id, DashAST row, DashAST column) {
@@ -942,7 +957,8 @@ public class SymbolTable {
     }
     
     public Type by(DashAST interval, DashAST by) {
-    	if ( interval.evalType.getTypeIndex() != tINTERVAL ) {
+    	if ( interval.evalType.getTypeIndex() != tINTERVAL &&
+    			interval.evalType.getTypeIndex() != tVECTOR) {
             error("line " + interval.getLine() + ": " +
             		" left hand side of by statement" +
                            " must be of type interval in "+
