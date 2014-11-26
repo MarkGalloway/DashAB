@@ -69,11 +69,11 @@ vector_get_global(id, sym_id) ::= <<
 >>
 
 vector_get_local_var(id, sym_id) ::= <<
-  <vlocal_result(id)> = bitcast i8** <vlocal_symbol(sym_id)>, to i8**
+  <vlocal_result(id)> = bitcast i8** <vlocal_symbol(sym_id)> to i8**
 >>
 
 vector_get_global_var(id, sym_id) ::= <<
-  <vlocal_result(id)> = bitcast i8** <vglobalSymbol(sym_id)>, to i8**
+  <vlocal_result(id)> = bitcast i8** <vglobalSymbol(sym_id)> to i8**
 >>
 
 vector_local_assign(id, sym_id, expr, expr_id) ::= <<
