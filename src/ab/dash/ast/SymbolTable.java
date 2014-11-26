@@ -363,11 +363,38 @@ public class SymbolTable {
     		int tb = bt.getTypeIndex();
     		
     		Type result = typeTable[ta][tb];    // operation result type
-            if ( result==null )
+    		if ( result==null ) {
                 error("line " + a.getLine() + ": " +
                 		text(a)+", "+
                         text(b)+" have incompatible types in "+
                         text((DashAST)a.getParent()));
+            }
+            else {
+                a.promoteToType = promoteFromTo[ta][tb];
+                b.promoteToType = promoteFromTo[tb][ta];
+                
+                if (at.getTypeIndex() == tINTERVAL) {
+        			VectorType pa = new VectorType(a.promoteToType, 0);
+        			a.promoteToType = pa;
+        		} else if (at.getTypeIndex() == tVECTOR) {
+        			VectorType pa = new VectorType(a.promoteToType, 0);
+        			a.promoteToType = pa;
+        		} else if (at.getTypeIndex() == tMATRIX) {
+        			MatrixType pa = new MatrixType(a.promoteToType, 0, 0);
+        			a.promoteToType = pa;
+        		}
+                
+                if (bt.getTypeIndex() == tINTERVAL) {
+        			VectorType pb = new VectorType(b.promoteToType, 0);
+        			b.promoteToType = pb;
+        		} else if (bt.getTypeIndex() == tVECTOR) {
+        			VectorType pb = new VectorType(b.promoteToType, 0);
+        			b.promoteToType = pb;
+        		} else if (bt.getTypeIndex() == tMATRIX) {
+        			MatrixType pb = new MatrixType(b.promoteToType, 0, 0);
+        			b.promoteToType = pb;
+        		}
+            }
             
     		return new VectorType(result, 0);
     	} else if (type.getTypeIndex() == tMATRIX) {
