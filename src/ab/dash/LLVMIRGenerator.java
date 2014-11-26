@@ -463,7 +463,7 @@ public class LLVMIRGenerator {
 			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 
 			StringTemplate sizeExpr = stg.getInstanceOf("int_literal");
-			sizeExpr.setAttribute("id", SymbolTable.getID());
+			sizeExpr.setAttribute("id", DashAST.getUniqueId());
 			sizeExpr.setAttribute("val", size);
 
 			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
