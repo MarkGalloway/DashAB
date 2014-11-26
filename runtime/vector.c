@@ -23,13 +23,13 @@ int32_t getRealTypeId() {
 }
 */
 
-inline int32_t min(int32_t a, int32_t b) {
+int32_t min(int32_t a, int32_t b) {
 	if (a < b)
 		return a;
 	return b;
 }
 
-inline int32_t max(int32_t a, int32_t b) {
+int32_t max(int32_t a, int32_t b) {
 	if (a > b)
 		return a;
 	return b;
@@ -39,7 +39,7 @@ inline int32_t max(int32_t a, int32_t b) {
  * Assumes that the vector 'to' has been initialized to the correct size and
  * element type (to be the same as vector 'from').
  */
-inline void copyVector(struct Vector* to, struct Vector* from, size_t element_size) {
+void copyVector(struct Vector* to, struct Vector* from, size_t element_size) {
 	memcpy(to->data, from->data, from->size * element_size);
 }
 
