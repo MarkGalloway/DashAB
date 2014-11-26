@@ -881,9 +881,6 @@ public class LLVMIRGenerator {
 					template = stg.getInstanceOf("char_tuple_assign");
 				} else if (type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("bool_tuple_assign");
-				} else {
-					/* TODO: Implement. */
-					return new StringTemplate("");
 				}
 				
 				StringTemplate getLocalTuple = stg.getInstanceOf("tuple_get_local");
