@@ -900,11 +900,36 @@ public class LLVMIRGenerator {
 				template.setAttribute("tuple_expr_id", getLocalTuple.getAttribute("id"));
 				template.setAttribute("id", id);
 				return template;
-			}
-			
-			if (node.getType() == DashLexer.VECTOR_INDEX) {
-				/* TODO: Implement. */
-				return new StringTemplate("");
+			} else if (node.getType() == DashLexer.VECTOR_INDEX) {
+				DashAST varNode = (DashAST) node.getChild(0);
+				DashAST indexNode = (DashAST) node.getChild(1);
+
+				VectorType vecType = (VectorType) varNode.evalType;
+				VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
+				int elementTypeIndex = vecType.elementType.getTypeIndex();
+
+				StringTemplate getVector = stg.getInstanceOf("vector_get_local");
+				getVector.setAttribute("id", DashAST.getUniqueId());
+				getVector.setAttribute("sym_id", varSymbol.id);
+
+				StringTemplate template = stg.getInstanceOf("vector_elem_assign");
+				template.setAttribute("id", id);
+				template.setAttribute("vector_expr", getVector);
+				template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
+
+				StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
+				template.setAttribute("llvm_type", llvmType);
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+
+				StringTemplate indexExpr = exec(indexNode);
+				template.setAttribute("index_expr", indexExpr);
+				template.setAttribute("index_expr_id", indexExpr.getAttribute("id"));
+
+				StringTemplate valueExpr = exec((DashAST)t.getChild(1));
+				template.setAttribute("expr", valueExpr);
+				template.setAttribute("expr_id", valueExpr.getAttribute("id"));
+
+				return template;
 			}
 
 			Symbol sym = node.symbol;
