@@ -308,6 +308,9 @@ public class SymbolTable {
 		
 		Type type = promoteFromTo[tf][tt];
 		
+		if (type == null)
+			return null;
+		
 		if (from.getTypeIndex() == tINTERVAL) {
 			return new VectorType(type, 0);
 		} else if (from.getTypeIndex() == tVECTOR) {
@@ -1039,10 +1042,8 @@ public class SymbolTable {
     	
     	Type rhsType = promotion;
     	
-    	if (rhsType == null) {
-    		promotion = _null;
+    	if (rhsType == null)
     		rhsType = valueType;
-    	}
     	
     	if (rhsType.getTypeIndex() == tINTERVAL  && destType.getTypeIndex() == tVECTOR) {
     		if (((VectorType)destType).elementType.getTypeIndex() == tINTEGER)
@@ -1071,7 +1072,7 @@ public class SymbolTable {
 			
 			if (rhsType.getTypeIndex() == tVECTOR) {
 				Type element2 = ((VectorType)rhsType).elementType;
-				return element.getTypeIndex() == element2.getTypeIndex();
+				return element== element2;
 			}
 			
 			return element.getTypeIndex() == rhsType.getTypeIndex();

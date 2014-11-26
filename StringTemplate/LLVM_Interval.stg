@@ -1,0 +1,61 @@
+interval_type() ::= <<
+i8*
+>>
+
+interval_init_local(sym_id) ::= <<
+<vlocal_symbol(sym_id)> = alloca i8*
+>>
+
+interval_init_global(sym_id) ::= <<
+<vglobalSymbol(sym_id)> = private unnamed_addr global i8* null
+>>
+
+interval_alloc_local(sym_id) ::= <<
+	<vlocal_result(sym_id)>_alloc = call i8* @int_allocInterval(i32 0, i32 0)
+	store i8* <vlocal_result(sym_id)>_alloc, i8** <vlocal_symbol(sym_id)>
+>>
+
+interval_alloc_global(sym_id) ::= <<
+	<vlocal_result(sym_id)>_alloc = call i8* @int_allocInterval(i32 0, i32 0)
+	store i8* <vlocal_result(sym_id)>_alloc, i8** <vglobalSymbol(sym_id)>
+>>
+
+interval_init_literal(id, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id) ::= <<
+<lhs_expr>
+<rhs_expr>
+  <vlocal_result(id)> = call i8* @int_allocInterval(i32 <vlocal_result(lhs_expr_id)>, i32 <vlocal_result(rhs_expr_id)>)
+>>
+
+interval_assign(id, interval_var_expr, interval_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
+<interval_var_expr>
+<rhs_expr>
+  call void @int_assignInterval(i8* <vlocal_result(interval_var_expr_id)>, i8* <vlocal_result(rhs_expr_id)>);
+>>
+
+interval_get_local(id, sym_id) ::= <<
+  <vlocal_result(id)> = load i8** <vlocal_symbol(sym_id)>
+>>
+
+interval_get_global(id, sym_id) ::= <<
+  <vlocal_result(id)> = load i8** <vglobalSymbol(sym_id)>
+>>
+
+interval_get_local_var(id, sym_id) ::= <<
+  <vlocal_result(id)> = bitcast i8** <vlocal_symbol(sym_id)>, to i8**
+>>
+
+interval_get_global_var(id, sym_id) ::= <<
+  <vlocal_result(id)> = bitcast i8** <vglobalSymbol(sym_id)>, to i8**
+>>
+
+interval_local_assign(id, sym_id, expr, expr_id) ::= <<
+<expr>
+; TODO: Implement
+>>
+
+interval_global_assign(id, sym_id, expr, expr_id) ::= <<
+<expr>
+; TODO: Implement
+>>
+
+/* TODO: Write rest of interval operation runtime function wrappers. */

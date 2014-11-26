@@ -130,6 +130,8 @@ public class LLVMIRGenerator {
 							
 							template.setAttribute("init", init);
 							template.setAttribute("type_id", tuple.tupleTypeIndex);
+						} else if (type == SymbolTable.tINTERVAL){
+							template = stg.getInstanceOf("interval_init_global");
 						} else if (type == SymbolTable.tVECTOR){
 							template = stg.getInstanceOf("vector_init_global");
 						}
@@ -530,6 +532,9 @@ public class LLVMIRGenerator {
 					template = stg.getInstanceOf("tuple_init_local");
 					template.setAttribute("type_id", ((TupleTypeSymbol)s.type).tupleTypeIndex);
 					valid_symbol = true;
+				}  else if (type == SymbolTable.tINTERVAL){
+					template = stg.getInstanceOf("interval_init_local");
+					valid_symbol = true;
 				} else if (type == SymbolTable.tVECTOR){
 					template = stg.getInstanceOf("vector_init_local");
 					valid_symbol = true;
@@ -538,6 +543,12 @@ public class LLVMIRGenerator {
 				if (valid_symbol) {
 					template.setAttribute("sym_id", sym_id);
 					temp += template.toString() + "\n";
+				}
+				
+				 if (type == SymbolTable.tINTERVAL){
+					 StringTemplate alloc = stg.getInstanceOf("interval_alloc_local");
+					 alloc.setAttribute("sym_id", sym_id);
+					 temp += alloc.toString() + "\n";
 				}
 			}
 			
@@ -816,6 +827,8 @@ public class LLVMIRGenerator {
 				StringTemplate template = null;
 				if (type == SymbolTable.tTUPLE) {
 					return assignTuple(id, (VariableSymbol)sym, expr_id, expr);
+				} else if (type == SymbolTable.tINTERVAL) {
+					return assignInterval(id, (VariableSymbol)sym, expr_id, expr);
 				}
 				
 				if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
@@ -1044,6 +1057,33 @@ public class LLVMIRGenerator {
 			
 		case DashLexer.POWER:
 			return operation(t, LLVMOps.POWER);
+			
+		case DashLexer.RANGE:
+		{
+			String id = Integer.toString(((DashAST)t).llvmResultID);
+			int type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
+			
+			if (((DashAST)t.getChild(0)).promoteToType != null) {
+				// TODO
+			}
+			
+			StringTemplate lhs = exec((DashAST)t.getChild(0));
+			String lhs_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
+			
+			StringTemplate rhs = exec((DashAST)t.getChild(1));
+			String rhs_id = Integer.toString(((DashAST)t.getChild(1)).llvmResultID);
+			
+			StringTemplate template = stg.getInstanceOf("interval_init_literal");
+			
+			//interval_init_literal(id, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id)
+			template.setAttribute("rhs_expr_id", rhs_id);
+			template.setAttribute("rhs_expr", rhs);
+			template.setAttribute("lhs_expr_id", lhs_id);
+			template.setAttribute("lhs_expr", lhs);
+			template.setAttribute("id", id);
+			
+			return template;
+		}
 			
 		case DashLexer.DOT:
 		{
@@ -1462,6 +1502,30 @@ public class LLVMIRGenerator {
 		template.setAttribute("lhs_expr", getLocalTuple);
 		template.setAttribute("rhs_expr", rhsExpr);
 		template.setAttribute("element_assigns", element_assigns);
+		return template;
+	}
+	
+	private StringTemplate assignInterval(int id, VariableSymbol varSymbol, int rhsExprId, StringTemplate rhsExpr) {
+		Scope scope = varSymbol.scope;
+
+		template = stg.getInstanceOf("interval_assign");
+
+		StringTemplate getInterval = null;
+		if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
+			getInterval = stg.getInstanceOf("interval_get_global");
+		} else {
+			getInterval = stg.getInstanceOf("interval_get_local");
+		}
+
+		getInterval.setAttribute("id", DashAST.getUniqueId());
+		getInterval.setAttribute("sym_id", varSymbol.id);
+		
+		template.setAttribute("id", id);
+		template.setAttribute("interval_var_expr", getInterval);
+		template.setAttribute("interval_var_expr_id", getInterval.getAttribute("id"));
+		template.setAttribute("rhs_expr",  rhsExpr);
+		template.setAttribute("rhs_expr_id", rhsExprId);
+
 		return template;
 	}
 

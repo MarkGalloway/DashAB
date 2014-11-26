@@ -201,7 +201,9 @@ public class Runner {
                "StringTemplate/LLVM_Char.stg",
                "StringTemplate/LLVM_Int.stg",
                "StringTemplate/LLVM_Real.stg",
-               "StringTemplate/LLVM_Tuple.stg"
+               "StringTemplate/LLVM_Tuple.stg",
+               "StringTemplate/LLVM_Interval.stg",
+               "StringTemplate/LLVM_Vector.stg"
                };
        
        for (String s : STGFiles)
