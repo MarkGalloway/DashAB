@@ -485,7 +485,9 @@ public class LLVMIRGenerator {
 				memberAssign.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 
 				memberAssign.setAttribute("vector_expr_id", t.llvmResultID);
-				memberAssign.setAttribute("index", i);
+
+				/* Increment index because Dash uses indexing begins at 1, not 0. */
+				memberAssign.setAttribute("index", i + 1);
 				memberAssign.setAttribute("expr", exec(element_node));
 				memberAssign.setAttribute("expr_id", element_expr_id);
 
