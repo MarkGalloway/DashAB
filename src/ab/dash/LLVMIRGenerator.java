@@ -896,7 +896,7 @@ public class LLVMIRGenerator {
 					template = stg.getInstanceOf("bool_tuple_assign");
 				}
 				
-				StringTemplate getLocalTuple = stg.getInstanceOf("tuple_get_local");
+				StringTemplate getLocalTuple = stg.getInstanceOf("tuple_get_local"); /* scope? */
 				getLocalTuple.setAttribute("id", DashAST.getUniqueId());
 				getLocalTuple.setAttribute("sym_id", tuple.id);
 				getLocalTuple.setAttribute("type_id", tuple_type.tupleTypeIndex);
@@ -1135,7 +1135,12 @@ public class LLVMIRGenerator {
 			VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
 			int elementTypeIndex = vecType.elementType.getTypeIndex();
 
-			StringTemplate getVector = stg.getInstanceOf("vector_get_local");
+			StringTemplate getVector = null;
+			if (varNode.symbol.scope.getScopeIndex() == SymbolTable.scGLOBAL) {
+				getVector = stg.getInstanceOf("vector_get_global");
+			} else {
+				getVector = stg.getInstanceOf("vector_get_local");
+			}
 			getVector.setAttribute("id", DashAST.getUniqueId());
 			getVector.setAttribute("sym_id", varSymbol.id);
 
