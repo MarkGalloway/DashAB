@@ -41,7 +41,7 @@ vector_elem_assign(id, vector_expr, vector_expr_id, type_name, llvm_type, index_
 <expr>
 <vector_expr>
 <index_expr>
-  <vlocal(id)>_stack = call i8* @llvm.savestack();
+  <vlocal(id)>_stack = call i8* @llvm.stacksave();
   <vlocal(id)>_value = alloca <llvm_type>;
   store <llvm_type> <vlocal_result(expr_id)>, <llvm_type>* <vlocal(id)>_value
   <vlocal(id)>_success = call int @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <vlocal_result(index_expr_id)>, <llvm_type>* <vlocal(id)>_value)
@@ -52,7 +52,7 @@ vector_elem_assign_known_index(id, vector_expr, vector_expr_id, type_name, llvm_
 <expr>
 <vector_expr>
 <index_expr>
-  <vlocal(id)>_stack = call i8* @llvm.savestack();
+  <vlocal(id)>_stack = call i8* @llvm.stacksave();
   <vlocal(id)>_value = alloca <llvm_type>;
   store <llvm_type> <vlocal_result(expr_id)>, <llvm_type>* <vlocal(id)>_value
   <vlocal(id)>_success = call int @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <index>, <llvm_type>* <vlocal(id)>_value)
