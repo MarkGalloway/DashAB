@@ -13,6 +13,7 @@ import org.antlr.stringtemplate.StringTemplateGroup;
 
 import ab.dash.DashLexer;
 import ab.dash.ast.*;
+import ab.dash.memory.MemoryManagment;
 
 
 public class LLVMIRGenerator {
@@ -21,6 +22,8 @@ public class LLVMIRGenerator {
 	private SymbolTable symtab;
 	private Stack<Integer> loop_stack;
 	private Map<Integer, String> typeIndexToName;
+	
+	private MemoryManagment memoryManagment;
 	
 	private boolean debug_mode = false;
 	
@@ -32,6 +35,8 @@ public class LLVMIRGenerator {
 		this.stg = stg;
 		this.symtab = symtab;
 		this.loop_stack = new Stack<Integer>();
+		
+		this.memoryManagment = new MemoryManagment(stg);
 		
 		/*
 		 * These are the prefixes to the vector operation string template
@@ -193,6 +198,8 @@ public class LLVMIRGenerator {
 		case DashLexer.FUNCTION_DECL:
 		case DashLexer.PROCEDURE_DECL:
 		{
+			memoryManagment.addMethod();
+			
 			Symbol sym = ((DashAST)t.getChild(0)).symbol;
 			int sym_id = sym.id;
 			
@@ -223,9 +230,10 @@ public class LLVMIRGenerator {
 			}
 
 			StringTemplate code = exec((DashAST)t.getChild(t.getChildCount() - 1));
-			String code_s = code.toString();
+			String code_s = code.toString() + "\n";
+			
 			if (type.getTypeIndex() == SymbolTable.tVOID) {
-				code_s += "\nret void\n";
+				code_s += memoryManagment.freeMethodReturn() + "\nret void\n";
 			}
 			
 			StringTemplate template = null;
@@ -237,10 +245,13 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("function");
 				template.setAttribute("return_type", getType(type));
 			}
+			
 			template.setAttribute("code", code_s);
 			template.setAttribute("args", args);
 			template.setAttribute("sym_id", sym_id);
 			template.setAttribute("id", t.llvmResultID);
+			
+			memoryManagment.freeMethod();
 			return template;
 		}
 		
@@ -410,7 +421,9 @@ public class LLVMIRGenerator {
 				template.setAttribute("type", type_template);
 				template.setAttribute("id", id);
 			}
-			return template;
+			
+			String code = memoryManagment.freeMethodReturn() + "\n" + template;
+			return new StringTemplate(code);
 		}
 		
 		case DashLexer.TUPLE_LIST:
@@ -543,16 +556,15 @@ public class LLVMIRGenerator {
 					template.setAttribute("sym_id", sym_id);
 					temp += template.toString() + "\n";
 				}
-				
-				 if (type == SymbolTable.tINTERVAL){
-					 StringTemplate alloc = stg.getInstanceOf("interval_alloc_local");
-					 alloc.setAttribute("sym_id", sym_id);
-					 temp += alloc.toString() + "\n";
-				}
 			}
+			
+			temp += memoryManagment.addBlock(t) + "\n";
 			
 			for(int i = 0; i < t.getChildCount(); i++)
 				temp += exec((DashAST)t.getChild(i)).toString() + "\n";
+			
+			temp += memoryManagment.freeBlock() + "\n";
+			
 			return new StringTemplate(temp);
 		}
 			
