@@ -10,6 +10,21 @@ vector_init_global(sym_id) ::= <<
 <vglobalSymbol(sym_id)> = private unnamed_addr global i8* null
 >>
 
+vector_alloc_local(sym_id) ::= <<
+	<vlocal_result(sym_id)>_alloc = call i8* @allocVector()
+	store i8* <vlocal_result(sym_id)>_alloc, i8** <vlocal_symbol(sym_id)>
+>>
+
+vector_alloc_global(sym_id) ::= <<
+	<vlocal_result(sym_id)>_alloc = call i8* @allocVector()
+	store i8* <vlocal_result(sym_id)>_alloc, i8** <vglobalSymbol(sym_id)>
+>>
+
+vector_free_local(id, sym_id) ::= <<
+	<vlocal_result(id)>_free = load i8** <vlocal_symbol(sym_id)>
+	call void @releaseVector(i8* <vlocal_result(id)>_free)
+>>
+
 vector_init_literal(id, type_name, size_expr, size_expr_id, element_exprs) ::= <<
 <size_expr>
   <vlocal_result(id)> = call i8* @allocVector()
