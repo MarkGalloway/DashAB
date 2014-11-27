@@ -155,12 +155,12 @@ call returns [Type type]
     ;
     
 index returns [Type type]
-	:	^(VECTOR_INDEX id=expr m=expr)
+	:	^(VECTOR_INDEX id=expr m=exprRoot)
 		{
 			$type = symtab.vectorIndex($id.start, $m.start);
 			$start.evalType = $type;
 		}
-	|	^(MATRIX_INDEX id=expr opt1=expr opt2=expr)
+	|	^(MATRIX_INDEX id=expr opt1=exprRoot opt2=exprRoot)
 		{
 			$type = symtab.matrixIndex($id.start, $opt1.start, $opt2.start);
 			$start.evalType = $type;
