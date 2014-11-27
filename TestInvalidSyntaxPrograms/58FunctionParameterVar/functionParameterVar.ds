@@ -1,0 +1,7 @@
+/* Function arguments are implicity const */
+function times_two(var integer x) returns integer = 2 * x; // Invalid var argument
+
+procedure main() returns integer {
+
+  return 0;
+}

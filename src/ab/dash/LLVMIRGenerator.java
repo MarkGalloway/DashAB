@@ -481,7 +481,6 @@ public class LLVMIRGenerator {
 			sizeExpr.setAttribute("id", DashAST.getUniqueId());
 			sizeExpr.setAttribute("val", size);
 
-			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 			template.setAttribute("size_expr", sizeExpr);
 			template.setAttribute("size_expr_id", sizeExpr.getAttribute("id"));
 
@@ -501,7 +500,9 @@ public class LLVMIRGenerator {
 				memberAssign.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 
 				memberAssign.setAttribute("vector_expr_id", t.llvmResultID);
-				memberAssign.setAttribute("index", i);
+
+				/* Increment index because Dash uses indexing begins at 1, not 0. */
+				memberAssign.setAttribute("index", i + 1);
 				memberAssign.setAttribute("expr", exec(element_node));
 				memberAssign.setAttribute("expr_id", element_expr_id);
 
@@ -851,9 +852,8 @@ public class LLVMIRGenerator {
 						template = stg.getInstanceOf("char_global_assign");
 					} else if (type == SymbolTable.tBOOLEAN) {
 						template = stg.getInstanceOf("bool_global_assign");
-					} else {
-						/* TODO: Implement. */
-						return new StringTemplate("");
+					} else if (type == SymbolTable.tVECTOR) {
+						return assignVector(t);
 					}
 				} else {
 					if (type == SymbolTable.tINTEGER) {
@@ -864,9 +864,8 @@ public class LLVMIRGenerator {
 						template = stg.getInstanceOf("char_local_assign");
 					} else if (type == SymbolTable.tBOOLEAN) {
 						template = stg.getInstanceOf("bool_local_assign");
-					} else {
-						/* TODO: Implement. */
-						return new StringTemplate("");
+					} else if (type == SymbolTable.tVECTOR) {
+						return assignVector(t);
 					}
 				}
 				
@@ -907,12 +906,9 @@ public class LLVMIRGenerator {
 					template = stg.getInstanceOf("char_tuple_assign");
 				} else if (type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("bool_tuple_assign");
-				} else {
-					/* TODO: Implement. */
-					return new StringTemplate("");
 				}
 				
-				StringTemplate getLocalTuple = stg.getInstanceOf("tuple_get_local");
+				StringTemplate getLocalTuple = stg.getInstanceOf("tuple_get_local"); /* scope? */
 				getLocalTuple.setAttribute("id", DashAST.getUniqueId());
 				getLocalTuple.setAttribute("sym_id", tuple.id);
 				getLocalTuple.setAttribute("type_id", tuple_type.tupleTypeIndex);
@@ -1151,24 +1147,33 @@ public class LLVMIRGenerator {
 			VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
 			int elementTypeIndex = vecType.elementType.getTypeIndex();
 
-			StringTemplate getVector = stg.getInstanceOf("vector_get_local");
+			StringTemplate getVector = null;
+			if (varNode.symbol.scope.getScopeIndex() == SymbolTable.scGLOBAL) {
+				getVector = stg.getInstanceOf("vector_get_global");
+			} else {
+				getVector = stg.getInstanceOf("vector_get_local");
+			}
 			getVector.setAttribute("id", DashAST.getUniqueId());
 			getVector.setAttribute("sym_id", varSymbol.id);
 
-			StringTemplate template = stg.getInstanceOf("vector_get_element");
-			template.setAttribute("id", t.llvmResultID);
-			template.setAttribute("vector_expr", getVector);
-			template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
+			if (indexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER) {
+				StringTemplate template = stg.getInstanceOf("vector_get_element");
+				template.setAttribute("id", t.llvmResultID);
+				template.setAttribute("vector_expr", getVector);
+				template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
 
-			StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
-			template.setAttribute("llvm_type", llvmType);
-			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+				StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
+				template.setAttribute("llvm_type", llvmType);
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 
-			StringTemplate indexExpr = exec(indexNode);
-			template.setAttribute("index_expr", indexExpr);
-			template.setAttribute("index_expr_id", indexExpr.getAttribute("id"));
+				StringTemplate indexExpr = exec(indexNode);
+				template.setAttribute("index_expr", indexExpr);
+				template.setAttribute("index_expr_id", indexExpr.getAttribute("id"));
 
-			return template;
+				return template;
+			} else if (indexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
+				/* TODO: Implement. */
+			}
 		}
 		
 		case DashLexer.TYPECAST:
@@ -1546,8 +1551,17 @@ public class LLVMIRGenerator {
 	}
 
 	private StringTemplate assignVector(DashAST t) {
-		DashAST lhs = (DashAST)t.getChild(0);
-		DashAST rhs = (DashAST)t.getChild(1);
+		DashAST lhs = null;
+		DashAST rhs = null;
+
+		if (t.getToken().getType() == DashLexer.ASSIGN) {
+			lhs = (DashAST)t.getChild(0);
+			rhs = (DashAST)t.getChild(1);
+		} else if(t.getToken().getType() == DashLexer.VAR_DECL) {
+			lhs = (DashAST)t.getChild(1);
+			rhs = (DashAST)t.getChild(2);
+		}
+
 		VariableSymbol varSymbol = (VariableSymbol) lhs.symbol;
 		VectorType vecType = (VectorType) varSymbol.type;
 		Scope scope = varSymbol.scope;
@@ -1557,9 +1571,9 @@ public class LLVMIRGenerator {
 
 		StringTemplate getVector = null;
 		if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
-			getVector = stg.getInstanceOf("vector_get_global");
+			getVector = stg.getInstanceOf("vector_get_global_var");
 		} else {
-			getVector = stg.getInstanceOf("vector_get_local");
+			getVector = stg.getInstanceOf("vector_get_local_var");
 		}
 
 		getVector.setAttribute("id", DashAST.getUniqueId());
@@ -1569,8 +1583,8 @@ public class LLVMIRGenerator {
 
 		template.setAttribute("id", t.llvmResultID);
 		template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
-		template.setAttribute("lhs_expr", getVector);
-		template.setAttribute("lhs_expr_id", getVector.getAttribute("id"));
+		template.setAttribute("vector_var_expr", getVector);
+		template.setAttribute("vector_var_expr_id", getVector.getAttribute("id"));
 		template.setAttribute("rhs_expr", rhsExpr);
 		template.setAttribute("rhs_expr_id", rhsExpr.getAttribute("id"));
 

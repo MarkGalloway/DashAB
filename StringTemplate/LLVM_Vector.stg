@@ -13,7 +13,7 @@ vector_init_global(sym_id) ::= <<
 vector_init_literal(id, type_name, size_expr, size_expr_id, element_exprs) ::= <<
 <size_expr>
   <vlocal_result(id)> = call i8* @allocVector()
-  call @<type_name>_allocVector(i8* <vlocal_result(id)>, <vlocal_result(size_expr_id)>)
+  call void @<type_name>_allocVector(i8* <vlocal_result(id)>, i32 <vlocal_result(size_expr_id)>)
 <element_exprs; separator="\n">
 >>
 
@@ -26,9 +26,9 @@ vector_assign(id, type_name, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_
   ;call void @releaseVector(i8* <vlocal(id)>_old_vec)
 
   ;// Alloc new lhs vector with right size
-  i32 <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_expr_id)>)
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_expr_id)>)
   <vlocal(id)>_new_vec = call i8* @allocVector()
-  call @<type_name>_allocVector(i8* <vlocal(id)>_new_vec, i32 <vlocal(id)>_size)
+  call void @<type_name>_allocVector(i8* <vlocal(id)>_new_vec, i32 <vlocal(id)>_size)
   store i8* <vlocal(id)>_new_vec, i8** <vlocal_result(vector_var_expr_id)>
 
   ;// Copy rhs vector into lhs vector
@@ -41,22 +41,13 @@ vector_elem_assign(id, vector_expr, vector_expr_id, type_name, llvm_type, index_
 <expr>
 <vector_expr>
 <index_expr>
-  <vlocal(id)>_stack = call i8* @llvm.stacksave();
-  <vlocal(id)>_value = alloca <llvm_type>;
-  store <llvm_type> <vlocal_result(expr_id)>, <llvm_type>* <vlocal(id)>_value
-  <vlocal(id)>_success = call i32 @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <vlocal_result(index_expr_id)>, <llvm_type>* <vlocal(id)>_value)
-  call void @llvm.stackrestore(i8* <vlocal(id)>_stack);
+  <vlocal(id)>_success = call i32 @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <vlocal_result(index_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
 >>
 
 vector_elem_assign_known_index(id, vector_expr, vector_expr_id, type_name, llvm_type, index, expr, expr_id) ::= <<
 <expr>
 <vector_expr>
-<index_expr>
-  <vlocal(id)>_stack = call i8* @llvm.stacksave();
-  <vlocal(id)>_value = alloca <llvm_type>;
-  store <llvm_type> <vlocal_result(expr_id)>, <llvm_type>* <vlocal(id)>_value
-  <vlocal(id)>_success = call i32(i8*, i32, <llvm_type>)* @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <index>, <llvm_type>* <vlocal(id)>_value)
-  call void @llvm.stackrestore(i8* <vlocal(id)>_stack);
+  <vlocal(id)>_success = call i32(i8*, i32, <llvm_type>)* @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <index>, <llvm_type> <vlocal_result(expr_id)>)
 >>
 
 vector_get_element(id, vector_expr, vector_expr_id, type_name, llvm_type, index_expr, index_expr_id) ::= <<
@@ -78,11 +69,11 @@ vector_get_global(id, sym_id) ::= <<
 >>
 
 vector_get_local_var(id, sym_id) ::= <<
-  <vlocal_result(id)> = bitcast i8** <vlocal_symbol(sym_id)>, to i8**
+  <vlocal_result(id)> = bitcast i8** <vlocal_symbol(sym_id)> to i8**
 >>
 
 vector_get_global_var(id, sym_id) ::= <<
-  <vlocal_result(id)> = bitcast i8** <vglobalSymbol(sym_id)>, to i8**
+  <vlocal_result(id)> = bitcast i8** <vglobalSymbol(sym_id)> to i8**
 >>
 
 vector_local_assign(id, sym_id, expr, expr_id) ::= <<

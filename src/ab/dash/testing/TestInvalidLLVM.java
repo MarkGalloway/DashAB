@@ -563,4 +563,13 @@ public class TestInvalidLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
+    @Test // function declaration - parameters with var specifier
+    public void functionParameterVar() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestInvalidSyntaxPrograms/58FunctionParameterVar/functionParameterVar.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 2: Function parameters cannot be declared as var.");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
 }
