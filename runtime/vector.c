@@ -155,8 +155,12 @@ void bool_copyVector(struct Vector* to, struct Vector* from) {
 }
 
 void bool_allocVector(struct Vector* vector, int32_t size) {
-	vector->size = size;
-	vector->data = malloc(sizeof(int8_t) * size);
+	if (vector->size == 0) {
+		// TODO: Error
+	} else {
+		vector->size = size;
+		vector->data = malloc(sizeof(int8_t) * size);
+	}
 }
 
 int bool_getElement(int8_t* out, struct Vector* vector, int32_t index) {
@@ -185,8 +189,10 @@ void bool_assignVector(struct Vector* lhs, struct Vector* rhs) {
 	for (i = 0; i < lhs->size && i < rhs->size; i++)
 		lhs_data[i] = rhs_data[i];
 	
-	for (i = 0; i < lhs->size; i++)
+	while (i < lhs->size) {
 		lhs_data[i] = 0;
+		i++;
+	}
 }
 
 void bool_VectorNot(struct Vector* out, struct Vector* lhs) {
@@ -287,8 +293,12 @@ int bool_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 //////////////////////////
 
 void char_allocVector(struct Vector* vector, int32_t size) {
-	vector->size = size;
-	vector->data = malloc(sizeof(int8_t) * size);
+	if (vector->data != 0) {
+		// TODO: Error
+	} else {
+		vector->size = size;
+		vector->data = malloc(sizeof(int8_t) * size);
+	}
 }
 
 void char_copyVector(struct Vector* to, struct Vector* from) {
@@ -321,8 +331,10 @@ void char_assignVector(struct Vector* lhs, struct Vector* rhs) {
 	for (i = 0; i < lhs->size && i < rhs->size; i++)
 		lhs_data[i] = rhs_data[i];
 	
-	for (i = 0; i < lhs->size; i++)
+	while (i < lhs->size) {
 		lhs_data[i] = 0;
+		i++;
+	}
 }
 
 int char_VectorEq(struct Vector* lhs, struct Vector* rhs) {
@@ -364,8 +376,12 @@ int char_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 //////////////////////////
 
 void int_allocVector(struct Vector* vector, int32_t size) {
-	vector->size = size;
-	vector->data = malloc(sizeof(int32_t) * size);
+	if (vector->data != 0) {
+		// TODO: Error
+	} else {
+		vector->size = size;
+		vector->data = malloc(sizeof(int32_t) * size);
+	}
 }
 
 void int_copyVector(struct Vector* to, struct Vector* from) {
@@ -398,8 +414,10 @@ void int_assignVector(struct Vector* lhs, struct Vector* rhs) {
 	for (i = 0; i < lhs->size && i < rhs->size; i++)
 		lhs_data[i] = rhs_data[i];
 	
-	for (i = 0; i < lhs->size; i++)
+	while (i < lhs->size) {
 		lhs_data[i] = 0;
+		i++;
+	}
 }
 
 void int_VectorAddVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
@@ -596,7 +614,11 @@ void* getData(struct Vector* v) {
 }
 
 struct Vector* allocVector() {
-    return (struct Vector*) malloc(sizeof(struct Vector));
+	struct Vector* vector = (struct Vector*) malloc(sizeof(struct Vector));
+	vector->size = 0;
+	vector->data = 0;
+	
+	return vector;
 }
 
 int32_t getVectorSize(struct Vector* vector) {
@@ -608,7 +630,8 @@ int areVectorsOfSameLength(struct Vector* op1, struct Vector* op2) {
 }
 
 void releaseVector(struct Vector* vector) {
-	free(vector->data);
+	if (vector->data != 0)
+		free(vector->data);
 	free(vector);
 }
 

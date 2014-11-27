@@ -35,21 +35,12 @@ vector_init_literal(id, type_name, size_expr, size_expr_id, element_exprs) ::= <
 vector_assign(id, type_name, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
 <vector_var_expr>
 <rhs_expr>
-  <vlocal(id)>_old_vec = load i8** <vlocal_result(vector_var_expr_id)>
-
-  ;// Free old lhs vector
-  ;call void @releaseVector(i8* <vlocal(id)>_old_vec)
+  <vlocal(id)>_vec = load i8** <vlocal_result(vector_var_expr_id)>
 
   ;// Alloc new lhs vector with right size
   <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_expr_id)>)
-  <vlocal(id)>_new_vec = call i8* @allocVector()
-  call void @<type_name>_allocVector(i8* <vlocal(id)>_new_vec, i32 <vlocal(id)>_size)
-  store i8* <vlocal(id)>_new_vec, i8** <vlocal_result(vector_var_expr_id)>
-
-  ;// Copy rhs vector into lhs vector
-  call void @<type_name>_copyVector(i8* <vlocal(id)>_new_vec, i8* <vlocal_result(rhs_expr_id)>)
-
-  ;// TODO: Free rhs vector
+  call void @<type_name>_allocVector(i8* <vlocal(id)>_vec, i32 <vlocal(id)>_size)
+  call void @<type_name>_assignVector(i8* <vlocal(id)>_vec, i8* <vlocal_result(rhs_expr_id)>)
 >>
 
 vector_elem_assign(id, vector_expr, vector_expr_id, type_name, llvm_type, index_expr, index_expr_id, expr, expr_id) ::= <<

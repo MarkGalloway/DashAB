@@ -76,30 +76,29 @@ public class LLVMIRGenerator {
 		switch(t.getToken().getType()) {
 		case DashLexer.PROGRAM:
 		{	
-			// Generate Code
-			String code = "";
-			String global_code = "";
-			for(int i = 0; i < t.getChildCount(); i++) {
-				if (!(t.getChild(i).hasAncestor(DashLexer.PROCEDURE_DECL) ||
-						t.getChild(i).hasAncestor(DashLexer.FUNCTION_DECL)) && 
-						t.getChild(i).getType() == DashLexer.VAR_DECL) {
-					global_code += exec((DashAST)t.getChild(i)).toString() + "\n";
-				} else {
-					code += exec((DashAST)t.getChild(i)).toString() + "\n";
-					
-				}
-			}
-			
 			// Generate Globals
 			debug("\n\nCreated Globals:");
-			
+
 			String global_vars = "";
+			String global_code = "";
 			for (Symbol s : symtab.globals.getDefined()) {
 				if (!(s instanceof MethodSymbol)) {
-					if (s.type != null) {	
-						
+					if (s.type != null) {
+
+						if (s.type.getTypeIndex() == SymbolTable.tINTERVAL) {
+							StringTemplate alloc = stg
+									.getInstanceOf("interval_alloc_global");
+							alloc.setAttribute("sym_id", s.id);
+							global_code += alloc.toString() + "\n";
+						} else if (s.type.getTypeIndex() == SymbolTable.tVECTOR) {
+							StringTemplate alloc = stg
+									.getInstanceOf("vector_alloc_global");
+							alloc.setAttribute("sym_id", s.id);
+							global_code += alloc.toString() + "\n";
+						}
+
 						debug(s);
-						
+
 						int type = s.type.getTypeIndex();
 						StringTemplate template = null;
 						if (type == SymbolTable.tINTEGER) {
@@ -112,14 +111,15 @@ public class LLVMIRGenerator {
 							template = stg.getInstanceOf("bool_init_global");
 						} else if (type == SymbolTable.tTUPLE) {
 							template = stg.getInstanceOf("tuple_init_global");
-							TupleTypeSymbol tuple = (TupleTypeSymbol)s.type;
-							
+							TupleTypeSymbol tuple = (TupleTypeSymbol) s.type;
+
 							String init = "";
-							
+
 							for (int i = 0; i < tuple.fields.size(); i++) {
-								VariableSymbol member = (VariableSymbol) tuple.fields.get(i);
+								VariableSymbol member = (VariableSymbol) tuple.fields
+										.get(i);
 								int member_type = member.type.getTypeIndex();
-								
+
 								if (member_type == SymbolTable.tBOOLEAN)
 									init += "i1 0";
 								else if (member_type == SymbolTable.tCHARACTER)
@@ -128,19 +128,21 @@ public class LLVMIRGenerator {
 									init += "i32 0";
 								else if (member_type == SymbolTable.tREAL)
 									init += "float 0.0";
-								
+
 								if (i < tuple.fields.size() - 1)
 									init += ", ";
 							}
-							
+
 							template.setAttribute("init", init);
-							template.setAttribute("type_id", tuple.tupleTypeIndex);
-						} else if (type == SymbolTable.tINTERVAL){
-							template = stg.getInstanceOf("interval_init_global");
-						} else if (type == SymbolTable.tVECTOR){
+							template.setAttribute("type_id",
+									tuple.tupleTypeIndex);
+						} else if (type == SymbolTable.tINTERVAL) {
+							template = stg
+									.getInstanceOf("interval_init_global");
+						} else if (type == SymbolTable.tVECTOR) {
 							template = stg.getInstanceOf("vector_init_global");
 						}
-						
+
 						if (template != null) {
 							template.setAttribute("sym_id", s.id);
 							global_vars += template.toString() + "\n";
@@ -148,9 +150,24 @@ public class LLVMIRGenerator {
 					}
 				}
 			}
-			
+
 			debug("\n\nGlobals in Symbol Table:");
 			debug(symtab.globals);
+			
+			// Generate Code
+			String code = "";
+			for(int i = 0; i < t.getChildCount(); i++) {
+				if (!(t.getChild(i).hasAncestor(DashLexer.PROCEDURE_DECL) ||
+						t.getChild(i).hasAncestor(DashLexer.FUNCTION_DECL)) && 
+						t.getChild(i).getType() == DashLexer.VAR_DECL) {
+					global_code += exec((DashAST)t.getChild(i)).toString() + "\n";
+				} else {
+					code += exec((DashAST)t.getChild(i)).toString() + "\n";
+					
+				}
+			}
+			
+			
 			
 			// Generate Types
 			debug("\n\nCreated Types:");

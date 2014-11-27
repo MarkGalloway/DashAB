@@ -380,7 +380,7 @@ public class Runner {
     				"-c",
     				//"make runtime > /dev/null && " +
     				"llc " + llvm_file + " -filetype=obj && " +
-    				"clang " + object_file + " -o " + executable + " -L. -lruntime -lm && " +
+    				"clang -g " + object_file + " -o " + executable + " -L. -lruntime -lm && " +
     				"cat " + args[1] + " | ./" + executable
     				};
     		p = Runtime.getRuntime().exec(cmd);
@@ -390,7 +390,7 @@ public class Runner {
     				"-c",
     				//"make runtime > /dev/null && " +
     				"llc " + llvm_file + " -filetype=obj && " +
-    				"clang " + object_file + " -o " + executable + " -L. -lruntime -lm && " +
+    				"clang -g " + object_file + " -o " + executable + " -L. -lruntime -lm && " +
     				"./" + executable
     				};
         	p = Runtime.getRuntime().exec(cmd);
