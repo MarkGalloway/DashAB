@@ -20,9 +20,9 @@ interval_alloc_global(sym_id) ::= <<
 	store i8* <vlocal_result(sym_id)>_alloc, i8** <vglobalSymbol(sym_id)>
 >>
 
-interval_free_local(sym_id) ::= <<
-	<vlocal_result(sym_id)>_free = load i8** <vlocal_symbol(sym_id)>
-	call void @int_releaseInterval(i8* <vlocal_result(sym_id)>_free)
+interval_free_local(id, sym_id) ::= <<
+	<vlocal_result(id)>_free = load i8** <vlocal_symbol(sym_id)>
+	call void @int_releaseInterval(i8* <vlocal_result(id)>_free)
 >>
 
 interval_init_literal(id, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id) ::= <<

@@ -12,14 +12,18 @@ import ab.dash.ast.SymbolTable;
 public class MemoryManagment {
 	private LinkedList<MemoryNode> nodes;
 	private StringTemplateGroup stg;
+	private int counter;
 	
 	public static int VARIABLE_MEMORY_NODE = 0;
 	public static int BLOCK_MEMORY_NODE = 1;
 	public static int METHOD_MEMORY_NODE = 2;
+	public static int RETURN_MEMORY_NODE = 3;
 	
 	public MemoryManagment(StringTemplateGroup stg) {
 		this.stg = stg;
 		this.nodes = new LinkedList<MemoryNode>();
+		
+		this.counter = 0;
 	}
 	
 	private String freeVariable(VariableMemoryNode var) {
@@ -35,7 +39,9 @@ public class MemoryManagment {
 			}
 			
 			if (valid_symbol) {
+				this.counter++;
 				template.setAttribute("sym_id", var.id);
+				template.setAttribute("id", counter);
 				return template.toString() + "\n";
 			}
 		}
@@ -49,6 +55,10 @@ public class MemoryManagment {
 	
 	public void addTempVariable(int id, int type) {
 		nodes.push(new VariableMemoryNode(id, type, false));
+	}
+	
+	public void addBlock() {
+		nodes.push(new BlockMemoryNode());
 	}
 	
 	public StringTemplate addBlock(DashAST t) {
@@ -74,18 +84,33 @@ public class MemoryManagment {
 	public StringTemplate freeBlock() {
 		String temp = "";
 		int type = nodes.peek().getNodeType();
+		int i = 0;
+		boolean returnFound = false;
 		while (type != BLOCK_MEMORY_NODE) {
-			MemoryNode node = nodes.peek();
-			if (type == VARIABLE_MEMORY_NODE) {
-				VariableMemoryNode var = (VariableMemoryNode) node;
-				temp += freeVariable(var);
+			MemoryNode node = nodes.get(i);
+			if(node.getNodeType() == RETURN_MEMORY_NODE) {
+				returnFound = true;
+				break;
 			}
-			
-			nodes.pop();
-			
-			type = nodes.peek().getNodeType();
+			type = node.getNodeType();
+			i++;
 		}
 		
+		type = nodes.peek().getNodeType();
+		while (type != BLOCK_MEMORY_NODE) {
+			MemoryNode node = nodes.peek();
+			if (!returnFound) {
+				if (type == VARIABLE_MEMORY_NODE) {
+					VariableMemoryNode var = (VariableMemoryNode) node;
+					temp += freeVariable(var);
+				}
+			}
+
+			nodes.pop();
+
+			type = nodes.peek().getNodeType();
+		}
+
 		nodes.pop();
 		
 		return new StringTemplate(temp);
@@ -98,18 +123,20 @@ public class MemoryManagment {
 	public StringTemplate freeMethodReturn() {
 		String temp = "";
 		int type = nodes.peek().getNodeType();
-		while (type != BLOCK_MEMORY_NODE &&
-				type != METHOD_MEMORY_NODE) {
-			MemoryNode node = nodes.peek();
-			if (type == VARIABLE_MEMORY_NODE) {
+		int i = 0;
+		while (type != METHOD_MEMORY_NODE) {
+			MemoryNode node = nodes.get(i);
+			if (node.getNodeType() == VARIABLE_MEMORY_NODE) {
 				VariableMemoryNode var = (VariableMemoryNode) node;
 				temp += freeVariable(var);
 			}
 			
-			nodes.pop();
+			i++;
 			
-			type = nodes.peek().getNodeType();
+			type = node.getNodeType();
 		}
+		
+		nodes.push(new ReturnMemoryNode());
 		
 		return new StringTemplate(temp);
 	}
@@ -118,14 +145,7 @@ public class MemoryManagment {
 		String temp = "";
 		int type = nodes.peek().getNodeType();
 		while (type != METHOD_MEMORY_NODE) {
-			MemoryNode node = nodes.peek();
-			if (type == VARIABLE_MEMORY_NODE) {
-				VariableMemoryNode var = (VariableMemoryNode) node;
-				temp += freeVariable(var);
-			}
-			
-			nodes.pop();
-			
+			nodes.pop();			
 			type = nodes.peek().getNodeType();
 		}
 		

@@ -576,10 +576,15 @@ public class LLVMIRGenerator {
 			StringTemplate expr = exec((DashAST)t.getChild(0));
 			int expr_id = ((DashAST)t.getChild(0).getChild(0)).llvmResultID;
 			
+			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(1));
+			memoryManagment.freeBlock();
+			
 			StringTemplate template = null;
 			if (t.getChildCount() > 2) {
+				memoryManagment.addBlock();
 				StringTemplate block2 = exec((DashAST)t.getChild(2));
+				memoryManagment.freeBlock();
 				
 				template = stg.getInstanceOf("if_else");
 				template.setAttribute("block2", block2);
@@ -604,7 +609,9 @@ public class LLVMIRGenerator {
 			
 			loop_stack.push(new Integer(id));
 			
+			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(1));
+			memoryManagment.freeBlock();
 			
 			loop_stack.pop();
 			
@@ -626,7 +633,9 @@ public class LLVMIRGenerator {
 			
 			loop_stack.push(new Integer(id));
 			
+			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(1));
+			memoryManagment.freeBlock();
 			
 			loop_stack.pop();
 			
@@ -646,7 +655,9 @@ public class LLVMIRGenerator {
 			
 			loop_stack.push(new Integer(id));
 			
+			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(0));
+			memoryManagment.freeBlock();
 			
 			loop_stack.pop();
 			

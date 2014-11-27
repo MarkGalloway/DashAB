@@ -979,4 +979,13 @@ public class TestLLVM extends BaseTest {
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
+    @Test
+    public void memoryTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/106MemoryTest/memoryTest.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
 }
