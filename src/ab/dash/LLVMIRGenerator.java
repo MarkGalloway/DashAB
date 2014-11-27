@@ -991,6 +991,8 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("bool_local_assign");
 			} else if (type == SymbolTable.tTUPLE) {
 				return assignTuple(id, (VariableSymbol)sym, arg_id, expr);
+			} else if (type == SymbolTable.tINTERVAL) {
+				return assignInterval(id, (VariableSymbol)sym, arg_id, expr);
 			} else if (type == SymbolTable.tVECTOR) {
 				return assignVector(t);
 			}
