@@ -155,7 +155,7 @@ void bool_copyVector(struct Vector* to, struct Vector* from) {
 }
 
 void bool_allocVector(struct Vector* vector, int32_t size) {
-	if (vector->size == 0) {
+	if (vector->size != 0) {
 		// TODO: Error
 	} else {
 		vector->size = size;
