@@ -371,6 +371,8 @@ public class LLVMIRGenerator {
 			StringTemplate expr_template = exec(expr);
 			StringTemplate template = null;
 
+			StringTemplate free_mem = memoryManagment.freeMethodReturn();
+
 			if (expr.evalType.getTypeIndex() == SymbolTable.tTUPLE) {
 				TupleTypeSymbol tuple_type = (TupleTypeSymbol)expr.evalType;
 				template = stg.getInstanceOf("return_tuple");
@@ -434,8 +436,8 @@ public class LLVMIRGenerator {
 				template.setAttribute("id", id);
 			}
 			
-			String code = memoryManagment.freeMethodReturn() + "\n" + template;
-			return new StringTemplate(code);
+			template.setAttribute("free_mem", free_mem);
+			return template;
 		}
 		
 		case DashLexer.TUPLE_LIST:

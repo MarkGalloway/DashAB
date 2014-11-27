@@ -210,14 +210,16 @@ arg_init(id, arg_id, arg_type) ::= <<
 >>
 
 
-return(id, expr, expr_id, type) ::= <<
+return(id, expr, expr_id, type, free_mem) ::= <<
 <expr>
+<free_mem>
   ret <type> <vlocal_result(expr_id)>
 >>
 
-return_tuple(id, assign_code, type_id) ::= <<
+return_tuple(id, assign_code, type_id, free_mem) ::= <<
   <vlocal_result(id)> = bitcast <tuple_type(type_id)>* %tuple_return to <tuple_type(type_id)>*
 <assign_code>
+<free_mem>
   ret void
 >>
 
