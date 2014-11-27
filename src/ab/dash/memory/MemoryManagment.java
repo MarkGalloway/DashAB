@@ -77,11 +77,6 @@ public class MemoryManagment {
 				 StringTemplate alloc = stg.getInstanceOf("interval_alloc_local");
 				 alloc.setAttribute("sym_id", sym_id);
 				 temp += alloc.toString() + "\n";
-			} else if (type == SymbolTable.tVECTOR){
-				 addLocalVariable(sym_id, type);
-				 StringTemplate alloc = stg.getInstanceOf("vector_alloc_local");
-				 alloc.setAttribute("sym_id", sym_id);
-				 temp += alloc.toString() + "\n";
 			}
 		}
 		

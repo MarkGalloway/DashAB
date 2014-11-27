@@ -90,11 +90,6 @@ public class LLVMIRGenerator {
 									.getInstanceOf("interval_alloc_global");
 							alloc.setAttribute("sym_id", s.id);
 							global_code += alloc.toString() + "\n";
-						} else if (s.type.getTypeIndex() == SymbolTable.tVECTOR) {
-							StringTemplate alloc = stg
-									.getInstanceOf("vector_alloc_global");
-							alloc.setAttribute("sym_id", s.id);
-							global_code += alloc.toString() + "\n";
 						}
 
 						debug(s);
