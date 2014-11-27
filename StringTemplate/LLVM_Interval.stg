@@ -63,4 +63,9 @@ interval_global_assign(id, sym_id, expr, expr_id) ::= <<
 ; TODO: Implement
 >>
 
+interval_print(id, expr, expr_id) ::= <<
+<expr>
+	call void @int_printInterval(i8* <vlocal_result(expr_id)>)
+>>
+
 /* TODO: Write rest of interval operation runtime function wrappers. */

@@ -1,3 +1,5 @@
+const out = std_output();
+
 procedure main() returns integer {
 	integer interval i1 = 1..5;
 	var i = 0;
@@ -17,8 +19,12 @@ procedure main() returns integer {
 		i1 = i..(i+5);
 		i2 = (i+5)..(i+10);
 		
+		i2 -> out; '\n' -> out;
+		
 		i = i + 1;
 	}
+	
+	i1 -> out; '\n' -> out;
 	
 	return 0;
 }

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -140,6 +141,11 @@ int int_IntervalBy(struct Vector* out, struct Interval* lhs, int32_t by) {
 		out_data[i] = lhs->lower + i*by;
 
 	return 0;
+}
+
+void int_printInterval(struct Interval* interval) {
+	for (int i = interval->lower; i < interval->upper; i++)
+		printf("%d", i);
 }
 
 void int_releaseInterval(struct Interval* interval) {

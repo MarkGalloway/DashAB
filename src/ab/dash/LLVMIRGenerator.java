@@ -736,6 +736,8 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("char_print");
 			} else if (type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_print");
+			} else if (type == SymbolTable.tINTERVAL) {
+				template = stg.getInstanceOf("interval_print");
 			}
 			
 			template.setAttribute("expr", expr);
@@ -1704,6 +1706,8 @@ public class LLVMIRGenerator {
 			} else if (type == SymbolTable.tTUPLE) {
 				template = stg.getInstanceOf("tuple_get_global");
 				template.setAttribute("type_id", ((TupleTypeSymbol)sym.type).tupleTypeIndex);
+			} else if (type == SymbolTable.tINTERVAL) {
+				template = stg.getInstanceOf("interval_get_global");
 			} else if (type == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_get_global");
 			}
@@ -1719,6 +1723,8 @@ public class LLVMIRGenerator {
 			} else if (type == SymbolTable.tTUPLE) {
 				template = stg.getInstanceOf("tuple_get_local");
 				template.setAttribute("type_id", ((TupleTypeSymbol)sym.type).tupleTypeIndex);
+			} else if (type == SymbolTable.tINTERVAL) {
+				template = stg.getInstanceOf("interval_get_local");
 			} else if (type == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_get_local");
 			}

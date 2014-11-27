@@ -855,13 +855,22 @@ public class SymbolTable {
     	VariableSymbol s = (VariableSymbol)stream.scope.resolve(stream.getText());
     	stream.symbol = s;
     	
-        //String s = super.toString();
-        if ( lhs.evalType != _boolean &&
-                lhs.evalType != _integer && 
-                lhs.evalType != _real && 
-                lhs.evalType!= _character) {
-            error("line " + print.getLine() + ": invalid type " + lhs.evalType + " sent to outstream");
-        }
+    	boolean valid = false;
+    	if (lhs.evalType != null) {
+	        //String s = super.toString();
+	        if ( lhs.evalType.getTypeIndex() == tBOOLEAN ||
+	                lhs.evalType.getTypeIndex() == tCHARACTER || 
+	                lhs.evalType.getTypeIndex() == tINTEGER ||
+	                lhs.evalType.getTypeIndex() == tREAL ||
+	                lhs.evalType.getTypeIndex() == tINTERVAL ||
+	                lhs.evalType.getTypeIndex() == tVECTOR ||
+	                lhs.evalType.getTypeIndex() == tMATRIX) {
+	        	valid = true;
+	        }
+    	}
+    	
+    	if (!valid)
+    		 error("line " + print.getLine() + ": invalid type " + lhs.evalType + " sent to outstream");
         
     	if (s.type != null) {
     		if (s.type.getTypeIndex() != SymbolTable.tOUTSTREAM) {
