@@ -877,7 +877,7 @@ public class LLVMIRGenerator {
 				} else if (type == SymbolTable.tINTERVAL) {
 					return assignInterval(id, (VariableSymbol)sym, expr_id, expr);
 				} else if (type == SymbolTable.tVECTOR) {
-					return assignVector(id, (VariableSymbol)sym, expr_id, expr);
+					return assignVector(id, true, (VariableSymbol)sym, expr_id, expr);
 				}
 				
 				if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
@@ -1008,7 +1008,7 @@ public class LLVMIRGenerator {
 			} else if (type == SymbolTable.tINTERVAL) {
 				return assignInterval(id, (VariableSymbol)sym, arg_id, expr);
 			}  else if (type == SymbolTable.tVECTOR) {
-				return assignVector(id, (VariableSymbol)sym, arg_id, expr);
+				return assignVector(id, false, (VariableSymbol)sym, arg_id, expr);
 			}
 			
 			template.setAttribute("expr_id", arg_id);
@@ -1585,12 +1585,16 @@ public class LLVMIRGenerator {
 		return template;
 	}
 
-	private StringTemplate assignVector(int id, VariableSymbol varSymbol, int rhsExprId, StringTemplate rhsExpr) {
+	private StringTemplate assignVector(int id, boolean declaration, VariableSymbol varSymbol, int rhsExprId, StringTemplate rhsExpr) {
 		VectorType vecType = (VectorType) varSymbol.type;
 		Scope scope = varSymbol.scope;
 		int elementTypeIndex = vecType.elementType.getTypeIndex();
 
-		template = stg.getInstanceOf("vector_assign");
+		if (declaration) {
+			template = stg.getInstanceOf("vector_assign_decl");
+		} else {
+			template = stg.getInstanceOf("vector_assign");
+		}
 
 		StringTemplate getVector = null;
 		if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
