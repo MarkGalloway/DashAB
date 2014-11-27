@@ -180,9 +180,13 @@ int bool_setElement(struct Vector* vector, int32_t index, int8_t value) {
 void bool_assignVector(struct Vector* lhs, struct Vector* rhs) {
 	int8_t* lhs_data = (int8_t*)lhs->data;
 	int8_t* rhs_data = (int8_t*)rhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
+	
+	int i;
+	for (i = 0; i < lhs->size && i < rhs->size; i++)
 		lhs_data[i] = rhs_data[i];
+	
+	for (i = 0; i < lhs->size; i++)
+		lhs_data[i] = 0;
 }
 
 void bool_VectorNot(struct Vector* out, struct Vector* lhs) {
@@ -313,8 +317,12 @@ void char_assignVector(struct Vector* lhs, struct Vector* rhs) {
 	int8_t* lhs_data = (int8_t*)lhs->data;
 	int8_t* rhs_data = (int8_t*)rhs->data;
 
-	for (int i = 0; i < lhs->size; i++)
+	int i;
+	for (i = 0; i < lhs->size && i < rhs->size; i++)
 		lhs_data[i] = rhs_data[i];
+	
+	for (i = 0; i < lhs->size; i++)
+		lhs_data[i] = 0;
 }
 
 int char_VectorEq(struct Vector* lhs, struct Vector* rhs) {
@@ -386,8 +394,12 @@ void int_assignVector(struct Vector* lhs, struct Vector* rhs) {
 	int32_t* lhs_data = (int32_t*)lhs->data;
 	int32_t* rhs_data = (int32_t*)rhs->data;
 
-	for (int i = 0; i < lhs->size; i++)
+	int i;
+	for (i = 0; i < lhs->size && i < rhs->size; i++)
 		lhs_data[i] = rhs_data[i];
+	
+	for (i = 0; i < lhs->size; i++)
+		lhs_data[i] = 0;
 }
 
 void int_VectorAddVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
