@@ -525,10 +525,10 @@ public class SymbolTable {
         int texpr = index.evalType.getTypeIndex();
         Type element = null;
         
-        if ( t.getTypeIndex() != tVECTOR)
+        if ( t.getTypeIndex() == tVECTOR)
         	element = ((VectorType)t).elementType;
         
-        if ( t.getTypeIndex() != tINTERVAL)
+        if ( t.getTypeIndex() == tINTERVAL)
         	element = _integer;
         
         if (texpr == tVECTOR) {
