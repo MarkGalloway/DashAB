@@ -18,6 +18,8 @@ public class MemoryManagment {
 	public static int BLOCK_MEMORY_NODE = 1;
 	public static int METHOD_MEMORY_NODE = 2;
 	public static int RETURN_MEMORY_NODE = 3;
+	public static int BREAK_MEMORY_NODE = 4;
+	public static int LOOP_MEMORY_NODE = 5;
 	
 	public MemoryManagment(StringTemplateGroup stg) {
 		this.stg = stg;
@@ -88,7 +90,8 @@ public class MemoryManagment {
 		boolean returnFound = false;
 		while (type != BLOCK_MEMORY_NODE) {
 			MemoryNode node = nodes.get(i);
-			if(node.getNodeType() == RETURN_MEMORY_NODE) {
+			if(node.getNodeType() == RETURN_MEMORY_NODE || 
+					node.getNodeType() == BREAK_MEMORY_NODE) {
 				returnFound = true;
 				break;
 			}
@@ -111,6 +114,44 @@ public class MemoryManagment {
 			type = nodes.peek().getNodeType();
 		}
 
+		nodes.pop();
+		
+		return new StringTemplate(temp);
+	}
+	
+	public void addLoop() {
+		nodes.push(new LoopMemoryNode());
+	}
+	
+	public StringTemplate freeLoopBreak() {
+		String temp = "";
+		int type = nodes.peek().getNodeType();
+		int i = 0;
+		while (type != LOOP_MEMORY_NODE) {
+			MemoryNode node = nodes.get(i);
+			if (node.getNodeType() == VARIABLE_MEMORY_NODE) {
+				VariableMemoryNode var = (VariableMemoryNode) node;
+				temp += freeVariable(var);
+			}
+			
+			i++;
+			
+			type = node.getNodeType();
+		}
+		
+		nodes.push(new ReturnMemoryNode());
+		
+		return new StringTemplate(temp);
+	}
+	
+	public StringTemplate freeLoop() {
+		String temp = "";
+		int type = nodes.peek().getNodeType();
+		while (type != LOOP_MEMORY_NODE) {
+			nodes.pop();			
+			type = nodes.peek().getNodeType();
+		}
+		
 		nodes.pop();
 		
 		return new StringTemplate(temp);
@@ -141,8 +182,7 @@ public class MemoryManagment {
 		return new StringTemplate(temp);
 	}
 	
-	public StringTemplate freeMethod() {
-		String temp = "";
+	public void freeMethod() {
 		int type = nodes.peek().getNodeType();
 		while (type != METHOD_MEMORY_NODE) {
 			nodes.pop();			
@@ -150,7 +190,5 @@ public class MemoryManagment {
 		}
 		
 		nodes.pop();
-		
-		return new StringTemplate(temp);
 	}
 }

@@ -609,9 +609,11 @@ public class LLVMIRGenerator {
 			
 			loop_stack.push(new Integer(id));
 			
+			memoryManagment.addLoop();
 			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(1));
 			memoryManagment.freeBlock();
+			memoryManagment.freeLoop();
 			
 			loop_stack.pop();
 			
@@ -633,9 +635,11 @@ public class LLVMIRGenerator {
 			
 			loop_stack.push(new Integer(id));
 			
+			memoryManagment.addLoop();
 			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(1));
 			memoryManagment.freeBlock();
+			memoryManagment.freeLoop();
 			
 			loop_stack.pop();
 			
@@ -655,9 +659,11 @@ public class LLVMIRGenerator {
 			
 			loop_stack.push(new Integer(id));
 			
+			memoryManagment.addLoop();
 			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(0));
 			memoryManagment.freeBlock();
+			memoryManagment.freeLoop();
 			
 			loop_stack.pop();
 			
@@ -678,7 +684,9 @@ public class LLVMIRGenerator {
 			
 			template.setAttribute("loop_id", loop_id.intValue());
 			template.setAttribute("id", id);
-			return template;
+			
+			StringTemplate memory = memoryManagment.freeLoopBreak();
+			return new StringTemplate(memory + "\n" + template);
 		}
 
 		case DashLexer.Continue:
