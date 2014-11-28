@@ -1744,7 +1744,9 @@ public class LLVMIRGenerator {
 		} else if (type.getTypeIndex() == SymbolTable.tTUPLE) {
 			type_template = stg.getInstanceOf("tuple_type");
 			type_template.setAttribute("type_id", ((TupleTypeSymbol)type).tupleTypeIndex);
-		}  else if (type.getTypeIndex() == SymbolTable.tVOID) {
+		} else if (type.getTypeIndex() == SymbolTable.tVECTOR) {
+			type_template = stg.getInstanceOf("vector_type");
+		} else if (type.getTypeIndex() == SymbolTable.tVOID) {
 			type_template = stg.getInstanceOf("void_type");
 		}
 		

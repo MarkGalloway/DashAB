@@ -1,21 +1,28 @@
 const out = std_output();
 const inp = std_input();
-//const integer vector vglob[3] = [8, 9, 10];
+
+const integer vector vglob[3] = [8, 9, 10];
+
+procedure printVector(integer vector v[3]) {
+	'[' -> out; 
+	v[1] -> out; ',' -> out; ' ' -> out;
+	v[2] -> out; ',' -> out; ' ' -> out;
+	v[3] -> out; ']' -> out; '\n' -> out;
+}
 
 procedure main() returns integer {
-	integer v2[1+2] = [1, 2, 3];
-	integer v3[3] = 1+v2+2;
+	integer v1[1+2] = [1, 2, 3];
+	integer v2[3] = 1 + v1 + 2;
+	integer v3[3] = v1 + v2;
 	
+	integer v4[3] = v2 - v1;
+	integer v5[3] = (5 - v1) - 1;
 	
-	'[' -> out; 
-	v2[1] -> out; ',' -> out; ' ' -> out;
-	v2[2] -> out; ',' -> out; ' ' -> out;
-	v2[3] -> out; ']' -> out; '\n' -> out;
-	
-	'[' -> out; 
-	v3[1] -> out; ',' -> out; ' ' -> out;
-	v3[2] -> out; ',' -> out; ' ' -> out;
-	v3[3] -> out; ']' -> out; '\n' -> out;
+	printVector(v1);
+	printVector(v2);
+	printVector(v3);
+	printVector(v4);
+	printVector(v5);
 
 	return 0;
 }
