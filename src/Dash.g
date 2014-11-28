@@ -319,6 +319,8 @@ typedef
       -> ^(TYPEDEF ^(MATRIX primitiveType expression) ID)
   | Typedef primitiveType Matrix ID DELIM                                       {line = $ID.getLine();}  // Matrix implicit size
       -> ^(TYPEDEF ^(MATRIX primitiveType INFERRED INFERRED) ID)
+  | Typedef INTEGER_TYPE Interval ID DELIM                                      {line = $ID.getLine();}  // Typedef
+      -> ^(TYPEDEF Interval ID)
   ;
 
 statement
