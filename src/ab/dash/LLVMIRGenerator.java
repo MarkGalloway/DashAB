@@ -417,7 +417,19 @@ public class LLVMIRGenerator {
 				template.setAttribute("assign_code", assignmentTemplate);
 			}
 			else {
-				template = stg.getInstanceOf("return");
+				boolean main = false;
+				Symbol sym = t.symbol;
+				
+				if (sym != null) {
+					if (sym.name.equals("main")) {
+						main = true;
+					}
+				}
+				
+				if (main)
+					template = stg.getInstanceOf("return_main");
+				else
+					template = stg.getInstanceOf("return");
 				StringTemplate type_template = getType(((DashAST) t.getChild(0)).evalType);
 
 				template.setAttribute("expr_id", expr_id);

@@ -219,6 +219,13 @@ arg_init(id, arg_id, arg_type) ::= <<
   store <arg_type> <vlocal_argument(arg_id)>, <arg_type>* <vlocal_symbol(arg_id)>
 >>
 
+return_main(id, expr, expr_id, type) ::= <<
+<expr>
+  call void @gc_free_method()
+  ;call void @gc_print()
+  ret <type> <vlocal_result(expr_id)>
+>>
+
 return(id, expr, expr_id, type) ::= <<
 <expr>
   ret <type> <vlocal_result(expr_id)>
