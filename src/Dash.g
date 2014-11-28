@@ -151,42 +151,61 @@ primitiveType
     
 // START: method
 methodForwardDeclaration
-	: Function ID LPAREN formalParameters? RPAREN Returns type DELIM
-	    -> ^(FUNCTION_DECL type ID formalParameters?)
-  | Procedure ID LPAREN informalParameters? RPAREN (Returns type)? DELIM
-      -> ^(PROCEDURE_DECL type? ID informalParameters?)
+	: Function ID LPAREN (functionParameter (',' functionParameter)*)? RPAREN Returns type DELIM
+	    -> ^(FUNCTION_DECL type ID functionParameter*)
+  | Procedure ID LPAREN (procedureParameter (',' procedureParameter)*)? RPAREN (Returns type)? DELIM
+      -> ^(PROCEDURE_DECL type? ID procedureParameter*)
   ;
 
 methodDeclaration
-  : Function ID LPAREN formalParameters? RPAREN Returns type ASSIGN expression DELIM
-    { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
-       -> ^(FUNCTION_DECL type ID formalParameters? ^(Return expression))    
-	| Function ID LPAREN formalParameters? RPAREN Returns type block
-	  { if ($ID.text.equals("main")) {emitErrorMessage("error: main must be a procedure not a function");}}
-	    -> ^(FUNCTION_DECL type ID formalParameters? block)
-	| Procedure ID LPAREN informalParameters? RPAREN Returns type ASSIGN expression DELIM
-	    -> ^(PROCEDURE_DECL type ID informalParameters? ^(Return expression))
-	| Procedure ID LPAREN informalParameters? RPAREN (Returns type)? block
-	    -> ^(PROCEDURE_DECL type? ID informalParameters? block)
+  : function
+	| procedure
   ;
 
-formalParameters
-   : functionParameter (',' functionParameter)* -> functionParameter+
-   ;
-   
-informalParameters
-  : procedureParameter (',' procedureParameter)* -> procedureParameter+
+function
+@init { Token id = null;}
+@after {if (id.getText().equals("main")) emitErrorMessage("error: main must be a procedure not a function");}
+  : Function ID LPAREN (functionParameter (',' functionParameter)*)? RPAREN Returns methodReturnType ASSIGN expression DELIM {id = $ID;}
+      -> ^(FUNCTION_DECL methodReturnType ID functionParameter* ^(Return expression))    
+  | Function ID LPAREN (functionParameter (',' functionParameter)*)? RPAREN Returns methodReturnType block {id = $ID;}
+      -> ^(FUNCTION_DECL methodReturnType ID functionParameter* block)
   ;
-    
+
 functionParameter
-	:	Var type ID 
-	    { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
-	| specifier? type ID  -> ^(ARG_DECL Const["const"] type ID)
-	;
+  : Var type ID { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
+  | Var primitiveType (Vector | Matrix)? ID LBRACK expression (',' expression)? RBRACK
+      { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
+  | specifier? type ID  -> ^(ARG_DECL Const["const"] type ID)
+  | specifier? primitiveType Vector? ID LBRACK expression RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
+  | specifier? primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression+) ID)
+  ;
+  
+procedure
+  : Procedure ID LPAREN (procedureParameter (',' procedureParameter)*)? RPAREN Returns methodReturnType ASSIGN expression DELIM
+     -> ^(PROCEDURE_DECL methodReturnType ID procedureParameter* ^(Return expression))
+  | Procedure ID LPAREN (procedureParameter (',' procedureParameter)*)? RPAREN (Returns methodReturnType)? block
+     -> ^(PROCEDURE_DECL methodReturnType? ID procedureParameter* block)
+  ;
 	
 procedureParameter
-  : specifier type ID -> ^(ARG_DECL specifier type ID)
-  | type ID -> ^(ARG_DECL Const["const"] type ID)
+  : type ID -> ^(ARG_DECL Const["const"] type ID) 
+  | specifier type ID -> ^(ARG_DECL specifier type ID)
+  | primitiveType Vector? ID LBRACK expression RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
+  | specifier primitiveType Vector? ID LBRACK expression RBRACK 
+      -> ^(ARG_DECL specifier ^(VECTOR primitiveType expression) ID)
+  | primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression+) ID)
+  | specifier primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
+      -> ^(ARG_DECL specifier ^(MATRIX primitiveType expression+) ID)
+  ;
+
+methodReturnType
+  : primitiveType Vector? LBRACK expression RBRACK -> ^(VECTOR primitiveType expression)
+  | primitiveType Matrix? LBRACK expression ',' expression RBRACK -> ^(MATRIX primitiveType expression+)
+  | type
   ;
 	
 // END: method

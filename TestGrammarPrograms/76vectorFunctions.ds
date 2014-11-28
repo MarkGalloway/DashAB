@@ -1,0 +1,20 @@
+function solveDiagonal( real matrix A[4, 4] , real vector y[4]) returns real vector[4] {
+ // Empty block
+}
+
+procedure solveDiagonal2(real matrix A[4, 4] , real vector y[4]) returns real vector[4] {
+ // Empty block
+}
+
+function getInverse(real matrix A[4, 4]) returns real matrix[4, 4] {
+  //
+}
+
+procedure getInverse2(real matrix A[4, 4]) returns real matrix[4, 4] {
+  //
+}
+
+procedure main() returns integer {
+  //solveDiagonal();
+}
+

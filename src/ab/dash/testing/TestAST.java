@@ -591,4 +591,11 @@ public class TestAST extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/75AST_output"), outErrIntercept.toString().trim());
     }
     
+    @Test // vector function argument/return
+    public void vectorFunctions() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/76vectorFunctions.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/76AST_output"), outErrIntercept.toString().trim());
+    }
+    
 }
