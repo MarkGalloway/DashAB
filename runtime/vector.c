@@ -47,6 +47,8 @@ void copyVector(struct Vector* to, struct Vector* from, size_t element_size) {
 // Declarations
 
 extern int powi(int a,int n);
+extern void* xmalloc(size_t n);
+extern void gc_add_object(void* object, int32_t type);
 
 void int_allocVector(struct Vector* vector, int32_t size);
 
@@ -55,9 +57,11 @@ void int_allocVector(struct Vector* vector, int32_t size);
 //////////////////////////
 
 struct Interval* int_allocInterval(int32_t lower, int32_t upper) {
-	struct Interval* interval = (struct Interval*) malloc(sizeof(struct Interval));
+	struct Interval* interval = (struct Interval*) xmalloc(sizeof(struct Interval));
 	interval->lower = lower;
 	interval->upper = upper;
+
+	gc_add_object(interval, INTERVAL);
 
 	return interval;
 }
@@ -144,7 +148,7 @@ int int_IntervalBy(struct Vector* out, struct Interval* lhs, int32_t by) {
 }
 
 void int_printInterval(struct Interval* interval) {
-	for (int i = interval->lower; i < interval->upper; i++)
+	for (int i = interval->lower; i <= interval->upper; i++)
 		printf("%d", i);
 }
 
@@ -165,7 +169,7 @@ void bool_allocVector(struct Vector* vector, int32_t size) {
 		// TODO: Error
 	} else {
 		vector->size = size;
-		vector->data = malloc(sizeof(int8_t) * size);
+		vector->data = xmalloc(sizeof(int8_t) * size);
 	}
 }
 
@@ -303,7 +307,7 @@ void char_allocVector(struct Vector* vector, int32_t size) {
 		// TODO: Error
 	} else {
 		vector->size = size;
-		vector->data = malloc(sizeof(int8_t) * size);
+		vector->data = xmalloc(sizeof(int8_t) * size);
 	}
 }
 
@@ -386,7 +390,7 @@ void int_allocVector(struct Vector* vector, int32_t size) {
 		// TODO: Error
 	} else {
 		vector->size = size;
-		vector->data = malloc(sizeof(int32_t) * size);
+		vector->data = xmalloc(sizeof(int32_t) * size);
 	}
 }
 
@@ -620,9 +624,11 @@ void* getData(struct Vector* v) {
 }
 
 struct Vector* allocVector() {
-	struct Vector* vector = (struct Vector*) malloc(sizeof(struct Vector));
+	struct Vector* vector = (struct Vector*) xmalloc(sizeof(struct Vector));
 	vector->size = 0;
 	vector->data = 0;
+
+	gc_add_object(vector, VECTOR);
 	
 	return vector;
 }

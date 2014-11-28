@@ -14,4 +14,6 @@ struct Matrix {
 	void* 	data;
 };
 
-enum type { BOOLEAN, CHARACTER, INTEGER, REAL};
+enum gc_type {INTERVAL, VECTOR, MATRIX};
+
+

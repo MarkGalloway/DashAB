@@ -13,7 +13,6 @@ import org.antlr.stringtemplate.StringTemplateGroup;
 
 import ab.dash.DashLexer;
 import ab.dash.ast.*;
-import ab.dash.memory.MemoryManagment;
 
 
 public class LLVMIRGenerator {
@@ -22,8 +21,6 @@ public class LLVMIRGenerator {
 	private SymbolTable symtab;
 	private Stack<Integer> loop_stack;
 	private Map<Integer, String> typeIndexToName;
-	
-	private MemoryManagment memoryManagment;
 	
 	private boolean debug_mode = false;
 	
@@ -35,8 +32,6 @@ public class LLVMIRGenerator {
 		this.stg = stg;
 		this.symtab = symtab;
 		this.loop_stack = new Stack<Integer>();
-		
-		this.memoryManagment = new MemoryManagment(stg);
 		
 		/*
 		 * These are the prefixes to the vector operation string template
@@ -210,8 +205,6 @@ public class LLVMIRGenerator {
 		case DashLexer.FUNCTION_DECL:
 		case DashLexer.PROCEDURE_DECL:
 		{
-			memoryManagment.addMethod();
-			
 			Symbol sym = ((DashAST)t.getChild(0)).symbol;
 			int sym_id = sym.id;
 			
@@ -245,7 +238,7 @@ public class LLVMIRGenerator {
 			String code_s = code.toString() + "\n";
 			
 			if (type.getTypeIndex() == SymbolTable.tVOID) {
-				code_s += memoryManagment.freeMethodReturn() + "\nret void\n";
+				code_s += "\nret void\n";
 			}
 			
 			StringTemplate template = null;
@@ -263,7 +256,6 @@ public class LLVMIRGenerator {
 			template.setAttribute("sym_id", sym_id);
 			template.setAttribute("id", t.llvmResultID);
 			
-			memoryManagment.freeMethod();
 			return template;
 		}
 		
@@ -371,8 +363,6 @@ public class LLVMIRGenerator {
 			StringTemplate expr_template = exec(expr);
 			StringTemplate template = null;
 
-			StringTemplate free_mem = memoryManagment.freeMethodReturn();
-
 			if (expr.evalType.getTypeIndex() == SymbolTable.tTUPLE) {
 				TupleTypeSymbol tuple_type = (TupleTypeSymbol)expr.evalType;
 				template = stg.getInstanceOf("return_tuple");
@@ -436,7 +426,6 @@ public class LLVMIRGenerator {
 				template.setAttribute("id", id);
 			}
 			
-			template.setAttribute("free_mem", free_mem);
 			return template;
 		}
 		
@@ -573,12 +562,8 @@ public class LLVMIRGenerator {
 				}
 			}
 			
-			temp += memoryManagment.addBlock(t) + "\n";
-			
 			for(int i = 0; i < t.getChildCount(); i++)
 				temp += exec((DashAST)t.getChild(i)).toString() + "\n";
-			
-			temp += memoryManagment.freeBlock() + "\n";
 			
 			return new StringTemplate(temp);
 		}
@@ -590,15 +575,11 @@ public class LLVMIRGenerator {
 			StringTemplate expr = exec((DashAST)t.getChild(0));
 			int expr_id = ((DashAST)t.getChild(0).getChild(0)).llvmResultID;
 			
-			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(1));
-			memoryManagment.freeBlock();
 			
 			StringTemplate template = null;
 			if (t.getChildCount() > 2) {
-				memoryManagment.addBlock();
 				StringTemplate block2 = exec((DashAST)t.getChild(2));
-				memoryManagment.freeBlock();
 				
 				template = stg.getInstanceOf("if_else");
 				template.setAttribute("block2", block2);
@@ -623,11 +604,7 @@ public class LLVMIRGenerator {
 			
 			loop_stack.push(new Integer(id));
 			
-			memoryManagment.addLoop();
-			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(1));
-			memoryManagment.freeBlock();
-			memoryManagment.freeLoop();
 			
 			loop_stack.pop();
 			
@@ -649,11 +626,7 @@ public class LLVMIRGenerator {
 			
 			loop_stack.push(new Integer(id));
 			
-			memoryManagment.addLoop();
-			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(1));
-			memoryManagment.freeBlock();
-			memoryManagment.freeLoop();
 			
 			loop_stack.pop();
 			
@@ -673,11 +646,7 @@ public class LLVMIRGenerator {
 			
 			loop_stack.push(new Integer(id));
 			
-			memoryManagment.addLoop();
-			memoryManagment.addBlock();
 			StringTemplate block = exec((DashAST)t.getChild(0));
-			memoryManagment.freeBlock();
-			memoryManagment.freeLoop();
 			
 			loop_stack.pop();
 			
@@ -699,8 +668,7 @@ public class LLVMIRGenerator {
 			template.setAttribute("loop_id", loop_id.intValue());
 			template.setAttribute("id", id);
 			
-			StringTemplate memory = memoryManagment.freeLoopBreak();
-			return new StringTemplate(memory + "\n" + template);
+			return template;
 		}
 
 		case DashLexer.Continue:
@@ -875,7 +843,7 @@ public class LLVMIRGenerator {
 				if (type == SymbolTable.tTUPLE) {
 					return assignTuple(id, (VariableSymbol)sym, expr_id, expr);
 				} else if (type == SymbolTable.tINTERVAL) {
-					return assignInterval(id, (VariableSymbol)sym, expr_id, expr);
+					return assignInterval(id, true, (VariableSymbol)sym, expr_id, expr);
 				} else if (type == SymbolTable.tVECTOR) {
 					return assignVector(id, true, (VariableSymbol)sym, expr_id, expr);
 				}
@@ -1006,7 +974,7 @@ public class LLVMIRGenerator {
 			} else if (type == SymbolTable.tTUPLE) {
 				return assignTuple(id, (VariableSymbol)sym, arg_id, expr);
 			} else if (type == SymbolTable.tINTERVAL) {
-				return assignInterval(id, (VariableSymbol)sym, arg_id, expr);
+				return assignInterval(id, false, (VariableSymbol)sym, arg_id, expr);
 			}  else if (type == SymbolTable.tVECTOR) {
 				return assignVector(id, false, (VariableSymbol)sym, arg_id, expr);
 			}
@@ -1561,16 +1529,20 @@ public class LLVMIRGenerator {
 		return template;
 	}
 	
-	private StringTemplate assignInterval(int id, VariableSymbol varSymbol, int rhsExprId, StringTemplate rhsExpr) {
+	private StringTemplate assignInterval(int id, boolean declaration, VariableSymbol varSymbol, int rhsExprId, StringTemplate rhsExpr) {
 		Scope scope = varSymbol.scope;
 
-		template = stg.getInstanceOf("interval_assign");
+		if (declaration) {
+			template = stg.getInstanceOf("interval_assign_decl");
+		} else {
+			template = stg.getInstanceOf("interval_assign");
+		}
 
 		StringTemplate getInterval = null;
 		if (scope.getScopeIndex() == SymbolTable.scGLOBAL) {
-			getInterval = stg.getInstanceOf("interval_get_global");
+			getInterval = stg.getInstanceOf("vector_get_global_var");
 		} else {
-			getInterval = stg.getInstanceOf("interval_get_local");
+			getInterval = stg.getInstanceOf("vector_get_local_var");
 		}
 
 		getInterval.setAttribute("id", DashAST.getUniqueId());

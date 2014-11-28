@@ -31,10 +31,19 @@ interval_init_literal(id, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id) ::= <<
   <vlocal_result(id)> = call i8* @int_allocInterval(i32 <vlocal_result(lhs_expr_id)>, i32 <vlocal_result(rhs_expr_id)>)
 >>
 
+interval_assign_decl(id, interval_var_expr, interval_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
+<interval_var_expr>
+<rhs_expr>
+  <vlocal(id)>_interval = call i8* @int_allocInterval(i32 0, i32 0)
+  call void @int_assignInterval(i8* <vlocal(id)>_interval, i8* <vlocal_result(rhs_expr_id)>);
+  store i8* <vlocal(id)>_interval, i8** <vlocal_result(interval_var_expr_id)>
+>>
+
 interval_assign(id, interval_var_expr, interval_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
 <interval_var_expr>
 <rhs_expr>
-  call void @int_assignInterval(i8* <vlocal_result(interval_var_expr_id)>, i8* <vlocal_result(rhs_expr_id)>);
+  <vlocal(id)>_interval = load i8** <vlocal_result(interval_var_expr_id)>
+  call void @int_assignInterval(i8* <vlocal(id)>_interval, i8* <vlocal_result(rhs_expr_id)>);
 >>
 
 interval_get_local(id, sym_id) ::= <<
@@ -51,16 +60,6 @@ interval_get_local_var(id, sym_id) ::= <<
 
 interval_get_global_var(id, sym_id) ::= <<
   <vlocal_result(id)> = bitcast i8** <vglobalSymbol(sym_id)>, to i8**
->>
-
-interval_local_assign(id, sym_id, expr, expr_id) ::= <<
-<expr>
-; TODO: Implement
->>
-
-interval_global_assign(id, sym_id, expr, expr_id) ::= <<
-<expr>
-; TODO: Implement
 >>
 
 interval_print(id, expr, expr_id) ::= <<

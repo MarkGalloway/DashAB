@@ -7,7 +7,7 @@ procedure main() returns integer {
 	loop while i < 5 {
 		integer interval i2 = 1..5;
 		
-		if (i > 4)
+		if (i > 0)
 			integer interval i3 = 2..3;
 		
 		if (i > 3)
@@ -19,9 +19,12 @@ procedure main() returns integer {
 		i1 = i..(i+5);
 		i2 = (i+5)..(i+10);
 		
-		i2 -> out; '\n' -> out;
-		
 		i = i + 1;
+		
+		if (i > 1)
+			continue;
+		
+		i2 -> out; '\n' -> out;
 	}
 	
 	i1 -> out; '\n' -> out;
