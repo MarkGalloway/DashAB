@@ -1000,4 +1000,17 @@ public class TestLLVM extends BaseTest {
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+
+    @Test
+    public void vectorSubtraction() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/108VectorSubtraction/vectorSubtraction.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("5\n");
+        sb.append("3\n");
+        sb.append("1\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
