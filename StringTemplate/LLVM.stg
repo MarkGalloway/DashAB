@@ -221,7 +221,6 @@ arg_init(id, arg_id, arg_type) ::= <<
 
 return(id, expr, expr_id, type) ::= <<
 <expr>
-  call void @gc_print()
   ret <type> <vlocal_result(expr_id)>
 >>
 
