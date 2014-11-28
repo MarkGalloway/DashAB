@@ -1901,6 +1901,10 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("int_add");
 			} else if (type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_add");
+			} else if (type == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("vector_add_vector");
+				int elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 			}
 			break;
 		case SUB:
