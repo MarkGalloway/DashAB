@@ -28,7 +28,10 @@ Node root = 0;
 extern void int_releaseInterval(struct Interval* interval);
 extern void releaseVector(struct Vector* vector);
 
+int allocs = 0;
+
 void* xmalloc(size_t n) {
+	allocs++;
 	void* result = malloc(n);
 	if (!result) {
 		fputs("gc: out of memory.\n",stderr);
@@ -36,6 +39,11 @@ void* xmalloc(size_t n) {
 	}
 	memset(result, 0, n);
 	return result;
+}
+
+void xfree(void *ptr) {
+	allocs--;
+	free(ptr);
 }
 
 Node new_node() {
@@ -84,6 +92,7 @@ void gc_release_object(void* object, int32_t type) {
 void gc_free_method() {
 	Node n = root;
 	int methodFound = 0;
+	//printf("Start allocs: %d\n", allocs);
 	while (n != 0 && !methodFound) {
 		switch (n->type) {
 			case VARIABLE_MEMORY_NODE:
@@ -93,8 +102,14 @@ void gc_free_method() {
 				methodFound = 1;
 			break;
 		};
+
+		Node old_n = n;
 		n = n->next;
+
+		xfree(old_n);
 	}
+	
+	//printf("End allocs: %d\n", allocs);
 
 	root = n;
 }
@@ -120,6 +135,7 @@ void gc_add_loop() {
 void gc_free_loop() {
 	Node n = root;
 	int loopFound = 0;
+	//printf("Start allocs: %d\n", allocs);
 	while (n != 0 && !loopFound) {
 		switch (n->type) {
 			case VARIABLE_MEMORY_NODE:
@@ -129,8 +145,14 @@ void gc_free_loop() {
 				loopFound = 1;
 			break;
 		};
+		
+		Node old_n = n;
 		n = n->next;
+
+		xfree(old_n);
+
 	}
+	//printf("End allocs: %d\n", allocs);
 
 	root = n;
 }

@@ -48,6 +48,7 @@ void copyVector(struct Vector* to, struct Vector* from, size_t element_size) {
 
 extern int powi(int a,int n);
 extern void* xmalloc(size_t n);
+extern void xfree(void* ptr);
 extern void gc_add_object(void* object, int32_t type);
 
 void int_allocVector(struct Vector* vector, int32_t size);
@@ -153,7 +154,7 @@ void int_printInterval(struct Interval* interval) {
 }
 
 void int_releaseInterval(struct Interval* interval) {
-	free(interval);
+	xfree(interval);
 }
 
 //////////////////////////
@@ -642,8 +643,7 @@ int areVectorsOfSameLength(struct Vector* op1, struct Vector* op2) {
 }
 
 void releaseVector(struct Vector* vector) {
-	if (vector->data != 0)
-		free(vector->data);
-	free(vector);
+	xfree(vector->data);
+	xfree(vector);
 }
 

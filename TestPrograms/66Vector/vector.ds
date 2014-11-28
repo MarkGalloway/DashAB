@@ -1,25 +1,21 @@
 const out = std_output();
 const inp = std_input();
-const integer vector vglob[3] = [8, 9, 10];
+//const integer vector vglob[3] = [8, 9, 10];
 
 procedure main() returns integer {
-	boolean v1[2];
 	integer v2[1+2] = [1, 2, 3];
-	integer v3[3] = v2*2;
-
-	real vector v4[2];
-	real vector v5[4] = [0.0, 1.0, 2.0, 3.0];
-	real vector v6[*] = v5/2.0;
+	integer v3[3] = 1+v2+2;
 	
-	v1[[2, 1]] = [true, false];
-	v2[[2, 3, 1]] = 1..3;
 	
-	v1[2] -> out; '\n' -> out; '[' -> out; 
+	'[' -> out; 
 	v2[1] -> out; ',' -> out; ' ' -> out;
 	v2[2] -> out; ',' -> out; ' ' -> out;
 	v2[3] -> out; ']' -> out; '\n' -> out;
-	v3[2] -> out; '\n' -> out;
-	v6[2] -> out; '\n' -> out;
+	
+	'[' -> out; 
+	v3[1] -> out; ',' -> out; ' ' -> out;
+	v3[2] -> out; ',' -> out; ' ' -> out;
+	v3[3] -> out; ']' -> out; '\n' -> out;
 
 	return 0;
 }
