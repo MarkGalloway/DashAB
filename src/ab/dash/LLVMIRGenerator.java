@@ -1754,19 +1754,26 @@ public class LLVMIRGenerator {
 	private StringTemplate operation(DashAST t, LLVMOps op)
 	{
 		String id = Integer.toString(((DashAST)t).llvmResultID);
-		int type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
+		int type = t.evalType.getTypeIndex();
 		
-		if (((DashAST)t.getChild(0)).promoteToType != null) {
-			if (((DashAST)t.getChild(0)).promoteToType.getTypeIndex() == SymbolTable.tREAL) {
-				type = ((DashAST)t.getChild(0)).promoteToType.getTypeIndex();
-			}
-		}
 		
 		StringTemplate lhs = exec((DashAST)t.getChild(0));
 		String lhs_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
+		int lhs_type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
+		
+		if (((DashAST)t.getChild(0)).promoteToType != null && 
+				((DashAST)t.getChild(0)).promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+			lhs_type = SymbolTable.tREAL;
+		}
 		
 		StringTemplate rhs = exec((DashAST)t.getChild(1));
 		String rhs_id = Integer.toString(((DashAST)t.getChild(1)).llvmResultID);
+		int rhs_type = ((DashAST)t.getChild(1)).evalType.getTypeIndex();
+		
+		if (((DashAST)t.getChild(1)).promoteToType != null && 
+				((DashAST)t.getChild(1)).promoteToType.getTypeIndex() == SymbolTable.tREAL) {
+			rhs_type = SymbolTable.tREAL;
+		}
 		
 		if (t.promoteToType != null && 
 				t.promoteToType.getTypeIndex() == SymbolTable.tREAL) {
@@ -1781,6 +1788,7 @@ public class LLVMIRGenerator {
 				
 				lhs = promote;
 				lhs_id = lhs_id + "_lhs_tmp";
+				lhs_type = type;
 			}
 			
 			if (((DashAST)t.getChild(1)).evalType.getTypeIndex() == SymbolTable.tINTEGER) {
@@ -1791,138 +1799,161 @@ public class LLVMIRGenerator {
 				
 				rhs = promote;
 				rhs_id = rhs_id + "_rhs_tmp";
+				rhs_type = type;
 			}
 		}
 		
 		StringTemplate template = null;
 		switch (op) {
 		case AND: {
-			if (type == SymbolTable.tBOOLEAN) {
+			if (lhs_type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_and");
 			}
 			break;
 		}
 		case OR: {
-			if (type == SymbolTable.tBOOLEAN) {
+			if (lhs_type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_or");
 			}
 			break;
 		}
 		case XOR: {
-			if (type == SymbolTable.tBOOLEAN) {
+			if (lhs_type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_xor");
 			}
 			break;
 		}
 		case EQ:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_eq");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_eq");
-			} else if (type == SymbolTable.tCHARACTER) {
+			} else if (lhs_type == SymbolTable.tCHARACTER) {
 				template = stg.getInstanceOf("char_eq");
-			} else if (type == SymbolTable.tBOOLEAN) {
+			} else if (lhs_type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_eq");
 			}
 			break;
 		case NE:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_ne");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_ne");
-			} else if (type == SymbolTable.tCHARACTER) {
+			} else if (lhs_type == SymbolTable.tCHARACTER) {
 				template = stg.getInstanceOf("char_ne");
-			} else if (type == SymbolTable.tBOOLEAN) {
+			} else if (lhs_type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_ne");
 			}
 			break;
 		case LT:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_lt");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_lt");
-			} else if (type == SymbolTable.tCHARACTER) {
+			} else if (lhs_type == SymbolTable.tCHARACTER) {
 				template = stg.getInstanceOf("char_lt");
-			} else if (type == SymbolTable.tBOOLEAN) {
+			} else if (lhs_type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_lt");
 			}
 			break;
 		case LE:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_le");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_le");
-			} else if (type == SymbolTable.tCHARACTER) {
+			} else if (lhs_type == SymbolTable.tCHARACTER) {
 				template = stg.getInstanceOf("char_le");
-			} else if (type == SymbolTable.tBOOLEAN) {
+			} else if (lhs_type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_le");
 			}
 			break;
 		case GT:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_gt");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_gt");
-			} else if (type == SymbolTable.tCHARACTER) {
+			} else if (lhs_type == SymbolTable.tCHARACTER) {
 				template = stg.getInstanceOf("char_gt");
-			} else if (type == SymbolTable.tBOOLEAN) {
+			} else if (lhs_type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_gt");
 			}
 			break;
 		case GE:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_ge");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_ge");
-			} else if (type == SymbolTable.tCHARACTER) {
+			} else if (lhs_type == SymbolTable.tCHARACTER) {
 				template = stg.getInstanceOf("char_ge");
-			} else if (type == SymbolTable.tBOOLEAN) {
+			} else if (lhs_type == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_ge");
 			}
 			break;
 		case ADD:
-			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_add");
-			} else if (type == SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_add");
-			} else if (type == SymbolTable.tVECTOR) {
-				template = stg.getInstanceOf("vector_add_vector");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_add_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_add_scalar_int");
+				}  else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_add_vector_int");
+				}
+			} else {
+				if (lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_add");
+				} else if (lhs_type == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_add");
+				}
 			}
 			break;
 		case SUB:
-			if (type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_sub");
-			} else if (type == SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_sub");
-			} else if (type == SymbolTable.tVECTOR) {
-				template = stg.getInstanceOf("vector_subtract_vector");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_subtract_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_subtract_scalar_int");
+				}  else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_subtract_vector_int");
+				}
+			} else {
+				if (lhs_type ==SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_sub");
+				} else if (lhs_type ==SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_sub");
+				} 
 			}
 			break;
 		case MULT:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type ==SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_mul");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type ==SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_mul");
 			}
 			break;
 		case DIV:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type ==SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_div");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type ==SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_div");
 			}
 			break;
 		case MOD:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type ==SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_mod");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type ==SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_mod");
 			}
 			break;
 		case POWER:
-			if (type == SymbolTable.tINTEGER) {
+			if (lhs_type ==SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_pow");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (lhs_type ==SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_pow");
 			}
 			break;
