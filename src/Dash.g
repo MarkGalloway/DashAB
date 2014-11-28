@@ -311,13 +311,13 @@ typedef
 @after { if(!varDeclConstraint.empty()) emitErrorMessage("line " + line + ": Typedef must only be declared in global scope.");}
   : Typedef type ID DELIM {line = $ID.getLine();} 
       -> ^(TYPEDEF type ID)
-  | Typedef primitiveType LBRACK expression RBRACK ID DELIM {line = $ID.getLine();}   // Vector explicit size.. INVALID?
+  | Typedef primitiveType LBRACK expression RBRACK ID DELIM                     {line = $ID.getLine();}  // Vector explicit size
       -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
-  | Typedef primitiveType Vector ID DELIM {line = $ID.getLine();}
+  | Typedef primitiveType Vector ID DELIM                                       {line = $ID.getLine();}  // Vector implicit size
       -> ^(TYPEDEF ^(VECTOR primitiveType INFERRED) ID)
   | Typedef primitiveType LBRACK expression ',' expression RBRACK ID DELIM      {line = $ID.getLine();}  // Matrix explicit size
       -> ^(TYPEDEF ^(MATRIX primitiveType expression) ID)
-  | Typedef primitiveType Matrix ID DELIM {line = $ID.getLine();}
+  | Typedef primitiveType Matrix ID DELIM                                       {line = $ID.getLine();}  // Matrix implicit size
       -> ^(TYPEDEF ^(MATRIX primitiveType INFERRED INFERRED) ID)
   ;
 
