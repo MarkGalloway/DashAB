@@ -175,11 +175,11 @@ functionParameter
   : Var type ID { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
   | Var primitiveType (Vector | Matrix)? ID LBRACK expression (',' expression)? RBRACK
       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
-  | specifier? type ID  -> ^(ARG_DECL Const["const"] type ID)
   | specifier? primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
   | specifier? primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression+) ID)
+  | specifier? type ID  -> ^(ARG_DECL Const["const"] type ID)
   ;
   
 procedure
@@ -190,9 +190,7 @@ procedure
   ;
 	
 procedureParameter
-  : type ID -> ^(ARG_DECL Const["const"] type ID) 
-  | specifier type ID -> ^(ARG_DECL specifier type ID)
-  | primitiveType Vector? ID LBRACK expression RBRACK 
+  : primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
   | specifier primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL specifier ^(VECTOR primitiveType expression) ID)
@@ -200,6 +198,8 @@ procedureParameter
       -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression+) ID)
   | specifier primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
       -> ^(ARG_DECL specifier ^(MATRIX primitiveType expression+) ID)
+  | type ID -> ^(ARG_DECL Const["const"] type ID) 
+  | specifier type ID -> ^(ARG_DECL specifier type ID)
   ;
 
 methodReturnType
@@ -311,14 +311,16 @@ typedef
 @after { if(!varDeclConstraint.empty()) emitErrorMessage("line " + line + ": Typedef must only be declared in global scope.");}
   : Typedef type ID DELIM {line = $ID.getLine();} 
       -> ^(TYPEDEF type ID)
-  | Typedef primitiveType LBRACK expression RBRACK ID DELIM {line = $ID.getLine();}   // Vector explicit size.. INVALID?
+  | Typedef primitiveType LBRACK expression RBRACK ID DELIM                     {line = $ID.getLine();}  // Vector explicit size
       -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
-  | Typedef primitiveType Vector ID DELIM {line = $ID.getLine();}
+  | Typedef primitiveType Vector ID DELIM                                       {line = $ID.getLine();}  // Vector implicit size
       -> ^(TYPEDEF ^(VECTOR primitiveType INFERRED) ID)
-  | Typedef primitiveType LBRACK expression ',' expression RBRACK ID DELIM {line = $ID.getLine();}  // Matrix explicit size.. INVALID?
-      -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
-  | Typedef primitiveType Matrix ID DELIM {line = $ID.getLine();}
+  | Typedef primitiveType LBRACK expression ',' expression RBRACK ID DELIM      {line = $ID.getLine();}  // Matrix explicit size
+      -> ^(TYPEDEF ^(MATRIX primitiveType expression) ID)
+  | Typedef primitiveType Matrix ID DELIM                                       {line = $ID.getLine();}  // Matrix implicit size
       -> ^(TYPEDEF ^(MATRIX primitiveType INFERRED INFERRED) ID)
+  | Typedef INTEGER_TYPE Interval ID DELIM                                      {line = $ID.getLine();}  // Typedef
+      -> ^(TYPEDEF Interval ID)
   ;
 
 statement

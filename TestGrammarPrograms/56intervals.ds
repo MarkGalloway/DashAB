@@ -1,8 +1,11 @@
 const integer interval iv1 = 1 .. 10;
 const integer interval iv2 = 1..10;
+typedef integer interval ivt;
 
 procedure main() returns integer {
   integer interval iv;
+
+  ivt one_to_10 = 1..10;
 
   integer interval iv5to5 = 5..5;  // should generate 5
 
