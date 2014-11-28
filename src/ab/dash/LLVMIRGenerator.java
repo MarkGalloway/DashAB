@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.antlr.stringtemplate.StringTemplate;
@@ -21,6 +23,7 @@ public class LLVMIRGenerator {
 	private SymbolTable symtab;
 	private Stack<Integer> loop_stack;
 	private Map<Integer, String> typeIndexToName;
+	private Set<String> vector_sizes;
 	
 	private boolean debug_mode = false;
 	
@@ -32,6 +35,7 @@ public class LLVMIRGenerator {
 		this.stg = stg;
 		this.symtab = symtab;
 		this.loop_stack = new Stack<Integer>();
+		this.vector_sizes = new HashSet<String>();
 		
 		/*
 		 * These are the prefixes to the vector operation string template
@@ -245,6 +249,8 @@ public class LLVMIRGenerator {
 			if (type.getTypeIndex() == SymbolTable.tTUPLE) {
 				template = stg.getInstanceOf("function_returning_tuple");
 				template.setAttribute("type_id", ((TupleTypeSymbol)type).tupleTypeIndex);
+			} else if (type.getTypeIndex() == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("function_returning_vector");
 			}
 			else {
 				template = stg.getInstanceOf("function");
@@ -289,6 +295,10 @@ public class LLVMIRGenerator {
 				}
 				
 				StringTemplate llvm_arg_type = getType(arg_type);
+				
+				if (arg_type.getTypeIndex() == SymbolTable.tVECTOR) {
+					// TODO: Check if size is valid
+				}
 
 				StringTemplate arg_template = null;
 				if (arg_child.symbol instanceof VariableSymbol && 
@@ -304,6 +314,11 @@ public class LLVMIRGenerator {
 					arg_template = stg.getInstanceOf("pass_tuple_expr_by_reference");
 					arg_template.setAttribute("tuple_expr_id", arg_child.llvmResultID);
 					arg_template.setAttribute("type_id", ((TupleTypeSymbol)arg_type).tupleTypeIndex);
+				}  else if (arg_type.getTypeIndex() == SymbolTable.tVECTOR) {
+					code.add(exec(arg));
+
+					arg_template = stg.getInstanceOf("pass_vector_expr_by_reference");
+					arg_template.setAttribute("vector_expr_id", arg_child.llvmResultID);
 				} else {
 					if (stackSave == null) {
 						stackSave = stg.getInstanceOf("save_stack");
@@ -335,6 +350,17 @@ public class LLVMIRGenerator {
 			else if (method_type.getTypeIndex() == SymbolTable.tTUPLE) {
 				template = stg.getInstanceOf("call_returning_tuple");
 				template.setAttribute("type_id", ((TupleTypeSymbol)method_type).tupleTypeIndex);
+			} 
+			else if (method_type.getTypeIndex() == SymbolTable.tVECTOR) {
+				VectorType vt = (VectorType) method_type;
+				
+				template = stg.getInstanceOf("call_returning_vector");
+				StringTemplate vector_size = exec((DashAST)vt.def.getChild(1));
+
+				template.setAttribute("type_name", typeIndexToName.get(vt.elementType.getTypeIndex()));
+				if (vector_sizes.add(vector_size.getAttribute("id").toString()))
+					template.setAttribute("vector_size", vector_size);
+				template.setAttribute("vector_size_id", vector_size.getAttribute("id"));
 			} else {
 				template = stg.getInstanceOf("call");
 				template.setAttribute("return_type", getType(method_type));
@@ -414,6 +440,20 @@ public class LLVMIRGenerator {
 				assignmentTemplate.setAttribute("rhs_expr", expr_template);
 				assignmentTemplate.setAttribute("element_assigns", element_assigns);
 
+				template.setAttribute("assign_code", assignmentTemplate);
+			} else if (expr.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("return_vector");
+				int elementTypeIndex = ((VectorType)expr.evalType).elementType.getTypeIndex();
+				
+				//vector_assign(id, type_name, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id)
+				StringTemplate assignmentTemplate = stg.getInstanceOf("vector_assign");
+				assignmentTemplate.setAttribute("id", DashAST.getUniqueId());
+				assignmentTemplate.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+				assignmentTemplate.setAttribute("vector_var_expr_id", id);
+				assignmentTemplate.setAttribute("rhs_expr", expr_template);
+				assignmentTemplate.setAttribute("rhs_expr_id", expr_id);
+				
+				template.setAttribute("id", id);
 				template.setAttribute("assign_code", assignmentTemplate);
 			}
 			else {
@@ -1088,7 +1128,6 @@ public class LLVMIRGenerator {
 		case DashLexer.RANGE:
 		{
 			String id = Integer.toString(((DashAST)t).llvmResultID);
-			int type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
 			
 			if (((DashAST)t.getChild(0)).promoteToType != null) {
 				// TODO
