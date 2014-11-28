@@ -1912,6 +1912,10 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("int_sub");
 			} else if (type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_sub");
+			} else if (type == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("vector_subtract_vector");
+				int elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 			}
 			break;
 		case MULT:
