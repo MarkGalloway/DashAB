@@ -315,8 +315,8 @@ typedef
       -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
   | Typedef primitiveType Vector ID DELIM {line = $ID.getLine();}
       -> ^(TYPEDEF ^(VECTOR primitiveType INFERRED) ID)
-  | Typedef primitiveType LBRACK expression ',' expression RBRACK ID DELIM {line = $ID.getLine();}  // Matrix explicit size.. INVALID?
-      -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
+  | Typedef primitiveType LBRACK expression ',' expression RBRACK ID DELIM      {line = $ID.getLine();}  // Matrix explicit size
+      -> ^(TYPEDEF ^(MATRIX primitiveType expression) ID)
   | Typedef primitiveType Matrix ID DELIM {line = $ID.getLine();}
       -> ^(TYPEDEF ^(MATRIX primitiveType INFERRED INFERRED) ID)
   ;
