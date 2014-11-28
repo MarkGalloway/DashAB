@@ -636,10 +636,14 @@ STRING
   ;
 
 fragment Quote : 	'\'';
-//CHARACTER :	'\'' '\\'? . '\'' ;
-CHARACTER : Quote (~'\\' | '\\' ('a'| 'b' | 'n' | 'r' | 't' | '\\' | '\'' | '"' | '0')) Quote
-          | a=Quote ('\\' .) Quote {emitErrorMessage("line " + $a.getLine() + ": invalid escape sequence");} 
-          ;
+CHARACTER 
+  : a=Quote 
+        (~'\\'  // Any non-escape character here
+        | '\\' ('a'| 'b' | 'n' | 'r' | 't' | '\\' | '\'' | '"' | '0'| // Invalid escape, fallthrough
+          {emitErrorMessage("line " + $a.getLine() + ": invalid escape sequence");})
+        ) 
+      Quote
+  ;
 
 INVALID_CHARACTER : '"' '\\'? . '"' ;
 
