@@ -14,6 +14,14 @@ procedure getInverse2(real matrix A[4, 4]) returns real matrix[4, 4] {
   //
 }
 
+function printVector(integer v[3]) returns integer {
+  //
+}
+
+procedure printVector(integer v[3]) {
+  //
+}
+
 procedure main() returns integer {
   //solveDiagonal();
 }
