@@ -1903,8 +1903,6 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("real_add");
 			} else if (type == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_add_vector");
-				int elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
-				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 			}
 			break;
 		case SUB:
@@ -1914,8 +1912,6 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("real_sub");
 			} else if (type == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_subtract_vector");
-				int elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
-				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 			}
 			break;
 		case MULT:
@@ -1948,6 +1944,11 @@ public class LLVMIRGenerator {
 			break;
 		}
 		
+		if (type == SymbolTable.tVECTOR) {
+			int elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
+			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+		}
+
 		template.setAttribute("rhs_id", rhs_id);
 		template.setAttribute("rhs", rhs);
 		template.setAttribute("lhs_id", lhs_id);
