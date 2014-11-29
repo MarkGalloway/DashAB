@@ -7,3 +7,4 @@ const real r6 = 42.e+10;
 const real r7 = ._____42___;
 const real r8 = 4_2_._0_;
 const real r9 = 4_2_e_+_10_;
+const real r10 = 42.;
