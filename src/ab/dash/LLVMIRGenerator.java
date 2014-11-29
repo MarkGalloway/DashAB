@@ -1973,7 +1973,7 @@ public class LLVMIRGenerator {
 		StringTemplate lhs = exec((DashAST)t.getChild(0));
 		String lhs_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
 		int lhs_type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
-		
+
 		if (((DashAST)t.getChild(0)).promoteToType != null && 
 				((DashAST)t.getChild(0)).promoteToType.getTypeIndex() == SymbolTable.tREAL) {
 			lhs_type = SymbolTable.tREAL;
@@ -1986,6 +1986,30 @@ public class LLVMIRGenerator {
 		if (((DashAST)t.getChild(1)).promoteToType != null && 
 				((DashAST)t.getChild(1)).promoteToType.getTypeIndex() == SymbolTable.tREAL) {
 			rhs_type = SymbolTable.tREAL;
+		}
+		
+		// Find vector type for operations
+		int elementTypeIndex = 0;
+		if (type == SymbolTable.tVECTOR) {
+			elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
+		}
+		
+		if (lhs_type == SymbolTable.tVECTOR) {
+			VectorType vector_type = (VectorType)((DashAST)t.getChild(0)).evalType;
+			int elementType = vector_type.elementType.getTypeIndex();
+			
+			if (elementType > elementTypeIndex) {
+				elementTypeIndex = elementType;
+			}
+		}
+		
+		if (rhs_type == SymbolTable.tVECTOR) {
+			VectorType vector_type = (VectorType)((DashAST)t.getChild(1)).evalType;
+			int elementType = vector_type.elementType.getTypeIndex();
+			
+			if (elementType > elementTypeIndex) {
+				elementTypeIndex = elementType;
+			}
 		}
 		
 		if (lhs_type == SymbolTable.tINTERVAL && rhs_type == SymbolTable.tVECTOR) {
@@ -2350,7 +2374,6 @@ public class LLVMIRGenerator {
 		}
 		
 		if (type == SymbolTable.tVECTOR) {
-			int elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
 			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 
 			StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
