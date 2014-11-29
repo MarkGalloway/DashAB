@@ -533,7 +533,9 @@ public class SymbolTable {
         if ( t.getTypeIndex() == tINTERVAL)
         	element = _integer;
         
-        if (texpr == tVECTOR) {
+        if (texpr == tINTERVAL) {
+        	return new VectorType(element, 0);
+        } else if (texpr == tVECTOR) {
         	VectorType vectorType = (VectorType)index.evalType;
         	if (vectorType.elementType.getTypeIndex() == tINTEGER)
         		return new VectorType(element, 0);
@@ -543,9 +545,7 @@ public class SymbolTable {
                         text((DashAST)index.getParent()));
         		return null;
         	}
-        }
-        
-        if (texpr != tINTEGER) {
+        } else if (texpr != tINTEGER) {
         	error("line " + index.getLine() + " : " + 
     				text(index)+" index must be of type integer in "+
                     text((DashAST)index.getParent()));

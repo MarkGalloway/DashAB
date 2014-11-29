@@ -431,8 +431,10 @@ int int_getElement(int32_t* out, struct Vector* vector, int32_t index) {
 }
 
 int int_setElement(struct Vector* vector, int32_t index, int32_t value) {
-	if (index > vector->size || index < 1)
+	if (index > vector->size || index < 1){
+		printf("RuntimeError: Vector indexing out of bounds.");
 		return 1;
+	}
 
 	((int32_t*)vector->data)[index - 1] = value;
 	
@@ -451,6 +453,27 @@ void int_assignVector(struct Vector* lhs, struct Vector* rhs) {
 		lhs_data[i] = 0;
 		i++;
 	}
+}
+
+int int_indexVector(struct Vector* out, struct Vector* vector, struct Vector* index) {
+	int_allocVector(out, index->size);
+	int32_t* out_data = (int32_t*)out->data;
+	int32_t* vector_data = (int32_t*)vector->data;
+	int32_t* index_data = (int32_t*)index->data;
+		
+	int i;
+	for (i = 0; i < index->size; i++) {
+		int32_t index = index_data [i];
+
+		if (index < 1 || index > vector->size) {
+			printf("RuntimeError: Vector indexing out of bounds.");
+			return 1;
+		}
+
+		out_data[i] = vector_data [index - 1];
+	}
+
+	return 0;
 }
 
 void int_assignVectorScalar(struct Vector* lhs, int32_t rhs) {

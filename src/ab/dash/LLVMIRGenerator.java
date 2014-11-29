@@ -1241,8 +1241,30 @@ public class LLVMIRGenerator {
 				template.setAttribute("index_expr_id", indexExpr.getAttribute("id"));
 
 				return template;
-			} else if (indexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
-				/* TODO: Implement. */
+			} else if (indexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+					indexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
+				StringTemplate indexExpr = exec(indexNode);
+				
+				if (indexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+					//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+					interval.setAttribute("id", DashAST.getUniqueId());
+					interval.setAttribute("interval_var_expr", indexExpr);
+					interval.setAttribute("interval_var_expr_id", indexExpr.getAttribute("id"));
+					
+					indexExpr = interval;
+				}
+				
+				// vector_index(id, type_name, vector_expr, vector_expr_id, index_expr, index_expr_id) 
+				StringTemplate template = stg.getInstanceOf("vector_index");
+				template.setAttribute("id", t.llvmResultID);
+				template.setAttribute("vector_expr", getVector);
+				template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+				template.setAttribute("index_expr", indexExpr);
+				template.setAttribute("index_expr_id", indexExpr.getAttribute("id"));
+				
+				return template;
 			}
 		}
 		
@@ -1649,7 +1671,7 @@ public class LLVMIRGenerator {
 		DashAST vectorTypeExpr = (DashAST)vecType.def.getChild(1);
 		
 		boolean scalar = false;
-		boolean need_size = false;
+		boolean declare = false;
 		if (t.getToken().getType() == DashLexer.ASSIGN) {
 			if (rhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
 					rhs.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
@@ -1659,24 +1681,23 @@ public class LLVMIRGenerator {
 				scalar = true;
 			}
 		} else if(t.getToken().getType() == DashLexer.VAR_DECL) {
+			declare = true;
+			
 			varSymbol = (VariableSymbol) lhs.symbol;
 			if (rhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
 					rhs.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
 				if (vectorTypeExpr.getToken().getType() == DashLexer.INFERRED) {
 					template = stg.getInstanceOf("vector_assign_decl_infer");
-					need_size = false;
 				} else  {
 					template = stg.getInstanceOf("vector_assign_decl");
-					need_size = true;
 				}
 			} else {
 				template = stg.getInstanceOf("vector_assign_decl_scalar");
 				scalar = true;
-				need_size = true;
 			}
 		}		
 		
-		if (need_size) {
+		if (vectorTypeExpr.getToken().getType() != DashLexer.INFERRED && declare) {
 			StringTemplate vector_size = exec((DashAST) vectorTypeExpr);
 
 			if (vector_sizes.add(vector_size.getAttribute("id").toString()))

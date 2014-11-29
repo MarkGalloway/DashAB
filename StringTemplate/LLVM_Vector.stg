@@ -106,6 +106,13 @@ vector_get_element(id, vector_expr, vector_expr_id, type_name, llvm_type, index_
   call void @llvm.stackrestore(i8* <vlocal(id)>_stack);
 >>
 
+vector_index(id, type_name, vector_expr, vector_expr_id, index_expr, index_expr_id) ::= <<
+<vector_expr>
+<index_expr>
+  <vlocal_result(id)> = call i8* @allocVector()
+  call i1 @<type_name>_indexVector(i8* <vlocal_result(id)>, i8* <vlocal_result(vector_expr_id)>, i8* <vlocal_result(index_expr_id)>)
+>>
+
 vector_get_local(id, sym_id) ::= <<
   <vlocal_result(id)> = load i8** <vlocal_symbol(sym_id)>
 >>
