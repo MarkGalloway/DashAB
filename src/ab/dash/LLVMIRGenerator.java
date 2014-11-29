@@ -1620,7 +1620,8 @@ public class LLVMIRGenerator {
 		boolean scalar = false;
 		boolean need_size = false;
 		if (t.getToken().getType() == DashLexer.ASSIGN) {
-			if (rhs.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
+			if (rhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+					rhs.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_assign");
 			} else {
 				template = stg.getInstanceOf("vector_assign_scalar");
@@ -1628,7 +1629,8 @@ public class LLVMIRGenerator {
 			}
 		} else if(t.getToken().getType() == DashLexer.VAR_DECL) {
 			varSymbol = (VariableSymbol) lhs.symbol;
-			if (rhs.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
+			if (rhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+					rhs.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
 				if (vectorTypeExpr.getToken().getType() == DashLexer.INFERRED) {
 					template = stg.getInstanceOf("vector_assign_decl_infer");
 					need_size = false;
@@ -1641,8 +1643,7 @@ public class LLVMIRGenerator {
 				scalar = true;
 				need_size = true;
 			}
-		}
-		
+		}		
 		
 		if (need_size) {
 			StringTemplate vector_size = exec((DashAST) vectorTypeExpr);
@@ -1663,6 +1664,16 @@ public class LLVMIRGenerator {
 		getVector.setAttribute("sym_id", varSymbol.id);
 
 		StringTemplate rhsExpr = exec(rhs);
+		
+		if (rhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+			//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+			StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+			interval.setAttribute("id", DashAST.getUniqueId());
+			interval.setAttribute("interval_var_expr", rhsExpr);
+			interval.setAttribute("interval_var_expr_id", rhsExpr.getAttribute("id"));
+			
+			rhsExpr = interval;
+		}
 
 		template.setAttribute("id", t.llvmResultID);
 		template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));

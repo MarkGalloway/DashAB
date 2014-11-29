@@ -153,6 +153,10 @@ void int_printInterval(struct Interval* interval) {
 		printf("%d", i);
 }
 
+int int_IntervalRange(struct Interval* interval) {
+	return interval->upper - interval->lower + 1;
+}
+
 void int_releaseInterval(struct Interval* interval) {
 	xfree(interval);
 }
