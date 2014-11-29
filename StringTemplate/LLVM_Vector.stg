@@ -141,7 +141,7 @@ vector_add_vector(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal(id)>_success = call i32 @<type_name>_VectorAddVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>);
 >>
 
-vector_add_scalar_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
+vector_add_scalar(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
   <vlocal_result(id)> = call i8* @allocVector()
@@ -150,7 +150,7 @@ vector_add_scalar_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal(id)>_success = call i32 @<type_name>_VectorAddScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i32 <vlocal_result(rhs_id)>);
 >>
 
-scalar_add_vector_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
+scalar_add_vector(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
   <vlocal_result(id)> = call i8* @allocVector()
@@ -168,7 +168,7 @@ vector_subtract_vector(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal(id)>_success = call i32 @<type_name>_VectorSubtractVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>);
 >>
 
-vector_subtract_scalar_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
+vector_subtract_scalar(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
   <vlocal_result(id)> = call i8* @allocVector()
@@ -177,7 +177,7 @@ vector_subtract_scalar_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal(id)>_success = call i32 @<type_name>_VectorSubtractScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i32 <vlocal_result(rhs_id)>);
 >>
 
-scalar_subtract_vector_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
+scalar_subtract_vector(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
   <vlocal_result(id)> = call i8* @allocVector()
@@ -195,7 +195,7 @@ vector_multiply_vector(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal(id)>_success = call i32 @<type_name>_VectorMultiplyVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>);
 >>
 
-vector_multiply_scalar_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
+vector_multiply_scalar(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
   <vlocal_result(id)> = call i8* @allocVector()
@@ -204,7 +204,7 @@ vector_multiply_scalar_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal(id)>_success = call i32 @<type_name>_VectorMultiplyScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i32 <vlocal_result(rhs_id)>);
 >>
 
-scalar_multiply_vector_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
+scalar_multiply_vector(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
   <vlocal_result(id)> = call i8* @allocVector()
@@ -222,7 +222,7 @@ vector_divide_vector(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal(id)>_success = call i32 @<type_name>_VectorDivideVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>);
 >>
 
-vector_divide_scalar_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
+vector_divide_scalar(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
   <vlocal_result(id)> = call i8* @allocVector()
@@ -231,7 +231,7 @@ vector_divide_scalar_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal(id)>_success = call i32 @<type_name>_VectorDivideScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i32 <vlocal_result(rhs_id)>);
 >>
 
-scalar_divide_vector_int(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
+scalar_divide_vector(id, type_name, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
   <vlocal_result(id)> = call i8* @allocVector()
