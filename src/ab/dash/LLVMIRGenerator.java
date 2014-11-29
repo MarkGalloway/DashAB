@@ -1985,10 +1985,10 @@ public class LLVMIRGenerator {
 					template = stg.getInstanceOf("vector_add_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tINTEGER) {
-					template = stg.getInstanceOf("vector_add_scalar_int");
+					template = stg.getInstanceOf("vector_add_scalar");
 				}  else if (rhs_type == SymbolTable.tVECTOR &&
 						lhs_type == SymbolTable.tINTEGER) {
-					template = stg.getInstanceOf("scalar_add_vector_int");
+					template = stg.getInstanceOf("scalar_add_vector");
 				}
 			} else {
 				if (lhs_type == SymbolTable.tINTEGER) {
@@ -2005,10 +2005,10 @@ public class LLVMIRGenerator {
 					template = stg.getInstanceOf("vector_subtract_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tINTEGER) {
-					template = stg.getInstanceOf("vector_subtract_scalar_int");
+					template = stg.getInstanceOf("vector_subtract_scalar");
 				}  else if (rhs_type == SymbolTable.tVECTOR &&
 						lhs_type == SymbolTable.tINTEGER) {
-					template = stg.getInstanceOf("scalar_subtract_vector_int");
+					template = stg.getInstanceOf("scalar_subtract_vector");
 				}
 			} else {
 				if (lhs_type ==SymbolTable.tINTEGER) {
@@ -2019,17 +2019,43 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case MULT:
-			if (lhs_type ==SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_mul");
-			} else if (lhs_type ==SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_mul");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_multiply_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_multiply_scalar");
+				}  else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_multiply_vector");
+				}
+			} else {
+				if (lhs_type ==SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_mul");
+				} else if (lhs_type ==SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_mul");
+				}
 			}
 			break;
 		case DIV:
-			if (lhs_type ==SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_div");
-			} else if (lhs_type ==SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_div");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_divide_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_divide_scalar");
+				}  else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_divide_vector");
+				}
+			} else {
+				if (lhs_type ==SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_div");
+				} else if (lhs_type ==SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_div");
+				}
 			}
 			break;
 		case MOD:
