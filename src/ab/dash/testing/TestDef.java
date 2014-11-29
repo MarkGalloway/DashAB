@@ -210,6 +210,9 @@ public class TestDef extends BaseTest {
         base_globals.add("main");
         base_globals.add("out");
         base_globals.add("inp");
+        base_globals.add("vglob");
+        base_globals.add("printVector");
+        base_globals.add("zeros");
         assertEquals(base_globals, symtab.globals.keys());
         
         MethodSymbol main = (MethodSymbol) symtab.globals.resolve("main");
@@ -224,6 +227,7 @@ public class TestDef extends BaseTest {
         DashAST block = (DashAST) main_node.parent.getChild(1);
         
         Set<String> main_locals = new LinkedHashSet<String>();
+        main_locals.add("v7");
         main_locals.add("v1");
         main_locals.add("v2");
         main_locals.add("v3");
