@@ -1989,7 +1989,7 @@ public class LLVMIRGenerator {
 		}
 		
 		// Find vector type for operations
-		int elementTypeIndex = 0;
+		int elementTypeIndex = -1;
 		if (type == SymbolTable.tVECTOR) {
 			elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
 		}
@@ -2091,6 +2091,15 @@ public class LLVMIRGenerator {
 			if (lhs_type == SymbolTable.tINTERVAL &&
 				rhs_type == SymbolTable.tINTERVAL) {
 				template = stg.getInstanceOf("interval_eq_interval");
+			}  else if (lhs_type == SymbolTable.tVECTOR &&
+					rhs_type == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("vector_eq_vector");
+			} else if (lhs_type == SymbolTable.tVECTOR &&
+					rhs_type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("vector_eq_scalar");
+			} else if (rhs_type == SymbolTable.tVECTOR &&
+					lhs_type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("scalar_eq_vector"); // Need to know what side is scalar
 			} else if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_eq");
 			} else if (lhs_type == SymbolTable.tREAL) {
@@ -2105,6 +2114,15 @@ public class LLVMIRGenerator {
 			if (lhs_type == SymbolTable.tINTERVAL &&
 				rhs_type == SymbolTable.tINTERVAL) {
 				template = stg.getInstanceOf("interval_ne_interval");
+			} else if (lhs_type == SymbolTable.tVECTOR &&
+					rhs_type == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("vector_ne_vector");
+			} else if (lhs_type == SymbolTable.tVECTOR &&
+					rhs_type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("vector_ne_scalar");
+			} else if (rhs_type == SymbolTable.tVECTOR &&
+					lhs_type == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("scalar_ne_vector"); // Need to know what side is scalar
 			} else if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_ne");
 			} else if (lhs_type == SymbolTable.tREAL) {
@@ -2373,7 +2391,7 @@ public class LLVMIRGenerator {
 			break;
 		}
 		
-		if (type == SymbolTable.tVECTOR) {
+		if (elementTypeIndex >= 0) {
 			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 
 			StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");

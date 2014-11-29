@@ -105,6 +105,17 @@ procedure main() returns integer {
 	"\tv1 >= v3 = " -> out;
 	printVectorBool(v1 >= v3);
 	
+	"Equality\n" -> out;
+	
+	"\tv1 == v1 = " -> out;
+	v1 == v1 -> out; '\n' -> out;
+	"\tv1 == v2 = " -> out;
+	v1 == v2 -> out; '\n' -> out;
+	"\tv1 != v1 = " -> out;
+	v1 != v1 -> out; '\n' -> out;
+	"\tv1 != v2 = " -> out;
+	v1 != v2 -> out; '\n' -> out;
+	
 	v1 -> out;
 
 	return 0;
