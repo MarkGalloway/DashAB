@@ -1,0 +1,18 @@
+const out = std_output();
+const inp = std_input();
+
+procedure main() returns integer {
+    integer vector u[3] = [2, 3,  4];
+    integer vector v[3] = [8, 4, 6];
+
+    integer vector w[3] = [0, 0, 0];
+
+    w = u % v;
+
+    w[1] -> out; '\n' -> out;
+    w[2] -> out; '\n' -> out;
+    w[3] -> out; '\n' -> out;
+
+	return 0;
+}
+
