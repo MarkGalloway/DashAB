@@ -125,7 +125,7 @@ public class TestUnimplemented extends BaseTest {
      
      @Test 
      public void testIntervalNegation() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/79TestIntervalNegation/ testIntervalNegation.ds"};
+        String[] args = new String[] {"TestPrograms/79TestIntervalNegation/testIntervalNegation.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         sb.append("-2\n");
@@ -173,8 +173,7 @@ public class TestUnimplemented extends BaseTest {
         String[] args = new String[] {"TestPrograms/83TestVectorInitializedWithVector/testVectorInitializedWithVector.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("F\n");
-        sb.append("T");
+        sb.append("0");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
      

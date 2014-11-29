@@ -1032,7 +1032,9 @@ public class LLVMIRGenerator {
 			String expr_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
 			
 			StringTemplate template = null;
-			if (type == SymbolTable.tINTEGER) {
+			if (type == SymbolTable.tINTERVAL) {
+				template = stg.getInstanceOf("interval_minus");
+			} else if (type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_minus");
 			} else if (type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_minus");
@@ -1942,7 +1944,10 @@ public class LLVMIRGenerator {
 			break;
 		}
 		case EQ:
-			if (lhs_type == SymbolTable.tINTEGER) {
+			if (lhs_type == SymbolTable.tINTERVAL &&
+				rhs_type == SymbolTable.tINTERVAL) {
+				template = stg.getInstanceOf("interval_eq_interval");
+			} else if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_eq");
 			} else if (lhs_type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_eq");
@@ -1953,7 +1958,10 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case NE:
-			if (lhs_type == SymbolTable.tINTEGER) {
+			if (lhs_type == SymbolTable.tINTERVAL &&
+				rhs_type == SymbolTable.tINTERVAL) {
+				template = stg.getInstanceOf("interval_ne_interval");
+			} else if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_ne");
 			} else if (lhs_type == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_ne");
@@ -2008,7 +2016,12 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case ADD:
-			if (type == SymbolTable.tVECTOR) {
+			if (type == SymbolTable.tINTERVAL) {
+				if (lhs_type == SymbolTable.tINTERVAL &&
+						rhs_type == SymbolTable.tINTERVAL) {
+					template = stg.getInstanceOf("interval_add_interval");
+				}
+			} else if (type == SymbolTable.tVECTOR) {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_add_vector");
@@ -2028,7 +2041,12 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case SUB:
-			if (type == SymbolTable.tVECTOR) {
+			if (type == SymbolTable.tINTERVAL) {
+				if (lhs_type == SymbolTable.tINTERVAL &&
+						rhs_type == SymbolTable.tINTERVAL) {
+					template = stg.getInstanceOf("interval_subtract_interval");
+				}
+			} else if (type == SymbolTable.tVECTOR) {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_subtract_vector");
@@ -2048,7 +2066,12 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case MULT:
-			if (type == SymbolTable.tVECTOR) {
+			if (type == SymbolTable.tINTERVAL) {
+				if (lhs_type == SymbolTable.tINTERVAL &&
+						rhs_type == SymbolTable.tINTERVAL) {
+					template = stg.getInstanceOf("interval_multiply_interval");
+				}
+			} else if (type == SymbolTable.tVECTOR) {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_multiply_vector");
@@ -2068,7 +2091,12 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case DIV:
-			if (type == SymbolTable.tVECTOR) {
+			if (type == SymbolTable.tINTERVAL) {
+				if (lhs_type == SymbolTable.tINTERVAL &&
+						rhs_type == SymbolTable.tINTERVAL) {
+					template = stg.getInstanceOf("interval_divide_interval");
+				}
+			} else if (type == SymbolTable.tVECTOR) {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_divide_vector");

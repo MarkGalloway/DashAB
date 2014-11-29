@@ -6,8 +6,8 @@ procedure main() returns integer {
 	integer interval b = 1..5;
 	integer interval c = 1..2;
 	
-	boolean t = a == b;
-	boolean f = a == c;
+	boolean t = a != b;
+	boolean f = a != c;
 	
 	t -> out; '\n' -> out;
 	f -> out;

@@ -3,7 +3,7 @@
 const out = std_output();
 
 procedure main() returns integer {
-	integer interval a = -1..2;
+	integer interval a = (-1)..2;
 	integer interval b = +a;
 	
 	integer vector c = b;

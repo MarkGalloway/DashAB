@@ -668,8 +668,12 @@ int32_t getVectorSize(struct Vector* vector) {
 	return vector->size;
 }
 
-int areVectorsOfSameLength(struct Vector* op1, struct Vector* op2) {
-	return op1->size == op2->size;
+int checkVectorsAreOfSameLength(struct Vector* op1, struct Vector* op2) {
+	if (op1->size == op2->size)
+		return 1;
+
+	printf("RuntimeError: Vectors are not of same lenght.");
+	return 0;
 }
 
 void releaseVector(struct Vector* vector) {

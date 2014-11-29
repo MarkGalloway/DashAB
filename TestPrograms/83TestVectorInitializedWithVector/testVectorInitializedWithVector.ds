@@ -1,6 +1,13 @@
 // 8.6.1 Declarations - A vector can be initialized with another vector
 // if it's too small then the resulting vector is null padded
 
+/*
+A vector may also be initialized with another vector. If the vector is 
+initialized using a vector that is too small then the vector will be null 
+padded. However, if the vector is initialized with a vector that is too 
+large then a type error will occur. 
+*/
+
 const out = std_output();
 procedure main() returns integer {
 	
