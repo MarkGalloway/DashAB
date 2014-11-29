@@ -422,8 +422,10 @@ void int_copyVector(struct Vector* to, struct Vector* from) {
 }
 
 int int_getElement(int32_t* out, struct Vector* vector, int32_t index) {
-	if (index > vector->size || index < 1)
+	if (index > vector->size || index < 1){
+		printf("RuntimeError: Vector indexing out of bounds.");
 		return 1;
+	}
 
 	*out = ((int32_t*)vector->data)[index - 1];
 	

@@ -279,7 +279,7 @@ public class TestUnimplemented extends BaseTest {
     public void testVectorOutOfRange() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
        String[] args = new String[] {"TestInvalidSyntaxPrograms/49VectorOutOfRange/vectorOutOfRange.ds"};
        Runner.llvmMain(args);
-       assertEquals("Runtime Error: index out of bounds", outErrIntercept.toString().trim());
+       assertEquals("RuntimeError: Vector indexing out of bounds.", outErrIntercept.toString().trim());
    }
     
     @Test 
