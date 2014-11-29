@@ -1,5 +1,4 @@
-// 8.6.1 Declarations - A vector can be initialized with another vector
-// if it's too small then the resulting vector is null padded
+// 8.6.1 Declarations
 
 /*
 A vector may also be initialized with another vector. If the vector is 
