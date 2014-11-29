@@ -113,8 +113,8 @@ void int_IntervalDivide(struct Interval* out, struct Interval* lhs, struct Inter
 }
 
 void int_IntervalUniaryMinus(struct Interval* out, struct Interval* lhs) {
-	out->lower = -lhs->lower;
-	out->upper = -lhs->upper;
+	out->lower = -lhs->upper;
+	out->upper = -lhs->lower;
 }
 
 int int_IntervalEq(struct Interval* lhs, struct Interval* rhs) {
@@ -132,8 +132,10 @@ int int_IntervalNe(struct Interval* lhs, struct Interval* rhs) {
 }
 
 int int_IntervalBy(struct Vector* out, struct Interval* lhs, int32_t by) {
-	if (by < 1)
+	if (by < 1) {
+		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
 		return 1;
+	}
 	
 	int diff = lhs->upper - lhs->lower;
 	int size = (int) ceil(((float)(diff + 1))/by);

@@ -1135,6 +1135,35 @@ public class LLVMIRGenerator {
 			
 			return template;
 		}
+		
+		case DashLexer.By:
+		{
+			String id = Integer.toString(((DashAST)t).llvmResultID);
+			
+			if (((DashAST)t.getChild(0)).promoteToType != null) {
+				// TODO
+			}
+			
+			StringTemplate lhs = exec((DashAST)t.getChild(0));
+			String lhs_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
+			
+			StringTemplate rhs = exec((DashAST)t.getChild(1));
+			String rhs_id = Integer.toString(((DashAST)t.getChild(1)).llvmResultID);
+			
+			StringTemplate template = null;
+			
+			if (((DashAST)t.getChild(0)).evalType.getTypeIndex() == SymbolTable.tINTERVAL)
+				template = stg.getInstanceOf("interval_by");
+			
+			//interval_by(id, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id)
+			template.setAttribute("rhs_expr_id", rhs_id);
+			template.setAttribute("rhs_expr", rhs);
+			template.setAttribute("lhs_expr_id", lhs_id);
+			template.setAttribute("lhs_expr", lhs);
+			template.setAttribute("id", id);
+			
+			return template;
+		}
 			
 		case DashLexer.DOT:
 		{
