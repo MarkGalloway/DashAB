@@ -249,8 +249,6 @@ public class LLVMIRGenerator {
 			if (type.getTypeIndex() == SymbolTable.tTUPLE) {
 				template = stg.getInstanceOf("function_returning_tuple");
 				template.setAttribute("type_id", ((TupleTypeSymbol)type).tupleTypeIndex);
-			} else if (type.getTypeIndex() == SymbolTable.tVECTOR) {
-				template = stg.getInstanceOf("function_returning_vector");
 			}
 			else {
 				template = stg.getInstanceOf("function");
@@ -441,20 +439,6 @@ public class LLVMIRGenerator {
 				assignmentTemplate.setAttribute("rhs_expr", expr_template);
 				assignmentTemplate.setAttribute("element_assigns", element_assigns);
 
-				template.setAttribute("assign_code", assignmentTemplate);
-			} else if (expr.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
-				template = stg.getInstanceOf("return_vector");
-				int elementTypeIndex = ((VectorType)expr.evalType).elementType.getTypeIndex();
-				
-				//vector_assign(id, type_name, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id)
-				StringTemplate assignmentTemplate = stg.getInstanceOf("vector_assign");
-				assignmentTemplate.setAttribute("id", DashAST.getUniqueId());
-				assignmentTemplate.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
-				assignmentTemplate.setAttribute("vector_var_expr_id", id);
-				assignmentTemplate.setAttribute("rhs_expr", expr_template);
-				assignmentTemplate.setAttribute("rhs_expr_id", expr_id);
-				
-				template.setAttribute("id", id);
 				template.setAttribute("assign_code", assignmentTemplate);
 			}
 			else {
