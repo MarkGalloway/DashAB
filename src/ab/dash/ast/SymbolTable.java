@@ -329,9 +329,11 @@ public class SymbolTable {
 		Type type = promoteFromTo[tf][tt];
 		
 		if (type != null) {
-			if (type.getTypeIndex() == tVECTOR) {
+			if (type.getTypeIndex() == tINTERVAL) {
 				return getPromoteType(from, to);
 			} else if (type.getTypeIndex() == tVECTOR) {
+				return getPromoteType(from, to);
+			} else if (type.getTypeIndex() == tMATRIX) {
 				return getPromoteType(from, to);
 			}
 		}

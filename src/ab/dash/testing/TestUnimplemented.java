@@ -180,7 +180,7 @@ public class TestUnimplemented extends BaseTest {
      
      @Test 
      public void testNullVector() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/86TestIntervalBy/testIntervalBy.ds"};
+        String[] args = new String[] {"TestPrograms/84TestNullVector/testNullVector.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
         sb.append("F\n");
@@ -213,7 +213,7 @@ public class TestUnimplemented extends BaseTest {
      public void testInvalidByInterval() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestInvalidSyntaxPrograms/48InvalidIntervalBy/invalidIntervalBy.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 5: by operator offset must be greater than 0", outErrIntercept.toString().trim());
+        assertEquals("RuntimeError: Right hand side of by operator must be an integer greater than 0.", outErrIntercept.toString().trim());
     }
      
     // Invalid Syntax Test
