@@ -2048,10 +2048,23 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case MOD:
-			if (lhs_type ==SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_mod");
-			} else if (lhs_type ==SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_mod");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_modulus_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_modulus_scalar");
+				}  else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_modulus_vector");
+				}
+			} else {
+				if (lhs_type ==SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_mod");
+				} else if (lhs_type ==SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_mod");
+				}
 			}
 			break;
 		case POWER:
