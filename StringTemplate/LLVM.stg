@@ -106,15 +106,17 @@ declare void @bool_VectorXOrExpr(i8*, i8*, i1)
 declare void @bool_VectorAndExpr(i8*, i8*, i1)
 declare i1  @bool_VectorEq(i8*, i8*)
 declare i1  @bool_VectorNe(i8*, i8*)
+declare void  @bool_printVector(i8*)
 
 declare void @char_allocVector(i8*, i32)
 declare void @char_assignVector(i8*, i8*)
 declare void @char_assignVectorScalar(i8*, i8)
 declare void @char_copyVector(i8*, i8*)
-declare i8  @char_getElement(i8*, i8*, i32)
-declare i8  @char_setElement(i8*, i32, i8)
+declare i1  @char_getElement(i8*, i8*, i32)
+declare i1  @char_setElement(i8*, i32, i8)
 declare i1  @char_VectorEq(i8*, i8*)
 declare i1  @char_VectorNe(i8*, i8*)
+declare void  @char_printVector(i8*)
 
 declare void @int_allocVector(i8*, i32)
 declare void @int_assignVector(i8*, i8*)
@@ -129,6 +131,7 @@ declare void  @int_VectorSubtractVector(i8*, i8*, i8*)
 declare void  @int_VectorSubtractScalar(i8*, i8*, i32)
 declare void  @int_ScalarSubtractVector(i8*, i32, i8*)
 declare void  @int_VectorMultiplyVector(i8*, i8*, i8*)
+declare void  @int_VectorMultiplyScalar(i8*, i8*, i32)
 declare void  @int_VectorDivideVector(i8*, i8*, i8*)
 declare void  @int_VectorDivideScalar(i8*, i8*, i32)
 declare void  @int_ScalarDivideVector(i8*, i32, i8*)
@@ -136,10 +139,13 @@ declare void  @int_VectorModulusVector(i8*, i8*, i8*)
 declare void  @int_VectorModulusScalar(i8*, i8*, i32)
 declare void  @int_ScalarModulusVector(i8*, i32, i8*)
 declare void  @int_VectorPowerVector(i8*, i8*, i8*)
+declare void  @int_VectorPowerScalar(i8*, i8*, i32)
+declare void  @int_ScalarPowerVector(i8*, i32, i8*)
 declare void  @int_VectorUniaryMinus(i8*, i8*)
 declare void  @int_VectorDot(i32*, i8*, i8*)
 declare i1  @int_VectorEq(i8*, i8*)
 declare i1  @int_VectorNe(i8*, i8*)
+declare void  @int_printVector(i8*)
 
 declare void @real_allocVector(i8*, i32)
 declare void @real_assignVector(i8*, i8*)
@@ -153,6 +159,7 @@ declare void  @real_VectorSubtractVector(i8*, i8*, i8*)
 declare void  @real_VectorSubtractScalar(i8*, i8*, float)
 declare void  @real_ScalarSubtractVector(i8*, float, i8*)
 declare void  @real_VectorMultiplyVector(i8*, i8*, i8*)
+declare void  @real_VectorMultiplyScalar(i8*, i8*, float)
 declare void  @real_VectorDivideVector(i8*, i8*, i8*)
 declare void  @real_VectorDivideScalar(i8*, i8*, float)
 declare void  @real_ScalarDivideVector(i8*, float, i8*)
@@ -164,7 +171,7 @@ declare void  @real_VectorUniaryMinus(i8*, i8*)
 declare void  @real_VectorDot(float*, i8*, i8*)
 declare i1  @real_VectorEq(i8*, i8*)
 declare i1  @real_VectorNe(i8*, i8*)
-
+declare void  @real_printVector(i8*)
 
 declare i8*  @allocVector()
 declare i8*  @getData(i8*)
@@ -243,7 +250,6 @@ pass_expr_by_reference(id, arg_expr_id, arg_type) ::= <<
 pass_tuple_expr_by_reference(id, tuple_expr_id, type_id) ::= <<
 <tuple_type(type_id)>* <vlocal_result(tuple_expr_id)>
 >>
-
 
 expr_result_to_stack(id, expr_id, expr_type) ::= <<
   <vlocal_result(expr_id)>_stackptr = alloca <expr_type>;

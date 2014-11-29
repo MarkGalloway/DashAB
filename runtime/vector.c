@@ -313,6 +313,17 @@ int bool_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 	return 1;
 }
 
+void bool_printVector(struct Vector* vector) {
+	int8_t *vector_data = (int8_t*) vector->data;
+
+	for (int i = 0; i < vector->size; i++) {
+		if (vector_data[i] == 0)
+			printf("F");
+		else
+			printf("T");
+	}
+}
+
 //////////////////////////
 // 	CHARACTER  	//
 //////////////////////////
@@ -402,6 +413,13 @@ int char_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 		return 0;
 
 	return 1;
+}
+
+void char_printVector(struct Vector* vector) {
+	int8_t *vector_data = (int8_t*) vector->data;
+
+	for (int i = 0; i < vector->size; i++)
+		printf("%c", vector_data[i]);
 }
 
 //////////////////////////
@@ -626,7 +644,7 @@ void int_VectorPowerScalar(struct Vector* out, struct Vector* lhs, int32_t rhs) 
 	int32_t *lhs_data = (int32_t*) lhs->data;
 	
 	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i] ^ rhs;
+		out_data[i] = powi(lhs_data[i], rhs);
 }
 
 void int_ScalarPowerVector(struct Vector* out, int32_t lhs, struct Vector* rhs) {
@@ -634,7 +652,7 @@ void int_ScalarPowerVector(struct Vector* out, int32_t lhs, struct Vector* rhs) 
 	int32_t *rhs_data = (int32_t*) rhs->data;
 
 	for (int i = 0; i < rhs->size; i++)
-		out_data[i] = lhs ^ rhs_data[i];
+		out_data[i] = powi(lhs, rhs_data[i]);
 }
 
 int int_VectorEq(struct Vector* lhs, struct Vector* rhs) {
@@ -669,6 +687,13 @@ int int_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 		return 0;
 
 	return 1;
+}
+
+void int_printVector(struct Vector* vector) {
+	int32_t *vector_data = (int32_t*) vector->data;
+
+	for (int i = 0; i < vector->size; i++)
+		printf("%d", vector_data[i]);
 }
 
 //////////////////////////
@@ -911,6 +936,14 @@ int real_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 		return 0;
 
 	return 1;
+}
+
+
+void real_printVector(struct Vector* vector) {
+	float *vector_data = (float*) vector->data;
+
+	for (int i = 0; i < vector->size; i++)
+		printf("%g", vector_data[i]);
 }
 
 //////////////////////////
