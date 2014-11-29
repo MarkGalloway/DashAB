@@ -16,6 +16,7 @@ import org.antlr.runtime.tree.TreeVisitorAction;
 
 import org.antlr.runtime.CommonToken;
 
+import ab.dash.ConvertStrings;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
@@ -55,6 +56,11 @@ public class TestDefineTupleTypes {
 		SymbolTable symtab = new SymbolTable(tokens); // make global scope,
 														// types
 		Boolean debug = true;
+		nodes.reset();
+    	ConvertStrings stringConvert = new ConvertStrings(nodes, symtab, debug);
+    	stringConvert.downup(tree); 
+    	
+    	nodes.reset();
 		Def def = new Def(nodes, symtab,debug); // use custom constructor
 		def.downup(tree); // trigger symtab actions upon certain subtrees
 		System.out.println("globals: " + symtab.globals);

@@ -55,7 +55,6 @@ topdown
   | tupleMembers
   | streamDeclaration
   | ret
-  | string
   ;
 
 bottomup
@@ -137,36 +136,6 @@ tuple_list
             }
   ;
 // END: tuple
-
-string
-	:
-	STRING 
-	{
-		char[] charArray = $STRING.text.toCharArray();
-		
-		$STRING.token = new CommonToken(DashLexer.VECTOR_LIST, "VECTOR_LIST");
-		
-		boolean escape = false;
-		for (char c : charArray) {
-			if (c == '\\') {
-				escape = true;
-			} else {
-				DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
-				String character = "";
-				if (escape)
-					character = "\\";
-				
-				character += c;
-				DashAST character_node = new DashAST(new CommonToken(DashLexer.CHARACTER, character));
-				expr.addChild(character_node);
-				
-				$STRING.addChild(expr);
-				
-				escape = false;
-			}
-		}
-	}
-	;
 
 enterMethod
   // it's alright that alternative 2 is disabled by antlr in this case, that's what we want

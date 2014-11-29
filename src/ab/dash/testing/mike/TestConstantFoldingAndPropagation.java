@@ -11,6 +11,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenRewriteStream;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 
+import ab.dash.ConvertStrings;
 import ab.dash.DashLexer;
 import ab.dash.DashParser;
 import ab.dash.Def;
@@ -53,7 +54,11 @@ public class TestConstantFoldingAndPropagation {
 
 		SymbolTable symtab = new SymbolTable(tokens); // make global scope,
 										              // types
-		
+		nodes.reset();
+    	ConvertStrings stringConvert = new ConvertStrings(nodes, symtab, false);
+    	stringConvert.downup(tree); 
+    	
+    	nodes.reset();
 		Def def = new Def(nodes, symtab, false); // use custom constructor
 		def.downup(tree); // trigger symtab actions upon certain subtrees
 		

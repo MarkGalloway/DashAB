@@ -97,7 +97,12 @@ public class Runner {
     
     // runs Def.g treewalker, aborts if errors are found
     private static void runDef(CommonTreeNodeStream nodes, SymbolTable symtab, DashAST tree) throws SymbolTableException {
-        Def def = new Def(nodes, symtab, false);
+    	nodes.reset();
+    	ConvertStrings stringConvert = new ConvertStrings(nodes, symtab, false);
+    	stringConvert.downup(tree); 
+    	
+    	nodes.reset();
+    	Def def = new Def(nodes, symtab, false);
         def.downup(tree); 
         
         //TODO: This logic for checking 'main' rules can probably be moved somewhere better

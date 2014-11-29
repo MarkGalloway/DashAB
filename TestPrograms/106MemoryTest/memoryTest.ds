@@ -51,6 +51,13 @@ procedure main() returns integer {
 		i2 -> out; '\n' -> out;
 	}
 	
+	i = 0;
+	
+	loop while i < 10000 {
+		integer vector v[100000] = 0;
+		i = i + 1;
+	}
+	
 	i1 -> out; '\n' -> out;
 	
 	return 0;
