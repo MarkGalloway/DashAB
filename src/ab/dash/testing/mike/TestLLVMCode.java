@@ -35,7 +35,7 @@ public class TestLLVMCode {
 		String l;
 
 		while ((l = br.readLine()) != null)
-			sb.append(l + System.lineSeparator());
+			sb.append(l + System.getProperty("line.separator"));
 
 		br.close();
 
