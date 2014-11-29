@@ -63,6 +63,13 @@ interval_by(id, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id) ::= <<
   <vlocal(id)>_valid = call i1 @int_IntervalBy(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_expr_id)>, i32 <vlocal_result(rhs_expr_id)>)
 >>
 
+interval_add_interval(id, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @int_allocInterval(i32 0, i32 0)
+  call void @int_VectorAddVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>);
+>>
+
 interval_get_local(id, sym_id) ::= <<
   <vlocal_result(id)> = load i8** <vlocal_symbol(sym_id)>
 >>
