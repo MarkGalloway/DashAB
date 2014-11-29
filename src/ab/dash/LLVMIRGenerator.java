@@ -2092,47 +2092,119 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case LT:
-			if (lhs_type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_lt");
-			} else if (lhs_type == SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_lt");
-			} else if (lhs_type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_lt");
-			} else if (lhs_type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_lt");
+			if (type == SymbolTable.tINTERVAL) {
+				if (lhs_type == SymbolTable.tINTERVAL &&
+						rhs_type == SymbolTable.tINTERVAL) {
+					template = stg.getInstanceOf("interval_lt_interval");
+				}
+			} else if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_lt_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_lt_scalar");
+				} else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_lt_vector"); // Need to know what side is scalar
+				}
+			} else {
+				if (lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_lt");
+				} else if (lhs_type == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_lt");
+				} else if (lhs_type == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("char_lt");
+				} else if (lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_lt");
+				}
 			}
 			break;
 		case LE:
-			if (lhs_type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_le");
-			} else if (lhs_type == SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_le");
-			} else if (lhs_type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_le");
-			} else if (lhs_type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_le");
+			if (type == SymbolTable.tINTERVAL) {
+				if (lhs_type == SymbolTable.tINTERVAL &&
+						rhs_type == SymbolTable.tINTERVAL) {
+					template = stg.getInstanceOf("interval_le_interval");
+				}
+			} else if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_le_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_le_scalar");
+				} else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_le_vector"); // Need to know what side is scalar
+				}
+			} else {
+				if (lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_le");
+				} else if (lhs_type == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_le");
+				} else if (lhs_type == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("char_le");
+				} else if (lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_le");
+				}
 			}
 			break;
 		case GT:
-			if (lhs_type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_gt");
-			} else if (lhs_type == SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_gt");
-			} else if (lhs_type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_gt");
-			} else if (lhs_type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_gt");
+			if (type == SymbolTable.tINTERVAL) {
+				if (lhs_type == SymbolTable.tINTERVAL &&
+						rhs_type == SymbolTable.tINTERVAL) {
+					template = stg.getInstanceOf("interval_gt_interval");
+				}
+			} else if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_gt_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_gt_scalar");
+				} else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_gt_vector"); // Need to know what side is scalar
+				}
+			} else {
+				if (lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_gt");
+				} else if (lhs_type == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_gt");
+				} else if (lhs_type == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("char_gt");
+				} else if (lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_gt");
+				}
 			}
 			break;
 		case GE:
-			if (lhs_type == SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_ge");
-			} else if (lhs_type == SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_ge");
-			} else if (lhs_type == SymbolTable.tCHARACTER) {
-				template = stg.getInstanceOf("char_ge");
-			} else if (lhs_type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_ge");
+			if (type == SymbolTable.tINTERVAL) {
+				if (lhs_type == SymbolTable.tINTERVAL &&
+						rhs_type == SymbolTable.tINTERVAL) {
+					template = stg.getInstanceOf("interval_ge_interval");
+				}
+			} else if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_ge_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_ge_scalar");
+				} else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_ge_vector"); // Need to know what side is scalar
+				}
+			} else {
+				if (lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_ge");
+				} else if (lhs_type == SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_ge");
+				} else if (lhs_type == SymbolTable.tCHARACTER) {
+					template = stg.getInstanceOf("char_ge");
+				} else if (lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_ge");
+				}
 			}
 			break;
 		case ADD:

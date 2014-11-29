@@ -10,6 +10,13 @@ procedure printVector(integer vector v[3]) {
 	v[3] -> out; ']' -> out; '\n' -> out;
 }
 
+procedure printVectorBool(boolean vector v[3]) {
+	'[' -> out; 
+	v[1] -> out; ',' -> out; ' ' -> out;
+	v[2] -> out; ',' -> out; ' ' -> out;
+	v[3] -> out; ']' -> out; '\n' -> out;
+}
+
 procedure zeros() returns integer vector [3] {
 	return [0, 0, 0];
 }
@@ -86,6 +93,17 @@ procedure main() returns integer {
 	printVector(v1 ^ 2);
 	"\t2 ^ v1 = " -> out;
 	printVector(2 ^ v1);
+	
+	"Compare\n" -> out;
+	
+	"\tv1 < v3 = " -> out;
+	printVectorBool(v1 < v3);
+	"\tv1 <= v3 = " -> out;
+	printVectorBool(v1 <= v3);
+	"\tv1 > v3 = " -> out;
+	printVectorBool(v1 > v3);
+	"\tv1 >= v3 = " -> out;
+	printVectorBool(v1 >= v3);
 	
 	v1 -> out;
 
