@@ -647,6 +647,248 @@ int int_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 }
 
 //////////////////////////
+// 	REALS  		//
+//////////////////////////
+
+void real_allocVector(struct Vector* vector, int32_t size) {
+	if (vector->data != 0) {
+		// TODO: Error
+	} else {
+		vector->size = size;
+		vector->data = xmalloc(sizeof(float) * size);
+	}
+}
+
+void real_copyVector(struct Vector* to, struct Vector* from) {
+	copyVector(to, from, sizeof(float));
+}
+
+int real_getElement(float* out, struct Vector* vector, int32_t index) {
+	if (index > vector->size || index < 1)
+		return 1;
+
+	*out = ((float*)vector->data)[index - 1];
+	
+	return 0;
+}
+
+int real_setElement(struct Vector* vector, int32_t index, float value) {
+	if (index > vector->size || index < 1)
+		return 1;
+
+	((float*)vector->data)[index - 1] = value;
+	
+	return 0;
+}
+
+void real_assignVector(struct Vector* lhs, struct Vector* rhs) {
+	float* lhs_data = (float*)lhs->data;
+	float* rhs_data = (float*)rhs->data;
+
+	int i;
+	for (i = 0; i < lhs->size && i < rhs->size; i++)
+		lhs_data[i] = rhs_data[i];
+	
+	while (i < lhs->size) {
+		lhs_data[i] = 0;
+		i++;
+	}
+}
+
+void real_assignVectorScalar(struct Vector* lhs, float rhs) {
+	float* lhs_data = (float*)lhs->data;
+
+	int i;
+	for (i = 0; i < lhs->size; i++)
+		lhs_data[i] = rhs;
+}
+
+void real_VectorAddVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] + rhs_data[i];
+}
+
+void real_VectorSubtractVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] - rhs_data[i];
+}
+
+void real_VectorMultiplyVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] * rhs_data[i];
+}
+
+void real_VectorDivideVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] / rhs_data[i];
+}
+
+void real_VectorModulusVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = fmodf(lhs_data[i], rhs_data[i]);
+}
+
+void real_VectorPowerVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = powf(lhs_data[i], rhs_data[i]);
+}
+
+void real_VectorUniaryMinus(struct Vector* out, struct Vector* lhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = -lhs_data[i];
+}
+
+void real_VectorDot(float *result, struct Vector* lhs, struct Vector* rhs) {
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+
+	*result = 0;
+	for (int i = 0; i < lhs->size; i++)
+		*result += lhs_data[i]*rhs_data[i];
+}
+
+void real_VectorAddScalar(struct Vector* out, struct Vector* lhs, float rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] + rhs;
+}
+
+void real_VectorSubtractScalar(struct Vector* out, struct Vector* lhs, float rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] - rhs;
+}
+
+void real_ScalarSubtractVector(struct Vector* out, float lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *rhs_data = (float*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs - rhs_data[i];
+}
+
+void real_VectorMultiplyScalar(struct Vector* out, struct Vector* lhs, float rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i]*rhs;
+}
+
+void real_VectorDivideScalar(struct Vector* out, struct Vector* lhs, float rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i]/rhs;
+}
+
+void real_ScalarDivideVector(struct Vector* out, float lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *rhs_data = (float*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs/rhs_data[i];
+}
+
+void real_VectorModulusScalar(struct Vector* out, struct Vector* lhs, float rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = fmodf(lhs_data[i], rhs);
+}
+
+void real_ScalarModulusVector(struct Vector* out, float lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *rhs_data = (float*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = fmodf(lhs, rhs_data[i]);
+}
+
+void real_VectorPowerScalar(struct Vector* out, struct Vector* lhs, float rhs) {
+	float *out_data = (float*) out->data;	
+	float *lhs_data = (float*) lhs->data;
+	
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = powf(lhs_data[i], rhs);
+}
+
+void real_ScalarPowerVector(struct Vector* out, float lhs, struct Vector* rhs) {
+	float *out_data = (float*) out->data;	
+	float *rhs_data = (float*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = powf(lhs, rhs_data[i]);
+}
+
+int real_VectorEq(struct Vector* lhs, struct Vector* rhs) {
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+
+	if (lhs->size != rhs->size)
+		return 0;
+	
+	int32_t match = 0;
+	for (int i = 0; i < lhs->size; i++)
+		match += lhs_data[i] == rhs_data[i];
+
+	if (match == lhs->size)
+		return 1;
+
+	return 0;
+}
+
+int real_VectorNe(struct Vector* lhs, struct Vector* rhs) {
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+
+	if (lhs->size != rhs->size)
+		return 0;
+	
+	int32_t match = 0;
+	for (int i = 0; i < lhs->size; i++)
+		match += lhs_data[i] == rhs_data[i];
+
+	if (match == lhs->size)
+		return 0;
+
+	return 1;
+}
+
+//////////////////////////
 // 	GENERIC  	//
 //////////////////////////
 
