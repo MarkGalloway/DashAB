@@ -206,6 +206,14 @@ void bool_assignVector(struct Vector* lhs, struct Vector* rhs) {
 	}
 }
 
+void bool_assignVectorScalar(struct Vector* lhs, int8_t rhs) {
+	int8_t* lhs_data = (int8_t*)lhs->data;
+
+	int i;
+	for (i = 0; i < lhs->size; i++)
+		lhs_data[i] = rhs;
+}
+
 void bool_VectorNot(struct Vector* out, struct Vector* lhs) {
 	int8_t *out_data = (int8_t*) out->data;
 	int8_t *lhs_data = (int8_t*) lhs->data;
@@ -348,6 +356,14 @@ void char_assignVector(struct Vector* lhs, struct Vector* rhs) {
 	}
 }
 
+void char_assignVectorScalar(struct Vector* lhs, int8_t rhs) {
+	int8_t* lhs_data = (int8_t*)lhs->data;
+
+	int i;
+	for (i = 0; i < lhs->size; i++)
+		lhs_data[i] = rhs;
+}
+
 int char_VectorEq(struct Vector* lhs, struct Vector* rhs) {
 	int8_t *lhs_data = (int8_t*) lhs->data;
 	int8_t *rhs_data = (int8_t*) rhs->data;
@@ -429,6 +445,14 @@ void int_assignVector(struct Vector* lhs, struct Vector* rhs) {
 		lhs_data[i] = 0;
 		i++;
 	}
+}
+
+void int_assignVectorScalar(struct Vector* lhs, int32_t rhs) {
+	int32_t* lhs_data = (int32_t*)lhs->data;
+
+	int i;
+	for (i = 0; i < lhs->size; i++)
+		lhs_data[i] = rhs;
 }
 
 void int_VectorAddVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
