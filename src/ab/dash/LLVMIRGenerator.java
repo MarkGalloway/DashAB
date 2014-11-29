@@ -2066,6 +2066,9 @@ public class LLVMIRGenerator {
 		if (type == SymbolTable.tVECTOR) {
 			int elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
 			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+
+			StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
+			template.setAttribute("llvm_type", llvmType);
 		}
 
 		template.setAttribute("rhs_id", rhs_id);
