@@ -2028,10 +2028,23 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case DIV:
-			if (lhs_type ==SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_div");
-			} else if (lhs_type ==SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_div");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_divide_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_divide_scalar_int");
+				}  else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_divide_vector_int");
+				}
+			} else {
+				if (lhs_type ==SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_div");
+				} else if (lhs_type ==SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_div");
+				}
 			}
 			break;
 		case MOD:
