@@ -268,12 +268,7 @@ public class LLVMIRGenerator {
 			DashAST method_node = (DashAST) t.getChild(0);
 			MethodSymbol method = (MethodSymbol)method_node.symbol;
 			
-			if (method.getShortName().equals("stream_state")) {
-				StringTemplate template = null;
-				template = stg.getInstanceOf("call_stream_state");
-				template.setAttribute("id", t.llvmResultID);
-				return template;
-			}
+			
 			
 			Type method_type = method.type;
 			
@@ -282,6 +277,25 @@ public class LLVMIRGenerator {
 			List<StringTemplate> args = new ArrayList<StringTemplate>();
 			DashAST argument_list = (DashAST) t.getChild(1);
 			StringTemplate stackSave = null;
+			
+			if (method.getShortName().equals("stream_state")) {
+				StringTemplate template = null;
+				template = stg.getInstanceOf("call_stream_state");
+				template.setAttribute("id", t.llvmResultID);
+				return template;
+			}
+			
+			if (method.getShortName().equals("length")) {
+				StringTemplate template = null;
+				template = stg.getInstanceOf("call_length");
+				
+				StringTemplate getVector = exec((DashAST)argument_list.getChild(0));
+
+				template.setAttribute("id", t.llvmResultID);
+				template.setAttribute("vector_expr", getVector);
+				template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
+				return template;
+			}
 
 			for (int i = 0; i < argument_list.getChildCount(); i++) {
 				DashAST arg = (DashAST)argument_list.getChild(i);

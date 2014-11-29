@@ -325,6 +325,11 @@ call_stream_state(id) ::= <<
   <vlocal_result(id)> = call i32 @getStreamState()
 >>
 
+call_length(id, vector_expr, vector_expr_id) ::= <<
+  <vector_expr>
+  <vlocal_result(id)> = call i32 @getVectorSize(i8* <vlocal_result(vector_expr_id)>)
+>>
+
 if(id, expr, expr_id, block) ::= <<
   <expr>
   br i1 <vlocal_result(expr_id)>, label %if.body<id>, label %if.done<id>

@@ -245,6 +245,8 @@ public class SymbolTable {
         	if ( s!=null ) globals.define((BuiltInSpecifierSymbol)s);
         }
         
+        // Built in
+        // stream_state       
         MethodSymbol stream_state =
             	new MethodSymbol("stream_state", _integer, globals);
         
@@ -252,6 +254,15 @@ public class SymbolTable {
         stream_state.define(stream_state_input);
         
         globals.define(stream_state);
+        
+        // length
+        MethodSymbol length =
+            	new MethodSymbol("length", _integer, globals);
+        
+        VariableSymbol length_input = new VariableSymbol("vector", _vector, _const);
+        length.define(length_input);
+        
+        globals.define(length);
     }
     
     public int getWarningCount() {
@@ -626,6 +637,20 @@ public class SymbolTable {
         MethodSymbol ms = (MethodSymbol)s;
         id.symbol = ms;
         int i=0;
+        
+        if (ms.name.equals("length")) {
+        	if (args.size() != 1) {
+        		error("line " + id.getLine() + ": length takes one vector.");
+        		return null;
+        	}
+        	DashAST argAST = (DashAST)args.get(0);
+        	if (argAST.evalType.getTypeIndex() != tVECTOR) {
+        		error("line " + id.getLine() + ": length takes one vector.");
+        		return null;
+        	}
+        	
+        	return ms.type;
+        }
 		
         for (Symbol a : ms.orderedArgs.values() ) { // for each arg
             DashAST argAST = null;
