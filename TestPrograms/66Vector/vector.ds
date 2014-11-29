@@ -15,7 +15,8 @@ procedure zeros() returns integer vector [3] {
 }
 
 procedure main() returns integer {
-	integer v7[3] = 0; // Bug not allocated
+	//integer v7[3]; // Bug not allocated
+	integer v7[3] = 0;
 	integer v1[1+2] = [1, 2, 3];
 	
 	integer v2[3] = 1 + v1 + 2;
