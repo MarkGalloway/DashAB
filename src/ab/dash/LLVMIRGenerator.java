@@ -2008,10 +2008,23 @@ public class LLVMIRGenerator {
 			}
 			break;
 		case MULT:
-			if (lhs_type ==SymbolTable.tINTEGER) {
-				template = stg.getInstanceOf("int_mul");
-			} else if (lhs_type ==SymbolTable.tREAL) {
-				template = stg.getInstanceOf("real_mul");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_multiply_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("vector_multiply_scalar_int");
+				}  else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("scalar_multiply_vector_int");
+				}
+			} else {
+				if (lhs_type ==SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("int_mul");
+				} else if (lhs_type ==SymbolTable.tREAL) {
+					template = stg.getInstanceOf("real_mul");
+				}
 			}
 			break;
 		case DIV:
