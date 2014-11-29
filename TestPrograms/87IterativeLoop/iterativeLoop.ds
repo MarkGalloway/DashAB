@@ -9,5 +9,10 @@ procedure main() returns integer {
 		j*i -> out; '\n' -> out;
 	}
 	
+	loop i in [2, 3, 1], j in [2, 4] 
+	{
+		j*i -> out; '\n' -> out;
+	}
+	
 	return 0;
 }

@@ -410,6 +410,34 @@ br label %<vloop_entry(id)>
 
 >>
 
+iterator(id, sym_id, type_name, llvm_type, expr, expr_id, block) ::= <<
+<vlocal_symbol(sym_id)> = alloca <llvm_type>
+<vlocal(id)>_i  = alloca i32
+store i32 1, i32* <vlocal(id)>_i
+<expr>
+<vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(expr_id)>)
+
+br label %<vloop_entry(id)>
+
+<vloop_entry(id)>:
+  <vlocal(id)>_i_tmp = load i32* <vlocal(id)>_i
+  <vlocal(id)>_end = icmp sle i32 <vlocal(id)>_i_tmp, <vlocal(id)>_size
+  br i1 <vlocal(id)>_end, label %<vloop_body(id)>, label %<vloop_done(id)>
+
+<vloop_body(id)>:
+  <vlocal(id)>_index = load i32* <vlocal(id)>_i
+  <vlocal(id)>_success = call i1 @<type_name>_getElement(<llvm_type>* <vlocal_symbol(sym_id)>, i8* <vlocal_result(expr_id)>, i32 <vlocal(id)>_index)
+  call void @gc_add_loop()
+  <block>
+  call void @gc_free_loop()
+  <vlocal(id)>_index_increment = add i32 <vlocal(id)>_index, 1
+  store i32 <vlocal(id)>_index_increment, i32* <vlocal(id)>_i
+  br label %<vloop_entry(id)>
+
+<vloop_done(id)>:
+
+>>
+
 break(id, loop_id) ::= <<
   call void @gc_free_loop()
   br label %<vloop_done(loop_id)>

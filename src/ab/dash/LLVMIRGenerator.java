@@ -703,6 +703,64 @@ public class LLVMIRGenerator {
 			return template;
 		}
 		
+		case DashLexer.ITERATOR:
+		{	
+			int index = t.getChildCount() - 1;
+			
+			loop_stack.push(new Integer(((DashAST)t).llvmResultID));
+			
+			StringTemplate block = exec((DashAST)t.getChild(index));
+			
+			loop_stack.pop();
+			
+			StringTemplate template = null;
+			for (int i = index - 1; i >= 0; i--) {
+				template = stg.getInstanceOf("iterator");
+				
+				DashAST node = (DashAST)t.getChild(i);
+				
+				int id = ((DashAST)node).llvmResultID;
+				
+				DashAST sym_node = (DashAST)node.getChild(0);
+				Symbol sym = sym_node.symbol;
+				int sym_id = sym.id;
+				
+				DashAST expr_node = (DashAST)node.getChild(1);
+				StringTemplate expr = exec(expr_node);
+				String expr_id = Integer.toString(((DashAST)expr_node.getChild(0)).llvmResultID);
+				
+				int elementTypeIndex = 0;
+				if (expr_node.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+					interval.setAttribute("id", DashAST.getUniqueId());
+					interval.setAttribute("interval_var_expr", expr);
+					interval.setAttribute("interval_var_expr_id", expr_id);
+					
+					expr = interval;
+					expr_id = interval.getAttribute("id").toString();
+					
+					elementTypeIndex = SymbolTable.tINTEGER;
+					
+				} else {
+					elementTypeIndex = ((VectorType) expr_node.evalType).elementType.getTypeIndex();
+				}
+				
+				StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
+				
+				template.setAttribute("block", block);
+				template.setAttribute("expr_id", expr_id);
+				template.setAttribute("expr", expr);
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+				template.setAttribute("llvm_type", llvmType);
+				template.setAttribute("sym_id", sym_id);
+				template.setAttribute("id", id);
+				
+				block = template;
+			}
+			
+			return template;
+		}
+		
 		case DashLexer.Break:
 		{
 			int id = ((DashAST)t).llvmResultID;
