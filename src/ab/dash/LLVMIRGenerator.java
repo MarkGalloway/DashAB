@@ -2052,12 +2052,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_multiply_vector");
-				} else if (lhs_type == SymbolTable.tVECTOR &&
+				} else if (lhs_type == SymbolTable.tINTEGER ||
 						rhs_type == SymbolTable.tINTEGER) {
 					template = stg.getInstanceOf("vector_multiply_scalar");
-				}  else if (rhs_type == SymbolTable.tVECTOR &&
-						lhs_type == SymbolTable.tINTEGER) {
-					template = stg.getInstanceOf("scalar_multiply_vector");
 				}
 			} else {
 				if (lhs_type ==SymbolTable.tINTEGER) {
