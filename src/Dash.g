@@ -174,11 +174,9 @@ function
 functionParameter
   : Var primitiveType ID LBRACK MULTIPLY RBRACK 
       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
-  | Var primitiveType (Vector | Matrix)? ID LBRACK expression (',' expression)? RBRACK
+  | Var primitiveType (Vector | Matrix)? ID LBRACK (expression|MULTIPLY) (',' (expression|MULTIPLY))? RBRACK
       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
   | Var type ID { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }  
-  | Var primitiveType (Vector | Matrix)? ID LBRACK MULTIPLY RBRACK 
-       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
   | Var primitiveType (Vector | Matrix)? ID
     { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
     

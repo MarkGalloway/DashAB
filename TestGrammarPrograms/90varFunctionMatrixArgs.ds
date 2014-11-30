@@ -1,0 +1,40 @@
+function printMatrix1(var integer matrix v) returns boolean {
+    return true;
+}
+
+function printMatrix2(var integer matrix v[*,*]) returns boolean {
+    return true;
+}
+
+function printMatrix3(var integer matrix v[3, 3]) returns boolean {
+    return true;
+}
+
+function printMatrix4(var integer matrix v[*, 3]) returns boolean {
+    return true;
+}
+
+function printMatrix5(var integer matrix v[3, *]) returns boolean {
+    return true;
+}
+
+function printMatrix6(var integer v[*,*]) returns boolean {
+    return true;
+}
+
+function printMatrix7(var integer v[3,3]) returns boolean {
+    return true;
+}
+
+function printMatrix8(var integer v[*,3]) returns boolean {
+    return true;
+}
+
+function printMatrix9(var integer v[3,*]) returns boolean {
+    return true;
+}
+
+
+procedure main() returns integer {
+    return 0;
+}

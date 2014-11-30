@@ -645,7 +645,6 @@ public class TestAST extends BaseTest {
         expectedEx.expectMessage(sb.toString());
         String[] args = new String[] {"TestGrammarPrograms/82invalidVectorFunctionArgs.ds"};
         Runner.astTestMain(args);
-        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/82AST_output"), outErrIntercept.toString().trim());
     }
     
     @Test //test vector function arguments with forward declaration
@@ -695,5 +694,23 @@ public class TestAST extends BaseTest {
         String[] args = new String[] {"TestGrammarPrograms/89constFunctionMatrixArgs.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/89AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test invalid matrix function arguments with var
+    public void invalidMatrixFunctionVarArgs() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Function parameters cannot be declared as var.");
+        sb.append("line 5: Function parameters cannot be declared as var.");
+        sb.append("line 9: Function parameters cannot be declared as var.");
+        sb.append("line 13: Function parameters cannot be declared as var.");
+        sb.append("line 17: Function parameters cannot be declared as var.");
+        sb.append("line 21: Function parameters cannot be declared as var.");
+        sb.append("line 25: Function parameters cannot be declared as var.");
+        sb.append("line 29: Function parameters cannot be declared as var.");
+        sb.append("line 33: Function parameters cannot be declared as var.");
+        expectedEx.expectMessage(sb.toString());
+        String[] args = new String[] {"TestGrammarPrograms/90varFunctionMatrixArgs.ds"};
+        Runner.astTestMain(args);
     }
 }
