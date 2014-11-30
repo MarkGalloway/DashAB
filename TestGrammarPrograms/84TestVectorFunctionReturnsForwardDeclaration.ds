@@ -1,0 +1,18 @@
+function printVector1(boolean b) returns integer[3];
+function printVector2(boolean b) returns integer[*];
+function printVector3(boolean b) returns integer vector;
+function printVector4(boolean b) returns integer vector[3];
+function printVector5(boolean b) returns integer vector[*];
+
+procedure main() returns integer {
+    return 0;
+}
+
+function printVector1(boolean b) returns integer[3] = 1;
+function printVector2(boolean b) returns integer[*] = [1, 2, 3];
+function printVector3(boolean b) returns integer vector = [1, 2, 3];
+function printVector4(boolean b) returns integer vector[3] = null;
+function printVector5(boolean b) returns integer vector[*] = [1, 2, 3];
+
+
+

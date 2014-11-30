@@ -151,10 +151,10 @@ primitiveType
     
 // START: method
 methodForwardDeclaration
-	: Function ID LPAREN (functionParameter (',' functionParameter)*)? RPAREN Returns type DELIM
-	    -> ^(FUNCTION_DECL type ID functionParameter*)
-  | Procedure ID LPAREN (procedureParameter (',' procedureParameter)*)? RPAREN (Returns type)? DELIM
-      -> ^(PROCEDURE_DECL type? ID procedureParameter*)
+	: Function ID LPAREN (functionParameter (',' functionParameter)*)? RPAREN Returns methodReturnType DELIM
+	    -> ^(FUNCTION_DECL methodReturnType ID functionParameter*)
+  | Procedure ID LPAREN (procedureParameter (',' procedureParameter)*)? RPAREN (Returns methodReturnType)? DELIM
+      -> ^(PROCEDURE_DECL methodReturnType? ID procedureParameter*)
   ;
 
 methodDeclaration
@@ -223,7 +223,10 @@ procedureParameter
 
 methodReturnType
   : primitiveType Vector? LBRACK expression RBRACK -> ^(VECTOR primitiveType expression)
+  | primitiveType Vector? LBRACK MULTIPLY RBRACK -> ^(VECTOR primitiveType INFERRED)
   | primitiveType Matrix? LBRACK expression ',' expression RBRACK -> ^(MATRIX primitiveType expression+)
+  | primitiveType Vector -> ^(VECTOR primitiveType INFERRED)
+  | primitiveType Matrix -> ^(MATRIX primitiveType INFERRED)
   | type
   ;
 	
