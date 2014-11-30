@@ -313,6 +313,25 @@ int bool_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 	return 1;
 }
 
+int bool_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
+	if (by < 1) {
+		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
+		return 1;
+	}
+	
+	int size = (int) ceil(((float)(lhs->size))/by);
+
+	int_allocVector(out, size);
+
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i*by];
+
+	return 0;
+}
+
 void bool_printVector(struct Vector* vector) {
 	int8_t *vector_data = (int8_t*) vector->data;
 
@@ -414,6 +433,26 @@ int char_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 
 	return 1;
 }
+
+int char_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
+	if (by < 1) {
+		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
+		return 1;
+	}
+	
+	int size = (int) ceil(((float)(lhs->size))/by);
+
+	int_allocVector(out, size);
+
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i*by];
+
+	return 0;
+}
+
 
 void char_printVector(struct Vector* vector) {
 	int8_t *vector_data = (int8_t*) vector->data;
@@ -725,6 +764,25 @@ int int_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 	return 1;
 }
 
+int int_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
+	if (by < 1) {
+		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
+		return 1;
+	}
+	
+	int size = (int) ceil(((float)(lhs->size))/by);
+
+	int_allocVector(out, size);
+
+	int32_t *out_data = (int32_t*) out->data;
+	int32_t *lhs_data = (int32_t*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i*by];
+
+	return 0;
+}
+
 void int_printVector(struct Vector* vector) {
 	int32_t *vector_data = (int32_t*) vector->data;
 
@@ -974,6 +1032,24 @@ int real_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 	return 1;
 }
 
+int real_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
+	if (by < 1) {
+		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
+		return 1;
+	}
+	
+	int size = (int) ceil(((float)(lhs->size))/by);
+
+	int_allocVector(out, size);
+
+	float *out_data = (float*) out->data;
+	float *lhs_data = (float*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i*by];
+
+	return 0;
+}
 
 void real_printVector(struct Vector* vector) {
 	float *vector_data = (float*) vector->data;
