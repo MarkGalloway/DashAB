@@ -605,25 +605,54 @@ public class TestAST extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/77AST_output"), outErrIntercept.toString().trim());
     }
     
-    @Test //test vector function arguments
+    @Test //test vector function arguments with const
     public void validVectorFunctionConstArgs() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/78validFunctionVectorConstArgs.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/78AST_output"), outErrIntercept.toString().trim());
     }
     
-    @Test //test vector function arguments
+    @Test //test vector procedure args
     public void validVectorProcedureArgs() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/79validVectorProcedureArgs.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/79AST_output"), outErrIntercept.toString().trim());
     }
     
-    @Test //test vector function arguments
+    @Test //test vector procedure args with const
     public void validVectorProcedureConstArgs() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/80validVectorProcedureConstArgs.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/80AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test vector procedure args with var
+    public void validVectorProcedureVarArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/81validVectorProcedureVarArgs.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/81AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test invalid vector function arguments with var
+    public void invalidVectorFunctionVarArgs() throws RecognitionException, LexerException, ParserException {
+        expectedEx.expect(ParserException.class);
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 1: Function parameters cannot be declared as var.");
+        sb.append("line 5: Function parameters cannot be declared as var.");
+        sb.append("line 9: Function parameters cannot be declared as var.");
+        sb.append("line 13: Function parameters cannot be declared as var.");
+        sb.append("line 17: Function parameters cannot be declared as var.");
+        expectedEx.expectMessage(sb.toString());
+        String[] args = new String[] {"TestGrammarPrograms/82invalidVectorFunctionArgs.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/82AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test vector function arguments with forward declaration
+    public void forwardDeclarationVectorArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/83ForwardDeclarationVectorArgs.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/83AST_output"), outErrIntercept.toString().trim());
     }
     
 }
