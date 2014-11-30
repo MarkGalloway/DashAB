@@ -2123,7 +2123,8 @@ public class LLVMIRGenerator {
 			rhs_elementTypeIndex = SymbolTable.tINTEGER;
 		}
 		
-		if (rhs_elementTypeIndex == SymbolTable.tREAL &&
+		if ((rhs_elementTypeIndex == SymbolTable.tREAL ||
+				rhs_type == SymbolTable.tREAL) &&
 				lhs_elementTypeIndex == SymbolTable.tINTEGER) {
 			StringTemplate promote = stg.getInstanceOf("vector_to_real");
 			promote.setAttribute("id", DashAST.getUniqueId());
@@ -2135,7 +2136,8 @@ public class LLVMIRGenerator {
 			lhs_id = promote.getAttribute("id").toString();
 		}
 		
-		if (lhs_elementTypeIndex == SymbolTable.tREAL &&
+		if ((lhs_elementTypeIndex == SymbolTable.tREAL ||
+				lhs_type == SymbolTable.tREAL) &&
 				rhs_elementTypeIndex == SymbolTable.tINTEGER) {
 			StringTemplate promote = stg.getInstanceOf("vector_to_real");
 			promote.setAttribute("id", DashAST.getUniqueId());
@@ -2175,7 +2177,7 @@ public class LLVMIRGenerator {
 			}
 		}
 		
-		
+		//TODO: Update LT LE GT GE EQ NE to handle vectors and scalars other than integers
 		StringTemplate template = null;
 		switch (op) {
 		case AND: {
@@ -2409,10 +2411,12 @@ public class LLVMIRGenerator {
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_add_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
-						rhs_type == SymbolTable.tINTEGER) {
+						(rhs_type == SymbolTable.tINTEGER ||
+						rhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("vector_add_scalar");
 				} else if (rhs_type == SymbolTable.tVECTOR &&
-						lhs_type == SymbolTable.tINTEGER) {
+						(lhs_type == SymbolTable.tINTEGER ||
+						lhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("scalar_add_vector"); // Need to know what side is scalar
 				}
 			} else {
@@ -2434,10 +2438,12 @@ public class LLVMIRGenerator {
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_subtract_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
-						rhs_type == SymbolTable.tINTEGER) {
+						(rhs_type == SymbolTable.tINTEGER ||
+						rhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("vector_subtract_scalar");
 				}  else if (rhs_type == SymbolTable.tVECTOR &&
-						lhs_type == SymbolTable.tINTEGER) {
+						(lhs_type == SymbolTable.tINTEGER ||
+						lhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("scalar_subtract_vector");
 				}
 			} else {
@@ -2459,10 +2465,12 @@ public class LLVMIRGenerator {
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_multiply_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
-						rhs_type == SymbolTable.tINTEGER) {
+						(rhs_type == SymbolTable.tINTEGER ||
+						rhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("vector_multiply_scalar");
 				} else if (rhs_type == SymbolTable.tVECTOR &&
-						lhs_type == SymbolTable.tINTEGER) {
+						(lhs_type == SymbolTable.tINTEGER ||
+						lhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("scalar_multiply_vector"); // Need to know what side is scalar
 				}
 			} else {
@@ -2484,10 +2492,12 @@ public class LLVMIRGenerator {
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_divide_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
-						rhs_type == SymbolTable.tINTEGER) {
+						(rhs_type == SymbolTable.tINTEGER ||
+						rhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("vector_divide_scalar");
 				}  else if (rhs_type == SymbolTable.tVECTOR &&
-						lhs_type == SymbolTable.tINTEGER) {
+						(lhs_type == SymbolTable.tINTEGER ||
+						lhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("scalar_divide_vector");
 				}
 			} else {
@@ -2504,10 +2514,12 @@ public class LLVMIRGenerator {
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_modulus_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
-						rhs_type == SymbolTable.tINTEGER) {
+						(rhs_type == SymbolTable.tINTEGER ||
+						rhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("vector_modulus_scalar");
 				} else if (rhs_type == SymbolTable.tVECTOR &&
-						lhs_type == SymbolTable.tINTEGER) {
+						(lhs_type == SymbolTable.tINTEGER ||
+						lhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("scalar_modulus_vector"); // Need to know what side is scalar
 				}
 			} else {
@@ -2524,10 +2536,12 @@ public class LLVMIRGenerator {
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_power_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
-						rhs_type == SymbolTable.tINTEGER) {
+						(rhs_type == SymbolTable.tINTEGER ||
+						rhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("vector_power_scalar");
 				} else if (rhs_type == SymbolTable.tVECTOR &&
-						lhs_type == SymbolTable.tINTEGER) {
+						(lhs_type == SymbolTable.tINTEGER ||
+						lhs_type == SymbolTable.tREAL)) {
 					template = stg.getInstanceOf("scalar_power_vector"); // Need to know what side is scalar
 				}
 			} else {

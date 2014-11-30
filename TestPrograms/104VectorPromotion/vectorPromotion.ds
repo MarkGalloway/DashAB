@@ -31,6 +31,7 @@ procedure main() returns integer {
     printVector(v4);
     printVector(v5);
     printVector(v6);
+    printVector([1, 2] + 0.5);
     //m2[1, 1] -> out; '\n' -> out;
     
     return 0;

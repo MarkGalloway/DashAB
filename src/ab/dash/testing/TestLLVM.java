@@ -937,7 +937,7 @@ public class TestLLVM extends BaseTest {
 	    sb.append("\tv1 < v3 = [T, F, F]\n");
         sb.append("\tv1 <= v3 = [T, T, F]\n");
         sb.append("\tv1 > v3 = [F, F, T]\n");
-        sb.append("\tv1 >= v3 = [T, T, F]\n");
+        sb.append("\tv1 >= v3 = [F, T, T]\n");
         sb.append("Equality\n");
         sb.append("\tv1 == v1 = T\n");
         sb.append("\tv1 == v2 = F\n");
@@ -1026,6 +1026,7 @@ public class TestLLVM extends BaseTest {
         sb.append("[1, 2]\n");
         sb.append("[1, 2]\n");
         sb.append("[2, 4]\n");
+        sb.append("[1.5, 2.5]\n");
         sb.append("[1.5, 2.5]\n");
         sb.append("[1.5, 2.5]\n");
         sb.append("[1.5, 2.5]\n");

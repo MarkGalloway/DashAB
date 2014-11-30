@@ -759,7 +759,7 @@ void int_VectorGEVector(struct Vector* out, struct Vector* lhs, struct Vector* r
 	int32_t *rhs_data = (int32_t*) rhs->data;
 
 	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i] <= rhs_data[i];
+		out_data[i] = lhs_data[i] >= rhs_data[i];
 }
 
 int int_VectorEq(struct Vector* lhs, struct Vector* rhs) {
