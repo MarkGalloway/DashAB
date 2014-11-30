@@ -197,7 +197,41 @@ public class LLVMIRGenerator {
 				type_vars += template.toString() + "\n\n";
 			}
 			
+			ArrayList<StringTemplate> libs = new ArrayList<StringTemplate>();
+			StringTemplate lib = null;
+			
+			lib = stg.getInstanceOf("runtime_library_vector");
+			lib.setAttribute("type", "bool");
+			lib.setAttribute("llvm_type", stg.getInstanceOf("bool_type"));
+			libs.add(lib);
+			
+			lib = stg.getInstanceOf("runtime_library_vector");
+			lib.setAttribute("type", "char");
+			lib.setAttribute("llvm_type", stg.getInstanceOf("char_type"));
+			libs.add(lib);
+			
+			lib = stg.getInstanceOf("runtime_library_vector");
+			lib.setAttribute("type", "int");
+			lib.setAttribute("llvm_type", stg.getInstanceOf("int_type"));
+			libs.add(lib);
+			
+			lib = stg.getInstanceOf("runtime_library_vector");
+			lib.setAttribute("type", "real");
+			lib.setAttribute("llvm_type", stg.getInstanceOf("real_type"));
+			libs.add(lib);
+			
+			lib = stg.getInstanceOf("runtime_library_vector_arithmetic");
+			lib.setAttribute("type", "int");
+			lib.setAttribute("llvm_type", stg.getInstanceOf("int_type"));
+			libs.add(lib);
+			
+			lib = stg.getInstanceOf("runtime_library_vector_arithmetic");
+			lib.setAttribute("type", "real");
+			lib.setAttribute("llvm_type", stg.getInstanceOf("real_type"));
+			libs.add(lib);
+			
 			StringTemplate template = stg.getInstanceOf("program");
+			template.setAttribute("libs", libs);
 			template.setAttribute("type_defs", type_vars);
 			template.setAttribute("globals", global_vars);
 			template.setAttribute("global_code", global_code);

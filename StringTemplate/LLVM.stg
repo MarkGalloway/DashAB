@@ -4,11 +4,12 @@ typeInitMap ::= [
     default:   "null"
 ]
 
-program(type_defs, globals, global_code, code, vector_sizes_init) ::= <<
+program(libs, type_defs, globals, global_code, code, vector_sizes_init) ::= <<
 target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v64:64:64-v128:128:128-a0:0:64-s0:64:64-f80:128:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
 <runtime_library()>
+<libs; separator="\n">
 <externs()>
 
 <type_defs; separator="\n">
@@ -60,6 +61,50 @@ vloop_done(id) ::= <<
 loop.done_<id>_
 >>
 
+runtime_library_vector(type, llvm_type) ::= <<
+
+declare void @<type>_allocVector(i8*, i32)
+declare void @<type>_assignVector(i8*, i8*)
+declare void @<type>_assignVectorScalar(i8*, <llvm_type>)
+declare void @<type>_copyVector(i8*, i8*)
+declare i1  @<type>_getElement(<llvm_type>*, i8*, i32)
+declare i1  @<type>_setElement(i8*, i32, <llvm_type>)
+declare i1  @<type>_indexVector(i8*, i8*, i8*)
+declare void  @<type>_VectorLTVector(i8*, i8*, i8*)
+declare void  @<type>_VectorLEVector(i8*, i8*, i8*)
+declare void  @<type>_VectorGTVector(i8*, i8*, i8*)
+declare void  @<type>_VectorGEVector(i8*, i8*, i8*)
+declare i1  @<type>_VectorEq(i8*, i8*)
+declare i1  @<type>_VectorNe(i8*, i8*)
+declare i1  @<type>_VectorBy(i8*, i8*, i32)
+declare void  @<type>_VectorConcatVector(i8*, i8*, i8*)
+declare void  @<type>_printVector(i8*)
+
+>>
+
+runtime_library_vector_arithmetic(type, llvm_type) ::= <<
+
+declare void  @<type>_VectorAddVector(i8*, i8*, i8*)
+declare void  @<type>_VectorAddScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_VectorSubtractVector(i8*, i8*, i8*)
+declare void  @<type>_VectorSubtractScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarSubtractVector(i8*, <llvm_type>, i8*)
+declare void  @<type>_VectorMultiplyVector(i8*, i8*, i8*)
+declare void  @<type>_VectorMultiplyScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_VectorDivideVector(i8*, i8*, i8*)
+declare void  @<type>_VectorDivideScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarDivideVector(i8*, <llvm_type>, i8*)
+declare void  @<type>_VectorModulusVector(i8*, i8*, i8*)
+declare void  @<type>_VectorModulusScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarModulusVector(i8*, <llvm_type>, i8*)
+declare void  @<type>_VectorPowerVector(i8*, i8*, i8*)
+declare void  @<type>_VectorPowerScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarPowerVector(i8*, <llvm_type>, i8*)
+declare void  @<type>_VectorUniaryMinus(i8*, i8*)
+declare void  @<type>_VectorDot(i32*, i8*, i8*)
+
+>>
+
 runtime_library() ::= <<
 declare i32 @powi(i32 %a, i32 %n)
 declare i1 @readBoolean()
@@ -91,13 +136,6 @@ declare i32 @int_IntervalRange(i8*)
 declare void @int_printInterval(i8*)
 declare void @int_releaseInterval(i8*)
 
-declare void @bool_allocVector(i8*, i32)
-declare void @bool_assignVector(i8*, i8*)
-declare void @bool_assignVectorScalar(i8*, i1)
-declare void @bool_copyVector(i8*, i8*)
-declare i1  @bool_getElement(i1*, i8*, i32)
-declare i1  @bool_setElement(i8*, i32, i1)
-declare i1  @bool_indexVector(i8*, i8*, i8*)
 declare void @bool_VectorNot(i8*, i8*)
 declare void  @bool_VectorOrVector(i8*, i8*, i8*)
 declare void  @bool_VectorXOrVector(i8*, i8*, i8*)
@@ -105,89 +143,8 @@ declare void  @bool_VectorAndVector(i8*, i8*, i8*)
 declare void @bool_VectorOrScalar(i8*, i8*, i1)
 declare void @bool_VectorXOrScalar(i8*, i8*, i1)
 declare void @bool_VectorAndScalar(i8*, i8*, i1)
-declare i1  @bool_VectorEq(i8*, i8*)
-declare i1  @bool_VectorNe(i8*, i8*)
-declare i1 @bool_VectorBy(i8*, i8*, i32)
-declare void  @bool_VectorConcatVector(i8*, i8*, i8*)
-declare void  @bool_printVector(i8*)
 
-declare void @char_allocVector(i8*, i32)
-declare void @char_assignVector(i8*, i8*)
-declare void @char_assignVectorScalar(i8*, i8)
-declare void @char_copyVector(i8*, i8*)
-declare i1  @char_getElement(i8*, i8*, i32)
-declare i1  @char_setElement(i8*, i32, i8)
-declare i1  @char_indexVector(i8*, i8*, i8*)
-declare i1  @char_VectorEq(i8*, i8*)
-declare i1  @char_VectorNe(i8*, i8*)
-declare i1 @char_VectorBy(i8*, i8*, i32)
-declare void  @char_VectorConcatVector(i8*, i8*, i8*)
-declare void  @char_printVector(i8*)
-
-declare void @int_allocVector(i8*, i32)
-declare void @int_assignVector(i8*, i8*)
-declare void @int_assignVectorScalar(i8*, i32)
-declare void @int_copyVector(i8*, i8*)
-declare i1  @int_getElement(i32*, i8*, i32)
-declare i1  @int_setElement(i8*, i32, i32)
-declare i1  @int_indexVector(i8*, i8*, i8*) 
-declare void  @int_VectorAddVector(i8*, i8*, i8*)
-declare void  @int_VectorAddScalar(i8*, i8*, i32)
-declare void  @int_VectorSubtractVector(i8*, i8*, i8*)
-declare void  @int_VectorSubtractScalar(i8*, i8*, i32)
-declare void  @int_ScalarSubtractVector(i8*, i32, i8*)
-declare void  @int_VectorMultiplyVector(i8*, i8*, i8*)
-declare void  @int_VectorMultiplyScalar(i8*, i8*, i32)
-declare void  @int_VectorDivideVector(i8*, i8*, i8*)
-declare void  @int_VectorDivideScalar(i8*, i8*, i32)
-declare void  @int_ScalarDivideVector(i8*, i32, i8*)
-declare void  @int_VectorModulusVector(i8*, i8*, i8*)
-declare void  @int_VectorModulusScalar(i8*, i8*, i32)
-declare void  @int_ScalarModulusVector(i8*, i32, i8*)
-declare void  @int_VectorPowerVector(i8*, i8*, i8*)
-declare void  @int_VectorPowerScalar(i8*, i8*, i32)
-declare void  @int_ScalarPowerVector(i8*, i32, i8*)
-declare void  @int_VectorUniaryMinus(i8*, i8*)
-declare void  @int_VectorDot(i32*, i8*, i8*)
-declare void  @int_VectorLTVector(i8*, i8*, i8*)
-declare void  @int_VectorLEVector(i8*, i8*, i8*)
-declare void  @int_VectorGTVector(i8*, i8*, i8*)
-declare void  @int_VectorGEVector(i8*, i8*, i8*)
-declare i1  @int_VectorEq(i8*, i8*)
-declare i1  @int_VectorNe(i8*, i8*)
-declare i1 @int_VectorBy(i8*, i8*, i32)
-declare void  @int_VectorConcatVector(i8*, i8*, i8*)
 declare void  @int_VectorToReal(i8*, i8*)
-declare void  @int_printVector(i8*)
-
-declare void @real_allocVector(i8*, i32)
-declare void @real_assignVector(i8*, i8*)
-declare void @real_assignVectorScalar(i8*, float)
-declare void @real_copyVector(i8*, i8*)
-declare i1  @real_getElement(float*, i8*, i32)
-declare i1  @real_setElement(i8*, i32, float)
-declare i1  @real_indexVector(i8*, i8*, i8*)
-declare void  @real_VectorAddVector(i8*, i8*, i8*)
-declare void  @real_VectorAddScalar(i8*, i8*, float)
-declare void  @real_VectorSubtractVector(i8*, i8*, i8*)
-declare void  @real_VectorSubtractScalar(i8*, i8*, float)
-declare void  @real_ScalarSubtractVector(i8*, float, i8*)
-declare void  @real_VectorMultiplyVector(i8*, i8*, i8*)
-declare void  @real_VectorMultiplyScalar(i8*, i8*, float)
-declare void  @real_VectorDivideVector(i8*, i8*, i8*)
-declare void  @real_VectorDivideScalar(i8*, i8*, float)
-declare void  @real_ScalarDivideVector(i8*, float, i8*)
-declare void  @real_VectorModulusVector(i8*, i8*, i8*)
-declare void  @real_VectorModulusScalar(i8*, i8*, float)
-declare void  @real_ScalarModulusVector(i8*, float, i8*)
-declare void  @real_VectorPowerVector(i8*, i8*, i8*)
-declare void  @real_VectorUniaryMinus(i8*, i8*)
-declare void  @real_VectorDot(float*, i8*, i8*)
-declare i1  @real_VectorEq(i8*, i8*)
-declare i1  @real_VectorNe(i8*, i8*)
-declare i1 @real_VectorBy(i8*, i8*, i32)
-declare void  @real_VectorConcatVector(i8*, i8*, i8*)
-declare void  @real_printVector(i8*)
 
 declare i8*  @allocVector()
 declare i8*  @getData(i8*)
