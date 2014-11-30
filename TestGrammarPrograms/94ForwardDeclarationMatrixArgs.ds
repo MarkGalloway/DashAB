@@ -1,0 +1,25 @@
+function printMatrix1(integer matrix v) returns boolean;
+function printMatrix2(integer matrix v[*,*]) returns boolean;
+function printMatrix3(integer matrix v[3, 3]) returns boolean;
+function printMatrix4(integer matrix v[*, 3]) returns boolean;
+function printMatrix5(integer matrix v[3, *]) returns boolean;
+function printMatrix6(integer v[*,*]) returns boolean;
+function printMatrix7(integer v[3,3]) returns boolean;
+function printMatrix8(integer v[*,3]) returns boolean;
+function printMatrix9(integer v[3,*]) returns boolean;
+
+procedure main() returns integer {
+    return 0;
+}
+
+function printMatrix1(integer matrix v) returns boolean = true;
+function printMatrix2(integer matrix v[*,*]) returns boolean = true;
+function printMatrix3(integer matrix v[3, 3]) returns boolean = true;
+function printMatrix4(integer matrix v[*, 3]) returns boolean = true;
+function printMatrix5(integer matrix v[3, *]) returns boolean = true;
+function printMatrix6(integer v[*,*]) returns boolean = true;
+function printMatrix7(integer v[3,3]) returns boolean = true;
+function printMatrix8(integer v[*,3]) returns boolean = true;
+function printMatrix9(integer v[3,*]) returns boolean = true;
+
+

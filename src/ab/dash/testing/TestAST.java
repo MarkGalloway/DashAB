@@ -714,24 +714,31 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
     }
     
-    @Test //test function matrix args
+    @Test //test procedure matrix args
     public void testProcedureMatrixArgs() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/91matrixProcedureArgs.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/91AST_output"), outErrIntercept.toString().trim());
     }
     
-    @Test //test function matrix const args
+    @Test //test procedure matrix const args
     public void testProcedureConstMatrixArgs() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/92constMatrixProcedureArgs.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/92AST_output"), outErrIntercept.toString().trim());
     }
     
-    @Test //test function matrix var args
+    @Test //test procedure matrix var args
     public void testProcedureVarMatrixArgs() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/93varMatrixProcedureArgs.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/93AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test function matrix args with forward declaration
+    public void testForWardDeclarationMatrixArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/94ForwardDeclarationMatrixArgs.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/94AST_output"), outErrIntercept.toString().trim());
     }
 }
