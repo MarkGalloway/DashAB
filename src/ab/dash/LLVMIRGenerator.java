@@ -2077,9 +2077,23 @@ public class LLVMIRGenerator {
 		StringTemplate template = null;
 		switch (op) {
 		case AND: {
-			if (lhs_type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_and");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_and_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("vector_and_scalar");
+				} else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("scalar_and_vector");
+				}
+			} else {
+				if (lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_and");
+				}
 			}
+
 			break;
 		}
 		case OR: {
