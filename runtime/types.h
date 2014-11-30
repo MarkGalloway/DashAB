@@ -1,3 +1,5 @@
+#ifndef TYPES_H_
+#define TYPES_H_
 struct Interval {
 	int32_t lower;
 	int32_t upper;
@@ -16,4 +18,4 @@ struct Matrix {
 
 enum gc_type {INTERVAL, VECTOR, MATRIX};
 
-
+#endif // TYPES_H_

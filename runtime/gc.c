@@ -25,9 +25,6 @@ struct node {
 
 Node root = 0;
 
-extern void int_releaseInterval(struct Interval* interval);
-extern void releaseVector(struct Vector* vector);
-
 int allocs = 0;
 
 void* xmalloc(size_t n) {
@@ -44,6 +41,15 @@ void* xmalloc(size_t n) {
 void xfree(void *ptr) {
 	allocs--;
 	free(ptr);
+}
+
+void int_releaseInterval(struct Interval* interval) {
+	xfree(interval);
+}
+
+void releaseVector(struct Vector* vector) {
+	xfree(vector->data);
+	xfree(vector);
 }
 
 Node new_node() {

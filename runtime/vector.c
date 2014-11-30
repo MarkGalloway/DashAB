@@ -53,6 +53,7 @@ extern void gc_add_object(void* object, int32_t type);
 
 void int_allocVector(struct Vector* vector, int32_t size);
 
+
 //////////////////////////
 // 	INTERVAL  	//
 //////////////////////////
@@ -159,68 +160,18 @@ int int_IntervalRange(struct Interval* interval) {
 	return interval->upper - interval->lower + 1;
 }
 
-void int_releaseInterval(struct Interval* interval) {
-	xfree(interval);
-}
-
 //////////////////////////
 // 	BOOLEAN  	//
 //////////////////////////
 
-void bool_copyVector(struct Vector* to, struct Vector* from) {
-	copyVector(to, from, sizeof(int8_t));
-}
 
-void bool_allocVector(struct Vector* vector, int32_t size) {
-	if (vector->size != 0) {
-		// TODO: Error
-	} else {
-		vector->size = size;
-		vector->data = xmalloc(sizeof(int8_t) * size);
-	}
-}
+#define TEMPLATE_NAME bool
+#define TEMPLATE_TYPE int8_t
+#include "vector.h"
+#undef TEMPLATE_TYPE
+#undef TEMPLATE_NAME
 
-int bool_getElement(int8_t* out, struct Vector* vector, int32_t index) {
-	if (index > vector->size || index < 1)
-		return 1;
-
-	*out = ((int8_t*)vector->data)[index - 1];
-	
-	return 0;
-}
-
-int bool_setElement(struct Vector* vector, int32_t index, int8_t value) {
-	if (index > vector->size || index < 1)
-		return 1;
-
-	((int8_t*)vector->data)[index - 1] = value;
-	
-	return 0;
-}
-
-void bool_assignVector(struct Vector* lhs, struct Vector* rhs) {
-	int8_t* lhs_data = (int8_t*)lhs->data;
-	int8_t* rhs_data = (int8_t*)rhs->data;
-	
-	int i;
-	for (i = 0; i < lhs->size && i < rhs->size; i++)
-		lhs_data[i] = rhs_data[i];
-	
-	while (i < lhs->size) {
-		lhs_data[i] = 0;
-		i++;
-	}
-}
-
-void bool_assignVectorScalar(struct Vector* lhs, int8_t rhs) {
-	int8_t* lhs_data = (int8_t*)lhs->data;
-
-	int i;
-	for (i = 0; i < lhs->size; i++)
-		lhs_data[i] = rhs;
-}
-
-void bool_VectorNot(struct Vector* out, struct Vector* lhs) {
+void VectorNot_bool(struct Vector* out, struct Vector* lhs) {
 	int8_t *out_data = (int8_t*) out->data;
 	int8_t *lhs_data = (int8_t*) lhs->data;
 	
@@ -279,75 +230,6 @@ void bool_VectorAndScalar(struct Vector* out, struct Vector* lhs, int8_t rhs) {
 		out_data[i] = (lhs_data[i] && rhs) & 1;
 }
 
-int bool_VectorEq(struct Vector* lhs, struct Vector* rhs) {
-	int8_t *lhs_data = (int8_t*) lhs->data;
-	int8_t *rhs_data = (int8_t*) rhs->data;
-
-	if (lhs->size != rhs->size)
-		return 0;
-	
-	int32_t match = 0;
-	for (int i = 0; i < lhs->size; i++)
-		match += lhs_data[i] == rhs_data[i];
-
-	if (match == lhs->size)
-		return 1;
-
-	return 0;
-}
-
-int bool_VectorNe(struct Vector* lhs, struct Vector* rhs) {
-	int8_t *lhs_data = (int8_t*) lhs->data;
-	int8_t *rhs_data = (int8_t*) rhs->data;
-
-	if (lhs->size != rhs->size)
-		return 1;
-	
-	int32_t match = 0;
-	for (int i = 0; i < lhs->size; i++)
-		match += lhs_data[i] == rhs_data[i];
-
-	if (match == lhs->size)
-		return 0;
-
-	return 1;
-}
-
-int bool_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
-	if (by < 1) {
-		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
-		return 1;
-	}
-	
-	int size = (int) ceil(((float)(lhs->size))/by);
-
-	bool_allocVector(out, size);
-
-	int8_t *out_data = (int8_t*) out->data;
-	int8_t *lhs_data = (int8_t*) lhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i*by];
-
-	return 0;
-}
-
-void bool_VectorConcatVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
-	int size = lhs->size + rhs->size;
-
-	bool_allocVector(out, size);
-
-	int8_t *out_data = (int8_t*) out->data;
-	int8_t *lhs_data = (int8_t*) lhs->data;
-	int8_t *rhs_data = (int8_t*) rhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i];
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i + lhs->size] = rhs_data[i];
-}
-
 void bool_printVector(struct Vector* vector) {
 	int8_t *vector_data = (int8_t*) vector->data;
 
@@ -359,221 +241,34 @@ void bool_printVector(struct Vector* vector) {
 	}
 }
 
+
 //////////////////////////
 // 	CHARACTER  	//
 //////////////////////////
 
-void char_allocVector(struct Vector* vector, int32_t size) {
-	if (vector->data != 0) {
-		// TODO: Error
-	} else {
-		vector->size = size;
-		vector->data = xmalloc(sizeof(int8_t) * size);
-	}
-}
-
-void char_copyVector(struct Vector* to, struct Vector* from) {
-	copyVector(to, from, sizeof(int8_t));
-}
-
-int char_getElement(int8_t* out, struct Vector* vector, int32_t index) {
-	if (index > vector->size || index < 1)
-		return 1;
-
-	*out = ((int8_t*)vector->data)[index - 1];
-	
-	return 0;
-}
-
-int char_setElement(struct Vector* vector, int32_t index, int8_t value) {
-	if (index > vector->size || index < 1)
-		return 1;
-
-	((int8_t*)vector->data)[index - 1] = value;
-	
-	return 0;
-}
-
-void char_assignVector(struct Vector* lhs, struct Vector* rhs) {
-	int8_t* lhs_data = (int8_t*)lhs->data;
-	int8_t* rhs_data = (int8_t*)rhs->data;
-
-	int i;
-	for (i = 0; i < lhs->size && i < rhs->size; i++)
-		lhs_data[i] = rhs_data[i];
-	
-	while (i < lhs->size) {
-		lhs_data[i] = 0;
-		i++;
-	}
-}
-
-void char_assignVectorScalar(struct Vector* lhs, int8_t rhs) {
-	int8_t* lhs_data = (int8_t*)lhs->data;
-
-	int i;
-	for (i = 0; i < lhs->size; i++)
-		lhs_data[i] = rhs;
-}
-
-int char_VectorEq(struct Vector* lhs, struct Vector* rhs) {
-	int8_t *lhs_data = (int8_t*) lhs->data;
-	int8_t *rhs_data = (int8_t*) rhs->data;
-
-	if (lhs->size != rhs->size)
-		return 0;
-	
-	int32_t match = 0;
-	for (int i = 0; i < lhs->size; i++)
-		match += lhs_data[i] == rhs_data[i];
-
-	if (match == lhs->size)
-		return 1;
-
-	return 0;
-}
-
-int char_VectorNe(struct Vector* lhs, struct Vector* rhs) {
-	int8_t *lhs_data = (int8_t*) lhs->data;
-	int8_t *rhs_data = (int8_t*) rhs->data;
-
-	if (lhs->size != rhs->size)
-		return 1;
-	
-	int32_t match = 0;
-	for (int i = 0; i < lhs->size; i++)
-		match += lhs_data[i] == rhs_data[i];
-
-	if (match == lhs->size)
-		return 0;
-
-	return 1;
-}
-
-int char_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
-	if (by < 1) {
-		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
-		return 1;
-	}
-	
-	int size = (int) ceil(((float)(lhs->size))/by);
-
-	char_allocVector(out, size);
-
-	int8_t *out_data = (int8_t*) out->data;
-	int8_t *lhs_data = (int8_t*) lhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i*by];
-
-	return 0;
-}
-
-void char_VectorConcatVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
-	int size = lhs->size + rhs->size;
-
-	char_allocVector(out, size);
-
-	int8_t *out_data = (int8_t*) out->data;
-	int8_t *lhs_data = (int8_t*) lhs->data;
-	int8_t *rhs_data = (int8_t*) rhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i];
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i + lhs->size] = rhs_data[i];
-}
-
+#define TEMPLATE_NAME char
+#define TEMPLATE_TYPE int8_t
+#include "vector.h"
+#undef TEMPLATE_TYPE
+#undef TEMPLATE_NAME
 
 void char_printVector(struct Vector* vector) {
 	int8_t *vector_data = (int8_t*) vector->data;
 
-	for (int i = 0; i < vector->size; i++)
+	for (int i = 0; i < vector->size; i++) {
 		printf("%c", vector_data[i]);
+	}
 }
 
 //////////////////////////
 // 	INTEGER  	//
 //////////////////////////
 
-void int_allocVector(struct Vector* vector, int32_t size) {
-	if (vector->data != 0) {
-		// TODO: Error
-	} else {
-		vector->size = size;
-		vector->data = xmalloc(sizeof(int32_t) * size);
-	}
-}
-
-void int_copyVector(struct Vector* to, struct Vector* from) {
-	copyVector(to, from, sizeof(int32_t));
-}
-
-int int_getElement(int32_t* out, struct Vector* vector, int32_t index) {
-	if (index > vector->size || index < 1){
-		printf("RuntimeError: Vector indexing out of bounds.");
-		return 1;
-	}
-
-	*out = ((int32_t*)vector->data)[index - 1];
-	
-	return 0;
-}
-
-int int_setElement(struct Vector* vector, int32_t index, int32_t value) {
-	if (index > vector->size || index < 1){
-		printf("RuntimeError: Vector indexing out of bounds.");
-		return 1;
-	}
-
-	((int32_t*)vector->data)[index - 1] = value;
-	
-	return 0;
-}
-
-void int_assignVector(struct Vector* lhs, struct Vector* rhs) {
-	int32_t* lhs_data = (int32_t*)lhs->data;
-	int32_t* rhs_data = (int32_t*)rhs->data;
-
-	int i;
-	for (i = 0; i < lhs->size && i < rhs->size; i++)
-		lhs_data[i] = rhs_data[i];
-	
-	while (i < lhs->size) {
-		lhs_data[i] = 0;
-		i++;
-	}
-}
-
-int int_indexVector(struct Vector* out, struct Vector* vector, struct Vector* index) {
-	int_allocVector(out, index->size);
-	int32_t* out_data = (int32_t*)out->data;
-	int32_t* vector_data = (int32_t*)vector->data;
-	int32_t* index_data = (int32_t*)index->data;
-		
-	int i;
-	for (i = 0; i < index->size; i++) {
-		int32_t index = index_data [i];
-
-		if (index < 1 || index > vector->size) {
-			printf("RuntimeError: Vector indexing out of bounds.");
-			return 1;
-		}
-
-		out_data[i] = vector_data [index - 1];
-	}
-
-	return 0;
-}
-
-void int_assignVectorScalar(struct Vector* lhs, int32_t rhs) {
-	int32_t* lhs_data = (int32_t*)lhs->data;
-
-	int i;
-	for (i = 0; i < lhs->size; i++)
-		lhs_data[i] = rhs;
-}
+#define TEMPLATE_NAME int
+#define TEMPLATE_TYPE int32_t
+#include "vector.h"
+#undef TEMPLATE_TYPE
+#undef TEMPLATE_NAME
 
 void int_VectorAddVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
 	int32_t *out_data = (int32_t*) out->data;	
@@ -726,110 +421,6 @@ void int_ScalarPowerVector(struct Vector* out, int32_t lhs, struct Vector* rhs) 
 		out_data[i] = powi(lhs, rhs_data[i]);
 }
 
-void int_VectorLTVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
-	int8_t *out_data = (int8_t*) out->data;
-	int32_t *lhs_data = (int32_t*) lhs->data;
-	int32_t *rhs_data = (int32_t*) rhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i] < rhs_data[i];
-}
-
-void int_VectorLEVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
-	int8_t *out_data = (int8_t*) out->data;
-	int32_t *lhs_data = (int32_t*) lhs->data;
-	int32_t *rhs_data = (int32_t*) rhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i] <= rhs_data[i];
-}
-
-void int_VectorGTVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
-	int8_t *out_data = (int8_t*) out->data;
-	int32_t *lhs_data = (int32_t*) lhs->data;
-	int32_t *rhs_data = (int32_t*) rhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i] > rhs_data[i];
-}
-
-void int_VectorGEVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
-	int8_t *out_data = (int8_t*) out->data;
-	int32_t *lhs_data = (int32_t*) lhs->data;
-	int32_t *rhs_data = (int32_t*) rhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i] >= rhs_data[i];
-}
-
-int int_VectorEq(struct Vector* lhs, struct Vector* rhs) {
-	int32_t *lhs_data = (int32_t*) lhs->data;
-	int32_t *rhs_data = (int32_t*) rhs->data;
-
-	if (lhs->size != rhs->size)
-		return 0;
-	
-	int32_t match = 0;
-	for (int i = 0; i < lhs->size; i++)
-		match += lhs_data[i] == rhs_data[i];
-
-	if (match == lhs->size)
-		return 1;
-
-	return 0;
-}
-
-int int_VectorNe(struct Vector* lhs, struct Vector* rhs) {
-	int32_t *lhs_data = (int32_t*) lhs->data;
-	int32_t *rhs_data = (int32_t*) rhs->data;
-
-	if (lhs->size != rhs->size)
-		return 1;
-	
-	int32_t match = 0;
-	for (int i = 0; i < lhs->size; i++)
-		match += lhs_data[i] == rhs_data[i];
-
-	if (match == lhs->size)
-		return 0;
-
-	return 1;
-}
-
-int int_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
-	if (by < 1) {
-		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
-		return 1;
-	}
-	
-	int size = (int) ceil(((float)(lhs->size))/by);
-
-	int_allocVector(out, size);
-
-	int32_t *out_data = (int32_t*) out->data;
-	int32_t *lhs_data = (int32_t*) lhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i*by];
-
-	return 0;
-}
-
-void int_VectorConcatVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
-	int size = lhs->size + rhs->size;
-
-	int_allocVector(out, size);
-
-	int32_t *out_data = (int32_t*) out->data;
-	int32_t *lhs_data = (int32_t*) lhs->data;
-	int32_t *rhs_data = (int32_t*) rhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i];
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i + lhs->size] = rhs_data[i];
-}
 
 void int_VectorToReal(struct Vector* out, struct Vector* vector) {
 	float *out_data = (float*) out->data;
@@ -842,66 +433,20 @@ void int_VectorToReal(struct Vector* out, struct Vector* vector) {
 void int_printVector(struct Vector* vector) {
 	int32_t *vector_data = (int32_t*) vector->data;
 
-	for (int i = 0; i < vector->size; i++)
+	for (int i = 0; i < vector->size; i++) {
 		printf("%d", vector_data[i]);
+	}
 }
 
 //////////////////////////
 // 	REALS  		//
 //////////////////////////
 
-void real_allocVector(struct Vector* vector, int32_t size) {
-	if (vector->data != 0) {
-		// TODO: Error
-	} else {
-		vector->size = size;
-		vector->data = xmalloc(sizeof(float) * size);
-	}
-}
-
-void real_copyVector(struct Vector* to, struct Vector* from) {
-	copyVector(to, from, sizeof(float));
-}
-
-int real_getElement(float* out, struct Vector* vector, int32_t index) {
-	if (index > vector->size || index < 1)
-		return 1;
-
-	*out = ((float*)vector->data)[index - 1];
-	
-	return 0;
-}
-
-int real_setElement(struct Vector* vector, int32_t index, float value) {
-	if (index > vector->size || index < 1)
-		return 1;
-
-	((float*)vector->data)[index - 1] = value;
-	
-	return 0;
-}
-
-void real_assignVector(struct Vector* lhs, struct Vector* rhs) {
-	float* lhs_data = (float*)lhs->data;
-	float* rhs_data = (float*)rhs->data;
-
-	int i;
-	for (i = 0; i < lhs->size && i < rhs->size; i++)
-		lhs_data[i] = rhs_data[i];
-	
-	while (i < lhs->size) {
-		lhs_data[i] = 0;
-		i++;
-	}
-}
-
-void real_assignVectorScalar(struct Vector* lhs, float rhs) {
-	float* lhs_data = (float*)lhs->data;
-
-	int i;
-	for (i = 0; i < lhs->size; i++)
-		lhs_data[i] = rhs;
-}
+#define TEMPLATE_NAME real
+#define TEMPLATE_TYPE float
+#include "vector.h"
+#undef TEMPLATE_TYPE
+#undef TEMPLATE_NAME
 
 void real_VectorAddVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
 	float *out_data = (float*) out->data;	
@@ -1054,80 +599,12 @@ void real_ScalarPowerVector(struct Vector* out, float lhs, struct Vector* rhs) {
 		out_data[i] = powf(lhs, rhs_data[i]);
 }
 
-int real_VectorEq(struct Vector* lhs, struct Vector* rhs) {
-	float *lhs_data = (float*) lhs->data;
-	float *rhs_data = (float*) rhs->data;
-
-	if (lhs->size != rhs->size)
-		return 0;
-	
-	int32_t match = 0;
-	for (int i = 0; i < lhs->size; i++)
-		match += lhs_data[i] == rhs_data[i];
-
-	if (match == lhs->size)
-		return 1;
-
-	return 0;
-}
-
-int real_VectorNe(struct Vector* lhs, struct Vector* rhs) {
-	float *lhs_data = (float*) lhs->data;
-	float *rhs_data = (float*) rhs->data;
-
-	if (lhs->size != rhs->size)
-		return 1;
-	
-	int32_t match = 0;
-	for (int i = 0; i < lhs->size; i++)
-		match += lhs_data[i] == rhs_data[i];
-
-	if (match == lhs->size)
-		return 0;
-
-	return 1;
-}
-
-int real_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
-	if (by < 1) {
-		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
-		return 1;
-	}
-	
-	int size = (int) ceil(((float)(lhs->size))/by);
-
-	real_allocVector(out, size);
-
-	float *out_data = (float*) out->data;
-	float *lhs_data = (float*) lhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i*by];
-
-	return 0;
-}
-
-void real_VectorConcatVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
-	int size = lhs->size + rhs->size;
-
-	real_allocVector(out, size);
-
-	float *out_data = (float*) out->data;
-	float *lhs_data = (float*) lhs->data;
-	float *rhs_data = (float*) rhs->data;
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i] = lhs_data[i];
-
-	for (int i = 0; i < lhs->size; i++)
-		out_data[i + lhs->size] = rhs_data[i];
-}
-
 void real_printVector(struct Vector* vector) {
 	float *vector_data = (float*) vector->data;
 
-	for (int i = 0; i < vector->size; i++)
+	for (int i = 0; i < vector->size; i++) {
 		printf("%g", vector_data[i]);
+	}
 }
 
 //////////////////////////
@@ -1168,8 +645,11 @@ int checkVectorsRHSLength(struct Vector* op1, struct Vector* op2) {
 	return 0;
 }
 
-void releaseVector(struct Vector* vector) {
-	xfree(vector->data);
-	xfree(vector);
+void printIndexingOutOfBounds() {
+	printf("RuntimeError: Vector indexing out of bounds.");
+}
+
+void printInvalidBy() {
+	printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
 }
 

@@ -42,6 +42,13 @@ vector_assign_decl(id, type_name, vector_size, vector_size_id, vector_var_expr, 
   
   ;// Check that RHS is smaller
   <vlocal(id)>_valid_size = call i1 @checkVectorsRHSLength(i8* <vlocal(id)>_vec, i8* <vlocal_result(rhs_expr_id)>)
+  br i1 <vlocal(id)>_valid_size, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
   
   call void @<type_name>_assignVector(i8* <vlocal(id)>_vec, i8* <vlocal_result(rhs_expr_id)>)
   store i8* <vlocal(id)>_vec, i8** <vlocal_result(vector_var_expr_id)>
@@ -100,12 +107,28 @@ vector_elem_assign(id, vector_expr, vector_expr_id, type_name, llvm_type, index_
 <vector_expr>
 <index_expr>
   <vlocal(id)>_success = call i1 @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <vlocal_result(index_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printIndexingOutOfBounds()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
 >>
 
 vector_elem_assign_known_index(id, vector_expr, vector_expr_id, type_name, llvm_type, index, expr, expr_id) ::= <<
 <expr>
 <vector_expr>
   <vlocal(id)>_success = call i1 @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <index>, <llvm_type> <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printIndexingOutOfBounds()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
 >>
 
 vector_get_element(id, vector_expr, vector_expr_id, type_name, llvm_type, index_expr, index_expr_id) ::= <<
@@ -114,6 +137,15 @@ vector_get_element(id, vector_expr, vector_expr_id, type_name, llvm_type, index_
   <vlocal(id)>_stack = call i8* @llvm.stacksave();
   <vlocal(id)>_value = alloca <llvm_type>;
   <vlocal(id)>_success = call i1 @<type_name>_getElement(<llvm_type>* <vlocal(id)>_value, i8* <vlocal_result(vector_expr_id)>, i32 <vlocal_result(index_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printIndexingOutOfBounds()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+  
   <vlocal_result(id)> = load <llvm_type>* <vlocal(id)>_value
   call void @llvm.stackrestore(i8* <vlocal(id)>_stack);
 >>
@@ -122,7 +154,15 @@ vector_index(id, type_name, vector_expr, vector_expr_id, index_expr, index_expr_
 <vector_expr>
 <index_expr>
   <vlocal_result(id)> = call i8* @allocVector()
-  call i1 @<type_name>_indexVector(i8* <vlocal_result(id)>, i8* <vlocal_result(vector_expr_id)>, i8* <vlocal_result(index_expr_id)>)
+  <vlocal(id)>_success = call i1 @<type_name>_indexVector(i8* <vlocal_result(id)>, i8* <vlocal_result(vector_expr_id)>, i8* <vlocal_result(index_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printIndexingOutOfBounds()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
 >>
 
 vector_get_local(id, sym_id) ::= <<
@@ -447,6 +487,14 @@ vector_by(id, type_name, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id) ::= <<
 <rhs_expr>
   <vlocal_result(id)> = call i8* @allocVector()
   <vlocal(id)>_valid = call i1 @<type_name>_VectorBy(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_expr_id)>, i32 <vlocal_result(rhs_expr_id)>)
+  br i1 <vlocal(id)>_valid, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printInvalidBy()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
 >>
 
 vector_concat_vector(id, type_name, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id) ::= <<
