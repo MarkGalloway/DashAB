@@ -598,4 +598,18 @@ public class TestAST extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/76AST_output"), outErrIntercept.toString().trim());
     }
     
+    @Test //test vector function arguments
+    public void validVectorFunctionArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/77validFunctionVectorArgs1.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/77AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test vector function arguments
+    public void validVectorFunctionConstArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/78validFunctionVectorConstArgs1.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/78AST_output"), outErrIntercept.toString().trim());
+    }
+    
 }
