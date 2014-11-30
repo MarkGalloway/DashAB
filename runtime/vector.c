@@ -301,7 +301,7 @@ int bool_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 	int8_t *rhs_data = (int8_t*) rhs->data;
 
 	if (lhs->size != rhs->size)
-		return 0;
+		return 1;
 	
 	int32_t match = 0;
 	for (int i = 0; i < lhs->size; i++)
@@ -422,7 +422,7 @@ int char_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 	int8_t *rhs_data = (int8_t*) rhs->data;
 
 	if (lhs->size != rhs->size)
-		return 0;
+		return 1;
 	
 	int32_t match = 0;
 	for (int i = 0; i < lhs->size; i++)
@@ -752,7 +752,7 @@ int int_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 	int32_t *rhs_data = (int32_t*) rhs->data;
 
 	if (lhs->size != rhs->size)
-		return 0;
+		return 1;
 	
 	int32_t match = 0;
 	for (int i = 0; i < lhs->size; i++)
@@ -1020,7 +1020,7 @@ int real_VectorNe(struct Vector* lhs, struct Vector* rhs) {
 	float *rhs_data = (float*) rhs->data;
 
 	if (lhs->size != rhs->size)
-		return 0;
+		return 1;
 	
 	int32_t match = 0;
 	for (int i = 0; i < lhs->size; i++)
