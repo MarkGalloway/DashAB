@@ -1,0 +1,25 @@
+function printMatrix1(boolean b) returns integer matrix;
+function printMatrix2(boolean b) returns integer matrix[*,*];
+function printMatrix3(boolean b) returns integer matrix[2, 3];
+function printMatrix4(boolean b) returns integer matrix[*, 3];
+function printMatrix5(boolean b) returns integer matrix[2, *];
+function printMatrix6(boolean b) returns integer[*,*];
+function printMatrix7(boolean b) returns integer[2,3];
+function printMatrix8(boolean b) returns integer[*,3];
+function printMatrix9(boolean b) returns integer[2,*];
+
+procedure main() returns integer {
+    return 0;
+}
+
+function printMatrix1(boolean b) returns integer matrix = [[1,2,3],[4,5,6]];
+function printMatrix2(boolean b) returns integer matrix[*,*] = [[1,2,3],[4,5,6]];
+function printMatrix3(boolean b) returns integer matrix[3, 3] = identity;
+function printMatrix4(boolean b) returns integer matrix[*, 3] = [[1,2,3], [4,5,6]];
+function printMatrix5(boolean b) returns integer matrix[3, *] = [[1,2,3], [4,5,6]];
+function printMatrix6(boolean b) returns integer[*,*] = [[1,2,3],[4,5,6]];
+function printMatrix7(boolean b) returns integer[3,3] = null;
+function printMatrix8(boolean b) returns integer[*,3] = [[1,2,3],[4,5,6]];
+function printMatrix9(boolean b) returns integer[3,*] = [[1,2,3],[4,5,6]];
+
+

@@ -741,4 +741,11 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/94AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test //test returns in forward declarations for matrices
+    public void testForWardDeclarationMatrixReturns() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/95MatrixFunctionReturnsForwardDeclaration.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/95AST_output"), outErrIntercept.toString().trim());
+    }
 }

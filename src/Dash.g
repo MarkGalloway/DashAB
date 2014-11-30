@@ -259,8 +259,11 @@ methodReturnType
   : primitiveType Vector? LBRACK expression RBRACK -> ^(VECTOR primitiveType expression)
   | primitiveType Vector? LBRACK MULTIPLY RBRACK -> ^(VECTOR primitiveType INFERRED)
   | primitiveType Matrix? LBRACK expression ',' expression RBRACK -> ^(MATRIX primitiveType expression+)
+  | primitiveType Matrix? LBRACK MULTIPLY ',' expression RBRACK -> ^(MATRIX primitiveType INFERRED expression)
+  | primitiveType Matrix? LBRACK expression ',' MULTIPLY RBRACK -> ^(MATRIX primitiveType expression INFERRED)
+  | primitiveType Matrix? LBRACK MULTIPLY ',' MULTIPLY RBRACK -> ^(MATRIX primitiveType INFERRED INFERRED)
   | primitiveType Vector -> ^(VECTOR primitiveType INFERRED)
-  | primitiveType Matrix -> ^(MATRIX primitiveType INFERRED)
+  | primitiveType Matrix -> ^(MATRIX primitiveType INFERRED INFERRED)
   | type
   ;
 	
@@ -353,10 +356,10 @@ matrixDeclaration
       -> ^(VAR_DECL specifier ^(MATRIX primitiveType $s1? $s2? $s3? $s4?) ID $init?)
   | primitiveType Matrix? ID ASSIGN init=expression DELIM
      { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
-     -> ^(VAR_DECL Var["var"] ^(MATRIX primitiveType INFERRED) ID $init)
+     -> ^(VAR_DECL Var["var"] ^(MATRIX primitiveType INFERRED INFERRED) ID $init)
   | specifier primitiveType Matrix? ID ASSIGN init=expression DELIM
      { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
-     -> ^(VAR_DECL specifier ^(MATRIX primitiveType INFERRED) ID $init)
+     -> ^(VAR_DECL specifier ^(MATRIX primitiveType INFERRED INFERRED) ID $init)
   ;
 
   
