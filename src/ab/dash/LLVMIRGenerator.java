@@ -2116,8 +2116,21 @@ public class LLVMIRGenerator {
 			break;
 		}
 		case XOR: {
-			if (lhs_type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_xor");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_xor_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("vector_xor_scalar");
+				} else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("scalar_xor_vector");
+				}
+			} else {
+				if (lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_xor");
+				}
 			}
 			break;
 		}
