@@ -1,0 +1,41 @@
+procedure printMatrix1(boolean b) returns integer matrix {
+    return [[1,2,3],[4,5,6]];
+}
+
+procedure printMatrix2(boolean b) returns integer matrix[*,*] {
+    return [[1,2,3],[4,5,6]];
+}
+
+procedure printMatrix3(boolean b) returns integer matrix[2, 3] {
+    return identity;
+}
+
+procedure printMatrix4(boolean b) returns integer matrix[*, 3] {
+    return [[1,2,3], [4,5,6]];
+}
+
+procedure printMatrix5(boolean b) returns integer matrix[2, *] {
+    return [[1,2,3], [4,5,6]];
+}
+
+procedure printMatrix6(boolean b) returns integer[*,*] {
+    return [[1,2,3],[4,5,6]];
+}
+
+procedure printMatrix7(boolean b) returns integer[2,3] {
+    return null;
+}
+
+procedure printMatrix8(boolean b) returns integer[*,3] {
+    return [[1,2,3],[4,5,6]];
+}
+
+procedure printMatrix9(boolean b) returns integer[2,*] {
+    return [[1,2,3],[4,5,6]];
+}
+
+procedure main() returns integer {
+    return 0;
+}
+
+

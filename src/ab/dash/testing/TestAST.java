@@ -749,10 +749,17 @@ public class TestAST extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/95AST_output"), outErrIntercept.toString().trim());
     }
     
-    @Test //test returns in forward declarations for matrices
+    @Test //test function returns for matrices
     public void matrixFunctionReturns() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/96MatrixFunctionReturns.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/96AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test procedure returns for matrices
+    public void matrixProcedureReturns() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/97MatrixProcedureReturns.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/97AST_output"), outErrIntercept.toString().trim());
     }
 }
