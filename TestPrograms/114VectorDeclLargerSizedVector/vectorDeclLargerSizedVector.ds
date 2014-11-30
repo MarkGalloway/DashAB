@@ -1,0 +1,17 @@
+// 8.6.1 Declarations
+
+/*
+A vector may also be initialized with another vector. If the vector is 
+initialized using a vector that is too small then the vector will be null 
+padded. However, if the vector is initialized with a vector that is too 
+large then a type error will occur. 
+*/
+
+const out = std_output();
+const inp = std_input();
+
+procedure main() returns integer {
+    boolean vector u[3] = [false, true,  false, true];
+
+	return 0;
+}

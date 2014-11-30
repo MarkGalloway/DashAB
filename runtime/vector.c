@@ -1084,7 +1084,15 @@ int checkVectorsAreOfSameLength(struct Vector* op1, struct Vector* op2) {
 	if (op1->size == op2->size)
 		return 1;
 
-	printf("RuntimeError: Vectors are not of same lenght.");
+	printf("RuntimeError: Vectors are not of same length.");
+	return 0;
+}
+
+int checkVectorsRHSLength(struct Vector* op1, struct Vector* op2) {
+	if (op1->size >= op2->size)
+		return 1;
+
+	printf("RuntimeError: Right hand side vector must be smaller or equal to the declared size of left hand side vector.");
 	return 0;
 }
 

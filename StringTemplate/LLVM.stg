@@ -185,6 +185,7 @@ declare i8*  @allocVector()
 declare i8*  @getData(i8*)
 declare i32  @getVectorSize(i8*)
 declare i1 @checkVectorsAreOfSameLength(i8*, i8*)
+declare i1 @checkVectorsRHSLength(i8*, i8*)
 declare void @releaseVector(i8*)
 
 >>
