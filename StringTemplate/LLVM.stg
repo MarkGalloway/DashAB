@@ -101,7 +101,7 @@ declare void  @<type>_VectorPowerVector(i8*, i8*, i8*)
 declare void  @<type>_VectorPowerScalar(i8*, i8*, <llvm_type>)
 declare void  @<type>_ScalarPowerVector(i8*, <llvm_type>, i8*)
 declare void  @<type>_VectorUniaryMinus(i8*, i8*)
-declare void  @<type>_VectorDot(i32*, i8*, i8*)
+declare void  @<type>_VectorDot(<llvm_type>*, i8*, i8*)
 
 >>
 

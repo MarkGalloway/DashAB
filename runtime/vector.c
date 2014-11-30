@@ -171,7 +171,7 @@ int int_IntervalRange(struct Interval* interval) {
 #undef TEMPLATE_TYPE
 #undef TEMPLATE_NAME
 
-void VectorNot_bool(struct Vector* out, struct Vector* lhs) {
+void bool_VectorNot(struct Vector* out, struct Vector* lhs) {
 	int8_t *out_data = (int8_t*) out->data;
 	int8_t *lhs_data = (int8_t*) lhs->data;
 	

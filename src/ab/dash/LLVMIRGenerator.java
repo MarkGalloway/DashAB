@@ -1165,17 +1165,22 @@ public class LLVMIRGenerator {
 		case DashLexer.UNARY_MINUS:
 		{
 			String id = Integer.toString(((DashAST)t).llvmResultID);
-			int type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
+			Type type = ((DashAST)t.getChild(0)).evalType;
+			int type_index = type.getTypeIndex();
 			
 			StringTemplate expr = exec((DashAST)t.getChild(0));
 			String expr_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
 			
 			StringTemplate template = null;
-			if (type == SymbolTable.tINTERVAL) {
+			if (type_index == SymbolTable.tINTERVAL) {
 				template = stg.getInstanceOf("interval_minus");
-			} else if (type == SymbolTable.tINTEGER) {
+			} else if (type_index == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("vector_minus");
+				int elementTypeIndex = ((VectorType) type).elementType.getTypeIndex();
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+			} else if (type_index == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_minus");
-			} else if (type == SymbolTable.tREAL) {
+			} else if (type_index == SymbolTable.tREAL) {
 				template = stg.getInstanceOf("real_minus");
 			}
 			
@@ -1189,13 +1194,18 @@ public class LLVMIRGenerator {
 		case DashLexer.Not:
 		{
 			String id = Integer.toString(((DashAST)t).llvmResultID);
-			int type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
+			Type type = ((DashAST)t.getChild(0)).evalType;
+			int type_index = type.getTypeIndex();
 			
 			StringTemplate expr = exec((DashAST)t.getChild(0));
 			String expr_id = Integer.toString(((DashAST)t.getChild(0)).llvmResultID);
 			
 			StringTemplate template = null;
-			if (type == SymbolTable.tBOOLEAN) {
+			if (type_index == SymbolTable.tVECTOR) {
+				template = stg.getInstanceOf("vector_not");
+				int elementTypeIndex = ((VectorType) type).elementType.getTypeIndex();
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+			} else if (type_index == SymbolTable.tBOOLEAN) {
 				template = stg.getInstanceOf("bool_not");
 			}
 			
