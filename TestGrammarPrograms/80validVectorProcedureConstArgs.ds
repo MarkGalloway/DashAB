@@ -1,20 +1,21 @@
-procedure printVector1(integer vector v) {
+procedure printVector1(const integer vector v) {
     return;
 }
 
-procedure printVector2(integer vector v[*]) {
+
+procedure printVector2(const integer vector v[*]) {
     return;
 }
 
-procedure printVector3(integer vector v[3]) {
+procedure printVector3(const integer vector v[3]) {
     return;
 }
 
-procedure printVector4(integer v[*]) {
+procedure printVector4(const integer v[*]) {
     return;
 }
 
-procedure printVector5(integer v[3]) {
+procedure printVector5(const integer v[3]) {
     return;
 }
 

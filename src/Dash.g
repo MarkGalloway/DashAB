@@ -205,6 +205,8 @@ procedureParameter
       -> ^(ARG_DECL specifier ^(VECTOR primitiveType expression) ID)
   | specifier primitiveType Vector? ID LBRACK '*' RBRACK 
       -> ^(ARG_DECL specifier ^(VECTOR primitiveType INFERRED) ID)
+  | specifier primitiveType Vector ID
+      -> ^(ARG_DECL specifier ^(VECTOR primitiveType INFERRED) ID)
   | primitiveType Vector ID
   	  -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType INFERRED) ID)
   | primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
