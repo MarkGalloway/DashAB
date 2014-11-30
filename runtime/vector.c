@@ -321,7 +321,7 @@ int bool_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
 	
 	int size = (int) ceil(((float)(lhs->size))/by);
 
-	int_allocVector(out, size);
+	bool_allocVector(out, size);
 
 	int8_t *out_data = (int8_t*) out->data;
 	int8_t *lhs_data = (int8_t*) lhs->data;
@@ -330,6 +330,22 @@ int bool_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
 		out_data[i] = lhs_data[i*by];
 
 	return 0;
+}
+
+void bool_VectorConcatVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int size = lhs->size + rhs->size;
+
+	bool_allocVector(out, size);
+
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+	int8_t *rhs_data = (int8_t*) rhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i];
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i + lhs->size] = rhs_data[i];
 }
 
 void bool_printVector(struct Vector* vector) {
@@ -442,7 +458,7 @@ int char_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
 	
 	int size = (int) ceil(((float)(lhs->size))/by);
 
-	int_allocVector(out, size);
+	char_allocVector(out, size);
 
 	int8_t *out_data = (int8_t*) out->data;
 	int8_t *lhs_data = (int8_t*) lhs->data;
@@ -451,6 +467,22 @@ int char_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
 		out_data[i] = lhs_data[i*by];
 
 	return 0;
+}
+
+void char_VectorConcatVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int size = lhs->size + rhs->size;
+
+	char_allocVector(out, size);
+
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+	int8_t *rhs_data = (int8_t*) rhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i];
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i + lhs->size] = rhs_data[i];
 }
 
 
@@ -783,6 +815,30 @@ int int_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
 	return 0;
 }
 
+void int_VectorConcatVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int size = lhs->size + rhs->size;
+
+	int_allocVector(out, size);
+
+	int32_t *out_data = (int32_t*) out->data;
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i];
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i + lhs->size] = rhs_data[i];
+}
+
+void int_VectorToReal(struct Vector* out, struct Vector* vector) {
+	float *out_data = (float*) out->data;
+	int32_t *vector_data = (int32_t*) vector->data;
+
+	for (int i = 0; i < vector->size; i++)
+		out_data[i] = (float)vector_data[i];
+}
+
 void int_printVector(struct Vector* vector) {
 	int32_t *vector_data = (int32_t*) vector->data;
 
@@ -1040,7 +1096,7 @@ int real_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
 	
 	int size = (int) ceil(((float)(lhs->size))/by);
 
-	int_allocVector(out, size);
+	real_allocVector(out, size);
 
 	float *out_data = (float*) out->data;
 	float *lhs_data = (float*) lhs->data;
@@ -1049,6 +1105,22 @@ int real_VectorBy(struct Vector* out, struct Vector* lhs, int32_t by) {
 		out_data[i] = lhs_data[i*by];
 
 	return 0;
+}
+
+void real_VectorConcatVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int size = lhs->size + rhs->size;
+
+	real_allocVector(out, size);
+
+	float *out_data = (float*) out->data;
+	float *lhs_data = (float*) lhs->data;
+	float *rhs_data = (float*) rhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i];
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i + lhs->size] = rhs_data[i];
 }
 
 void real_printVector(struct Vector* vector) {

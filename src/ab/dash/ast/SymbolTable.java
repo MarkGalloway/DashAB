@@ -832,6 +832,17 @@ public class SymbolTable {
     			return false;
         	}
     	}
+    	case DashLexer.MATRIX_INDEX: {
+    		DashAST id = (DashAST) t.getChild(0);
+    		if (id.getToken().getType() == DashLexer.ID) {
+    			VariableSymbol st = (VariableSymbol)id.scope.resolve(id.getText());
+    			if (st.specifier.getSpecifierIndex() == sCONST) {
+    				return true;
+    			}
+    			
+    			return false;
+        	}
+    	}
     	case DashLexer.EXPR:
     		break;
     		
@@ -1016,6 +1027,53 @@ public class SymbolTable {
     		return new VectorType(_integer, 0);
     	
     	return interval.evalType;
+    }
+    
+    public Type concat(DashAST lhs, DashAST rhs) {
+    	Type type = null;
+    	int type_index = -1;
+    	
+    	if ( lhs.evalType.getTypeIndex() == tVECTOR) {
+    		VectorType vType = (VectorType) lhs.evalType;
+    		int lhs_index = vType.elementType.getTypeIndex();
+            if (lhs_index > type_index) {
+            	type_index = lhs_index;
+            	type = vType.elementType;
+            }
+        } else if ( lhs.evalType.getTypeIndex() == tINTERVAL) {
+            if (tINTEGER > type_index) {
+            	type_index = tINTEGER;
+            	type = _integer;
+            }
+        } else {
+        	int lhs_index = lhs.evalType.getTypeIndex();
+            if (lhs_index > type_index) {
+            	type_index = lhs_index;
+            	type = lhs.evalType;
+            }
+        }
+    	
+    	if ( rhs.evalType.getTypeIndex() == tVECTOR) {
+    		VectorType vType = (VectorType) rhs.evalType;
+    		int rhs_index = vType.elementType.getTypeIndex();
+            if (rhs_index > type_index) {
+            	type_index = rhs_index;
+            	type = vType.elementType;
+            }
+        } else if ( rhs.evalType.getTypeIndex() == tINTERVAL) {
+            if (tINTEGER > type_index) {
+            	type_index = tINTEGER;
+            	type = _integer;
+            }
+        } else {
+        	int rhs_index = rhs.evalType.getTypeIndex();
+            if (rhs_index > type_index) {
+            	type_index = rhs_index;
+            	type = rhs.evalType;
+            }
+        }
+    	
+    	return new VectorType(type, 0);
     }
     
     public boolean typeCast(DashAST typecast, DashAST list) {

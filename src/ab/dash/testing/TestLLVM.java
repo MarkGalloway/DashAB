@@ -943,6 +943,10 @@ public class TestLLVM extends BaseTest {
         sb.append("\tv1 == v2 = F\n");
         sb.append("\tv1 != v1 = F\n");
         sb.append("\tv1 != v2 = T\n");
+        sb.append("Built-in\n");
+    	sb.append("\tv1 by 2 = [1, 3]\n");
+    	sb.append("\tlength(v1) = 3\n");
+    	sb.append("\tv1 || v2 = [1, 2, 3, 3, 4, 5]\n");
         sb.append("123\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
@@ -1019,7 +1023,13 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/104VectorPromotion/vectorPromotion.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-
+        sb.append("[1, 2]\n");
+        sb.append("[1, 2]\n");
+        sb.append("[2, 4]\n");
+        sb.append("[1.5, 2.5]\n");
+        sb.append("[1.5, 2.5]\n");
+        sb.append("[1.5, 2.5]\n");
+        sb.append("[1.5, 2.5]\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     

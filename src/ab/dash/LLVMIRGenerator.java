@@ -1245,6 +1245,61 @@ public class LLVMIRGenerator {
 			
 			return template;
 		}
+		
+		case DashLexer.CONCAT:
+		{
+			String id = Integer.toString(((DashAST)t).llvmResultID);
+			
+			if (((DashAST)t.getChild(0)).promoteToType != null) {
+				// TODO
+			}
+			
+			DashAST lhs = (DashAST)t.getChild(0);
+			DashAST rhs = (DashAST)t.getChild(1);
+			
+			StringTemplate lhsExpr = exec(lhs);
+			String lhs_id = Integer.toString(lhs.llvmResultID);
+			
+			StringTemplate rhsExpr = exec(rhs);
+			String rhs_id = Integer.toString(rhs.llvmResultID);
+			
+			if (lhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+				StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+				interval.setAttribute("id", DashAST.getUniqueId());
+				interval.setAttribute("interval_var_expr", lhsExpr);
+				interval.setAttribute("interval_var_expr_id", lhsExpr.getAttribute("id"));
+				
+				lhsExpr = interval;
+			}
+			
+			if (rhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+				StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+				interval.setAttribute("id", DashAST.getUniqueId());
+				interval.setAttribute("interval_var_expr", rhsExpr);
+				interval.setAttribute("interval_var_expr_id", rhsExpr.getAttribute("id"));
+				
+				rhsExpr = interval;
+			}
+			
+			StringTemplate template = null;
+
+			VectorType vType = (VectorType)t.evalType;
+			int elementTypeIndex = vType.elementType.getTypeIndex();
+			
+			template = stg.getInstanceOf("vector_concat_vector");
+			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+			
+			//interval_by(id, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id)
+			template.setAttribute("rhs_expr_id", rhs_id);
+			template.setAttribute("rhs_expr", rhsExpr);
+			template.setAttribute("lhs_expr_id", lhs_id);
+			template.setAttribute("lhs_expr", lhsExpr);
+			template.setAttribute("id", id);
+			
+			return template;
+		}
 			
 		case DashLexer.DOT:
 		{
@@ -1796,6 +1851,7 @@ public class LLVMIRGenerator {
 
 		StringTemplate rhsExpr = exec(rhs);
 		
+		int rhsTypeIndex = 0;
 		if (rhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
 			//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
 			StringTemplate interval = stg.getInstanceOf("interval_to_vector");
@@ -1804,6 +1860,22 @@ public class LLVMIRGenerator {
 			interval.setAttribute("interval_var_expr_id", rhsExpr.getAttribute("id"));
 			
 			rhsExpr = interval;
+			
+			rhsTypeIndex = SymbolTable.tINTEGER;
+		} else if (rhs.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
+			VectorType rhsVType = (VectorType) rhs.evalType;
+			rhsTypeIndex = rhsVType.elementType.getTypeIndex();
+		}
+		
+		if (elementTypeIndex == SymbolTable.tREAL &&
+				rhsTypeIndex == SymbolTable.tINTEGER) {
+			StringTemplate promote = stg.getInstanceOf("vector_to_real");
+			promote.setAttribute("id", DashAST.getUniqueId());
+			promote.setAttribute("type_name", typeIndexToName.get(rhsTypeIndex));
+			promote.setAttribute("vector_var_expr", rhsExpr);
+			promote.setAttribute("vector_var_expr_id", rhsExpr.getAttribute("id"));
+			
+			rhsExpr = promote;
 		}
 
 		template.setAttribute("id", t.llvmResultID);
@@ -1997,28 +2069,31 @@ public class LLVMIRGenerator {
 		
 		// Find vector type for operations
 		int elementTypeIndex = -1;
+		int lhs_elementTypeIndex = -1;
+		int rhs_elementTypeIndex = -1;
 		if (type == SymbolTable.tVECTOR) {
 			elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
 		}
 		
 		if (lhs_type == SymbolTable.tVECTOR) {
 			VectorType vector_type = (VectorType)((DashAST)t.getChild(0)).evalType;
-			int elementType = vector_type.elementType.getTypeIndex();
+			lhs_elementTypeIndex = vector_type.elementType.getTypeIndex();
 			
-			if (elementType > elementTypeIndex) {
-				elementTypeIndex = elementType;
+			if (lhs_elementTypeIndex > elementTypeIndex) {
+				elementTypeIndex = lhs_elementTypeIndex;
 			}
 		}
 		
 		if (rhs_type == SymbolTable.tVECTOR) {
 			VectorType vector_type = (VectorType)((DashAST)t.getChild(1)).evalType;
-			int elementType = vector_type.elementType.getTypeIndex();
+			rhs_elementTypeIndex = vector_type.elementType.getTypeIndex();
 			
-			if (elementType > elementTypeIndex) {
-				elementTypeIndex = elementType;
+			if (rhs_elementTypeIndex > elementTypeIndex) {
+				elementTypeIndex = rhs_elementTypeIndex;
 			}
 		}
 		
+		// Promotion
 		if (lhs_type == SymbolTable.tINTERVAL && rhs_type == SymbolTable.tVECTOR) {
 			//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
 			StringTemplate interval = stg.getInstanceOf("interval_to_vector");
@@ -2029,6 +2104,8 @@ public class LLVMIRGenerator {
 			lhs = interval;
 			lhs_id = interval.getAttribute("id").toString();
 			lhs_type = SymbolTable.tVECTOR;
+			
+			lhs_elementTypeIndex = SymbolTable.tINTEGER;
 
 		}
 		
@@ -2042,6 +2119,32 @@ public class LLVMIRGenerator {
 			rhs = interval;
 			rhs_id = interval.getAttribute("id").toString();
 			rhs_type = SymbolTable.tVECTOR;
+			
+			rhs_elementTypeIndex = SymbolTable.tINTEGER;
+		}
+		
+		if (rhs_elementTypeIndex == SymbolTable.tREAL &&
+				lhs_elementTypeIndex == SymbolTable.tINTEGER) {
+			StringTemplate promote = stg.getInstanceOf("vector_to_real");
+			promote.setAttribute("id", DashAST.getUniqueId());
+			promote.setAttribute("type_name", typeIndexToName.get(lhs_elementTypeIndex));
+			promote.setAttribute("vector_var_expr", lhs);
+			promote.setAttribute("vector_var_expr_id", lhs.getAttribute("id"));
+			
+			lhs = promote;
+			lhs_id = promote.getAttribute("id").toString();
+		}
+		
+		if (lhs_elementTypeIndex == SymbolTable.tREAL &&
+				rhs_elementTypeIndex == SymbolTable.tINTEGER) {
+			StringTemplate promote = stg.getInstanceOf("vector_to_real");
+			promote.setAttribute("id", DashAST.getUniqueId());
+			promote.setAttribute("type_name", typeIndexToName.get(rhs_elementTypeIndex));
+			promote.setAttribute("vector_var_expr", rhs);
+			promote.setAttribute("vector_var_expr_id", rhs.getAttribute("id"));
+			
+			rhs = promote;
+			rhs_id = promote.getAttribute("id").toString();
 		}
 		
 		if (t.promoteToType != null && 
@@ -2071,7 +2174,6 @@ public class LLVMIRGenerator {
 				rhs_type = type;
 			}
 		}
-		
 		
 		
 		StringTemplate template = null;
