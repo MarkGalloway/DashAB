@@ -669,4 +669,10 @@ public class TestAST extends BaseTest {
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/85AST_output"), outErrIntercept.toString().trim());
     }
     
+    @Test //test procedure function returns with forward declaration
+    public void testProcedureFunctionReturnsForwardDeclarations() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/86TestVectorProcedureReturnsForwardDeclaration.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/88AST_output"), outErrIntercept.toString().trim());
+    }
 }

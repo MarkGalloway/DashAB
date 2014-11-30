@@ -1,0 +1,18 @@
+procedure printVector1() returns integer[3];
+procedure printVector2() returns integer[*];
+procedure printVector3() returns integer vector;
+procedure printVector4() returns integer vector[3];
+procedure printVector5() returns integer vector[*];
+
+procedure main() returns integer {
+    return 0;
+}
+
+procedure printVector1() returns integer[3] = 1;
+procedure printVector2() returns integer[*] = [1, 2, 3];
+procedure printVector3() returns integer vector = [1, 2, 3];
+procedure printVector4() returns integer vector[3] = null;
+procedure printVector5() returns integer vector[*] = [1, 2, 3];
+
+
+
