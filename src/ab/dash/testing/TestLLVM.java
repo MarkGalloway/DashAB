@@ -1197,6 +1197,16 @@ public class TestLLVM extends BaseTest {
         sb.append("T\n");
         sb.append("F\n");
 
+        sb.append("T\n");
+        sb.append("F\n");
+        sb.append("T\n");
+        sb.append("F\n");
+
+        sb.append("F\n");
+        sb.append("T\n");
+        sb.append("F\n");
+        sb.append("T\n");
+
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
