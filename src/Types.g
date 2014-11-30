@@ -191,20 +191,32 @@ ArrayList<DashAST> arg_nodes = new ArrayList<DashAST>();
 }
 	:	^(VECTOR_LIST (^(EXPR expr) { $EXPR.evalType = $expr.type; arg_nodes.add($EXPR); } )+)
 	{
+		boolean isMatrix = false;
 		Type arg_type = null;
 		for (int i = 0; i < arg_nodes.size(); i++) {
 			DashAST arg = arg_nodes.get(i);
+			Type compareType = arg.evalType;
+			if (arg.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
+				isMatrix = true;
+				compareType = ((VectorType)arg.evalType).elementType;
+			}
+			
 			if (arg_type != null) {
-				if (arg.evalType != arg_type) {
+				if (compareType != arg_type) {
 					symtab.error("line " + arg.getLine() + ": Mismatched types in vector literal.");
 				}
 			}
-			arg_type = arg.evalType;  
+			arg_type = compareType;  
 	    }
 	    
-	    VectorType vt = new VectorType(arg_type, arg_nodes.size());
-	    $VECTOR_LIST.evalType = vt;
-	    $type = vt;
+	    Type returnType = null;
+	    if (isMatrix)
+	    	returnType = new MatrixType(arg_type, arg_nodes.size(), 0);
+	    else
+	    	returnType = new VectorType(arg_type, arg_nodes.size());
+	    	
+	    $VECTOR_LIST.evalType = returnType;
+	    $type = returnType;
 	}
 	;
 
