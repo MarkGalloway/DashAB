@@ -682,4 +682,11 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/87AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test //test function matrix args
+    public void testFunctionMatrixArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/88validFunctionMatrixArgs.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/88AST_output"), outErrIntercept.toString().trim());
+    }
 }

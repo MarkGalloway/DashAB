@@ -180,15 +180,27 @@ functionParameter
   | Var primitiveType (Vector | Matrix)? ID LBRACK MULTIPLY RBRACK 
        { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
   | Var primitiveType (Vector | Matrix)? ID
-    { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
+    { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
+    
+  // vectors 
   | specifier? primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
   | specifier? primitiveType Vector? ID LBRACK MULTIPLY RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType INFERRED) ID)
   | specifier? primitiveType Vector ID
   	  -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType INFERRED) ID)
+  	  
+  // matrices
+  | specifier? primitiveType Matrix? ID LBRACK MULTIPLY ',' MULTIPLY RBRACK
+    -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType INFERRED INFERRED) ID)
+  | specifier? primitiveType Matrix? ID LBRACK MULTIPLY ',' expression RBRACK 
+    -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType INFERRED expression) ID)
+  | specifier? primitiveType Matrix? ID LBRACK expression ',' MULTIPLY RBRACK 
+  -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression INFERRED) ID)
   | specifier? primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression+) ID)
+  | specifier? primitiveType Matrix ID
+    -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType INFERRED INFERRED) ID)
       
   | specifier? type ID  -> ^(ARG_DECL Const["const"] type ID)
   ;
