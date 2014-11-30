@@ -6,12 +6,24 @@ procedure main() returns integer {
     integer vector v[3] = [8, 4, 6];
 
     integer vector w[3] = [0, 0, 0];
+    integer vector x[3] = [0, 0, 0];
+    integer vector y[3] = [0, 0, 0];
 
     w = v % u;
+    x = 7 % u;
+    y = v % 3;
 
     w[1] -> out; '\n' -> out;
     w[2] -> out; '\n' -> out;
     w[3] -> out; '\n' -> out;
+
+    x[1] -> out; '\n' -> out;
+    x[2] -> out; '\n' -> out;
+    x[3] -> out; '\n' -> out;
+
+    y[1] -> out; '\n' -> out;
+    y[2] -> out; '\n' -> out;
+    y[3] -> out; '\n' -> out;
 
 	return 0;
 }
