@@ -1023,7 +1023,13 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/104VectorPromotion/vectorPromotion.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-
+        sb.append("[1, 2]\n");
+        sb.append("[1, 2]\n");
+        sb.append("[2, 4]\n");
+        sb.append("[1.5, 2.5]\n");
+        sb.append("[1.5, 2.5]\n");
+        sb.append("[1.5, 2.5]\n");
+        sb.append("[1.5, 2.5]\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     

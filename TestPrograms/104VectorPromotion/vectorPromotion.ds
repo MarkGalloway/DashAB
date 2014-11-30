@@ -1,16 +1,36 @@
 // 8.8.1 Matrix Declaration
 const out = std_output();
 
+procedure printVector(real vector v[*]) {
+	var i = 1;
+	
+	'[' -> out;
+	loop while i < length(v)  {
+		v[i] -> out; ',' -> out; ' ' -> out;
+		i = i + 1;
+	}
+	
+	v[i] -> out; ']' -> out; '\n' -> out;
+}
+
 procedure main() returns integer {
 
     real vector v0 = 1..2;
     real vector v1 = [1, 2];
     real vector v2 = v1 + [1, 2];
+    real vector v3 = [1, 2] + [0.5, 0.5];
+    real vector v4 = [0.5, 0.5] + [1, 2];
+    real vector v5 = 1..2 + [0.5, 0.5];
+    real vector v6 = [0.5, 0.5] + 1..2;
     //real matrix m2 = [[1, 2], [2, 3]];
     
-    v0[1] -> out; '\n' -> out;
-    v1[1] -> out; '\n' -> out;
-    v2[1] -> out; '\n' -> out;
+    printVector(v0);
+    printVector(v1);
+    printVector(v2);
+    printVector(v3);
+    printVector(v4);
+    printVector(v5);
+    printVector(v6);
     //m2[1, 1] -> out; '\n' -> out;
     
     return 0;

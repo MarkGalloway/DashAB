@@ -78,6 +78,14 @@ vector_assign(id, type_name, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_
   call void @<type_name>_assignVector(i8* <vlocal(id)>_vec, i8* <vlocal_result(rhs_expr_id)>)
 >>
 
+vector_to_real(id, type_name, vector_var_expr, vector_var_expr_id) ::= <<
+<vector_var_expr>
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(vector_var_expr_id)>)
+  <vlocal_result(id)> = call i8* @allocVector()
+  call void @real_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_VectorToReal(i8* <vlocal_result(id)>, i8* <vlocal_result(vector_var_expr_id)>)
+>>
+
 vector_assign_scalar(id, type_name, type, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
 <vector_var_expr>
 <rhs_expr>

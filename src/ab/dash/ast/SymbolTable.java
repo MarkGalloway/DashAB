@@ -832,6 +832,17 @@ public class SymbolTable {
     			return false;
         	}
     	}
+    	case DashLexer.MATRIX_INDEX: {
+    		DashAST id = (DashAST) t.getChild(0);
+    		if (id.getToken().getType() == DashLexer.ID) {
+    			VariableSymbol st = (VariableSymbol)id.scope.resolve(id.getText());
+    			if (st.specifier.getSpecifierIndex() == sCONST) {
+    				return true;
+    			}
+    			
+    			return false;
+        	}
+    	}
     	case DashLexer.EXPR:
     		break;
     		

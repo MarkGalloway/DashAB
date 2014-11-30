@@ -831,6 +831,14 @@ void int_VectorConcatVector(struct Vector* out, struct Vector* lhs, struct Vecto
 		out_data[i + lhs->size] = rhs_data[i];
 }
 
+void int_VectorToReal(struct Vector* out, struct Vector* vector) {
+	float *out_data = (float*) out->data;
+	int32_t *vector_data = (int32_t*) vector->data;
+
+	for (int i = 0; i < vector->size; i++)
+		out_data[i] = (float)vector_data[i];
+}
+
 void int_printVector(struct Vector* vector) {
 	int32_t *vector_data = (int32_t*) vector->data;
 

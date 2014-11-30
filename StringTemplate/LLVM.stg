@@ -155,6 +155,7 @@ declare i1  @int_VectorEq(i8*, i8*)
 declare i1  @int_VectorNe(i8*, i8*)
 declare i1 @int_VectorBy(i8*, i8*, i32)
 declare void  @int_VectorConcatVector(i8*, i8*, i8*)
+declare void  @int_VectorToReal(i8*, i8*)
 declare void  @int_printVector(i8*)
 
 declare void @real_allocVector(i8*, i32)
