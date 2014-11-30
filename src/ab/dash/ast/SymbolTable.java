@@ -733,6 +733,19 @@ public class SymbolTable {
         		error("line " + declID.getLine() + ": type cannot be inferred for " + text((DashAST) init.getParent()));
         		return;
         	}
+        } else {
+        	if (declID.symbol.type.getTypeIndex() == tVECTOR) {
+        		VectorType vType = (VectorType) declID.symbol.type;
+        		DashAST vType_node = vType.def;
+        		DashAST size = (DashAST) vType_node.getChild(1);
+        		
+        		if (size.token.getType() == DashLexer.INFERRED &&
+        				(init.evalType.getTypeIndex() != tINTERVAL &&
+        				init.evalType.getTypeIndex() != tVECTOR)) {
+        			error("line " + declID.getLine() + ": cannot use scalar or none-vector type to instantiate an un-sized vector " + text((DashAST) init.getParent()));
+        			return;
+        		}
+        	}
         }
         
         if (declID.symbol.type instanceof TypedefSymbol) {

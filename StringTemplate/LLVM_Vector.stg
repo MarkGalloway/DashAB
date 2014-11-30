@@ -151,10 +151,41 @@ if.success<id>:
 >>
 
 vector_index(id, type_name, vector_expr, vector_expr_id, index_expr, index_expr_id) ::= <<
-<vector_expr>
+
 <index_expr>
+<vector_expr>
   <vlocal_result(id)> = call i8* @allocVector()
   <vlocal(id)>_success = call i1 @<type_name>_indexVector(i8* <vlocal_result(id)>, i8* <vlocal_result(vector_expr_id)>, i8* <vlocal_result(index_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printIndexingOutOfBounds()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+vector_index_assign_vector(id, type_name, llvm_type, vector_expr, vector_expr_id, index_expr, index_expr_id, expr, expr_id) ::= <<
+<expr>
+<index_expr>
+<vector_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_VectorIndexAssignVector(i8* <vlocal_result(vector_expr_id)>, i8* <vlocal_result(index_expr_id)>, i8* <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printIndexingOutOfBounds()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+vector_index_assign_scalar(id, type_name, llvm_type, vector_expr, vector_expr_id, index_expr, index_expr_id, expr, expr_id) ::= <<
+<expr>
+<index_expr>
+<vector_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_VectorIndexAssignScalar(i8* <vlocal_result(vector_expr_id)>, i8* <vlocal_result(index_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
   br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
   
 if.fail<id>:

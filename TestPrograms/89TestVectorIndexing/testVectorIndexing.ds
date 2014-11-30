@@ -37,7 +37,7 @@ procedure main() returns integer {
 	v -> out; '\n' -> out; // [2, 2, 0]
 	
 	v[2..3] = 1..2;
-	v -> out; '\n' -> out; // [4, 1, 2]
+	v -> out; '\n' -> out; // [2, 1, 2]
 
 	return 0;
 }

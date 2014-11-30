@@ -43,7 +43,8 @@ int NAME(setElement, TEMPLATE_NAME)(struct Vector* vector, int32_t index, TEMPLA
 }
 
 int NAME(indexVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* vector, struct Vector* index) {
-	bool_allocVector(out, index->size);
+	NAME(allocVector, TEMPLATE_NAME)(out, index->size);
+
 	TEMPLATE_TYPE* out_data = (TEMPLATE_TYPE*)out->data;
 	TEMPLATE_TYPE* vector_data = (TEMPLATE_TYPE*)vector->data;
 	int32_t* index_data = (int32_t*)index->data;
@@ -205,7 +206,7 @@ int NAME(VectorBy, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, int32_
 	
 	int size = (int) ceil(((float)(lhs->size))/by);
 
-	bool_allocVector(out, size);
+	NAME(allocVector, TEMPLATE_NAME)(out, size);
 
 	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;
 	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
@@ -219,7 +220,7 @@ int NAME(VectorBy, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, int32_
 void NAME(VectorConcatVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
 	int size = lhs->size + rhs->size;
 
-	bool_allocVector(out, size);
+	NAME(allocVector, TEMPLATE_NAME)(out, size);
 
 	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;
 	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;

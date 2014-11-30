@@ -1,7 +1,7 @@
 const out = std_output();
 const inp = std_input();
 
-function solveDiagonal(real matrix A[4,4], real vector y[4]) returns real vector[4] {
+function solveDiagonal(real matrix A, real vector y) returns real vector {
 	integer size = length(y);
 	real vector x[size];
 	loop i in 1..size {

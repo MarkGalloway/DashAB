@@ -236,7 +236,7 @@ public class TestUnimplemented extends BaseTest {
     public void inferredVectorWithScalar() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
        String[] args = new String[] {"TestInvalidSyntaxPrograms/47InferredVectorWithScalar.ds/inferredVectorWithScalar.ds"};
        Runner.llvmMain(args);
-       assertEquals("line 5: cannot use scalar to instantiate an un-sized vector", outErrIntercept.toString().trim());
+       assertEquals("line 4: cannot use scalar or none-vector type to instantiate an un-sized vector integer vector v1 = 1;", outErrIntercept.toString().trim());
    }
     
     @Test 
@@ -271,6 +271,16 @@ public class TestUnimplemented extends BaseTest {
        sb.append("6\n");
        sb.append("4\n");
        sb.append("5\n");
+       sb.append("T\n");
+       sb.append("TTF\n");
+       sb.append("c\n");
+       sb.append("tac\n");
+       sb.append("4.5\n");
+       sb.append("6.55.54.5\n");
+       sb.append("406\n");
+       sb.append("410\n");
+       sb.append("220\n");
+       sb.append("212\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     

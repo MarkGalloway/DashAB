@@ -1085,7 +1085,7 @@ public class LLVMIRGenerator {
 							exprTypeIndex ==  SymbolTable.tVECTOR) {
 						template = stg.getInstanceOf("vector_index_assign_vector");
 					} else {
-						template = stg.getInstanceOf("vector_index_assign_vector");
+						template = stg.getInstanceOf("vector_index_assign_scalar");
 					}
 				}
 				else
