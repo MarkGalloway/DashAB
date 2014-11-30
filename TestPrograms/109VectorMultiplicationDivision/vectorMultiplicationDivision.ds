@@ -4,20 +4,43 @@ const inp = std_input();
 procedure main() returns integer {
     integer vector u[3] = [2, 3,  5];
     integer vector v[3] = [8, 9, 10];
+    integer vector a[3] = [10, 15, 20];
 
     integer vector w[3] = [0, 0, 0];
+    integer vector x[3] = [0, 0, 0];
+    integer vector y[3] = [0, 0, 0];
 
     w = v * u;
+    x = u * 2;
+    y = 3 * u;
 
     w[1] -> out; '\n' -> out;
     w[2] -> out; '\n' -> out;
     w[3] -> out; '\n' -> out;
+
+    x[1] -> out; '\n' -> out;
+    x[2] -> out; '\n' -> out;
+    x[3] -> out; '\n' -> out;
+
+    y[1] -> out; '\n' -> out;
+    y[2] -> out; '\n' -> out;
+    y[3] -> out; '\n' -> out;
 
     w = v / u;
+    x = a / 5;
+    y = 30 / u;
 
     w[1] -> out; '\n' -> out;
     w[2] -> out; '\n' -> out;
     w[3] -> out; '\n' -> out;
+
+    x[1] -> out; '\n' -> out;
+    x[2] -> out; '\n' -> out;
+    x[3] -> out; '\n' -> out;
+
+    y[1] -> out; '\n' -> out;
+    y[2] -> out; '\n' -> out;
+    y[3] -> out; '\n' -> out;
 
 	return 0;
 }
