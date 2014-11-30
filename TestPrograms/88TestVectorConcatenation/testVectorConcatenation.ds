@@ -10,6 +10,8 @@ procedure main() returns integer {
 	real vector v5 = v1 || 4.1; // should be 1.0, 2.0, 3.0, 4.1
 	real vector v6 = 0 || v1 || 4.1; // should be 0.0 1.0, 2.0, 3.0, 4.1
 	
+	real vector v7 = v2 || v5; // should be 4.0 5.0 1.0, 2.0, 3.0, 4.1
+	
 	v3[1] -> out; '\n' -> out;
 	v3[2] -> out; '\n' -> out;
 	v3[3] -> out; '\n' -> out;
@@ -31,6 +33,13 @@ procedure main() returns integer {
 	v6[3] -> out; '\n' -> out;
 	v6[4] -> out; '\n' -> out;
 	v6[5] -> out; '\n' -> out;
+	
+	v7[1] -> out; '\n' -> out;
+	v7[2] -> out; '\n' -> out;
+	v7[3] -> out; '\n' -> out;
+	v7[4] -> out; '\n' -> out;
+	v7[5] -> out; '\n' -> out;
+	v7[6] -> out; '\n' -> out;
 
 	return 0;
 }

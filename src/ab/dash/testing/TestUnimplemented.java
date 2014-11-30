@@ -262,6 +262,12 @@ public class TestUnimplemented extends BaseTest {
        sb.append("2\n");
        sb.append("3\n");
        sb.append("4.1\n");
+       sb.append("4\n");
+       sb.append("5\n");
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4.1\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     

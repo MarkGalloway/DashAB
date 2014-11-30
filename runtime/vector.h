@@ -229,7 +229,7 @@ void NAME(VectorConcatVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* 
 	for (int i = 0; i < lhs->size; i++)
 		out_data[i] = lhs_data[i];
 
-	for (int i = 0; i < lhs->size; i++)
+	for (int i = 0; i < rhs->size; i++)
 		out_data[i + lhs->size] = rhs_data[i];
 }
 
