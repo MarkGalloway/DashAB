@@ -1,0 +1,25 @@
+procedure printVector1(const integer vector v) {
+    return;
+}
+
+
+procedure printVector2(const integer vector v[*]) {
+    return;
+}
+
+procedure printVector3(const integer vector v[3]) {
+    return;
+}
+
+procedure printVector4(const integer v[*]) {
+    return;
+}
+
+procedure printVector5(const integer v[3]) {
+    return;
+}
+
+procedure main() returns integer {
+    return 0;
+}
+

@@ -1,0 +1,24 @@
+procedure printVector1(integer vector v) {
+    return;
+}
+
+procedure printVector2(integer vector v[*]) {
+    return;
+}
+
+procedure printVector3(integer vector v[3]) {
+    return;
+}
+
+procedure printVector4(integer v[*]) {
+    return;
+}
+
+procedure printVector5(integer v[3]) {
+    return;
+}
+
+procedure main() returns integer {
+    return 0;
+}
+

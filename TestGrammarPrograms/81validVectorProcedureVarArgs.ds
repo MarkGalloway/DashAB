@@ -1,0 +1,24 @@
+procedure printVector1(var integer vector v) {
+    return;
+}
+
+procedure printVector2(var integer vector v[*]) {
+    return;
+}
+
+procedure printVector3(var integer vector v[3]) {
+    return;
+}
+
+procedure printVector4(var integer v[*]) {
+    return;
+}
+
+procedure printVector5(var integer v[3]) {
+    return;
+}
+
+procedure main() returns integer {
+    return 0;
+}
+
