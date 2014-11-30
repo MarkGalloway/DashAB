@@ -80,6 +80,8 @@ declare i1  @<type>_VectorEq(i8*, i8*)
 declare i1  @<type>_VectorNe(i8*, i8*)
 declare i1  @<type>_VectorBy(i8*, i8*, i32)
 declare void  @<type>_VectorConcatVector(i8*, i8*, i8*)
+declare void  @<type>_VectorConcatScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarConcatVector(i8*, <llvm_type>, i8*)
 declare void  @<type>_printVector(i8*)
 
 >>

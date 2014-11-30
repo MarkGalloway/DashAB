@@ -233,4 +233,32 @@ void NAME(VectorConcatVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* 
 		out_data[i + lhs->size] = rhs_data[i];
 }
 
+void NAME(VectorConcatScalar, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, TEMPLATE_TYPE rhs) {
+	int size = lhs->size + 1;
+
+	NAME(allocVector, TEMPLATE_NAME)(out, size);
+
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i];
+
+	out_data[lhs->size] = rhs;
+}
+
+void NAME(ScalarConcatVector, TEMPLATE_NAME)(struct Vector* out, TEMPLATE_TYPE lhs, struct Vector* rhs) {
+	int size = rhs->size + 1;
+
+	NAME(allocVector, TEMPLATE_NAME)(out, size);
+
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+	
+	out_data[0] = lhs;
+	
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i+1] = rhs_data[i];
+}
+
 

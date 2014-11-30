@@ -33,9 +33,9 @@ vector_init_literal(id, type_name, size_expr, size_expr_id, element_exprs) ::= <
 >>
 
 vector_assign_decl(id, type_name, vector_size, vector_size_id, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
+<rhs_expr>
 <vector_size>
 <vector_var_expr>
-<rhs_expr>
   ;// Alloc new lhs vector
   <vlocal(id)>_vec = call i8* @allocVector()
   call void @<type_name>_allocVector(i8* <vlocal(id)>_vec, i32 <vlocal_result(vector_size_id)>)
@@ -55,9 +55,9 @@ if.success<id>:
 >>
 
 vector_assign_decl_scalar(id, type_name, type, vector_size, vector_size_id, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
+<rhs_expr>
 <vector_size>
 <vector_var_expr>
-<rhs_expr>
   <vlocal(id)>_vec = call i8* @allocVector()
   call void @<type_name>_allocVector(i8* <vlocal(id)>_vec, i32 <vlocal_result(vector_size_id)>)
   call void @<type_name>_assignVectorScalar(i8* <vlocal(id)>_vec, <type> <vlocal_result(rhs_expr_id)>)
@@ -66,8 +66,8 @@ vector_assign_decl_scalar(id, type_name, type, vector_size, vector_size_id, vect
 >>
 
 vector_assign_decl_infer(id, type_name, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
-<vector_var_expr>
 <rhs_expr>
+<vector_var_expr>
   ;// Alloc new lhs vector with right size
   <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_expr_id)>)
 	<vlocal(id)>_vec = call i8* @allocVector()
@@ -77,8 +77,8 @@ vector_assign_decl_infer(id, type_name, vector_var_expr, vector_var_expr_id, rhs
 >>
 
 vector_assign(id, type_name, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
-<vector_var_expr>
 <rhs_expr>
+<vector_var_expr>
   <vlocal(id)>_vec = load i8** <vlocal_result(vector_var_expr_id)>
   
   ;//Assume vector is already allocated to the right size
@@ -94,8 +94,8 @@ vector_to_real(id, type_name, vector_var_expr, vector_var_expr_id) ::= <<
 >>
 
 vector_assign_scalar(id, type_name, type, vector_var_expr, vector_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
-<vector_var_expr>
 <rhs_expr>
+<vector_var_expr>
   <vlocal(id)>_vec = load i8** <vlocal_result(vector_var_expr_id)>
   
   ;//Assume vector is already allocated to the right size
@@ -104,8 +104,8 @@ vector_assign_scalar(id, type_name, type, vector_var_expr, vector_var_expr_id, r
 
 vector_elem_assign(id, vector_expr, vector_expr_id, type_name, llvm_type, index_expr, index_expr_id, expr, expr_id) ::= <<
 <expr>
-<vector_expr>
 <index_expr>
+<vector_expr>
   <vlocal(id)>_success = call i1 @<type_name>_setElement(i8* <vlocal_result(vector_expr_id)>, i32 <vlocal_result(index_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
   br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
   
@@ -132,8 +132,8 @@ if.success<id>:
 >>
 
 vector_get_element(id, vector_expr, vector_expr_id, type_name, llvm_type, index_expr, index_expr_id) ::= <<
-<vector_expr>
 <index_expr>
+<vector_expr>
   <vlocal(id)>_stack = call i8* @llvm.stacksave();
   <vlocal(id)>_value = alloca <llvm_type>;
   <vlocal(id)>_success = call i1 @<type_name>_getElement(<llvm_type>* <vlocal(id)>_value, i8* <vlocal_result(vector_expr_id)>, i32 <vlocal_result(index_expr_id)>)
@@ -151,7 +151,6 @@ if.success<id>:
 >>
 
 vector_index(id, type_name, vector_expr, vector_expr_id, index_expr, index_expr_id) ::= <<
-
 <index_expr>
 <vector_expr>
   <vlocal_result(id)> = call i8* @allocVector()
@@ -530,8 +529,8 @@ vector_not(id, type_name, expr, expr_id) ::= <<
 >>
 
 vector_by(id, type_name, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id) ::= <<
-<lhs_expr>
 <rhs_expr>
+<lhs_expr>
   <vlocal_result(id)> = call i8* @allocVector()
   <vlocal(id)>_valid = call i1 @<type_name>_VectorBy(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_expr_id)>, i32 <vlocal_result(rhs_expr_id)>)
   br i1 <vlocal(id)>_valid, label %if.success<id>, label %if.fail<id>
@@ -544,11 +543,25 @@ if.fail<id>:
 if.success<id>:
 >>
 
-vector_concat_vector(id, type_name, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id) ::= <<
-<lhs_expr>
-<rhs_expr>
+vector_concat_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
   <vlocal_result(id)> = call i8* @allocVector()
-  call void @<type_name>_VectorConcatVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_expr_id)>, i8* <vlocal_result(rhs_expr_id)>)
+  call void @<type_name>_VectorConcatVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+vector_concat_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  call void @<type_name>_VectorConcatScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_concat_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  call void @<type_name>_ScalarConcatVector(i8* <vlocal_result(id)>, <llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
 >>
 
 vector_print(id, type_name, expr, expr_id) ::= <<
