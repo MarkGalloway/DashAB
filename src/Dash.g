@@ -659,10 +659,10 @@ REAL
 }
 	: 	DIGIT (DIGIT | UNDERSCORE)*
 	(
-		| (DOT (DIGIT | UNDERSCORE | DecimalExponent1))=> DOT (DIGIT | UNDERSCORE)* DecimalExponent1? FloatTypeSuffix?
+		(DOT ~(DOT))=> DOT (DIGIT | UNDERSCORE)* DecimalExponent1? FloatTypeSuffix?
 		| (RANGE)=> {_type=INTEGER;} 
 		| DecimalExponent1 FloatTypeSuffix?
-	)
+	)	
 		| {!member_access}?=> (DOT (DIGIT | UNDERSCORE)*) DecimalExponent1? FloatTypeSuffix?
 	;
 
