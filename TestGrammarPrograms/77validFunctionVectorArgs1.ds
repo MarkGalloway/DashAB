@@ -1,0 +1,24 @@
+function printVector1(integer vector v) returns boolean {
+    return true;
+}
+
+function printVector2(integer vector v[*]) returns boolean {
+    return true;
+}
+
+function printVector3(integer vector v[3]) returns boolean {
+    return true;
+}
+
+function printVector4(integer v[*]) returns boolean {
+    return true;
+}
+
+function printVector5(integer v[3]) returns boolean {
+    return true;
+}
+
+procedure main() returns integer {
+    return 0;
+}
+

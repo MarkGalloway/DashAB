@@ -174,11 +174,17 @@ function
 functionParameter
   : Var type ID { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
   | Var primitiveType (Vector | Matrix)? ID LBRACK expression (',' expression)? RBRACK
-      { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); } 
+      { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
   | specifier? primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
+  | specifier? primitiveType Vector? ID (LBRACK MULTIPLY RBRACK)
+  // Inferred Vector types
+      -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType INFERRED) ID)
+  | specifier? primitiveType Vector ID
+    -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType INFERRED) ID)
   | specifier? primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression+) ID)
+      
   | specifier? type ID  -> ^(ARG_DECL Const["const"] type ID)
   ;
   
@@ -470,7 +476,8 @@ postfixExpression
 primary
     : ID
     | r=(INTEGER | INTEGER_UNDERSCORES)			{$r.setType(INTEGER);}
-    |	REAL
+    |	(r=REAL) 
+			{  if (r.getText().endsWith(".")) {r.setText(r.getText() + "0");}  }
     |	CHARACTER
     | STRING
     |	True
@@ -634,15 +641,16 @@ Examples:
 	0.5e-6 				0.0000005
 	0.45 				0.45
 	6.e10 				60000000000
+	45.        45.0
 */
 
 REAL
 @after {
   setText(getText().replaceAll("_", ""));
 }
-	: 	DIGIT (DIGIT | UNDERSCORE)* 
+	: 	DIGIT (DIGIT | UNDERSCORE)*
 	(
-		(DOT (DIGIT | UNDERSCORE | DecimalExponent1))=> DOT (DIGIT | UNDERSCORE)* DecimalExponent1? FloatTypeSuffix?
+		| (DOT (DIGIT | UNDERSCORE | DecimalExponent1))=> DOT (DIGIT | UNDERSCORE)* DecimalExponent1? FloatTypeSuffix?
 		| (RANGE)=> {_type=INTEGER;} 
 		| DecimalExponent1 FloatTypeSuffix?
 	)
