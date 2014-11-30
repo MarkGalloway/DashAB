@@ -1012,8 +1012,10 @@ public class SymbolTable {
                            text((DashAST)by.getParent()));
             return null;
         }
+    	if (interval.evalType.getTypeIndex() == tINTERVAL)
+    		return new VectorType(_integer, 0);
     	
-    	return new VectorType(_integer, 0);
+    	return interval.evalType;
     }
     
     public boolean typeCast(DashAST typecast, DashAST list) {

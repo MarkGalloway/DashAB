@@ -3,16 +3,9 @@
 const out = std_output();
 
 procedure main() returns integer {
-	string hello = "\"World!\"
+	string hello = "\"World!\"";
 	
-	hello[1] -> out; 
-	hello[2] -> out;
-	hello[3] -> out;
-	hello[4] -> out;
-	hello[5] -> out;
-	hello[6] -> out;
-	hello[7] -> out;
-	hello[8] -> out;
+	hello -> out;
 	
 	return 0;
 }

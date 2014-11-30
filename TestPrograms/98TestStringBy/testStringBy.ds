@@ -4,10 +4,9 @@ const out = std_output();
 
 procedure main() returns integer {
 	string hello = "hello";
-	string hl = hello by 2;
+	string hlo = hello by 2;
 	
-	h1[1] -> out;
-	h2[2] -> out;
+	hlo -> out;
 	
 	return 0;
 }

@@ -420,7 +420,7 @@ public class TestUnimplemented extends BaseTest {
     public void testStringLiteral() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
        String[] args = new String[] {"TestPrograms/96TestStringLiteral/testStringLiteral.ds"};
        Runner.llvmMain(args);
-       assertEquals("\"World\"", outErrIntercept.toString().trim());
+       assertEquals("\"World!\"", outErrIntercept.toString().trim());
    }
     
     @Test 
@@ -442,7 +442,7 @@ public class TestUnimplemented extends BaseTest {
        String[] args = new String[] {"TestPrograms/98TestStringBy/testStringBy.ds"};
        Runner.llvmMain(args);
        StringBuffer sb = new StringBuffer();
-       sb.append("hl");
+       sb.append("hlo");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     

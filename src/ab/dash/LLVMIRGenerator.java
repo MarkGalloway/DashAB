@@ -1228,6 +1228,13 @@ public class LLVMIRGenerator {
 			
 			if (((DashAST)t.getChild(0)).evalType.getTypeIndex() == SymbolTable.tINTERVAL)
 				template = stg.getInstanceOf("interval_by");
+			else {
+				VectorType vType = (VectorType)((DashAST)t.getChild(0)).evalType;
+				int elementTypeIndex = vType.elementType.getTypeIndex();
+				
+				template = stg.getInstanceOf("vector_by");
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+			}
 			
 			//interval_by(id, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id)
 			template.setAttribute("rhs_expr_id", rhs_id);
