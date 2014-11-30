@@ -137,7 +137,9 @@ tupleType
   ;
   
 tupleMember
-  : type ID? -> ^(FIELD_DECL Var["var"] type ID?)
+  : String ID? LBRACK expression RBRACK -> ^(FIELD_DECL Var["var"] String ID? expression)
+  | primitiveType ID? -> ^(FIELD_DECL Var["var"] primitiveType ID?)
+  | a=ID b=ID? -> ^(FIELD_DECL Var["var"] $a $b?)
   ;
   
 primitiveType
@@ -264,6 +266,7 @@ methodReturnType
   | primitiveType Matrix? LBRACK MULTIPLY ',' MULTIPLY RBRACK -> ^(MATRIX primitiveType INFERRED INFERRED)
   | primitiveType Vector -> ^(VECTOR primitiveType INFERRED)
   | primitiveType Matrix -> ^(MATRIX primitiveType INFERRED INFERRED)
+  | tupleType
   | type
   ;
 	

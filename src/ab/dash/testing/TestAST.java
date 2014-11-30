@@ -604,7 +604,7 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/77AST_output"), outErrIntercept.toString().trim());
     }
-    
+
     @Test //test vector function arguments with const
     public void validVectorFunctionConstArgs() throws RecognitionException, LexerException, ParserException {
         String[] args = new String[] {"TestGrammarPrograms/78validFunctionVectorConstArgs.ds"};
@@ -762,4 +762,12 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/97AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // vector/matrix/interval/string tuples
+    public void advancedTupleParsing() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/98moreTuples.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/98AST_output"), outErrIntercept.toString().trim());
+    }
+
 }
