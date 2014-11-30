@@ -1042,8 +1042,21 @@ public class LLVMIRGenerator {
 				StringTemplate getVector = stg.getInstanceOf("vector_get_local");
 				getVector.setAttribute("id", DashAST.getUniqueId());
 				getVector.setAttribute("sym_id", varSymbol.id);
-
-				StringTemplate template = stg.getInstanceOf("vector_elem_assign");
+				
+				int exprTypeIndex = ((DashAST)t.getChild(1)).evalType.getTypeIndex();
+				StringTemplate template = null;
+				if (indexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+						indexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR) {
+					if (exprTypeIndex ==  SymbolTable.tINTERVAL ||
+							exprTypeIndex ==  SymbolTable.tVECTOR) {
+						template = stg.getInstanceOf("vector_index_assign_vector");
+					} else {
+						template = stg.getInstanceOf("vector_index_assign_vector");
+					}
+				}
+				else
+					template = stg.getInstanceOf("vector_elem_assign");
+				
 				template.setAttribute("id", id);
 				template.setAttribute("vector_expr", getVector);
 				template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
@@ -1053,10 +1066,30 @@ public class LLVMIRGenerator {
 				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
 
 				StringTemplate indexExpr = exec(indexNode);
+				
+				if (indexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+					interval.setAttribute("id", DashAST.getUniqueId());
+					interval.setAttribute("interval_var_expr", indexExpr);
+					interval.setAttribute("interval_var_expr_id", indexExpr.getAttribute("id"));
+					
+					indexExpr = interval;
+				}
+				
 				template.setAttribute("index_expr", indexExpr);
 				template.setAttribute("index_expr_id", indexExpr.getAttribute("id"));
 
 				StringTemplate valueExpr = exec((DashAST)t.getChild(1));
+				
+				if (exprTypeIndex ==  SymbolTable.tINTERVAL) {
+					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+					interval.setAttribute("id", DashAST.getUniqueId());
+					interval.setAttribute("interval_var_expr", valueExpr);
+					interval.setAttribute("interval_var_expr_id", valueExpr.getAttribute("id"));
+					
+					valueExpr = interval;
+				}
+				
 				template.setAttribute("expr", valueExpr);
 				template.setAttribute("expr_id", valueExpr.getAttribute("id"));
 

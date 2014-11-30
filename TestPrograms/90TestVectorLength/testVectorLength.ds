@@ -2,10 +2,15 @@
 const out = std_output();
 
 procedure main() returns integer {
-	integer vector v = [8, 9, 6];
-	integer elements = length(v);
+	boolean vector vb[1] = [false];
+	character vector vc[2] = "12";
+	integer vector vi = [8, 9, 6];
+	real vector vr[4] = 0.5;
 	
-	elements -> out;
-
+	length(vb) -> out; '\n' -> out;
+	length(vc) -> out; '\n' -> out;
+	length(vi) -> out; '\n' -> out;
+	length(vr) -> out; '\n' -> out;
+	
 	return 0;
 }

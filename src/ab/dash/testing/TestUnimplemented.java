@@ -287,7 +287,10 @@ public class TestUnimplemented extends BaseTest {
        String[] args = new String[] {"TestPrograms/90TestVectorLength/testVectorLength.ds"};
        Runner.llvmMain(args);
        StringBuffer sb = new StringBuffer();
-       sb.append("3");
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     
@@ -455,6 +458,9 @@ public class TestUnimplemented extends BaseTest {
        sb.append("12345\n");
        sb.append("135\n");
        sb.append("14\n");
+       sb.append("TF\n");
+       sb.append("14\n");
+       sb.append("1.54.5\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     

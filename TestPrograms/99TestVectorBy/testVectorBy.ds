@@ -8,24 +8,17 @@ procedure main() returns integer {
 	integer vector v3 = v1 by 2; // [1, 3, 5]
 	integer vector v4 = v1 by 3; // [1, 4]
 	
-	v1[1] -> out; 
-	v1[2] -> out; 
-	v1[3] -> out; 
-	v1[4] -> out; 
-	v1[5] -> out; '\n' -> out;
+	boolean vector v5 = [true, true, false] by 2; // [true, false]
+	character vector v6 = "1234" by 3; // ['1', '4']
+	real vector v7 = [1.5, 2.5, 3.5, 4.5, 5.5] by 3; // [1.5, 4.5]
 	
-	v2[1] -> out; 
-	v2[2] -> out; 
-	v2[3] -> out; 
-	v2[4] -> out; 
-	v2[5] -> out; '\n' -> out;
-	
-	v3[1] -> out; 
-	v3[2] -> out; 
-	v3[3] -> out; '\n' -> out;
-	
-	v4[1] -> out; 
-	v4[2] -> out; '\n' -> out;
+	v1 -> out; '\n' -> out;
+	v2-> out; '\n' -> out; 
+	v3 -> out; '\n' -> out;
+	v4 -> out; '\n' -> out;
+	v5 -> out; '\n' -> out;
+	v6 -> out; '\n' -> out;
+	v7 -> out; '\n' -> out;
 	
 	return 0;
 }
