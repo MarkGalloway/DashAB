@@ -4,14 +4,14 @@ const out = std_output();
 
 procedure main() returns integer {
 	string hello = "hello";
-	string hello2[5] = ['h','e','l','l','o'];
+	string hello2 = ['h','e','l','l','o'];
 	character vector hello3[5] = ['h','e','l','l','o'];
 	
 	string goodbye = "goodbye";
 	
 	boolean b1 = hello == hello2;
 	boolean b2 = hello == hello3;
-	boolean b3 = hello == hello2;
+	boolean b3 = hello2 == hello3;
 	
 	boolean b4 = goodbye != hello;
 	boolean b5 = goodbye == hello;
