@@ -211,6 +211,7 @@ procedure
   ;
 	
 procedureParameter
+  // vectors
   : primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
   | primitiveType Vector? ID LBRACK '*' RBRACK 
@@ -223,10 +224,33 @@ procedureParameter
       -> ^(ARG_DECL specifier ^(VECTOR primitiveType INFERRED) ID)
   | primitiveType Vector ID
   	  -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType INFERRED) ID)
+  
+  // matrices
   | primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression+) ID)
   | specifier primitiveType Matrix? ID LBRACK expression ',' expression RBRACK 
       -> ^(ARG_DECL specifier ^(MATRIX primitiveType expression+) ID)
+      
+  | primitiveType Matrix? ID LBRACK MULTIPLY ',' expression RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType INFERRED expression) ID)
+  | specifier primitiveType Matrix? ID LBRACK MULTIPLY ',' expression RBRACK 
+      -> ^(ARG_DECL specifier ^(MATRIX primitiveType INFERRED expression) ID)
+      
+  | primitiveType Matrix? ID LBRACK expression ',' MULTIPLY RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression INFERRED) ID)
+  | specifier primitiveType Matrix? ID LBRACK expression ',' MULTIPLY RBRACK 
+      -> ^(ARG_DECL specifier ^(MATRIX primitiveType expression INFERRED) ID)
+      
+  | primitiveType Matrix? ID LBRACK MULTIPLY ',' MULTIPLY RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType INFERRED INFERRED) ID)
+  | specifier primitiveType Matrix? ID LBRACK MULTIPLY ',' MULTIPLY RBRACK 
+      -> ^(ARG_DECL specifier ^(MATRIX primitiveType INFERRED INFERRED) ID)
+      
+  | primitiveType Matrix ID
+      -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType INFERRED INFERRED) ID)
+  | specifier primitiveType Matrix ID
+      -> ^(ARG_DECL specifier ^(MATRIX primitiveType INFERRED INFERRED) ID)
+      
   | type ID -> ^(ARG_DECL Const["const"] type ID) 
   | specifier type ID -> ^(ARG_DECL specifier type ID)
   ;
