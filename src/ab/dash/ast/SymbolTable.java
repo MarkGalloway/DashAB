@@ -137,19 +137,19 @@ public class SymbolTable {
     };
 
     public static final Type[][] relationalResultType = new Type[][] {
-    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream  null       identity		interval	vector		matrix*/
-    	/*tuple*/		{null,		null,    	null,   	null,   	null,       null,	null,     _boolean,      _boolean,	null,		null,		null},
-        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    null,	null,     _boolean,      _boolean,	null,		null,		null},
-        /*character*/   {null,		null,  		_boolean,   null,   	null,	    null,	null,     _boolean,      _boolean,	null,		null,		null},
-        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean,	null,		null,		null},
-        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,     _boolean,      _boolean,	null,		null,		null},
-        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null,		null,		null,		null},
-        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,     null,          null,		null,		null,		null},
-        /*null*/        {null,   	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null,		null,		null,		null},
-        /*identity*/    {null,    	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,     null,          null,		null,		null,		null},
-        /*interval*/	{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			_vector,	_vector,	null},
-        /*vector*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			_vector,	_vector,	null},
-        /*matrix*/		{null,		null,    	null,   	null,   	null,	null,	null,         null,      null,			null,		null,		_matrix}
+    	/*          	tuple		boolean  	character 	integer 	real	outstream	instream	null       identity		interval	vector		matrix*/
+    	/*tuple*/		{null,		null,    	null,   	null,   	null,       null,	null,		_boolean,      _boolean,	null,		null,		null},
+        /*boolean*/ 	{null,		_boolean,  	null,   	null,   	null,	    null,	null,		_boolean,      _boolean,	null,		_vector,	_matrix},
+        /*character*/   {null,		null,  		_boolean,   null,   	null,	    null,	null,		_boolean,      _boolean,	null,		_vector,	_matrix},
+        /*integer*/     {null,		null,  		null,    	_boolean,   _boolean,	null,	null,		_boolean,      _boolean,	null,		_vector,	_matrix},
+        /*real*/   		{null,		null,  		null,    	_boolean,   _boolean,	null,	null,		_boolean,      _boolean,	null,		_vector,	_matrix},
+        /*outstream*/   {null,		null,  		null,    	null,   	null, 	    null,	null,		null,          null,		null,		null,		null},
+        /*instream*/   	{null,		null,  		null,    	null,   	null, 	    null,	null,		null,          null,		null,		null,		null},
+        /*null*/        {null,   	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,		null,          null,		null,		null,		null},
+        /*identity*/    {null,    	_boolean,   _boolean,   _boolean,   _boolean,   null,   null,		null,          null,		null,		null,		null},
+        /*interval*/	{null,		null,    	null,   	null,   	null,		null,	null,		null,      null,			_vector,	_vector,	null},
+        /*vector*/		{null,		_vector,    _vector,   	_vector,   	_vector,	null,	null,		null,      null,			_vector,	_vector,	null},
+        /*matrix*/		{null,		_matrix,    _matrix,   	_matrix,   	_matrix,	null,	null,		null,      null,			null,		null,		_matrix}
     };
 
     public static final Type[][] equalityResultType = new Type[][] {
@@ -437,10 +437,7 @@ public class SymbolTable {
     }
     
     public Type relop(DashAST a, DashAST b) {
-    	getResultType(relationalResultType, a, b);
-        // even if the operands are incompatible, the type of
-        // this operation must be boolean
-        return _boolean;
+    	return getResultType(relationalResultType, a, b);
     }
     
     public Type eqop(DashAST a, DashAST b) {

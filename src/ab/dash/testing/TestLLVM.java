@@ -906,7 +906,44 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/66Vector/vector.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        
+        sb.append("Vector\n");
+        sb.append("\tinteger v1[1+3] = [1, 2, 3]\n");
+        sb.append("\tinteger v2[*] =  [3, 4, 5]\n");
+        sb.append("\tinteger v3[3] = [2, 2, 2]\n");
+        sb.append("\tinteger v4[3] = zeros() = [0, 0, 0]\n");
+        sb.append("\tinteger v5[*] = 1..3 + v1 + 2..4 = [4, 7, 10]\n");
+        sb.append("Addition\n");
+        sb.append("\t1 + v1 + 2 = [4, 5, 6]\n");
+        sb.append("\tv1 + v2 = [4, 6, 8]\n");
+        sb.append("Subtraction\n");
+        sb.append("\tv2 - v1 = [2, 2, 2]\n");
+        sb.append("\t(5 - v1) - 1) = [3, 2, 1]\n");
+        sb.append("Multiplication\n");
+        sb.append("\tv1 * v2 = [3, 8, 15]\n");
+        sb.append("\t2 * v1 * 3 = [6, 12, 18]\n");
+        sb.append("Division\n");
+        sb.append("\t(2 * v1 * 3) / 3 = [2, 4, 6]\n");
+        sb.append("\t18 / v1 = [18, 9, 6]\n");
+        sb.append("\tv1 / v1 = [1, 1, 1]\n");
+        sb.append("Modular\n");
+        sb.append("\tv2 % v1 = [0, 0, 2]\n");
+        sb.append("\tv1 % 2 = [1, 0, 1]\n");
+        sb.append("\t2 % v1 = [0, 0, 2]\n");
+        sb.append("Power\n");
+        sb.append("\tv1 ^ v1 = [1, 4, 27]\n");
+        sb.append("\tv1 ^ 2 = [1, 4, 9]\n");
+        sb.append("\t2 ^ v1 = [2, 4, 8]\n");
+        sb.append("Compare\n");
+	    sb.append("\tv1 < v3 = [T, F, F]\n");
+        sb.append("\tv1 <= v3 = [T, T, F]\n");
+        sb.append("\tv1 > v3 = [F, F, T]\n");
+        sb.append("\tv1 >= v3 = [T, T, F]\n");
+        sb.append("Equality\n");
+        sb.append("\tv1 == v1 = T\n");
+        sb.append("\tv1 == v2 = F\n");
+        sb.append("\tv1 != v1 = F\n");
+        sb.append("\tv1 != v2 = T\n");
+        sb.append("123\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     

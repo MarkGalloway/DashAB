@@ -655,6 +655,42 @@ void int_ScalarPowerVector(struct Vector* out, int32_t lhs, struct Vector* rhs) 
 		out_data[i] = powi(lhs, rhs_data[i]);
 }
 
+void int_VectorLTVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] < rhs_data[i];
+}
+
+void int_VectorLEVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] <= rhs_data[i];
+}
+
+void int_VectorGTVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] > rhs_data[i];
+}
+
+void int_VectorGEVector(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int32_t *lhs_data = (int32_t*) lhs->data;
+	int32_t *rhs_data = (int32_t*) rhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] <= rhs_data[i];
+}
+
 int int_VectorEq(struct Vector* lhs, struct Vector* rhs) {
 	int32_t *lhs_data = (int32_t*) lhs->data;
 	int32_t *rhs_data = (int32_t*) rhs->data;
