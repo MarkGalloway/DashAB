@@ -216,6 +216,7 @@ binaryOps returns [Type type]
 		|	^(eqop a=expr b=expr)   {$type=symtab.eqop($a.start, $b.start);}
 		|	^(RANGE a=expr b=expr)  {$type=symtab.range($a.start, $b.start);}
 		|	^(By a=expr b=expr) 	{$type=symtab.by($a.start, $b.start);}
+		|	^(CONCAT a=expr b=expr) {$type=symtab.concat($a.start, $b.start);}
 		)
 	;
 	

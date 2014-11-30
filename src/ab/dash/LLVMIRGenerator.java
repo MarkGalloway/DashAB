@@ -1245,6 +1245,61 @@ public class LLVMIRGenerator {
 			
 			return template;
 		}
+		
+		case DashLexer.CONCAT:
+		{
+			String id = Integer.toString(((DashAST)t).llvmResultID);
+			
+			if (((DashAST)t.getChild(0)).promoteToType != null) {
+				// TODO
+			}
+			
+			DashAST lhs = (DashAST)t.getChild(0);
+			DashAST rhs = (DashAST)t.getChild(1);
+			
+			StringTemplate lhsExpr = exec(lhs);
+			String lhs_id = Integer.toString(lhs.llvmResultID);
+			
+			StringTemplate rhsExpr = exec(rhs);
+			String rhs_id = Integer.toString(rhs.llvmResultID);
+			
+			if (lhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+				StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+				interval.setAttribute("id", DashAST.getUniqueId());
+				interval.setAttribute("interval_var_expr", lhsExpr);
+				interval.setAttribute("interval_var_expr_id", lhsExpr.getAttribute("id"));
+				
+				lhsExpr = interval;
+			}
+			
+			if (rhs.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+				StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+				interval.setAttribute("id", DashAST.getUniqueId());
+				interval.setAttribute("interval_var_expr", rhsExpr);
+				interval.setAttribute("interval_var_expr_id", rhsExpr.getAttribute("id"));
+				
+				rhsExpr = interval;
+			}
+			
+			StringTemplate template = null;
+
+			VectorType vType = (VectorType)t.evalType;
+			int elementTypeIndex = vType.elementType.getTypeIndex();
+			
+			template = stg.getInstanceOf("vector_concat_vector");
+			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+			
+			//interval_by(id, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id)
+			template.setAttribute("rhs_expr_id", rhs_id);
+			template.setAttribute("rhs_expr", rhsExpr);
+			template.setAttribute("lhs_expr_id", lhs_id);
+			template.setAttribute("lhs_expr", lhsExpr);
+			template.setAttribute("id", id);
+			
+			return template;
+		}
 			
 		case DashLexer.DOT:
 		{

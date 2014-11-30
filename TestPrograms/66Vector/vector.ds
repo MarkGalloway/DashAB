@@ -3,18 +3,28 @@ const inp = std_input();
 
 const integer vector vglob[3] = [8, 9, 10];
 
-procedure printVector(integer vector v[3]) {
-	'[' -> out; 
-	v[1] -> out; ',' -> out; ' ' -> out;
-	v[2] -> out; ',' -> out; ' ' -> out;
-	v[3] -> out; ']' -> out; '\n' -> out;
+procedure printVector(integer vector v[*]) {
+	var i = 1;
+	
+	'[' -> out;
+	loop while i < length(v)  {
+		v[i] -> out; ',' -> out; ' ' -> out;
+		i = i + 1;
+	}
+	
+	v[i] -> out; ']' -> out; '\n' -> out;
 }
 
-procedure printVectorBool(boolean vector v[3]) {
-	'[' -> out; 
-	v[1] -> out; ',' -> out; ' ' -> out;
-	v[2] -> out; ',' -> out; ' ' -> out;
-	v[3] -> out; ']' -> out; '\n' -> out;
+procedure printVectorBool(boolean vector v) {
+	var i = 1;
+	
+	'[' -> out;
+	loop while i < length(v)  {
+		v[i] -> out; ',' -> out; ' ' -> out;
+		i = i + 1;
+	}
+	
+	v[i] -> out; ']' -> out; '\n' -> out;
 }
 
 procedure zeros() returns integer vector [3] {
@@ -115,6 +125,14 @@ procedure main() returns integer {
 	v1 != v1 -> out; '\n' -> out;
 	"\tv1 != v2 = " -> out;
 	v1 != v2 -> out; '\n' -> out;
+	
+	"Built-in\n" -> out;
+	"\tv1 by 2 = " -> out;
+	printVector(v1 by 2);
+	"\tlength(v1) = " -> out;
+	length(v1) -> out; '\n' -> out;
+	"\tv1 || v2 = " -> out;
+	printVector(v1 || v2);
 	
 	v1 -> out;
 
