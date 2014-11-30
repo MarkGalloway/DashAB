@@ -1,0 +1,41 @@
+procedure printMatrix1(var integer matrix v) {
+    return;
+}
+
+
+procedure printMatrix2(var integer matrix v[*,*]) {
+    return;
+}
+
+procedure printMatrix3(var integer matrix v[3, 3]) {
+    return;
+}
+
+procedure printMatrix4(var integer matrix v[*, 3]) {
+    return;
+}
+
+procedure printMatrix5(var integer matrix v[3, *]) {
+    return;
+}
+
+procedure printMatrix6(var integer v[*,*]) {
+    return;
+}
+
+procedure printMatrix7(var integer v[3,3]) {
+    return;
+}
+
+procedure printMatrix8(var integer v[*,3]) {
+    return;
+}
+
+procedure printMatrix9(var integer v[3,*]) {
+    return;
+}
+
+
+procedure main() returns integer {
+    return 0;
+}

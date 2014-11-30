@@ -720,4 +720,18 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/91AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test //test function matrix const args
+    public void testProcedureConstMatrixArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/92constMatrixProcedureArgs.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/92AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test function matrix var args
+    public void testProcedureVarMatrixArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/93varMatrixProcedureArgs.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/93AST_output"), outErrIntercept.toString().trim());
+    }
 }
