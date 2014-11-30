@@ -1,0 +1,41 @@
+procedure printMatrix1(const integer matrix v) {
+    return;
+}
+
+
+procedure printMatrix2(const integer matrix v[*,*]) {
+    return;
+}
+
+procedure printMatrix3(const integer matrix v[3, 3]) {
+    return;
+}
+
+procedure printMatrix4(const integer matrix v[*, 3]) {
+    return;
+}
+
+procedure printMatrix5(const integer matrix v[3, *]) {
+    return;
+}
+
+procedure printMatrix6(const integer v[*,*]) {
+    return;
+}
+
+procedure printMatrix7(const integer v[3,3]) {
+    return;
+}
+
+procedure printMatrix8(const integer v[*,3]) {
+    return;
+}
+
+procedure printMatrix9(const integer v[3,*]) {
+    return;
+}
+
+
+procedure main() returns integer {
+    return 0;
+}
