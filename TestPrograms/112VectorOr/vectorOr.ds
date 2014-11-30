@@ -6,13 +6,27 @@ procedure main() returns integer {
     boolean vector v[4] = [false, false, true,  true];
 
     boolean vector w[4] = [false, false, false, false];
+    boolean vector x[4] = [false, false, false, false];
+    boolean vector y[4] = [false, false, false, false];
 
     w = v or u;
+    x = u or true;
+    y = true or u;
 
     w[1] -> out; '\n' -> out;
     w[2] -> out; '\n' -> out;
     w[3] -> out; '\n' -> out;
     w[4] -> out; '\n' -> out;
+
+    x[1] -> out; '\n' -> out;
+    x[2] -> out; '\n' -> out;
+    x[3] -> out; '\n' -> out;
+    x[4] -> out; '\n' -> out;
+
+    y[1] -> out; '\n' -> out;
+    y[2] -> out; '\n' -> out;
+    y[3] -> out; '\n' -> out;
+    y[4] -> out; '\n' -> out;
 
 	return 0;
 }
