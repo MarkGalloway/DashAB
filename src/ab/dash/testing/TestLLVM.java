@@ -1109,4 +1109,18 @@ public class TestLLVM extends BaseTest {
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+
+    @Test
+    public void vectorOr() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/112VectorOr/vectorOr.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("F\n");
+        sb.append("T\n");
+        sb.append("T\n");
+        sb.append("T\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
