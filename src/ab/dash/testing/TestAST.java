@@ -600,16 +600,30 @@ public class TestAST extends BaseTest {
     
     @Test //test vector function arguments
     public void validVectorFunctionArgs() throws RecognitionException, LexerException, ParserException {
-        String[] args = new String[] {"TestGrammarPrograms/77validFunctionVectorArgs1.ds"};
+        String[] args = new String[] {"TestGrammarPrograms/77validFunctionVectorArgs.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/77AST_output"), outErrIntercept.toString().trim());
     }
     
     @Test //test vector function arguments
     public void validVectorFunctionConstArgs() throws RecognitionException, LexerException, ParserException {
-        String[] args = new String[] {"TestGrammarPrograms/78validFunctionVectorConstArgs1.ds"};
+        String[] args = new String[] {"TestGrammarPrograms/78validFunctionVectorConstArgs.ds"};
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/78AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test vector function arguments
+    public void validVectorProcedureArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/79validVectorProcedureArgs.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/79AST_output"), outErrIntercept.toString().trim());
+    }
+    
+    @Test //test vector function arguments
+    public void validVectorProcedureConstArgs() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/80validVectorProcedureConstArgs.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/80AST_output"), outErrIntercept.toString().trim());
     }
     
 }
