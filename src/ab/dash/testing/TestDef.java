@@ -212,6 +212,7 @@ public class TestDef extends BaseTest {
         base_globals.add("inp");
         base_globals.add("vglob");
         base_globals.add("printVector");
+        base_globals.add("printVectorBool");
         base_globals.add("zeros");
         assertEquals(base_globals, symtab.globals.keys());
         
@@ -227,13 +228,11 @@ public class TestDef extends BaseTest {
         DashAST block = (DashAST) main_node.parent.getChild(1);
         
         Set<String> main_locals = new LinkedHashSet<String>();
-        main_locals.add("v7");
         main_locals.add("v1");
         main_locals.add("v2");
         main_locals.add("v3");
         main_locals.add("v4");
         main_locals.add("v5");
-        main_locals.add("v6");
      	assertEquals(main_locals.toString(), block.scope.toString());
     }
 }
