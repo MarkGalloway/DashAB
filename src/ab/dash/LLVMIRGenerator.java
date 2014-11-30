@@ -2097,14 +2097,40 @@ public class LLVMIRGenerator {
 			break;
 		}
 		case OR: {
-			if (lhs_type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_or");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_or_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("vector_or_scalar");
+				} else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("scalar_or_vector");
+				}
+			} else {
+				if (lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_or");
+				}
 			}
 			break;
 		}
 		case XOR: {
-			if (lhs_type == SymbolTable.tBOOLEAN) {
-				template = stg.getInstanceOf("bool_xor");
+			if (type == SymbolTable.tVECTOR) {
+				if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tVECTOR) {
+					template = stg.getInstanceOf("vector_xor_vector");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						rhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("vector_xor_scalar");
+				} else if (rhs_type == SymbolTable.tVECTOR &&
+						lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("scalar_xor_vector");
+				}
+			} else {
+				if (lhs_type == SymbolTable.tBOOLEAN) {
+					template = stg.getInstanceOf("bool_xor");
+				}
 			}
 			break;
 		}
