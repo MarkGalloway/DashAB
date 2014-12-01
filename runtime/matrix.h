@@ -25,17 +25,6 @@ void NAME(allocMatrix, TEMPLATE_NAME)(struct Matrix* matrix, int32_t rows, int32
 	}
 }
 
-void NAME(assignMatrix, TEMPLATE_NAME)(struct Matrix* lhs, struct Matrix* rhs) {
-	TEMPLATE_TYPE* lhs_data = (TEMPLATE_TYPE*)lhs->data;
-	TEMPLATE_TYPE* rhs_data = (TEMPLATE_TYPE*)rhs->data;
-	
-	int size = lhs->rows*lhs->columns;
-
-	int i;
-	for (i = 0; i < size; i++)
-		lhs_data[i] = rhs_data[i];
-}
-
 void NAME(startLiteralMatrixCreation, TEMPLATE_NAME)(int32_t rows) {
 	literal_index = 0;
 	vectors_matrix_literal = (struct Vector**) xmalloc(sizeof(struct Vector*) * rows);
@@ -61,16 +50,37 @@ void NAME(endLiteralMatrixCreation, TEMPLATE_NAME)(struct Matrix* matrix) {
 	int size = rows*columns;
 	matrix->data = xmalloc(sizeof(TEMPLATE_TYPE) * size);
 	TEMPLATE_TYPE* matrix_data = (TEMPLATE_TYPE*) matrix->data;
-
-	for (int i = 0; i < rows; i++) {
+	
+	int i;
+	for (i = 0; i < literal_index; i++) {
 		TEMPLATE_TYPE* vector_data = (TEMPLATE_TYPE*) vectors_matrix_literal[i]->data;
-		for (int j = 0; j < columns; j++) {
+		int j;		
+		for (j = 0; j < vectors_matrix_literal[i]->size; j++) {
 			matrix_data[i*columns + j] = vector_data[j];
 		}
-	}
+		
+		for (; j < columns; j++) {
+			matrix_data[i*columns + j] = 0;
+		}
+	}	
 }
 
 // ASSIGNMENT
+void NAME(assignMatrix, TEMPLATE_NAME)(struct Matrix* lhs, struct Matrix* rhs) {
+	TEMPLATE_TYPE* lhs_data = (TEMPLATE_TYPE*)lhs->data;
+	TEMPLATE_TYPE* rhs_data = (TEMPLATE_TYPE*)rhs->data;
+	
+	int lhs_size = lhs->rows*lhs->columns;
+	int rhs_size = rhs->rows*rhs->columns;
+	
+	int i;
+	for (i = 0; i < lhs_size && i < rhs_size; i++)
+		lhs_data[i] = rhs_data[i];
+
+	for (; i < lhs_size; i++)
+		lhs_data[i] = 0;
+}
+
 int NAME(getElementMatrix, TEMPLATE_NAME)(TEMPLATE_TYPE* out, struct Matrix* matrix, int32_t r, int32_t c) {
 	if (r > matrix->rows || r < 1)
 		return 0;

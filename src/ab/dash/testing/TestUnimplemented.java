@@ -552,6 +552,15 @@ public class TestUnimplemented extends BaseTest {
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     
+    @Test 
+    public void matrixConstructors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/121MatrixConstructors/matrixConstructors.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("123120000\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
     // Invalid Syntax Test
     @Test 
     public void testInferredMatrixLengthWithNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {

@@ -1,0 +1,11 @@
+// 8.8.4 Constructors Matrix
+const out = std_output();
+
+procedure main() returns integer {
+	integer vector v = [1, 2, 3];
+	integer matrix A[3, 3] = [v, [1, 2]];
+	
+	A -> out;
+	
+	return 0;
+}
