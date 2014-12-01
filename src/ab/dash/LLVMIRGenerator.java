@@ -1500,10 +1500,48 @@ public class LLVMIRGenerator {
 			getMatrix.setAttribute("id", DashAST.getUniqueId());
 			getMatrix.setAttribute("sym_id", varSymbol.id);
 			
+			StringTemplate rowExpr = exec(rowIndexNode);
+			StringTemplate columnExpr = exec(columnIndexNode);
+			
 			StringTemplate template = null;
 			if (rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER &&
 					columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("matrix_get_element");
+			} else if (rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER &&
+					(columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+					columnIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR)) {
+				template = stg.getInstanceOf("matrix_row_index");
+			} else if (columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER &&
+					(rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+					rowIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR)) {
+				template = stg.getInstanceOf("matrix_column_index");
+			} else if ((rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+					rowIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR) &&
+					(columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+					columnIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR)) {
+				template = stg.getInstanceOf("matrix_index");
+			}
+			
+			// Promote interval
+			if  (rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+				StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+				interval.setAttribute("id", DashAST.getUniqueId());
+				interval.setAttribute("interval_var_expr", rowExpr);
+				interval.setAttribute("interval_var_expr_id", rowExpr.getAttribute("id"));
+				
+				rowExpr = interval;
+			}
+			
+			// Promote interval
+			if  (columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+				StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+				interval.setAttribute("id", DashAST.getUniqueId());
+				interval.setAttribute("interval_var_expr", columnExpr);
+				interval.setAttribute("interval_var_expr_id", columnExpr.getAttribute("id"));
+				
+				columnExpr = interval;
 			}
 			
 			template.setAttribute("id", t.llvmResultID);
@@ -1513,12 +1551,8 @@ public class LLVMIRGenerator {
 			StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
 			template.setAttribute("llvm_type", llvmType);
 			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
-
-			StringTemplate rowExpr = exec(rowIndexNode);
 			template.setAttribute("row_expr", rowExpr);
 			template.setAttribute("row_expr_id", rowExpr.getAttribute("id"));
-			
-			StringTemplate columnExpr = exec(columnIndexNode);
 			template.setAttribute("column_expr", columnExpr);
 			template.setAttribute("column_expr_id", columnExpr.getAttribute("id"));
 

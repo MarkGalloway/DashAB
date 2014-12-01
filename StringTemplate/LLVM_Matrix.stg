@@ -128,6 +128,57 @@ if.success<id>:
   call void @llvm.stackrestore(i8* <vlocal(id)>_stack);
 >>
 
+matrix_row_index(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id) ::= <<
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_success = call i1 @<type_name>_rowIndexMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(matrix_expr_id)>, i32 <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_column_index(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id) ::= <<
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_success = call i1 @<type_name>_columnIndexMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i32 <vlocal_result(column_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_index(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id) ::= <<
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_success = call i1 @<type_name>_indexMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
 matrix_print(id, type_name, expr, expr_id) ::= <<
 <expr>
 	call void @<type_name>_printMatrix(i8* <vlocal_result(expr_id)>)

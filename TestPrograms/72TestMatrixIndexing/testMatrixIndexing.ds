@@ -8,7 +8,16 @@ procedure main() returns integer {
 	M[1, 3] -> out;
 	M[2, 1] -> out;
 	M[2, 2] -> out;
-	M[2, 3] -> out;
+	M[2, 3] -> out; '\n' -> out;
+	
+	M[1, [2, 1]] -> out;  '\n' -> out;
+	M[2, 1..3] -> out;  '\n' -> out;
+	
+	M[[2, 1], 1] -> out;  '\n' -> out;
+	M[1..2, 2] -> out;  '\n' -> out;
+	
+	M[[2, 1], [2, 1]] -> out;  '\n' -> out;
+	M[1..2, 1..2] -> out;  '\n' -> out;
 	
 	return 0;
 }

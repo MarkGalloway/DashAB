@@ -48,7 +48,15 @@ public class TestUnimplemented extends BaseTest {
     public void testMatrixIndexing() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestPrograms/72TestMatrixIndexing/testMatrixIndexing.ds"};
         Runner.llvmMain(args);
-        assertEquals("123456", outErrIntercept.toString().trim());
+        StringBuffer sb = new StringBuffer();
+        sb.append("123456\n");
+        sb.append("21\n");
+        sb.append("456\n");
+        sb.append("41\n");
+        sb.append("25\n");
+        sb.append("5421\n");
+        sb.append("1245\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
     @Test 

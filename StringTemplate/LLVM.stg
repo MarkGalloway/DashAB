@@ -92,6 +92,9 @@ declare void  @<type>_addLiteralMatrixCreation(i8*)
 declare void  @<type>_endLiteralMatrixCreation(i8*)
 declare i1  @<type>_getElementMatrix(<llvm_type>*, i8*, i32, i32)
 declare i1  @<type>_setElementMatrix(i8*, i32, i32, <llvm_type>)
+declare i1  @<type>_rowIndexMatrix(i8*, i8*, i32, i8*)
+declare i1  @<type>_columnIndexMatrix(i8*, i8*, i8*, i32)
+declare i1  @<type>_indexMatrix(i8*, i8*, i8*, i8*)
 declare void  @<type>_printMatrix(i8*)
 
 >>
