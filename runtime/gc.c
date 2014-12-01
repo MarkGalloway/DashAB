@@ -169,6 +169,22 @@ void gc_free_loop() {
 	root = n;
 }
 
+void gc_free_all() {
+	Node n = root;
+	int methodFound = 0;
+	while (n != 0) {
+		if (n->type == VARIABLE_MEMORY_NODE) {
+            gc_release_object(n->obj, n->obj_type);
+        }
+
+		Node old_n = n;
+		n = n->next;
+
+		xfree(old_n);
+	}
+	root = n;
+}
+
 void gc_print() {
 	Node n = root;
 	printf("\nCurrent GC Stack:\n\n");
