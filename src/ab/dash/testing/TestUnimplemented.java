@@ -558,6 +558,7 @@ public class TestUnimplemented extends BaseTest {
        Runner.llvmMain(args);
        StringBuffer sb = new StringBuffer();
        sb.append("123120000\n");
+       sb.append("123012000000\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     

@@ -70,15 +70,24 @@ void NAME(assignMatrix, TEMPLATE_NAME)(struct Matrix* lhs, struct Matrix* rhs) {
 	TEMPLATE_TYPE* lhs_data = (TEMPLATE_TYPE*)lhs->data;
 	TEMPLATE_TYPE* rhs_data = (TEMPLATE_TYPE*)rhs->data;
 	
-	int lhs_size = lhs->rows*lhs->columns;
-	int rhs_size = rhs->rows*rhs->columns;
-	
 	int i;
-	for (i = 0; i < lhs_size && i < rhs_size; i++)
-		lhs_data[i] = rhs_data[i];
+	for (i = 0; i < lhs->rows && i < rhs->rows; i++) {
+		int j;		
+		for (j = 0; j < lhs->columns && j < rhs->columns; j++) {
+			lhs_data[i*lhs->columns + j] = rhs_data[i*rhs->columns + j];
+		}
+		
+		for (; j < lhs->columns; j++) {
+			lhs_data[i*lhs->columns + j] = 0;
+		}
+	}
 
-	for (; i < lhs_size; i++)
-		lhs_data[i] = 0;
+	for (; i < lhs->rows; i++) {
+		int j;		
+		for (j = 0; j < lhs->columns; j++) {
+			lhs_data[i*lhs->columns + j] = 0;
+		}
+	}
 }
 
 void NAME(assignMatrixScalar, TEMPLATE_NAME)(struct Matrix* lhs, TEMPLATE_TYPE rhs) {
