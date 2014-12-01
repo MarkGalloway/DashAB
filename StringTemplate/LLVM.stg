@@ -133,7 +133,7 @@ declare void @gc_add_loop()
 
 declare void @gc_free_method()
 declare void @gc_free_loop()
-
+declare void @gc_free_all()
 declare void @gc_print()
 
 declare i8* @int_allocInterval(i32, i32)

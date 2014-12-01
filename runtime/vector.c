@@ -23,7 +23,6 @@ extern int32_t max(int32_t a, int32_t b);
 extern void* xmalloc(size_t n);
 extern void xfree(void* ptr);
 extern void gc_add_object(void* object, int32_t type);
-extern void gc_free_all();
 
 void int_allocVector(struct Vector* vector, int32_t size);
 
@@ -307,8 +306,6 @@ int checkVectorsAreOfSameLength(struct Vector* op1, struct Vector* op2) {
 		return 1;
 
 	printf("RuntimeError: Vectors are not of same length.");
-	gc_free_all();
-	exit(1);
 	return 0;
 }
 
@@ -317,8 +314,6 @@ int checkVectorsRHSLength(struct Vector* op1, struct Vector* op2) {
 		return 1;
 
 	printf("RuntimeError: Right hand side vector must be smaller or equal to the declared size of left hand side vector.");
-	gc_free_all();
-	exit(1);
 	return 0;
 }
 
