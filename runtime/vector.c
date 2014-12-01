@@ -24,115 +24,6 @@ extern void* xmalloc(size_t n);
 extern void xfree(void* ptr);
 extern void gc_add_object(void* object, int32_t type);
 
-void int_allocVector(struct Vector* vector, int32_t size);
-
-
-//////////////////////////
-// 	INTERVAL  	//
-//////////////////////////
-
-struct Interval* int_allocInterval(int32_t lower, int32_t upper) {
-	struct Interval* interval = (struct Interval*) xmalloc(sizeof(struct Interval));
-	interval->lower = lower;
-	interval->upper = upper;
-
-	gc_add_object(interval, INTERVAL);
-
-	return interval;
-}
-
-void int_assignInterval(struct Interval* dest, struct Interval* value) {
-	dest->lower = value->lower;
-	dest->upper = value->upper;
-}
-
-void int_IntervalAdd(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
-	out->lower = lhs->lower + rhs->lower;
-	out->upper = lhs->upper + rhs->upper;
-}
-
-void int_IntervalSubtract(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
-	out->lower = lhs->lower - rhs->upper;
-	out->upper = lhs->upper - rhs->lower;
-}
-
-void int_IntervalMultiply(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
-	int a = lhs->lower;
-	int b = lhs->upper;
-	int c = rhs->lower;
-	int d = rhs->upper;
-
-	int ac = a*c;
-	int ad = a*d;
-	int bc = b*c;
-	int bd = b*d;
-	
-	out->lower = min( min(ac, ad), min(bc, bd) );
-	out->upper = max( max(ac, ad), max(bc, bd) );
-}
-
-void int_IntervalDivide(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
-	int a = lhs->lower;
-	int b = lhs->upper;
-	int c = rhs->lower;
-	int d = rhs->upper;
-
-	int ac = a/c;
-	int ad = a/d;
-	int bc = b/c;
-	int bd = b/d;
-	
-	out->lower = min( min(ac, ad), min(bc, bd) );
-	out->upper = max( max(ac, ad), max(bc, bd) );
-}
-
-void int_IntervalUniaryMinus(struct Interval* out, struct Interval* lhs) {
-	out->lower = -lhs->upper;
-	out->upper = -lhs->lower;
-}
-
-int int_IntervalEq(struct Interval* lhs, struct Interval* rhs) {
-	if (lhs->lower == rhs->lower && lhs->upper == rhs->upper)
-		return 1;
-	
-	return 0;
-}
-
-int int_IntervalNe(struct Interval* lhs, struct Interval* rhs) {
-	if (lhs->lower == rhs->lower && lhs->upper == rhs->upper)
-		return 0;
-	
-	return 1;
-}
-
-int int_IntervalBy(struct Vector* out, struct Interval* lhs, int32_t by) {
-	if (by < 1) {
-		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
-		return 1;
-	}
-	
-	int diff = lhs->upper - lhs->lower;
-	int size = (int) ceil(((float)(diff + 1))/by);
-
-	int_allocVector(out, size);
-
-	int32_t *out_data = (int32_t*) out->data;
-
-	for (int i = 0; i < size; i++)
-		out_data[i] = lhs->lower + i*by;
-
-	return 0;
-}
-
-void int_printInterval(struct Interval* interval) {
-	for (int i = interval->lower; i <= interval->upper; i++)
-		printf("%d", i);
-}
-
-int int_IntervalRange(struct Interval* interval) {
-	return interval->upper - interval->lower + 1;
-}
-
 //////////////////////////
 // 	BOOLEAN  	//
 //////////////////////////
@@ -277,6 +168,112 @@ void real_printVector(struct Vector* vector) {
 	for (int i = 0; i < vector->size; i++) {
 		printf("%g", vector_data[i]);
 	}
+}
+
+//////////////////////////
+// 	INTERVAL  	//
+//////////////////////////
+
+struct Interval* int_allocInterval(int32_t lower, int32_t upper) {
+	struct Interval* interval = (struct Interval*) xmalloc(sizeof(struct Interval));
+	interval->lower = lower;
+	interval->upper = upper;
+
+	gc_add_object(interval, INTERVAL);
+
+	return interval;
+}
+
+void int_assignInterval(struct Interval* dest, struct Interval* value) {
+	dest->lower = value->lower;
+	dest->upper = value->upper;
+}
+
+void int_IntervalAdd(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
+	out->lower = lhs->lower + rhs->lower;
+	out->upper = lhs->upper + rhs->upper;
+}
+
+void int_IntervalSubtract(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
+	out->lower = lhs->lower - rhs->upper;
+	out->upper = lhs->upper - rhs->lower;
+}
+
+void int_IntervalMultiply(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
+	int a = lhs->lower;
+	int b = lhs->upper;
+	int c = rhs->lower;
+	int d = rhs->upper;
+
+	int ac = a*c;
+	int ad = a*d;
+	int bc = b*c;
+	int bd = b*d;
+	
+	out->lower = min( min(ac, ad), min(bc, bd) );
+	out->upper = max( max(ac, ad), max(bc, bd) );
+}
+
+void int_IntervalDivide(struct Interval* out, struct Interval* lhs, struct Interval* rhs) {
+	int a = lhs->lower;
+	int b = lhs->upper;
+	int c = rhs->lower;
+	int d = rhs->upper;
+
+	int ac = a/c;
+	int ad = a/d;
+	int bc = b/c;
+	int bd = b/d;
+	
+	out->lower = min( min(ac, ad), min(bc, bd) );
+	out->upper = max( max(ac, ad), max(bc, bd) );
+}
+
+void int_IntervalUniaryMinus(struct Interval* out, struct Interval* lhs) {
+	out->lower = -lhs->upper;
+	out->upper = -lhs->lower;
+}
+
+int int_IntervalEq(struct Interval* lhs, struct Interval* rhs) {
+	if (lhs->lower == rhs->lower && lhs->upper == rhs->upper)
+		return 1;
+	
+	return 0;
+}
+
+int int_IntervalNe(struct Interval* lhs, struct Interval* rhs) {
+	if (lhs->lower == rhs->lower && lhs->upper == rhs->upper)
+		return 0;
+	
+	return 1;
+}
+
+int int_IntervalBy(struct Vector* out, struct Interval* lhs, int32_t by) {
+	if (by < 1) {
+		printf("RuntimeError: Right hand side of by operator must be an integer greater than 0.\n");
+		return 1;
+	}
+	
+	int diff = lhs->upper - lhs->lower;
+	int size = (int) ceil(((float)(diff + 1))/by);
+
+	int_allocVector(out, size);
+
+	int32_t *out_data = (int32_t*) out->data;
+
+	for (int i = 0; i < size; i++)
+		out_data[i] = lhs->lower + i*by;
+
+	return 0;
+}
+
+void int_printInterval(struct Interval* interval) {
+	for (int i = interval->lower; i <= interval->upper; i++)
+		printf("%d", i);
+}
+
+int int_IntervalRange(struct Interval* interval) {
+	return interval->upper - interval->lower + 1;
 }
 
 //////////////////////////

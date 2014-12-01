@@ -1,6 +1,44 @@
 const out = std_output();
 const inp = std_input();
 
+procedure printMatrix(real matrix A) {
+	integer size = 4;
+
+	loop i in 1..size {
+		"[" -> out;
+		loop j in 1..size {
+			A[i, j] -> out;
+			if (j < size)
+				", " -> out;
+		}
+		"]\n" -> out;
+	}
+}
+
+procedure printVector(real vector x) {
+	integer size = length(x);
+
+	"[" -> out;
+	loop i in 1..size {
+		x[i] -> out;
+		if (i < size)
+			", " -> out;
+	}
+	"]\n" -> out;
+}
+
+procedure calc(real matrix A, real vector x) returns real vector {
+	integer size = length(x);
+	integer interval j = 1..size;
+	real vector y[size];
+
+	loop i in 1..size {
+		y[i] = A[i, j] ** x;
+	}
+	
+	return y;
+}
+
 function solveDiagonal(real matrix A, real vector y) returns real vector {
 	integer size = length(y);
 	real vector x[size];
@@ -27,13 +65,21 @@ procedure main() returns integer {
 	loop i in 1..4  {
 		real value;
 		value <- inp;
+		y[i] = value;
 	}
+	
+	"A:\n" -> out;
+	printMatrix(A);
+	"y: " -> out;
+	printVector(y);
 	
 	x = solveDiagonal(A, y);
 	
-	loop i in 1..4 {
-		x[i] -> out;
-	}
+	"x: " -> out;
+	printVector(x);
+	
+	"check: " -> out;
+	printVector(calc(A, x));
 	
 	return 0;
 }

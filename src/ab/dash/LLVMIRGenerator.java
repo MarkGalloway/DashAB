@@ -396,15 +396,8 @@ public class LLVMIRGenerator {
 			} 
 			else if (method_type.getTypeIndex() == SymbolTable.tVECTOR) {
 				VectorType vt = (VectorType) method_type;
-				
 				template = stg.getInstanceOf("call_returning_vector");
-				StringTemplate vector_size = exec((DashAST)vt.def.getChild(1));
-
 				template.setAttribute("type_name", typeIndexToName.get(vt.elementType.getTypeIndex()));
-				String vector_size_id = vector_size.getAttribute("id").toString() + "_" + t.llvmResultID;
-				vector_size.setAttribute("id", "_" + t.llvmResultID);
-				template.setAttribute("vector_size", vector_size);
-				template.setAttribute("vector_size_id", vector_size_id);
 			} else {
 				template = stg.getInstanceOf("call");
 				template.setAttribute("return_type", getType(method_type));
@@ -1177,12 +1170,97 @@ public class LLVMIRGenerator {
 				template.setAttribute("expr_id", valueExpr.getAttribute("id"));
 
 				return template;
+			} else if (node.getType() == DashLexer.MATRIX_INDEX) {
+				DashAST varNode = (DashAST) node.getChild(0);
+				DashAST rowIndexNode = (DashAST) node.getChild(1);
+				DashAST columnIndexNode = (DashAST) node.getChild(2);
+
+				MatrixType matType = (MatrixType) varNode.evalType;
+				VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
+				int elementTypeIndex = matType.elementType.getTypeIndex();
+
+				StringTemplate getMatrix = stg.getInstanceOf("matrix_get_local");
+				getMatrix.setAttribute("id", DashAST.getUniqueId());
+				getMatrix.setAttribute("sym_id", varSymbol.id);
+				
+				int exprTypeIndex = ((DashAST)t.getChild(1)).evalType.getTypeIndex();
+				StringTemplate template = null;
+				if (rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER &&
+						columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER) {
+					template = stg.getInstanceOf("matrix_elem_assign");
+				} else if (rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER &&
+						(columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+						columnIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR)) {
+					template = stg.getInstanceOf("matrix_row_assign");
+				} else if (columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER &&
+						(rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+						rowIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR)) {
+					template = stg.getInstanceOf("matrix_column_assign");
+				} else if ((rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+						rowIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR) &&
+						(columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
+						columnIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR)) {
+					if (exprTypeIndex ==  SymbolTable.tMATRIX) {
+						template = stg.getInstanceOf("matrix_index_assign_matrix");
+					} else {
+						template = stg.getInstanceOf("matrix_index_assign_scalar");
+					}
+				}
+				
+				StringTemplate rowIndexExpr = exec(rowIndexNode);
+				
+				if (rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+					interval.setAttribute("id", DashAST.getUniqueId());
+					interval.setAttribute("interval_var_expr", rowIndexExpr);
+					interval.setAttribute("interval_var_expr_id", rowIndexExpr.getAttribute("id"));
+					
+					rowIndexExpr = interval;
+				}
+				
+				StringTemplate columnIndexExpr = exec(columnIndexNode);
+				
+				if (columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+					interval.setAttribute("id", DashAST.getUniqueId());
+					interval.setAttribute("interval_var_expr", columnIndexExpr);
+					interval.setAttribute("interval_var_expr_id", columnIndexExpr.getAttribute("id"));
+					
+					columnIndexExpr = interval;
+				}
+			
+				StringTemplate valueExpr = exec((DashAST)t.getChild(1));
+				
+				if (exprTypeIndex ==  SymbolTable.tINTERVAL) {
+					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+					interval.setAttribute("id", DashAST.getUniqueId());
+					interval.setAttribute("interval_var_expr", valueExpr);
+					interval.setAttribute("interval_var_expr_id", valueExpr.getAttribute("id"));
+					
+					valueExpr = interval;
+				}
+				
+				StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
+				
+				template.setAttribute("id", id);
+				template.setAttribute("llvm_type", llvmType);
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+				template.setAttribute("matrix_expr", getMatrix);
+				template.setAttribute("matrix_expr_id", getMatrix.getAttribute("id"));
+				template.setAttribute("row_expr", rowIndexExpr);
+				template.setAttribute("row_expr_id", rowIndexExpr.getAttribute("id"));
+				template.setAttribute("column_expr", columnIndexExpr);
+				template.setAttribute("column_expr_id", columnIndexExpr.getAttribute("id"));
+				template.setAttribute("expr", valueExpr);
+				template.setAttribute("expr_id", valueExpr.getAttribute("id"));
+
+				return template;
 			}
 
 			Symbol sym = node.symbol;
 			int sym_id = sym.id;
 			
-			int type = ((DashAST)t.getChild(1)).evalType.getTypeIndex();
+			int type = ((DashAST)t.getChild(0)).evalType.getTypeIndex();
 			
 			StringTemplate expr = exec((DashAST)t.getChild(1));
 			int arg_id = ((DashAST)t.getChild(1).getChild(0)).llvmResultID;
@@ -2308,6 +2386,8 @@ public class LLVMIRGenerator {
 			type_template.setAttribute("type_id", ((TupleTypeSymbol)type).tupleTypeIndex);
 		} else if (type.getTypeIndex() == SymbolTable.tVECTOR) {
 			type_template = stg.getInstanceOf("vector_type");
+		} else if (type.getTypeIndex() == SymbolTable.tMATRIX) {
+			type_template = stg.getInstanceOf("matrix_type");
 		} else if (type.getTypeIndex() == SymbolTable.tVOID) {
 			type_template = stg.getInstanceOf("void_type");
 		}
