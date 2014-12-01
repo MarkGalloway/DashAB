@@ -124,10 +124,9 @@ line
 /* BEGIN TYPES */
 
 type
-	:	tupleType
-	| String
+	: tupleType
 	| primitiveType
-	|	ID
+	| ID
 	;
 
 tupleType
@@ -137,7 +136,7 @@ tupleType
   ;
   
 tupleMember
-  : String ID? LBRACK expression RBRACK -> ^(FIELD_DECL Var["var"] String ID? expression)
+  : String ID? LBRACK expression RBRACK -> ^(FIELD_DECL Var["var"] ^(VECTOR CHARACTER_TYPE["character"] expression) ID?)
   | primitiveType ID? -> ^(FIELD_DECL Var["var"] primitiveType ID?)
   | a=ID b=ID? -> ^(FIELD_DECL Var["var"] $a $b?)
   ;
@@ -178,10 +177,17 @@ functionParameter
       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
   | Var primitiveType (Vector | Matrix)? ID LBRACK (expression|MULTIPLY) (',' (expression|MULTIPLY))? RBRACK
       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
+  | Var String ID LBRACK expression RBRACK 
+       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
+  | Var String ID LBRACK MULTIPLY RBRACK 
+       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
+  | Var String ID
+       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
   | Var type ID { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }  
   | Var primitiveType (Vector | Matrix)? ID
     { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
-    
+  
+       
   // vectors 
   | specifier? primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
@@ -201,6 +207,14 @@ functionParameter
       -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType expression+) ID)
   | specifier? primitiveType Matrix ID
     -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType INFERRED INFERRED) ID)
+    
+    // strings
+  | specifier? String ID LBRACK expression RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(VECTOR CHARACTER_TYPE["character"] expression) ID)
+  | specifier? String ID LBRACK MULTIPLY RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
+  | specifier? String ID
+  	  -> ^(ARG_DECL Const["const"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
       
   | specifier? type ID  -> ^(ARG_DECL Const["const"] type ID)
   ;
@@ -216,11 +230,11 @@ procedureParameter
   // vectors
   : primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
-  | primitiveType Vector? ID LBRACK '*' RBRACK 
+  | primitiveType Vector? ID LBRACK MULTIPLY RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType INFERRED) ID)
   | specifier primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL specifier ^(VECTOR primitiveType expression) ID)
-  | specifier primitiveType Vector? ID LBRACK '*' RBRACK 
+  | specifier primitiveType Vector? ID LBRACK MULTIPLY RBRACK 
       -> ^(ARG_DECL specifier ^(VECTOR primitiveType INFERRED) ID)
   | specifier primitiveType Vector ID
       -> ^(ARG_DECL specifier ^(VECTOR primitiveType INFERRED) ID)
@@ -252,7 +266,21 @@ procedureParameter
       -> ^(ARG_DECL Const["const"] ^(MATRIX primitiveType INFERRED INFERRED) ID)
   | specifier primitiveType Matrix ID
       -> ^(ARG_DECL specifier ^(MATRIX primitiveType INFERRED INFERRED) ID)
-      
+  
+  // strings
+  | String ID LBRACK expression RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(VECTOR CHARACTER_TYPE["character"] expression) ID)
+  | String ID LBRACK MULTIPLY RBRACK 
+      -> ^(ARG_DECL Const["const"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
+  | specifier String ID LBRACK expression RBRACK 
+      -> ^(ARG_DECL specifier ^(VECTOR CHARACTER_TYPE["character"] expression) ID)
+  | specifier String ID LBRACK MULTIPLY RBRACK 
+      -> ^(ARG_DECL specifier ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
+  | String ID
+  	  -> ^(ARG_DECL Const["const"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
+  | specifier? String ID
+  	  -> ^(ARG_DECL specifier ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
+  	  
   | type ID -> ^(ARG_DECL Const["const"] type ID) 
   | specifier type ID -> ^(ARG_DECL specifier type ID)
   ;
@@ -260,12 +288,15 @@ procedureParameter
 methodReturnType
   : primitiveType Vector? LBRACK expression RBRACK -> ^(VECTOR primitiveType expression)
   | primitiveType Vector? LBRACK MULTIPLY RBRACK -> ^(VECTOR primitiveType INFERRED)
+  | String LBRACK expression RBRACK -> ^(VECTOR CHARACTER_TYPE["character"] expression)
+  | String LBRACK MULTIPLY RBRACK -> ^(VECTOR CHARACTER_TYPE["character"] INFERRED)
   | primitiveType Matrix? LBRACK expression ',' expression RBRACK -> ^(MATRIX primitiveType expression+)
   | primitiveType Matrix? LBRACK MULTIPLY ',' expression RBRACK -> ^(MATRIX primitiveType INFERRED expression)
   | primitiveType Matrix? LBRACK expression ',' MULTIPLY RBRACK -> ^(MATRIX primitiveType expression INFERRED)
   | primitiveType Matrix? LBRACK MULTIPLY ',' MULTIPLY RBRACK -> ^(MATRIX primitiveType INFERRED INFERRED)
   | primitiveType Vector -> ^(VECTOR primitiveType INFERRED)
   | primitiveType Matrix -> ^(MATRIX primitiveType INFERRED INFERRED)
+  | String -> ^(VECTOR CHARACTER_TYPE["character"] INFERRED)
   | tupleType
   | type
   ;
@@ -302,6 +333,7 @@ varDeclaration
   | streamDeclaration
   | intervalDeclaration 
   | vectorDeclaration
+  | stringDeclaration
   | matrixDeclaration
 	;
 
@@ -364,6 +396,27 @@ matrixDeclaration
      { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
      -> ^(VAR_DECL specifier ^(MATRIX primitiveType INFERRED INFERRED) ID $init)
   ;
+  
+stringDeclaration
+  : String ID LBRACK size=expression RBRACK (ASSIGN init=expression)? DELIM  // Explicit size no specifier
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL Var["var"] ^(VECTOR CHARACTER_TYPE["character"] $size) ID $init?)
+  | specifier String ID LBRACK size=expression RBRACK (ASSIGN init=expression)? DELIM  // Explicit size w/ specifier
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier ^(VECTOR CHARACTER_TYPE["character"] $size) ID $init?)
+  | String ID LBRACK MULTIPLY RBRACK ASSIGN init=expression DELIM // Implicit size no specifier
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL Var["var"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID $init)
+  | specifier String ID LBRACK MULTIPLY RBRACK ASSIGN init=expression DELIM // Implicit size w/ specifier
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID $init)
+  | String ID (ASSIGN init=expression)? DELIM // Implicit size no specifier
+    { if(varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL Var["var"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID $init?)
+  | specifier String ID (ASSIGN init=expression)? DELIM // Implicit size w/ specifier
+    { if($specifier.text.equals("var") && varDeclConstraint.empty()) emitErrorMessage("line " + $ID.getLine() + ": Global variables must be declared with the const specifier."); }
+      -> ^(VAR_DECL specifier ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID $init?)
+  ;
 
   
 // END: var
@@ -375,8 +428,16 @@ typedef
       -> ^(TYPEDEF type ID)
   | Typedef primitiveType LBRACK expression RBRACK ID DELIM                     {line = $ID.getLine();}  // Vector explicit size
       -> ^(TYPEDEF ^(VECTOR primitiveType expression) ID)
+  | Typedef primitiveType LBRACK MULTIPLY RBRACK ID DELIM                     {line = $ID.getLine();}  // Vector implicit size
+      -> ^(TYPEDEF ^(VECTOR primitiveType INFERRED) ID)
   | Typedef primitiveType Vector ID DELIM                                       {line = $ID.getLine();}  // Vector implicit size
       -> ^(TYPEDEF ^(VECTOR primitiveType INFERRED) ID)
+  | Typedef String LBRACK expression RBRACK ID DELIM                     		{line = $ID.getLine();}  // String explicit size
+      -> ^(TYPEDEF ^(VECTOR CHARACTER_TYPE["character"] expression) ID)
+  | Typedef String LBRACK MULTIPLY RBRACK ID DELIM                              {line = $ID.getLine();}  // String implicit size
+      -> ^(TYPEDEF ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
+  | Typedef String ID DELIM                                       				{line = $ID.getLine();}  // String implicit size
+      -> ^(TYPEDEF ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
   | Typedef primitiveType LBRACK expression ',' expression RBRACK ID DELIM      {line = $ID.getLine();}  // Matrix explicit size
       -> ^(TYPEDEF ^(MATRIX primitiveType expression) ID)
   | Typedef primitiveType Matrix ID DELIM                                       {line = $ID.getLine();}  // Matrix implicit size
