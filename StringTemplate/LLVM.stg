@@ -63,10 +63,10 @@ loop.done_<id>_
 
 runtime_library_vector(type, llvm_type) ::= <<
 
-declare void @<type>_allocVector(i8*, i32)
-declare void @<type>_assignVector(i8*, i8*)
-declare void @<type>_assignVectorScalar(i8*, <llvm_type>)
-declare void @<type>_copyVector(i8*, i8*)
+declare void  @<type>_allocVector(i8*, i32)
+declare void  @<type>_assignVector(i8*, i8*)
+declare void  @<type>_assignVectorScalar(i8*, <llvm_type>)
+declare void  @<type>_copyVector(i8*, i8*)
 declare i1  @<type>_getElement(<llvm_type>*, i8*, i32)
 declare i1  @<type>_setElement(i8*, i32, <llvm_type>)
 declare i1  @<type>_indexVector(i8*, i8*, i8*)
@@ -83,6 +83,15 @@ declare void  @<type>_VectorConcatVector(i8*, i8*, i8*)
 declare void  @<type>_VectorConcatScalar(i8*, i8*, <llvm_type>)
 declare void  @<type>_ScalarConcatVector(i8*, <llvm_type>, i8*)
 declare void  @<type>_printVector(i8*)
+
+declare void  @<type>_allocMatrix(i8*, i32, i32)
+declare void  @<type>_assignMatrix(i8*, i8*)
+declare void  @<type>_startLiteralMatrixCreation(i32)
+declare void  @<type>_addLiteralMatrixCreation(i8*)
+declare void  @<type>_endLiteralMatrixCreation(i8*)
+declare i1  @<type>_getElementMatrix(<llvm_type>*, i8*, i32, i32)
+declare i1  @<type>_setElementMatrix(i8*, i32, i32, <llvm_type>)
+declare void  @<type>_printMatrix(i8*)
 
 >>
 
@@ -149,6 +158,10 @@ declare void @bool_VectorXOrScalar(i8*, i8*, i1)
 declare void @bool_VectorAndScalar(i8*, i8*, i1)
 
 declare void  @int_VectorToReal(i8*, i8*)
+
+declare i8*  @allocMatrix()
+declare i32  @getMatrixRows(i8*)
+declare i32  @getMatrixColumns(i8*)
 
 declare i8*  @allocVector()
 declare i8*  @getData(i8*)

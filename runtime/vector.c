@@ -7,36 +7,6 @@
 #include "types.h"
 
 /*
-int32_t getBooleanTypeId() {
-	return BOOLEAN;
-}
-
-int32_t getCharacterTypeId() {
-	return CHARACTER;
-}
-
-int32_t getIntegerTypeId() {
-	return INTEGER;
-}
-
-int32_t getRealTypeId() {
-	return REAL;
-}
-*/
-
-int32_t min(int32_t a, int32_t b) {
-	if (a < b)
-		return a;
-	return b;
-}
-
-int32_t max(int32_t a, int32_t b) {
-	if (a > b)
-		return a;
-	return b;
-}
-
-/*
  * Assumes that the vector 'to' has been initialized to the correct size and
  * element type (to be the same as vector 'from').
  */
@@ -47,6 +17,9 @@ void copyVector(struct Vector* to, struct Vector* from, size_t element_size) {
 // Declarations
 
 extern int powi(int a,int n);
+extern int32_t min(int32_t a, int32_t b);
+extern int32_t max(int32_t a, int32_t b);
+
 extern void* xmalloc(size_t n);
 extern void xfree(void* ptr);
 extern void gc_add_object(void* object, int32_t type);

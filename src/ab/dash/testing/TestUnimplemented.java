@@ -508,6 +508,7 @@ public class TestUnimplemented extends BaseTest {
        sb.append("1234\n");
        sb.append("1234\n");
        sb.append("1234\n");
+       sb.append("1234\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     
@@ -529,6 +530,27 @@ public class TestUnimplemented extends BaseTest {
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     
+    @Test 
+    public void dotProduct() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/119DotProduct/dotProduct.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("14\n");
+       sb.append("11\n");
+       sb.append("11\n");
+       sb.append("8.75\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void matrixLiteral() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/120MatrixLiteral/matrixLiteral.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("1234\n");
+       sb.append("1230\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
     
     // Invalid Syntax Test
     @Test 

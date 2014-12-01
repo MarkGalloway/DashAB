@@ -52,6 +52,11 @@ void releaseVector(struct Vector* vector) {
 	xfree(vector);
 }
 
+void releaseMatrix(struct Matrix* matrix) {
+	xfree(matrix->data);
+	xfree(matrix);
+}
+
 Node new_node() {
 	Node n = (Node)xmalloc(sizeof(struct node));
 	n->next = 0;
@@ -91,6 +96,7 @@ void gc_release_object(void* object, int32_t type) {
 		releaseVector(object);
 		break;
 	case MATRIX:
+		releaseMatrix(object);
 		break;
 	}
 }

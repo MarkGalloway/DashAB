@@ -1,0 +1,104 @@
+matrix_type() ::= <<
+i8*
+>>
+
+matrix_init_local(sym_id) ::= <<
+<vlocal_symbol(sym_id)> = alloca i8*
+>>
+
+matrix_init_global(sym_id) ::= <<
+<vglobalSymbol(sym_id)> = private unnamed_addr global i8* null
+>>
+
+matrix_alloc_local(sym_id) ::= <<
+	<vlocal_result(sym_id)>_alloc = call i8* @allocMatrix()
+	store i8* <vlocal_result(sym_id)>_alloc, i8** <vlocal_symbol(sym_id)>
+>>
+
+matrix_alloc_global(sym_id) ::= <<
+	<vlocal_result(sym_id)>_alloc = call i8* @allocMatrix()
+	store i8* <vlocal_result(sym_id)>_alloc, i8** <vglobalSymbol(sym_id)>
+>>
+
+matrix_get_local(id, sym_id) ::= <<
+  <vlocal_result(id)> = load i8** <vlocal_symbol(sym_id)>
+>>
+
+matrix_get_global(id, sym_id) ::= <<
+  <vlocal_result(id)> = load i8** <vglobalSymbol(sym_id)>
+>>
+
+matrix_get_local_var(id, sym_id) ::= <<
+  <vlocal_result(id)> = bitcast i8** <vlocal_symbol(sym_id)> to i8**
+>>
+
+matrix_get_global_var(id, sym_id) ::= <<
+  <vlocal_result(id)> = bitcast i8** <vglobalSymbol(sym_id)> to i8**
+>>
+
+matrix_init_literal(id, type_name, size_expr, size_expr_id, element_exprs) ::= <<
+<size_expr>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  call void @<type_name>_startLiteralMatrixCreation(i32 <vlocal_result(size_expr_id)>)
+<element_exprs; separator="\n">
+  call void @<type_name>_endLiteralMatrixCreation(i8* <vlocal_result(id)>)
+>>
+
+matrix_add_vector_literal(id, type_name, expr, expr_id) ::= <<
+<expr>
+  call void @<type_name>_addLiteralMatrixCreation(i8* <vlocal_result(expr_id)>)
+>>
+
+matrix_assign_decl_infer(id, type_name, matrix_var_expr, matrix_var_expr_id, rhs_expr, rhs_expr_id) ::= <<
+<rhs_expr>
+<matrix_var_expr>
+  ;// Alloc new lhs matrix with right size
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(rhs_expr_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(rhs_expr_id)>)
+  <vlocal(id)>_matrix = call i8* @allocMatrix()
+  call void @<type_name>_allocMatrix(i8* <vlocal(id)>_matrix, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_assignMatrix(i8* <vlocal(id)>_matrix, i8* <vlocal_result(rhs_expr_id)>)
+  store i8* <vlocal(id)>_matrix, i8** <vlocal_result(matrix_var_expr_id)>
+>>
+
+matrix_assign_decl_column_infer(id, type_name, matrix_var_expr, matrix_var_expr_id, row_size, row_size_id, rhs_expr, rhs_expr_id) ::= <<
+<rhs_expr>
+<row_size>
+<matrix_var_expr>
+  ;// Alloc new lhs matrix with right size
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(rhs_expr_id)>)
+  <vlocal(id)>_matrix = call i8* @allocMatrix()
+  call void @<type_name>_allocMatrix(i8* <vlocal(id)>_matrix, i32 <vlocal_result(row_size_id)>, i32 <vlocal(id)>_columns)
+  call void @<type_name>_assignMatrix(i8* <vlocal(id)>_matrix, i8* <vlocal_result(rhs_expr_id)>)
+  store i8* <vlocal(id)>_matrix, i8** <vlocal_result(matrix_var_expr_id)>
+>>
+
+matrix_assign_decl_row_infer(id, type_name, matrix_var_expr, matrix_var_expr_id, column_size, column_size_id, rhs_expr, rhs_expr_id) ::= <<
+<rhs_expr>
+<column_size>
+<matrix_var_expr>
+  ;// Alloc new lhs matrix with right size
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(rhs_expr_id)>)
+  <vlocal(id)>_matrix = call i8* @allocMatrix()
+  call void @<type_name>_allocMatrix(i8* <vlocal(id)>_matrix, i32 <vlocal(id)>_rows, i32 <vlocal_result(column_size_id)>)
+  call void @<type_name>_assignMatrix(i8* <vlocal(id)>_matrix, i8* <vlocal_result(rhs_expr_id)>)
+  store i8* <vlocal(id)>_matrix, i8** <vlocal_result(matrix_var_expr_id)>
+>>
+
+matrix_assign_decl(id, type_name, matrix_var_expr, matrix_var_expr_id, row_size, row_size_id, column_size, column_size_id, rhs_expr, rhs_expr_id) ::= <<
+<rhs_expr>
+<column_size>
+<row_size>
+<matrix_var_expr>
+  <vlocal(id)>_matrix = call i8* @allocMatrix()
+  call void @<type_name>_allocMatrix(i8* <vlocal(id)>_matrix, i32 <vlocal_result(row_size_id)>, i32 <vlocal_result(column_size_id)>)
+  call void @<type_name>_assignMatrix(i8* <vlocal(id)>_matrix, i8* <vlocal_result(rhs_expr_id)>)
+  store i8* <vlocal(id)>_matrix, i8** <vlocal_result(matrix_var_expr_id)>
+>>
+
+matrix_print(id, type_name, expr, expr_id) ::= <<
+<expr>
+	call void @<type_name>_printMatrix(i8* <vlocal_result(expr_id)>)
+>>
+
+/* TODO: Write rest of vector operation runtime function wrappers. */

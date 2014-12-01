@@ -1,4 +1,3 @@
-// Strings can be constructed in the same way as vectors using character literals.
 const out = std_output();
 
 procedure main() returns integer {

@@ -208,7 +208,8 @@ public class Runner {
                "StringTemplate/LLVM_Real.stg",
                "StringTemplate/LLVM_Tuple.stg",
                "StringTemplate/LLVM_Interval.stg",
-               "StringTemplate/LLVM_Vector.stg"
+               "StringTemplate/LLVM_Vector.stg",
+               "StringTemplate/LLVM_Matrix.stg"
                };
        
        for (String s : STGFiles)

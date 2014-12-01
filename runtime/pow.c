@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 int powi(int a,int n)
 {
 	int result = 1;
@@ -15,4 +17,16 @@ int powi(int a,int n)
 		power >>= 1;
 	}
 	return result;
+}
+
+int32_t min(int32_t a, int32_t b) {
+	if (a < b)
+		return a;
+	return b;
+}
+
+int32_t max(int32_t a, int32_t b) {
+	if (a > b)
+		return a;
+	return b;
 }

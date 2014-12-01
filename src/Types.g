@@ -222,13 +222,14 @@ ArrayList<DashAST> arg_nodes = new ArrayList<DashAST>();
 
 binaryOps returns [Type type]
 @after { $start.evalType = $type; }
-	:	(	^(bop a=expr b=expr)    {$type=symtab.bop($a.start, $b.start);}
-		|	^(lop a=expr b=expr)    {$type=symtab.lop($a.start, $b.start);}
-		|	^(relop a=expr b=expr)  {$type=symtab.relop($a.start, $b.start);}
-		|	^(eqop a=expr b=expr)   {$type=symtab.eqop($a.start, $b.start);}
-		|	^(RANGE a=expr b=expr)  {$type=symtab.range($a.start, $b.start);}
-		|	^(By a=expr b=expr) 	{$type=symtab.by($a.start, $b.start);}
-		|	^(CONCAT a=expr b=expr) {$type=symtab.concat($a.start, $b.start);}
+	:	(	^(bop a=expr b=expr)    	{$type=symtab.bop($a.start, $b.start);}
+		|	^(lop a=expr b=expr)    	{$type=symtab.lop($a.start, $b.start);}
+		|	^(relop a=expr b=expr)  	{$type=symtab.relop($a.start, $b.start);}
+		|	^(eqop a=expr b=expr)   	{$type=symtab.eqop($a.start, $b.start);}
+		|	^(RANGE a=expr b=expr)  	{$type=symtab.range($a.start, $b.start);}
+		|	^(By a=expr b=expr) 		{$type=symtab.by($a.start, $b.start);}
+		|	^(DOTPRODUCT a=expr b=expr) {$type=symtab.dotProduct($a.start, $b.start);}
+		|	^(CONCAT a=expr b=expr) 	{$type=symtab.concat($a.start, $b.start);}
 		)
 	;
 	

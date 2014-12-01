@@ -1089,6 +1089,41 @@ public class SymbolTable {
     	return new VectorType(type, 0);
     }
     
+    public Type dotProduct(DashAST lhs, DashAST rhs) {
+    	Type type = null;
+    	int type_index = -1;
+    	
+    	if ( lhs.evalType.getTypeIndex() == tVECTOR) {
+    		VectorType vType = (VectorType) lhs.evalType;
+    		int lhs_index = vType.elementType.getTypeIndex();
+            if (lhs_index > type_index) {
+            	type_index = lhs_index;
+            	type = vType.elementType;
+            }
+        } else if ( lhs.evalType.getTypeIndex() == tINTERVAL) {
+            if (tINTEGER > type_index) {
+            	type_index = tINTEGER;
+            	type = _integer;
+            }
+        }
+    	
+    	if ( rhs.evalType.getTypeIndex() == tVECTOR) {
+    		VectorType vType = (VectorType) rhs.evalType;
+    		int rhs_index = vType.elementType.getTypeIndex();
+            if (rhs_index > type_index) {
+            	type_index = rhs_index;
+            	type = vType.elementType;
+            }
+        } else if ( rhs.evalType.getTypeIndex() == tINTERVAL) {
+            if (tINTEGER > type_index) {
+            	type_index = tINTEGER;
+            	type = _integer;
+            }
+        }
+    	
+    	return type;
+    }
+    
     public boolean typeCast(DashAST typecast, DashAST list) {
     	
     	if (typecast.evalType.getTypeIndex() == tTUPLE) {
