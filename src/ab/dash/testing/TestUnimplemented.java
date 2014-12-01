@@ -575,8 +575,16 @@ public class TestUnimplemented extends BaseTest {
        String[] args = new String[] {"TestPrograms/122MatrixAssign/matrixAssign.ds"};
        Runner.llvmMain(args);
        StringBuffer sb = new StringBuffer();
-       sb.append("123120000\n");
-       sb.append("123012000000\n");
+       sb.append("000000000\n");
+       sb.append("100020003\n");
+       sb.append("100010003\n");
+       sb.append("123010456\n");
+       sb.append("000000000\n");
+       sb.append("104205306\n");
+       sb.append("000000000\n");
+       sb.append("120340000\n");
+       sb.append("430210000\n");
+       sb.append("110110000\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
     

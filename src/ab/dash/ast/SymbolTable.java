@@ -741,9 +741,9 @@ public class SymbolTable {
         
         // Check for Type Inference
         if (declID.symbol.type == null) {
-        	if (te != tNULL && te != tIDENTITY)
+        	if (te != tNULL && te != tIDENTITY) {
         		declID.symbol.type = init.evalType;
-        	else {
+        	} else {
         		error("line " + declID.getLine() + ": type cannot be inferred for " + text((DashAST) init.getParent()));
         		return;
         	}
@@ -1241,7 +1241,7 @@ public class SymbolTable {
 			
 			if (rhsType.getTypeIndex() == tVECTOR) {
 				Type element2 = ((VectorType)rhsType).elementType;
-				return element== element2;
+				return element == element2 || element == promote(element2, element);
 			}
 			
 			return element.getTypeIndex() == rhsType.getTypeIndex();
@@ -1254,10 +1254,10 @@ public class SymbolTable {
 
 			if (rhsType.getTypeIndex() == tMATRIX) {
 				Type element2 = ((MatrixType)rhsType).elementType;
-				return element.getTypeIndex() == element2.getTypeIndex();
+				return element == element2  || element == promote(element2, element);
 			}
 			
-			return element.getTypeIndex() == rhsType.getTypeIndex();
+			return element == rhsType || element == promote(rhsType, element);
 		}
     	
     	if (promotion == null)

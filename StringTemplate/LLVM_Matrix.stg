@@ -176,6 +176,40 @@ if.fail<id>:
 if.success<id>:
 >>
 
+matrix_index_assign_matrix(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_matrixAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>, i8* <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_index_assign_scalar(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_scalarAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
 matrix_get_element(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id) ::= <<
 <column_expr>
 <row_expr>

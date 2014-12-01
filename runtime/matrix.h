@@ -193,9 +193,8 @@ int NAME(setElementMatrix, TEMPLATE_NAME)( struct Matrix* matrix, int32_t r, int
 
 int NAME(rowAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, int32_t r, struct Vector* column, struct Vector* value) {
 	
-	if (column->size != value->size) {
+	if (column->size != value->size)
 		return 0;
-	}
 
 	if (r > matrix->rows || r < 1)
 		return 0;
@@ -215,9 +214,8 @@ int NAME(rowAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, int32_t r, struc
 
 int NAME(columnAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector* row, int32_t c, struct Vector* value) {
 	
-	if (row->size != value->size) {
+	if (row->size != value->size)
 		return 0;
-	}
 
 	if (c > matrix->columns || c < 1)
 		return 0;
@@ -230,6 +228,55 @@ int NAME(columnAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector
 		
 		int index = (r-1)*matrix->columns + (c-1);		
 		((TEMPLATE_TYPE*)matrix->data)[index] = ((TEMPLATE_TYPE*)value->data)[i];
+	}
+	
+	return 1;
+}
+
+int NAME(matrixAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector* row, struct Vector* column, struct Matrix* value) {
+	
+	if (row->size != value->rows)
+		return 0;
+
+	if (column->size != value->columns)
+		return 0;
+	
+	for (int i = 0; i < row->size; i++) {
+		int r = ((int32_t*)row->data)[i];
+
+		if (r > matrix->rows || r < 1)
+			return 0;
+
+		for (int j = 0; j < column->size; j++) {
+			int c = ((int32_t*)column->data)[j];
+			
+			if (c > matrix->columns || c < 1)
+				return 0;
+		
+			int index = (r-1)*matrix->columns + (c-1);		
+			((TEMPLATE_TYPE*)matrix->data)[index] = ((TEMPLATE_TYPE*)value->data)[i*column->size + j];
+		}
+	}
+	
+	return 1;
+}
+
+int NAME(scalarAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector* row, struct Vector* column, TEMPLATE_TYPE value) {
+	for (int i = 0; i < row->size; i++) {
+		int r = ((int32_t*)row->data)[i];
+
+		if (r > matrix->rows || r < 1)
+			return 0;
+
+		for (int j = 0; j < column->size; j++) {
+			int c = ((int32_t*)column->data)[j];
+			
+			if (c > matrix->columns || c < 1)
+				return 0;
+		
+			int index = (r-1)*matrix->columns + (c-1);		
+			((TEMPLATE_TYPE*)matrix->data)[index] = value;
+		}
 	}
 	
 	return 1;
