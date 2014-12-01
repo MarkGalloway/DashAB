@@ -123,3 +123,9 @@ struct Matrix* allocMatrix() {
 	
 	return matrix;
 }
+
+void printMatrixIndexingOutOfBounds() {
+	printf("RuntimeError: Matrix indexing out of bounds.");
+}
+
+

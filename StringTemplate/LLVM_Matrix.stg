@@ -107,6 +107,26 @@ matrix_assign_decl_scalar(id, type_name, llvm_type, matrix_var_expr, matrix_var_
   store i8* <vlocal(id)>_matrix, i8** <vlocal_result(matrix_var_expr_id)>
 >>
 
+matrix_get_element(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id) ::= <<
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_stack = call i8* @llvm.stacksave();
+  <vlocal(id)>_value = alloca <llvm_type>;
+  <vlocal(id)>_success = call i1 @<type_name>_getElementMatrix(<llvm_type>* <vlocal(id)>_value, i8* <vlocal_result(matrix_expr_id)>, i32 <vlocal_result(row_expr_id)>, i32 <vlocal_result(column_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+  
+  <vlocal_result(id)> = load <llvm_type>* <vlocal(id)>_value
+  call void @llvm.stackrestore(i8* <vlocal(id)>_stack);
+>>
 
 matrix_print(id, type_name, expr, expr_id) ::= <<
 <expr>

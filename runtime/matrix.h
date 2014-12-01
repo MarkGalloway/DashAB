@@ -106,9 +106,9 @@ int NAME(getElementMatrix, TEMPLATE_NAME)(TEMPLATE_TYPE* out, struct Matrix* mat
 	if (c > matrix->columns || c < 1)
 		return 0;
 
-	int index = r*matrix->columns + c;
+	int index = (r-1)*matrix->columns + (c-1);
 
-	*out = ((TEMPLATE_TYPE*)matrix->data)[index - 1];
+	*out = ((TEMPLATE_TYPE*)matrix->data)[index];
 	
 	return 1;
 }
@@ -120,9 +120,9 @@ int NAME(setElementMatrix, TEMPLATE_NAME)( struct Matrix* matrix, int32_t r, int
 	if (c > matrix->columns || c < 1)
 		return 0;
 
-	int index = r*matrix->columns + c;
+	int index = (r-1)*matrix->columns + (c-1);
 
-	((TEMPLATE_TYPE*)matrix->data)[index - 1] = value;
+	((TEMPLATE_TYPE*)matrix->data)[index] = value;
 	
 	return 1;
 }

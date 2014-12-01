@@ -1481,6 +1481,50 @@ public class LLVMIRGenerator {
 			}
 		}
 		
+		case DashLexer.MATRIX_INDEX:
+		{
+			DashAST varNode = (DashAST) t.getChild(0);
+			DashAST rowIndexNode = (DashAST) t.getChild(1);
+			DashAST columnIndexNode = (DashAST) t.getChild(2);
+
+			MatrixType matType = (MatrixType) varNode.evalType;
+			VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
+			int elementTypeIndex = matType.elementType.getTypeIndex();
+
+			StringTemplate getMatrix = null;
+			if (varNode.symbol.scope.getScopeIndex() == SymbolTable.scGLOBAL) {
+				getMatrix = stg.getInstanceOf("matrix_get_global");
+			} else {
+				getMatrix = stg.getInstanceOf("matrix_get_local");
+			}
+			getMatrix.setAttribute("id", DashAST.getUniqueId());
+			getMatrix.setAttribute("sym_id", varSymbol.id);
+			
+			StringTemplate template = null;
+			if (rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER &&
+					columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER) {
+				template = stg.getInstanceOf("matrix_get_element");
+			}
+			
+			template.setAttribute("id", t.llvmResultID);
+			template.setAttribute("matrix_expr", getMatrix);
+			template.setAttribute("matrix_expr_id", getMatrix.getAttribute("id"));
+
+			StringTemplate llvmType = stg.getInstanceOf(typeIndexToName.get(elementTypeIndex) + "_type");
+			template.setAttribute("llvm_type", llvmType);
+			template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+
+			StringTemplate rowExpr = exec(rowIndexNode);
+			template.setAttribute("row_expr", rowExpr);
+			template.setAttribute("row_expr_id", rowExpr.getAttribute("id"));
+			
+			StringTemplate columnExpr = exec(columnIndexNode);
+			template.setAttribute("column_expr", columnExpr);
+			template.setAttribute("column_expr_id", columnExpr.getAttribute("id"));
+
+			return template;
+		}
+		
 		case DashLexer.TYPECAST:
 		{
 			int id = ((DashAST)t).llvmResultID;
