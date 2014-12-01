@@ -45,8 +45,8 @@ public class TestUnimplemented extends BaseTest {
     }
     
     @Test 
-    public void testMatrices() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/72TestMatrices/testMatrices.ds"};
+    public void testMatrixIndexing() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/72TestMatrixIndexing/testMatrixIndexing.ds"};
         Runner.llvmMain(args);
         assertEquals("123456", outErrIntercept.toString().trim());
     }
