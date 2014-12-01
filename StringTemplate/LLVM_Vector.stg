@@ -45,8 +45,8 @@ vector_assign_decl(id, type_name, vector_size, vector_size_id, vector_var_expr, 
   br i1 <vlocal(id)>_valid_size, label %if.success<id>, label %if.fail<id>
   
 if.fail<id>:
+	call void @gc_free_all()
   	tail call void @exit(i32 -1)
-  	call void @gc_free_all()
   	unreachable
   
 if.success<id>:
