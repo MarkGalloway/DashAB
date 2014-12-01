@@ -572,8 +572,14 @@ public class SymbolTable {
             return null;
         }
         
+        Type eType = ((MatrixType)t).elementType;
+        
         int trow = row.evalType.getTypeIndex();
         int tcolumn = column.evalType.getTypeIndex();
+        
+        if (trow == tINTERVAL && tcolumn == tINTERVAL) {
+        	return t;
+        }
         
         if (trow == tVECTOR && tcolumn == tVECTOR) {
         	VectorType rowType = (VectorType)row.evalType;
@@ -589,10 +595,14 @@ public class SymbolTable {
         	}
         }
         
+        if (trow == tINTERVAL && tcolumn == tINTEGER) {
+        	return new VectorType(eType, 0);
+        }
+        
         if (trow == tVECTOR && tcolumn == tINTEGER) {
         	VectorType rowType = (VectorType)row.evalType;
         	if (rowType.elementType.getTypeIndex() == tINTEGER)
-        		return t;
+        		return new VectorType(eType, 0);
         	else {
         		error("line " + row.getLine() + " : " + 
         				text(row)+" indexing vector for row must be of type integer in "+
@@ -604,13 +614,17 @@ public class SymbolTable {
         if (tcolumn == tVECTOR && trow == tINTEGER) {
         	VectorType columnType = (VectorType)column.evalType;
         	if (columnType.elementType.getTypeIndex() == tINTEGER)
-        		return t;
+        		return new VectorType(eType, 0);
         	else {
         		error("line " + row.getLine() + " : " + 
         				text(row)+" indexing vector for column must be of type integer in "+
                         text((DashAST)row.getParent()));
         		return null;
         	}
+        }
+        
+        if (tcolumn == tINTERVAL && trow == tINTEGER) {
+        	return new VectorType(eType, 0);
         }
         
         if (trow != tINTEGER || tcolumn != tINTEGER) {
@@ -620,7 +634,7 @@ public class SymbolTable {
         	 return null;
         }
         
-        return ((MatrixType)t).elementType;
+        return eType;
     }
 
     public Type call(DashAST id, List<?> args) {
