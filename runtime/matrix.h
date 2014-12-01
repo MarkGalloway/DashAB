@@ -81,6 +81,15 @@ void NAME(assignMatrix, TEMPLATE_NAME)(struct Matrix* lhs, struct Matrix* rhs) {
 		lhs_data[i] = 0;
 }
 
+void NAME(assignMatrixScalar, TEMPLATE_NAME)(struct Matrix* lhs, TEMPLATE_TYPE rhs) {
+	TEMPLATE_TYPE* lhs_data = (TEMPLATE_TYPE*)lhs->data;
+	int lhs_size = lhs->rows*lhs->columns;
+	
+	int i;
+	for (i = 0; i < lhs_size; i++)
+		lhs_data[i] = rhs;
+}
+
 int NAME(getElementMatrix, TEMPLATE_NAME)(TEMPLATE_TYPE* out, struct Matrix* matrix, int32_t r, int32_t c) {
 	if (r > matrix->rows || r < 1)
 		return 0;

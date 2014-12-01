@@ -96,6 +96,18 @@ matrix_assign_decl(id, type_name, matrix_var_expr, matrix_var_expr_id, row_size,
   store i8* <vlocal(id)>_matrix, i8** <vlocal_result(matrix_var_expr_id)>
 >>
 
+matrix_assign_decl_scalar(id, type_name, llvm_type, matrix_var_expr, matrix_var_expr_id, row_size, row_size_id, column_size, column_size_id, rhs_expr, rhs_expr_id) ::= <<
+<rhs_expr>
+<column_size>
+<row_size>
+<matrix_var_expr>
+  <vlocal(id)>_matrix = call i8* @allocMatrix()
+  call void @<type_name>_allocMatrix(i8* <vlocal(id)>_matrix, i32 <vlocal_result(row_size_id)>, i32 <vlocal_result(column_size_id)>)
+  call void @<type_name>_assignMatrixScalar(i8* <vlocal(id)>_matrix, <llvm_type> <vlocal_result(rhs_expr_id)>)
+  store i8* <vlocal(id)>_matrix, i8** <vlocal_result(matrix_var_expr_id)>
+>>
+
+
 matrix_print(id, type_name, expr, expr_id) ::= <<
 <expr>
 	call void @<type_name>_printMatrix(i8* <vlocal_result(expr_id)>)

@@ -66,6 +66,30 @@ nullExpr
       $node.deleteChild(0);
       $node.addChild(expr.getChild(0));
     }
+  }
+  |	^(node = RANGE Null Null)
+  { 
+    DashAST expr1 = SymbolTable.getExprForNull(SymbolTable._integer);
+    DashAST expr2 = SymbolTable.getExprForNull(SymbolTable._integer);
+    ((DashAST)expr1.getChild(0)).evalType = SymbolTable._integer;
+    ((DashAST)expr2.getChild(0)).evalType = SymbolTable._integer;
+    $node.deleteChild(0);
+    $node.deleteChild(0);
+    $node.addChild(expr1.getChild(0));
+    $node.addChild(expr2.getChild(0));
+  }
+  |	^(node = RANGE Null .)
+  { 
+    DashAST expr = SymbolTable.getExprForNull(SymbolTable._integer);
+    ((DashAST)expr.getChild(0)).evalType = SymbolTable._integer;
+    $node.replaceChildren(0, 0, expr.getChild(0));
+  }
+  |	^(node = RANGE . Null)
+  { 
+    DashAST expr = SymbolTable.getExprForNull(SymbolTable._integer);
+    ((DashAST)expr.getChild(0)).evalType = SymbolTable._integer;
+    $node.deleteChild(1);
+    $node.addChild(expr.getChild(0));
   } 
   ;
   
@@ -104,5 +128,29 @@ identExpr
       $node.deleteChild(0);
       $node.addChild(expr.getChild(0));
     }
+  }
+  |	^(node = RANGE Identity Identity)
+  { 
+    DashAST expr1 = SymbolTable.getExprForIdentity(SymbolTable._integer);
+    DashAST expr2 = SymbolTable.getExprForIdentity(SymbolTable._integer);
+    ((DashAST)expr1.getChild(0)).evalType = SymbolTable._integer;
+    ((DashAST)expr2.getChild(0)).evalType = SymbolTable._integer;
+    $node.deleteChild(0);
+    $node.deleteChild(0);
+    $node.addChild(expr1.getChild(0));
+    $node.addChild(expr2.getChild(0));
+  }
+  |	^(node = RANGE Identity .)
+  { 
+    DashAST expr = SymbolTable.getExprForIdentity(SymbolTable._integer);
+    ((DashAST)expr.getChild(0)).evalType = SymbolTable._integer;
+    $node.replaceChildren(0, 0, expr.getChild(0));
+  }
+  |	^(node = RANGE . Identity)
+  { 
+    DashAST expr = SymbolTable.getExprForIdentity(SymbolTable._integer);
+    ((DashAST)expr.getChild(0)).evalType = SymbolTable._integer;
+    $node.deleteChild(1);
+    $node.addChild(expr.getChild(0));
   } 
   ;

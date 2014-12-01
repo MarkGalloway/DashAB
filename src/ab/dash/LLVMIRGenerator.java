@@ -2076,7 +2076,7 @@ public class LLVMIRGenerator {
 		template.setAttribute("rhs_expr_id", rhsExpr.getAttribute("id"));
 		
 		if (scalar)
-			template.setAttribute("type", getType(elementType));
+			template.setAttribute("llvm_type", getType(elementType));
 
 		return template;
 	}

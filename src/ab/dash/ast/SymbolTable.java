@@ -198,8 +198,8 @@ public class SymbolTable {
         /*real*/   		{null,		null,  		null,    	null,   	null, 	null,       null,      null,      null,		null,		null,		null},
         /*outstream*/   {null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null,		null,		null,		null},
         /*instream*/   	{null,		null,  		null,    	null,   	null, 	null,	    null,      null,      null,		null,		null,		null},
-        /*null*/        {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		null,		null,		null},
-        /*identity*/    {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		null,		null,		null},
+        /*null*/        {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		_interval,	_vector,	_matrix},
+        /*identity*/    {_tuple,    _boolean,   _character, _integer,   _real,  null,       null,      null,      null,		_interval,	_vector,	_matrix},
         /*interval*/	{null,		null,    	null,   	null,   	null,	null,		null,      null,      null,		null,		_vector,	null},
         /*vector*/		{null,		null,    	null,   	null,   	null,	null,		null,      null,      null,		null,		_vector,	null},
         /*matrix*/		{null,		null,    	null,   	null,   	null,	null,		null,      null,      null,		null,		null,		_matrix}
@@ -298,7 +298,7 @@ public class SymbolTable {
         return false;
     }
 	
-	private Type getElementType(Type type) {
+	private static Type getElementType(Type type) {
 		if (type.getTypeIndex() == tINTERVAL) {
 			return _integer;
 		} else if (type.getTypeIndex() == tVECTOR) {
@@ -743,6 +743,20 @@ public class SymbolTable {
         				(init.evalType.getTypeIndex() != tINTERVAL &&
         				init.evalType.getTypeIndex() != tVECTOR)) {
         			error("line " + declID.getLine() + ": cannot use scalar or none-vector type to instantiate an un-sized vector " + text((DashAST) init.getParent()));
+        			return;
+        		}
+        	}
+        	
+        	if (declID.symbol.type.getTypeIndex() == tMATRIX) {
+        		MatrixType matType = (MatrixType) declID.symbol.type;
+        		DashAST matType_node = matType.def;
+        		DashAST rows = (DashAST) matType_node.getChild(1);
+        		DashAST columns = (DashAST) matType_node.getChild(2);
+        		
+        		if ((rows.token.getType() == DashLexer.INFERRED ||
+        				columns.token.getType() == DashLexer.INFERRED) &&
+        				init.evalType.getTypeIndex() != tMATRIX) {
+        			error("line " + declID.getLine() + ": cannot use scalar or none-matrix type to instantiate an un-sized matrix " + text((DashAST) init.getParent()));
         			return;
         		}
         	}
@@ -1287,6 +1301,23 @@ public class SymbolTable {
           return null;
         }
         
+        if (type.getTypeIndex() == tINTERVAL) {
+        	DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+            expr.evalType = type;
+            
+            DashAST range = new DashAST(new CommonToken(DashLexer.RANGE, ".."));
+            DashAST lower = new DashAST(new CommonToken(DashLexer.INTEGER, "0"));
+            DashAST upper = new DashAST(new CommonToken(DashLexer.INTEGER, "0"));
+            
+            range.addChild(lower);
+            range.addChild(upper);
+            
+            expr.addChild(range);
+            return expr;
+        }
+        
+        type = getElementType(type);
+        
         DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
         expr.evalType = type;
         CommonToken token = convertFromNull(type);
@@ -1302,6 +1333,23 @@ public class SymbolTable {
         if (type == null) {
           return null;
         }
+        
+        if (type.getTypeIndex() == tINTERVAL) {
+        	DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+            expr.evalType = type;
+            
+            DashAST range = new DashAST(new CommonToken(DashLexer.RANGE, ".."));
+            DashAST lower = new DashAST(new CommonToken(DashLexer.INTEGER, "1"));
+            DashAST upper = new DashAST(new CommonToken(DashLexer.INTEGER, "1"));
+            
+            range.addChild(lower);
+            range.addChild(upper);
+            
+            expr.addChild(range);
+            return expr;
+        }
+        
+        type = getElementType(type);
         
         DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
         expr.evalType = type;

@@ -2,13 +2,8 @@
 const out = std_output();
 
 procedure main() returns integer {
-
 	integer matrix B[2, 2] = identity;
-    
-    B[1, 1] -> out; 
-    B[1, 2] -> out;
-    B[2, 1] -> out; 
-    B[2, 2] -> out; '\n' -> out;
+    B -> out; '\n' -> out;
 
 	return 0;
 }

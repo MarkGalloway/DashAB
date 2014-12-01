@@ -86,6 +86,7 @@ declare void  @<type>_printVector(i8*)
 
 declare void  @<type>_allocMatrix(i8*, i32, i32)
 declare void  @<type>_assignMatrix(i8*, i8*)
+declare void  @<type>_assignMatrixScalar(i8*, <llvm_type>)
 declare void  @<type>_startLiteralMatrixCreation(i32)
 declare void  @<type>_addLiteralMatrixCreation(i8*)
 declare void  @<type>_endLiteralMatrixCreation(i8*)
