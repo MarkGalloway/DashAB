@@ -17,12 +17,10 @@ procedure main() returns integer {
 	real vector y[4];
 	
 	// Get Matrix
-	loop j in 1..4 {
-		loop i in 1..4 {
-			real value;
-			value <- inp;
-			A[i, j] = value;
-		}
+	loop i in 1..4, j in 1..4 {
+		real value;
+		value <- inp;
+		A[i, j] = value;
 	}
 	
 	// Get Vector
