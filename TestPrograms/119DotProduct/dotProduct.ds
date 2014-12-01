@@ -1,0 +1,14 @@
+// 8.6.5 Vector Operations: Dot Product
+const out = std_output();
+
+procedure main() returns integer {
+	integer vi[*] = [1, 2, 3];
+	real vr[*] = [0.5, 1.5, 2.5];
+	
+	vi ** vi -> out; '\n' -> out;
+	vi ** vr -> out; '\n' -> out;
+	vr ** vi -> out; '\n' -> out;
+	vr ** vr -> out; '\n' -> out;
+	
+	return 0;
+}
