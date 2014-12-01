@@ -32,11 +32,9 @@ procedure zeros() returns integer vector [3] {
 }
 
 procedure main() returns integer {
-	//integer v3[3]; // Bug not allocated
-	
 	integer v1[1+2] = [1, 2, 3];
 	integer v2[*] = [3, 4, 5];
-	integer v3[3] = 0;
+	integer v3[3];
 	integer v4[3] = zeros();
 	integer v5[*] = 1..3 + v1 + 2..4;
 	
