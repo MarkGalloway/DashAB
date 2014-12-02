@@ -97,12 +97,16 @@ void bool_VectorAndScalar(struct Vector* out, struct Vector* lhs, int8_t rhs) {
 void bool_printVector(struct Vector* vector) {
 	int8_t *vector_data = (int8_t*) vector->data;
 
-	for (int i = 0; i < vector->size; i++) {
+	for (int i = 0; i < vector->size-1; i++) {
 		if (vector_data[i] == 0)
-			printf("F");
+			printf("F ");
 		else
-			printf("T");
+			printf("T ");
 	}
+	if (vector_data[vector->size-1] == 0)
+		printf("F");
+	else
+		printf("T");
 }
 
 
@@ -146,9 +150,10 @@ void int_VectorToReal(struct Vector* out, struct Vector* vector) {
 void int_printVector(struct Vector* vector) {
 	int32_t *vector_data = (int32_t*) vector->data;
 
-	for (int i = 0; i < vector->size; i++) {
-		printf("%d", vector_data[i]);
+	for (int i = 0; i < vector->size-1; i++) {
+		printf("%d ", vector_data[i]);
 	}
+	printf("%d", vector_data[vector->size-1]);
 }
 
 //////////////////////////
@@ -165,9 +170,10 @@ void int_printVector(struct Vector* vector) {
 void real_printVector(struct Vector* vector) {
 	float *vector_data = (float*) vector->data;
 
-	for (int i = 0; i < vector->size; i++) {
-		printf("%g", vector_data[i]);
+	for (int i = 0; i < vector->size-1; i++) {
+		printf("%g ", vector_data[i]);
 	}
+	printf("%g", vector_data[vector->size-1]);
 }
 
 //////////////////////////

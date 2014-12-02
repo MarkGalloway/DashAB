@@ -30,11 +30,30 @@ extern void gc_add_object(void* object, int32_t type);
 void bool_printMatrix(struct Matrix* matrix) {
 	int8_t *matrix_data = (int8_t*) matrix->data;
 
-	for (int i = 0; i < matrix->rows; i++) {
-		for (int j = 0; j < matrix->columns; j++) {
-			printf("%c", matrix_data[i*matrix->columns + j]);
+	for (int i = 0; i < matrix->rows-1; i++) {
+		for (int j = 0; j < matrix->columns-1; j++) {
+			if (matrix_data[i*matrix->columns + j] == 0)
+				printf("F ");
+			else
+				printf("T ");
 		}
+		if (matrix_data[i*matrix->columns + matrix->columns - 1] == 0)
+			printf("F\n");
+		else
+			printf("T\n");
 	}
+
+	for (int j = 0; j < matrix->columns-1; j++) {
+		if (matrix_data[(matrix->rows - 1) * (matrix->columns) + j] == 0)
+			printf("F ");
+		else
+			printf("T ");
+	}
+
+	if (matrix_data[(matrix->rows - 1) * (matrix->columns) + (matrix->columns - 1)] == 0)
+		printf("F");
+	else
+		printf("T");
 }
 
 
@@ -53,14 +72,17 @@ void bool_printMatrix(struct Matrix* matrix) {
 void char_printMatrix(struct Matrix* matrix) {
 	int8_t *matrix_data = (int8_t*) matrix->data;
 
-	for (int i = 0; i < matrix->rows; i++) {
-		for (int j = 0; j < matrix->columns; j++) {
-			if (matrix_data[i*matrix->columns + j] == 0)
-				printf("F");
-			else
-				printf("T");
+	for (int i = 0; i < matrix->rows-1; i++) {
+		for (int j = 0; j < matrix->columns-1; j++) {
+			printf("%c ", matrix_data[i*matrix->columns + j]);
 		}
+		printf("%c\n", matrix_data[i*matrix->columns + matrix->columns - 1]);
 	}
+
+	for (int j = 0; j < matrix->columns-1; j++) {
+		printf("%c ", matrix_data[(matrix->rows - 1) * (matrix->columns) + j]);
+	}
+	printf("%c", matrix_data[(matrix->rows - 1) * (matrix->columns) + (matrix->columns - 1)]);
 }
 
 //////////////////////////
@@ -86,11 +108,17 @@ void int_MatrixToReal(struct Matrix* out, struct Matrix* matrix) {
 void int_printMatrix(struct Matrix* matrix) {
 	int32_t *matrix_data = (int32_t*) matrix->data;
 
-	for (int i = 0; i < matrix->rows; i++) {
-		for (int j = 0; j < matrix->columns; j++) {
-			printf("%d", matrix_data[i*matrix->columns + j]);
+	for (int i = 0; i < matrix->rows-1; i++) {
+		for (int j = 0; j < matrix->columns-1; j++) {
+			printf("%d ", matrix_data[i*matrix->columns + j]);
 		}
+		printf("%d\n", matrix_data[i*matrix->columns + matrix->columns - 1]);
 	}
+
+	for (int j = 0; j < matrix->columns-1; j++) {
+		printf("%d ", matrix_data[(matrix->rows - 1) * (matrix->columns) + j]);
+	}
+	printf("%d", matrix_data[(matrix->rows - 1) * (matrix->columns) + (matrix->columns - 1)]);
 }
 
 //////////////////////////
@@ -108,11 +136,17 @@ void int_printMatrix(struct Matrix* matrix) {
 void real_printMatrix(struct Matrix* matrix) {
 	float *matrix_data = (float*) matrix->data;
 
-	for (int i = 0; i < matrix->rows; i++) {
-		for (int j = 0; j < matrix->columns; j++) {
-			printf("%g", matrix_data[i*matrix->columns + j]);
+	for (int i = 0; i < matrix->rows-1; i++) {
+		for (int j = 0; j < matrix->columns-1; j++) {
+			printf("%g ", matrix_data[i*matrix->columns + j]);
 		}
+		printf("%g\n", matrix_data[i*matrix->columns + matrix->columns - 1]);
 	}
+
+	for (int j = 0; j < matrix->columns-1; j++) {
+		printf("%g ", matrix_data[(matrix->rows - 1) * (matrix->columns) + j]);
+	}
+	printf("%g", matrix_data[(matrix->rows - 1) * (matrix->columns) + (matrix->columns - 1)]);
 }
 
 int32_t getMatrixRows(struct Matrix* matrix) {
