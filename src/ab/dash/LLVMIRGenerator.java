@@ -2904,6 +2904,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_lt_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_lt_scalar");
@@ -2944,6 +2947,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_le_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_le_scalar");
@@ -2984,6 +2990,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_gt_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_gt_scalar");
@@ -3024,6 +3033,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_ge_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_ge_scalar");
