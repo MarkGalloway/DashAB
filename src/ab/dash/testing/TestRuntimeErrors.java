@@ -158,4 +158,26 @@ public class TestRuntimeErrors extends BaseTest {
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+
+    @Test
+    public void modDifferentLengthVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestRuntimeErrors/012ModDifferentLengthVectors/modDifferentLengthVectors.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("RuntimeError: Vectors are not of same length.\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
+    @Test
+    public void powerDifferentLengthVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestRuntimeErrors/013PowerDifferentLengthVectors/powerDifferentLengthVectors.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("RuntimeError: Vectors are not of same length.\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
