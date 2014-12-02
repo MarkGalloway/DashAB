@@ -1,0 +1,12 @@
+// 8.6.5 Vector Operations
+const out = std_output();
+
+procedure main() returns integer {
+	boolean matrix M[2, 2] = [[false, true],  [false, true]];
+	boolean matrix M1[2, 2] = not M;
+	
+	M -> out; '\n' -> out;
+	M1 -> out; '\n' -> out;
+	
+	return 0;
+}
