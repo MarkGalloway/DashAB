@@ -331,7 +331,7 @@ public class LLVMIRGenerator {
 					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
 					interval.setAttribute("id", DashAST.getUniqueId());
 					interval.setAttribute("interval_var_expr", getVector);
-					interval.setAttribute("interval_var_expr_id", getVector);
+					interval.setAttribute("interval_var_expr_id", getVector.getAttribute("id"));
 					
 					getVector = interval;
 				}
@@ -1605,19 +1605,41 @@ public class LLVMIRGenerator {
 		{
 			DashAST varNode = (DashAST) t.getChild(0);
 			DashAST indexNode = (DashAST) t.getChild(1);
-
-			VectorType vecType = (VectorType) varNode.evalType;
+			
 			VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
-			int elementTypeIndex = vecType.elementType.getTypeIndex();
+			int elementTypeIndex = -1;
+			if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				elementTypeIndex = SymbolTable.tINTEGER;
+			} else {
+				VectorType vecType = (VectorType) varNode.evalType;
+				elementTypeIndex = vecType.elementType.getTypeIndex();
+			}
 
 			StringTemplate getVector = null;
 			if (varNode.symbol.scope.getScopeIndex() == SymbolTable.scGLOBAL) {
-				getVector = stg.getInstanceOf("vector_get_global");
+				if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
+					getVector = stg.getInstanceOf("interval_get_global");
+				else
+					getVector = stg.getInstanceOf("vector_get_global");
 			} else {
-				getVector = stg.getInstanceOf("vector_get_local");
+				if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
+					getVector = stg.getInstanceOf("interval_get_global");
+				else
+					getVector = stg.getInstanceOf("vector_get_local");
 			}
+			
 			getVector.setAttribute("id", DashAST.getUniqueId());
 			getVector.setAttribute("sym_id", varSymbol.id);
+			
+			if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+				StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+				interval.setAttribute("id", DashAST.getUniqueId());
+				interval.setAttribute("interval_var_expr", getVector);
+				interval.setAttribute("interval_var_expr_id", getVector.getAttribute("id"));
+				
+				getVector = interval;
+			}
 
 			if (indexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER) {
 				StringTemplate template = stg.getInstanceOf("vector_get_element");
@@ -2523,6 +2545,8 @@ public class LLVMIRGenerator {
 		} else if (type.getTypeIndex() == SymbolTable.tTUPLE) {
 			type_template = stg.getInstanceOf("tuple_type");
 			type_template.setAttribute("type_id", ((TupleTypeSymbol)type).tupleTypeIndex);
+		} else if (type.getTypeIndex() == SymbolTable.tINTERVAL) {
+			type_template = stg.getInstanceOf("interval_type");
 		} else if (type.getTypeIndex() == SymbolTable.tVECTOR) {
 			type_template = stg.getInstanceOf("vector_type");
 		} else if (type.getTypeIndex() == SymbolTable.tMATRIX) {

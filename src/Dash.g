@@ -215,6 +215,10 @@ functionParameter
       -> ^(ARG_DECL Const["const"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
   | specifier? String ID
   	  -> ^(ARG_DECL Const["const"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
+  	  
+  // interval
+  | specifier? INTEGER_TYPE Interval ID
+    -> ^(ARG_DECL Const["const"] Interval ID)
       
   | specifier? type ID  -> ^(ARG_DECL Const["const"] type ID)
   ;
@@ -278,8 +282,14 @@ procedureParameter
       -> ^(ARG_DECL specifier ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
   | String ID
   	  -> ^(ARG_DECL Const["const"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
-  | specifier? String ID
+  | specifier String ID
   	  -> ^(ARG_DECL specifier ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID)
+  	  
+  // interval
+  | INTEGER_TYPE Interval ID
+    -> ^(ARG_DECL Const["const"] Interval ID)
+  | specifier INTEGER_TYPE Interval ID
+    -> ^(ARG_DECL specifier Interval ID)
   	  
   | type ID -> ^(ARG_DECL Const["const"] type ID) 
   | specifier type ID -> ^(ARG_DECL specifier type ID)
