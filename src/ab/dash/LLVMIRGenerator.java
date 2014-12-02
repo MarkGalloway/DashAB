@@ -324,6 +324,17 @@ public class LLVMIRGenerator {
 				template = stg.getInstanceOf("call_length");
 				
 				StringTemplate getVector = exec((DashAST)argument_list.getChild(0));
+				
+				Type type = ((DashAST)argument_list.getChild(0)).evalType;
+				
+				if (type.getTypeIndex() == SymbolTable.tINTERVAL) {
+					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+					interval.setAttribute("id", DashAST.getUniqueId());
+					interval.setAttribute("interval_var_expr", getVector);
+					interval.setAttribute("interval_var_expr_id", getVector);
+					
+					getVector = interval;
+				}
 
 				template.setAttribute("id", t.llvmResultID);
 				template.setAttribute("vector_expr", getVector);
@@ -352,6 +363,33 @@ public class LLVMIRGenerator {
 				template.setAttribute("id", t.llvmResultID);
 				template.setAttribute("matrix_expr", getMatrix);
 				template.setAttribute("matrix_expr_id", getMatrix.getAttribute("id"));
+				return template;
+			}
+			
+			if (method.getShortName().equals("reverse")) {
+				StringTemplate template = null;
+				template = stg.getInstanceOf("call_reverse");
+				
+				StringTemplate getVector = exec((DashAST)argument_list.getChild(0));
+				Type type = ((DashAST)argument_list.getChild(0)).evalType;
+				int elementTypeIndex = -1;
+				if (type.getTypeIndex() == SymbolTable.tINTERVAL) {
+					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+					interval.setAttribute("id", DashAST.getUniqueId());
+					interval.setAttribute("interval_var_expr", getVector);
+					interval.setAttribute("interval_var_expr_id", getVector.getAttribute("id"));
+					
+					getVector = interval;
+					elementTypeIndex = SymbolTable.tINTEGER;
+				} else {
+					VectorType vType = (VectorType)type;
+					elementTypeIndex = vType.elementType.getTypeIndex();
+				}
+				
+				template.setAttribute("id", t.llvmResultID);
+				template.setAttribute("type_name", typeIndexToName.get(elementTypeIndex));
+				template.setAttribute("vector_expr", getVector);
+				template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
 				return template;
 			}
 

@@ -281,6 +281,15 @@ public class SymbolTable {
         columns.define(columns_input);
         
         globals.define(columns);
+        
+        // reverse
+        MethodSymbol reverse =
+            	new MethodSymbol("reverse", _vector, globals);
+        
+        VariableSymbol reverse_input = new VariableSymbol("vector", _vector, _const);
+        reverse.define(reverse_input);
+        
+        globals.define(reverse);
     }
     
     public int getWarningCount() {
@@ -700,7 +709,8 @@ public class SymbolTable {
         		return null;
         	}
         	DashAST argAST = (DashAST)args.get(0);
-        	if (argAST.evalType.getTypeIndex() != tVECTOR) {
+        	if (argAST.evalType.getTypeIndex() != tINTERVAL &&
+        			argAST.evalType.getTypeIndex() != tVECTOR ) {
         		error("line " + id.getLine() + ": length takes one vector.");
         		return null;
         	}
@@ -734,6 +744,27 @@ public class SymbolTable {
         	}
         	
         	return ms.type;
+        }
+        
+        if (ms.name.equals("reverse")) {
+        	if (args.size() != 1) {
+        		error("line " + id.getLine() + ": reverse takes one vector.");
+        		return null;
+        	}
+        	DashAST argAST = (DashAST)args.get(0);
+        	if (argAST.evalType.getTypeIndex() != tINTERVAL &&
+        			argAST.evalType.getTypeIndex() != tVECTOR) {
+        		error("line " + id.getLine() + ": reverse takes one vector.");
+        		return null;
+        	}
+        	
+        	Type type = _integer;
+        	if (argAST.evalType.getTypeIndex() == tVECTOR) {
+        		VectorType vt = (VectorType) argAST.evalType;
+        		type = vt.elementType;
+        	}
+        	
+        	return new VectorType(type, 0);
         }
 		
         for (Symbol a : ms.orderedArgs.values() ) { // for each arg

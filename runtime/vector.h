@@ -247,18 +247,14 @@ void NAME(VectorConcatScalar, TEMPLATE_NAME)(struct Vector* out, struct Vector* 
 	out_data[lhs->size] = rhs;
 }
 
-void NAME(ScalarConcatVector, TEMPLATE_NAME)(struct Vector* out, TEMPLATE_TYPE lhs, struct Vector* rhs) {
-	int size = rhs->size + 1;
-
-	NAME(allocVector, TEMPLATE_NAME)(out, size);
-
+void NAME(reverseVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* vector) {
 	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;
-	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+	TEMPLATE_TYPE *vector_data = (TEMPLATE_TYPE*) vector->data;
 	
-	out_data[0] = lhs;
-	
-	for (int i = 0; i < rhs->size; i++)
-		out_data[i+1] = rhs_data[i];
+	for (int i = 0; i < vector->size; i++)
+		out_data[vector->size - i - 1] = vector_data[i];
 }
+
+
 
 
