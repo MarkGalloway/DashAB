@@ -2073,7 +2073,7 @@ public class TestLLVM extends BaseTest {
     }
     
     @Test
-    public void MatrixUnary() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+    public void matrixUnary() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestPrograms/131MatrixUnary/MatrixUnaryOperations.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
@@ -2088,7 +2088,7 @@ public class TestLLVM extends BaseTest {
     }
     
     @Test
-    public void MatrixNot() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+    public void matrixNot() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestPrograms/132TestMatrixNot/testMatrixNot.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
@@ -2103,7 +2103,7 @@ public class TestLLVM extends BaseTest {
     }
     
     @Test
-    public void MatrixUnaryMinus() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+    public void matrixUnaryMinus() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestPrograms/133MatrixUnaryNegative/matrixUnaryMinus.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
@@ -2113,6 +2113,33 @@ public class TestLLVM extends BaseTest {
         
         sb.append("1 -2\n");
         sb.append("2 -3\n\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void matrixPadding() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/134TestMatrixPadding/matrixPadding.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("1 2\n");
+        sb.append("0 0\n\n");
+        
+        sb.append("1 2\n");
+        sb.append("1 0\n\n");
+        
+        sb.append("1 0\n");
+        sb.append("2 0\n\n");
+        
+        sb.append("1 0\n");
+        sb.append("0 0\n\n");
+        
+        sb.append("T T\n");
+        sb.append("F F\n\n");
+        
+        sb.append("2.1 1.1\n");
+        sb.append("0 0\n\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
