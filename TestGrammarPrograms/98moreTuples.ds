@@ -1,0 +1,32 @@
+typedef real float;
+
+procedure main() returns integer {
+  
+  //strings 
+  var tuple(integer, string [5], float) myTupString1;
+  var tuple(integer, string fred [5], float) myTupString2;
+  var tuple(integer, string fred, float) myTupString3;
+  var tuple(integer, string, float) myTupString4;
+  var tuple(integer, string [*], float) myTupString5;
+
+  // vectors
+  var tuple(integer, integer [5]) myTupVec1;
+  var tuple(integer, integer vector [5]) myTupVec2;
+  var tuple(integer, integer vector fred [5]) myTupVec3;
+  var tuple(integer, integer fred [5]) myTupVec4;
+  var tuple(integer, integer vector) myTupVec5;
+  var tuple(integer, integer vector fred) myTupVec6;
+
+  // matrices
+  var tuple(integer, integer [5,5]) myTupMat1;
+  var tuple(integer, integer matrix [5,5]) myTupMat2;
+  var tuple(integer, integer matrix frank [5,5]) myTupMat3;
+  var tuple(integer, integer frank [5,5]) myTupMat4;
+  var tuple(integer, integer matrix) myTupMat5;
+  var tuple(integer, integer matrix frank) myTupMat6;
+
+  //interval
+  var tuple(integer, integer interval) myTupInterval1;
+
+  return 0;
+}

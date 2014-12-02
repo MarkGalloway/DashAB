@@ -24,8 +24,7 @@ public class TestLLVM extends BaseTest {
 		String[] cmd = {
 				"/bin/sh",
 				"-c",
-				"make clean_runtime --always-make > /dev/null && ",
-				"make runtime --always-make > /dev/null"
+				"make runtime > /dev/null"
 				};
 		Process p;
 		try {
@@ -748,7 +747,7 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/56NullTupleComparison/nullTupleComparison.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("TT\n");
+        sb.append("T\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     

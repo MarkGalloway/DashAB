@@ -1,0 +1,12 @@
+const out = std_output();
+const inp = std_input();
+
+procedure main() returns integer {
+    boolean vector u[3] = [true, true, true];
+    boolean vector v[4] = [true, true, true, true];
+
+    boolean vector w[3] = u xor v;
+
+	return 0;
+}
+

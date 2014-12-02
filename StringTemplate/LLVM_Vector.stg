@@ -587,4 +587,11 @@ vector_print(id, type_name, expr, expr_id) ::= <<
 	call void @<type_name>_printVector(i8* <vlocal_result(expr_id)>)
 >>
 
+// This wrapper will receive the same 'id' value as the string template
+// that gets assigned to the 'code' attribute.
+check_vectors_same_length(id, code, lhs_id, rhs_id) ::= <<
+<code>
+  call i1 @checkVectorsAreOfSameLength(i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
 /* TODO: Write rest of vector operation runtime function wrappers. */

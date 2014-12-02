@@ -32,7 +32,7 @@ public class SymbolTable {
     /* tVOID is for procedures with no return and should not be added 
      * to the globals. This is mostly used for debugging type checking.
      */
-    public static final int tVOID = 9;		
+    public static final int tVOID = 12;		
     public static final BuiltInTypeSymbol _void =
             new BuiltInTypeSymbol("void", tVOID);
     

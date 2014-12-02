@@ -331,7 +331,7 @@ public class LLVMIRGenerator {
 					StringTemplate interval = stg.getInstanceOf("interval_to_vector");
 					interval.setAttribute("id", DashAST.getUniqueId());
 					interval.setAttribute("interval_var_expr", getVector);
-					interval.setAttribute("interval_var_expr_id", getVector);
+					interval.setAttribute("interval_var_expr_id", getVector.getAttribute("id"));
 					
 					getVector = interval;
 				}
@@ -1605,19 +1605,41 @@ public class LLVMIRGenerator {
 		{
 			DashAST varNode = (DashAST) t.getChild(0);
 			DashAST indexNode = (DashAST) t.getChild(1);
-
-			VectorType vecType = (VectorType) varNode.evalType;
+			
 			VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
-			int elementTypeIndex = vecType.elementType.getTypeIndex();
+			int elementTypeIndex = -1;
+			if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				elementTypeIndex = SymbolTable.tINTEGER;
+			} else {
+				VectorType vecType = (VectorType) varNode.evalType;
+				elementTypeIndex = vecType.elementType.getTypeIndex();
+			}
 
 			StringTemplate getVector = null;
 			if (varNode.symbol.scope.getScopeIndex() == SymbolTable.scGLOBAL) {
-				getVector = stg.getInstanceOf("vector_get_global");
+				if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
+					getVector = stg.getInstanceOf("interval_get_global");
+				else
+					getVector = stg.getInstanceOf("vector_get_global");
 			} else {
-				getVector = stg.getInstanceOf("vector_get_local");
+				if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
+					getVector = stg.getInstanceOf("interval_get_global");
+				else
+					getVector = stg.getInstanceOf("vector_get_local");
 			}
+			
 			getVector.setAttribute("id", DashAST.getUniqueId());
 			getVector.setAttribute("sym_id", varSymbol.id);
+			
+			if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
+				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
+				StringTemplate interval = stg.getInstanceOf("interval_to_vector");
+				interval.setAttribute("id", DashAST.getUniqueId());
+				interval.setAttribute("interval_var_expr", getVector);
+				interval.setAttribute("interval_var_expr_id", getVector.getAttribute("id"));
+				
+				getVector = interval;
+			}
 
 			if (indexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER) {
 				StringTemplate template = stg.getInstanceOf("vector_get_element");
@@ -2523,6 +2545,8 @@ public class LLVMIRGenerator {
 		} else if (type.getTypeIndex() == SymbolTable.tTUPLE) {
 			type_template = stg.getInstanceOf("tuple_type");
 			type_template.setAttribute("type_id", ((TupleTypeSymbol)type).tupleTypeIndex);
+		} else if (type.getTypeIndex() == SymbolTable.tINTERVAL) {
+			type_template = stg.getInstanceOf("interval_type");
 		} else if (type.getTypeIndex() == SymbolTable.tVECTOR) {
 			type_template = stg.getInstanceOf("vector_type");
 		} else if (type.getTypeIndex() == SymbolTable.tMATRIX) {
@@ -2725,7 +2749,17 @@ public class LLVMIRGenerator {
 				rhs_type = type;
 			}
 		}
-		
+
+		boolean vectorSizesMayDiffer = false;
+		boolean wrapInSizeCheck = false;
+		if (lhs_type == SymbolTable.tVECTOR && rhs_type == SymbolTable.tVECTOR) {
+			VectorType lhs_vtype = (VectorType)((DashAST)t.getChild(0)).evalType;
+			VectorType rhs_vtype = (VectorType)((DashAST)t.getChild(1)).evalType;
+
+			vectorSizesMayDiffer = (lhs_vtype.size != rhs_vtype.size) ||
+					(lhs_vtype.size == 0);
+		}
+
 		//TODO: Update LT LE GT GE EQ NE to handle vectors and scalars other than integers
 		StringTemplate template = null;
 		switch (op) {
@@ -2734,6 +2768,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_and_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("vector_and_scalar");
@@ -2754,6 +2791,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_or_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("vector_or_scalar");
@@ -2773,6 +2813,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_xor_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("vector_xor_scalar");
@@ -2861,6 +2904,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_lt_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_lt_scalar");
@@ -2901,6 +2947,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_le_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_le_scalar");
@@ -2941,6 +2990,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_gt_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_gt_scalar");
@@ -2981,6 +3033,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_ge_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_ge_scalar");
@@ -3021,6 +3076,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_add_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_add_scalar");
@@ -3056,6 +3114,9 @@ public class LLVMIRGenerator {
 			} else if (type == SymbolTable.tVECTOR) {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 					template = stg.getInstanceOf("vector_subtract_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
@@ -3093,6 +3154,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_multiply_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_multiply_scalar");
@@ -3129,6 +3193,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_divide_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_divide_scalar");
@@ -3160,6 +3227,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_modulus_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_modulus_scalar");
@@ -3191,6 +3261,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_power_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_power_scalar");
@@ -3254,6 +3327,16 @@ public class LLVMIRGenerator {
 		template.setAttribute("lhs_id", lhs_id);
 		template.setAttribute("lhs", lhs);
 		template.setAttribute("id", id);
+
+		if (wrapInSizeCheck) {
+			StringTemplate check = stg.getInstanceOf("check_vectors_same_length");
+			check.setAttribute("id", template.getAttribute("id"));
+			check.setAttribute("code", template);
+			check.setAttribute("lhs_id", lhs_id);
+			check.setAttribute("rhs_id", rhs_id);
+			template = check;
+		}
+
 		return template;
 	}
 }
