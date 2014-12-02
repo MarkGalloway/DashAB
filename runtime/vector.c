@@ -104,9 +104,9 @@ void bool_printVector(struct Vector* vector) {
 			printf("T ");
 	}
 	if (vector_data[vector->size-1] == 0)
-		printf("F");
+		printf("F\n");
 	else
-		printf("T");
+		printf("T\n");
 }
 
 
@@ -153,7 +153,7 @@ void int_printVector(struct Vector* vector) {
 	for (int i = 0; i < vector->size-1; i++) {
 		printf("%d ", vector_data[i]);
 	}
-	printf("%d", vector_data[vector->size-1]);
+	printf("%d\n", vector_data[vector->size-1]);
 }
 
 //////////////////////////
@@ -173,7 +173,7 @@ void real_printVector(struct Vector* vector) {
 	for (int i = 0; i < vector->size-1; i++) {
 		printf("%g ", vector_data[i]);
 	}
-	printf("%g", vector_data[vector->size-1]);
+	printf("%g\n", vector_data[vector->size-1]);
 }
 
 //////////////////////////

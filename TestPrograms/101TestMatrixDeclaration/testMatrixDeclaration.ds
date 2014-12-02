@@ -9,11 +9,11 @@ procedure main() returns integer {
 	integer matrix D[*, 2] = [[1, 2], [3, 4]];
 	integer matrix E[*, *] = [[1, 2], [3, 4]];
 	
-    A -> out; '\n' -> out;
-    B -> out; '\n' -> out; 
-    C -> out; '\n' -> out;
-    D -> out; '\n' -> out; 
-    E -> out; '\n' -> out;
+    A -> out;
+    B -> out;
+    C -> out;
+    D -> out; 
+    E -> out;
 
 	return 0;
 }

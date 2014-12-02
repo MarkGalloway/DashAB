@@ -7,11 +7,8 @@ procedure main() returns integer {
     boolean vector b[4] = [true, false, true, false];
     
     i -> out;
-    '\n' -> out;
-    c -> out;
-    '\n' -> out;
+    c -> out; '\n' -> out;
     r -> out;
-    '\n' -> out;
     b -> out;
     
     return 0;
