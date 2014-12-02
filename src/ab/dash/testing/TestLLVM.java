@@ -965,6 +965,14 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/68GaussianElimination/gaussianElimination.ds", "TestPrograms/68GaussianElimination/input.in"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
+        sb.append("A:\n");
+        sb.append("[4.5, 1, 1, 0.9]\n");
+        sb.append("[0.1, 3, 0, 0]\n");
+        sb.append("[0.5, 0, 5.5, 1]\n");
+        sb.append("[0, 0.5, 0, 4]\n");
+        sb.append("y: [0.9, 1, 0.2, 0.95]\n");
+        sb.append("x: [0.0889887, 0.330367, -0.00739971, 0.196204]\n");
+        sb.append("check: [0.9, 1, 0.2, 0.95]\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
@@ -1048,7 +1056,14 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/106MemoryTest/memoryTest.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-
+        
+        sb.append("56\n");
+        sb.append("5678910\n");
+        sb.append("56\n");
+        sb.append("56\n");
+        sb.append("56\n");
+        sb.append("234567\n");
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
