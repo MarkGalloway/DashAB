@@ -24,7 +24,7 @@ public class TestInvalidLLVM extends BaseTest {
     public void invalidCharacter() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestInvalidSyntaxPrograms/01InvalidCharacter/invalidCharacter.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 5: expected single quotes for character", outErrIntercept.toString().trim());
+        assertEquals("line 5: character c is incompatible with character[] type", outErrIntercept.toString().trim());
     }
     
     @Test 
@@ -40,7 +40,7 @@ public class TestInvalidLLVM extends BaseTest {
     public void invalidTupleListOf1() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {        
         String[] args = new String[] {"TestInvalidSyntaxPrograms/03TupleSizeTupleListOf1/TupleSizeTupleListOf1.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 2: t2, (0):<integer> have incompatible types in tuple(integer, integer i, integer k) t2 = (0);", outErrIntercept.toString().trim());
+        assertEquals("line 2: (<tuple.null:integer>, <tuple.i:integer>, <tuple.k:integer>)  t2 is incompatible with integer type", outErrIntercept.toString().trim());
     }
     
     @Test 
@@ -388,7 +388,7 @@ public class TestInvalidLLVM extends BaseTest {
     public void invalidTupleSmallerMemberList() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {
         String[] args = new String[] {"TestInvalidTypePrograms/01TupleSizeSmallerMemberList/tupleSizeSmallerMemberList.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 2: Tuples have mismatched sizes in tuple(real, integer i) t1 = (0.0, 0, 1);", outErrIntercept.toString().trim());
+        assertEquals("line 2: (<tuple.null:real>, <tuple.i:integer>)  t1 is incompatible with (<tuple.null:real>, <tuple.null:integer>, <tuple.null:integer>)  type", outErrIntercept.toString().trim());
     }
     
     @Test 
@@ -396,17 +396,16 @@ public class TestInvalidLLVM extends BaseTest {
         String[] args = new String[] {"TestInvalidTypePrograms/02TupleType/tupleType.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("line 2: Tuple argument at index 2 has incompatible types in tuple(real, integer i) t1 = (0.0, 0.0);");
-        sb.append("\nline 3: Tuple argument at index 1 has incompatible types in tuple(real, boolean b) t2 = (true, 1.0);");
-        sb.append("\nline 3: Tuple argument at index 2 has incompatible types in tuple(real, boolean b) t2 = (true, 1.0);");
-        assertEquals(sb.toString(), outErrIntercept.toString().trim());
+        sb.append("line 2: (<tuple.null:real>, <tuple.i:integer>)  t1 is incompatible with (<tuple.null:real>, <tuple.null:real>)  type\n");
+        sb.append("line 3: (<tuple.null:real>, <tuple.b:boolean>)  t2 is incompatible with (<tuple.null:boolean>, <tuple.null:real>)  type\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
     @Test 
     public void invalidTupleSizeLargerMemberList() throws RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException, IOException {        
         String[] args = new String[] {"TestInvalidTypePrograms/03TupleSizeLargerMemberList/TupleSizeLargerMemberList.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 2: Tuples have mismatched sizes in tuple(real, integer i, integer k) t2 = (0.0, 2);", outErrIntercept.toString().trim());
+        assertEquals("line 2: (<tuple.null:real>, <tuple.i:integer>, <tuple.k:integer>)  t2 is incompatible with (<tuple.null:real>, <tuple.null:integer>)  type", outErrIntercept.toString().trim());
     }
     
     @Test 
@@ -571,5 +570,80 @@ public class TestInvalidLLVM extends BaseTest {
         sb.append("line 2: Function parameters cannot be declared as var.");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    // Invalid Syntax Test
+    @Test 
+    public void testInferredStringLengthWithNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/50InferredStringLengthWithNull/inferredStringLengthWithNull.ds"};
+       Runner.llvmMain(args);
+       // strings are vectors so we could use the same error message
+       assertEquals("line 6: cannot use scalar or none-vector type to instantiate an un-sized vector string s = null;", outErrIntercept.toString().trim());
+   }
+    
+    // Invalid Syntax Test
+    @Test 
+    public void testInferredStringLengthWithIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/51InferredStringLengthWithIdentity/inferredStringLengthWithIdentity.ds"};
+       Runner.llvmMain(args);
+       assertEquals("line 6: cannot use scalar or none-vector type to instantiate an un-sized vector string s = identity;", outErrIntercept.toString().trim());
+   }
+    
+    // Invalid Syntax Test
+    @Test 
+    public void testInvalidByInterval() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/48InvalidIntervalBy/invalidIntervalBy.ds"};
+       Runner.llvmMain(args);
+       assertEquals("RuntimeError: Right hand side of by operator must be an integer greater than 0.", outErrIntercept.toString().trim());
+   }
+    
+   // Invalid Syntax Test
+    @Test 
+    public void inferredVectorWithNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/45InferredVectorWithNull/inferredVectorWithNull.ds"};
+       Runner.llvmMain(args);
+       assertEquals("line 5: cannot use scalar or none-vector type to instantiate an un-sized vector boolean vector v1 = null;", outErrIntercept.toString().trim());
+   }
+   
+    // Invalid Syntax Test
+   @Test 
+   public void inferredVectorWithIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+      String[] args = new String[] {"TestInvalidSyntaxPrograms/46InferredVectorWithIdentity/inferredVectorWithIdentity.ds"};
+      Runner.llvmMain(args);
+      assertEquals("line 5: cannot use scalar or none-vector type to instantiate an un-sized vector boolean vector v1 = identity;", outErrIntercept.toString().trim());
+  }
+   
+   // Invalid Syntax Test
+   @Test 
+   public void inferredVectorWithScalar() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+      String[] args = new String[] {"TestInvalidSyntaxPrograms/47InferredVectorWithScalar.ds/inferredVectorWithScalar.ds"};
+      Runner.llvmMain(args);
+      assertEquals("line 4: cannot use scalar or none-vector type to instantiate an un-sized vector integer vector v1 = 1;", outErrIntercept.toString().trim());
+  }
+   
+   // Invalid Syntax Test
+   @Test 
+   public void testInferredMatrixLengthWithNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+      String[] args = new String[] {"TestInvalidSyntaxPrograms/54InferredMatrixLengthWithNull/testInferredMatrixLengthWithNull.ds"};
+      Runner.llvmMain(args);
+      StringBuffer sb = new StringBuffer();
+      sb.append("line 6: cannot use scalar or none-matrix type to instantiate an un-sized matrix integer matrix A = null;\n");
+      sb.append("line 7: cannot use scalar or none-matrix type to instantiate an un-sized matrix integer matrix C[2, INFERRED] = null;\n");
+      sb.append("line 8: cannot use scalar or none-matrix type to instantiate an un-sized matrix integer matrix D[INFERRED, 2] = null;\n");
+      sb.append("line 9: cannot use scalar or none-matrix type to instantiate an un-sized matrix integer matrix E[INFERRED, INFERRED] = null;");
+      assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+  }
+   
+   // Invalid Syntax Test
+   @Test 
+   public void testInferredMatrixLengthWithIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+      String[] args = new String[] {"TestInvalidSyntaxPrograms/55InferredMatrixLengthWithIdentity/testInferredMatrixLengthWithIdentity.ds"};
+      Runner.llvmMain(args);
+      StringBuffer sb = new StringBuffer();
+      sb.append("line 6: cannot use scalar or none-matrix type to instantiate an un-sized matrix integer matrix A = identity;\n");
+      sb.append("line 7: cannot use scalar or none-matrix type to instantiate an un-sized matrix integer matrix C[2, INFERRED] = identity;\n");
+      sb.append("line 8: cannot use scalar or none-matrix type to instantiate an un-sized matrix integer matrix D[INFERRED, 2] = identity;\n");
+      sb.append("line 9: cannot use scalar or none-matrix type to instantiate an un-sized matrix integer matrix E[INFERRED, INFERRED] = identity;\n");
+      assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+  }
     
 }

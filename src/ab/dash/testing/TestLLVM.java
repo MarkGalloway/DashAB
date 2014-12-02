@@ -1387,4 +1387,506 @@ public class TestLLVM extends BaseTest {
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void testIntervals() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/69TestIntervals/testIntervals.ds"};
+        Runner.llvmMain(args);
+        assertEquals("", outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testVectorsFromIntervals() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/70TestVectorsFromIntervals/testVectorsFromIntervals.ds"};
+        Runner.llvmMain(args);
+        assertEquals("12345", outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testStrings() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/71TestStrings/testStrings.ds"};
+        Runner.llvmMain(args);
+        assertEquals("hello", outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testMatrixIndexing() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/72TestMatrixIndexing/testMatrixIndexing.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("123456\n");
+        sb.append("21\n");
+        sb.append("456\n");
+        sb.append("41\n");
+        sb.append("25\n");
+        sb.append("5421\n");
+        sb.append("1245\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void intervalNullTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/73IntervalNullTest/intervalNullTest.ds"};
+        Runner.llvmMain(args);
+        assertEquals("0", outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void intervalIdentityTest() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/74IntervalIdentityTest/intervalIdentityTest.ds"};
+        Runner.llvmMain(args);
+        assertEquals("1", outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testIntervalAddition() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/75TestIntervalAddition/testIntervalAddition.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("2\n");
+        sb.append("3\n");
+        sb.append("4\n");
+        sb.append("5\n");
+        sb.append("6\n");
+        sb.append("7\n");
+        sb.append("8\n");
+        sb.append("9\n");
+        sb.append("10");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testIntervalSubtraction() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/76TestIntervalSubtraction/testIntervalSubtraction.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("5\n");
+        sb.append("6\n");
+        sb.append("7\n");
+        sb.append("8\n");
+        sb.append("9\n");
+        sb.append("10");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testIntervalMultiplication() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/77TestIntervalMultiplication/testIntervalMultiplication.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("2\n");
+        sb.append("3\n");
+        sb.append("4\n");
+        sb.append("5\n");
+        sb.append("6\n");
+        sb.append("7\n");
+        sb.append("8");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+        
+     @Test 
+     public void testIntervalDivision() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/78TestIntervalDivision/testIntervalDivision.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("1\n");
+        sb.append("2\n");
+        sb.append("3\n");
+        sb.append("4");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+     
+     @Test 
+     public void testIntervalNegation() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/79TestIntervalNegation/testIntervalNegation.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("-2\n");
+        sb.append("-1\n");
+        sb.append("0\n");
+        sb.append("1");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+     
+     @Test 
+     public void testIntervalUnaryPostive() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/80TestIntervalUnaryPlus/testIntervalUnaryPlus.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("-1\n");
+        sb.append("0\n");
+        sb.append("1\n");
+        sb.append("2");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+     
+     @Test 
+     public void testIntervalEquals() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/81TestIntervalEquals/testIntervalEquals.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("T\n");
+        sb.append("F");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+     
+     @Test 
+     public void testIntervalNotEquals() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/82TestIntervalNotEquals/testIntervalNotEquals.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("F\n");
+        sb.append("T");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+     
+     
+     @Test 
+     public void testVectorInitializedWithVector() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/83TestVectorInitializedWithVector/testVectorInitializedWithVector.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("0");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+     
+     @Test 
+     public void testNullVector() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/84TestNullVector/testNullVector.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("F\n");
+        sb.append("F\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+     
+     @Test 
+     public void testIdentityVector() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/85TestIdentityVector/testIdentityVector.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("T\n");
+        sb.append("T\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
+     @Test 
+     public void testIntervalBy() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/86TestIntervalBy/testIntervalBy.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        sb.append("3\n");
+        sb.append("6");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test 
+    public void testVectorConcatenation() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/88TestVectorConcatenation/testVectorConcatenation.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4\n");
+       sb.append("5\n");
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4\n");
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4.1\n");
+       sb.append("0\n");
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4.1\n");
+       sb.append("4\n");
+       sb.append("5\n");
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4.1\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorIndexing() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/89TestVectorIndexing/testVectorIndexing.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("5\n");
+       sb.append("5\n");
+       sb.append("6\n");
+       sb.append("6\n");
+       sb.append("4\n");
+       sb.append("5\n");
+       sb.append("T\n");
+       sb.append("TTF\n");
+       sb.append("c\n");
+       sb.append("tac\n");
+       sb.append("4.5\n");
+       sb.append("6.55.54.5\n");
+       sb.append("406\n");
+       sb.append("410\n");
+       sb.append("220\n");
+       sb.append("212\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    // Invalid Runtime Test
+    @Test 
+    public void testVectorOutOfRange() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/49VectorOutOfRange/vectorOutOfRange.ds"};
+       Runner.llvmMain(args);
+       assertEquals("RuntimeError: Vector indexing out of bounds.", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorLength() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/90TestVectorLength/testVectorLength.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("1\n");
+       sb.append("2\n");
+       sb.append("3\n");
+       sb.append("4\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorUnaryOperations() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/91TestVectorUnaryOperations/testVectorUnaryOperations.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("8\n");
+       sb.append("9\n");
+       sb.append("-8\n");
+       sb.append("-9\n");
+       sb.append("F\n");
+       sb.append("T\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorBinaryOperations() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/92TestVectorBinaryOperations/testVectorBinaryOperations.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       
+       // exponents
+       sb.append("1\n");
+       sb.append("2\n");
+       
+       // addition
+       sb.append("3\n");
+       sb.append("3\n");
+       
+       // subtraction
+       sb.append("-1\n");
+       sb.append("1\n");
+       
+       // multiplication
+       sb.append("2\n");
+       sb.append("2\n");
+       
+       // division
+       sb.append("0\n");
+       sb.append("2\n");
+       
+       // modulus
+       sb.append("1\n");
+       sb.append("0\n");
+       
+       // less than
+       sb.append("T\n");
+       sb.append("F\n");
+       
+       // less than or equal to
+       sb.append("T\n");
+       sb.append("F\n");
+       
+       // greater than
+       sb.append("F\n");
+       sb.append("T\n");
+       
+       // greater than or equal to
+       sb.append("F\n");
+       sb.append("T\n");
+       
+       // or
+       sb.append("T\n");
+       sb.append("T\n");
+       
+       // xor
+       sb.append("T\n");
+       sb.append("T\n");
+       
+       // and
+       sb.append("F\n");
+       sb.append("F\n");
+       
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorEqualities() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/93TestVectorEqualities/testVectorEqualities.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("F\n");
+       sb.append("T\n");
+       sb.append("F\n");
+       sb.append("T\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testStringNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/94TestStringNull/testStringNull.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append((char)0 + "\n");
+       sb.append((char)0 + "\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testStringIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/94TestStringNull/testStringNull.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append((char)1 + "\n");
+       sb.append((char)1 + "\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testStringLiteral() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/96TestStringLiteral/testStringLiteral.ds"};
+       Runner.llvmMain(args);
+       assertEquals("\"World!\"", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testStringEqualities() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/97TestStringEqualities/testStringEqualities.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("T\n");
+       sb.append("T\n");
+       sb.append("T\n");
+       sb.append("T\n");
+       sb.append("F\n");
+       sb.append("F\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testStringBy() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/98TestStringBy/testStringBy.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("hlo");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testVectorBy() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/99TestVectorBy/testVectorBy.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("12345\n");
+       sb.append("12345\n");
+       sb.append("135\n");
+       sb.append("14\n");
+       sb.append("TF\n");
+       sb.append("14\n");
+       sb.append("1.54.5\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    
+    @Test 
+    public void testMatrixDeclaration() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/101TestMatrixDeclaration/testMatrixDeclaration.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("1234\n");
+       sb.append("1234\n");
+       sb.append("1234\n");
+       sb.append("1234\n");
+       sb.append("1234\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testMatrixIdentity() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/102TestMatrixIdentity/testMatrixIdentity.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("1111\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testMatrixNull() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/103TestMatrixNull/testMatrixNull.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("0000\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void dotProduct() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/119DotProduct/dotProduct.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("14\n");
+       sb.append("11\n");
+       sb.append("11\n");
+       sb.append("8.75\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void matrixLiteral() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/120MatrixLiteral/matrixLiteral.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("1234\n");
+       sb.append("1230\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void matrixConstructors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/121MatrixConstructors/matrixConstructors.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("123120000\n");
+       sb.append("123012000000\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void matrixAssign() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/122MatrixAssign/matrixAssign.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       sb.append("000000000\n");
+       sb.append("100020003\n");
+       sb.append("100010003\n");
+       sb.append("123010456\n");
+       sb.append("000000000\n");
+       sb.append("104205306\n");
+       sb.append("000000000\n");
+       sb.append("120340000\n");
+       sb.append("430210000\n");
+       sb.append("110110000\n");
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
 }
