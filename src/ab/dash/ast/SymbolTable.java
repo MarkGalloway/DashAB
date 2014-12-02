@@ -611,6 +611,30 @@ public class SymbolTable {
         	}
         }
         
+        if (tcolumn == tVECTOR && trow == tINTERVAL) {
+        	VectorType columnType = (VectorType)column.evalType;
+        	if (columnType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector for column must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (trow == tVECTOR && tcolumn == tINTERVAL) {
+        	VectorType rowType = (VectorType)row.evalType;
+        	if (rowType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector for row must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
         if (tcolumn == tVECTOR && trow == tINTEGER) {
         	VectorType columnType = (VectorType)column.evalType;
         	if (columnType.elementType.getTypeIndex() == tINTEGER)
@@ -629,8 +653,10 @@ public class SymbolTable {
         
         if (trow != tINTEGER || tcolumn != tINTEGER) {
         	error("line " + row.getLine() + " : " + 
-    				text(row)+" index must be of type integer in "+
+    				text(row)+", "+text(column)+" index must be of type integer in "+
                     text((DashAST)row.getParent()));
+        	error("R: " + trow);
+        	error("C: " + trow);
         	 return null;
         }
         
@@ -1244,7 +1270,7 @@ public class SymbolTable {
 				return element == element2 || element == promote(element2, element);
 			}
 			
-			return element.getTypeIndex() == rhsType.getTypeIndex();
+			return element == rhsType || element == promote(rhsType, element);
 		} else if (destType.getTypeIndex() == tMATRIX) {
 			if (rhsType.getTypeIndex() == tVECTOR ||
 					rhsType.getTypeIndex() == tINTERVAL)

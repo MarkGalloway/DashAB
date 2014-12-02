@@ -304,8 +304,6 @@ public class LLVMIRGenerator {
 			DashAST method_node = (DashAST) t.getChild(0);
 			MethodSymbol method = (MethodSymbol)method_node.symbol;
 			
-			
-			
 			Type method_type = method.type;
 			
 			// Arguments
@@ -393,11 +391,14 @@ public class LLVMIRGenerator {
 			else if (method_type.getTypeIndex() == SymbolTable.tTUPLE) {
 				template = stg.getInstanceOf("call_returning_tuple");
 				template.setAttribute("type_id", ((TupleTypeSymbol)method_type).tupleTypeIndex);
-			} 
-			else if (method_type.getTypeIndex() == SymbolTable.tVECTOR) {
+			} else if (method_type.getTypeIndex() == SymbolTable.tVECTOR) {
 				VectorType vt = (VectorType) method_type;
 				template = stg.getInstanceOf("call_returning_vector");
 				template.setAttribute("type_name", typeIndexToName.get(vt.elementType.getTypeIndex()));
+			} else if (method_type.getTypeIndex() == SymbolTable.tMATRIX) {
+				MatrixType mt = (MatrixType) method_type;
+				template = stg.getInstanceOf("call_returning_matrix");
+				template.setAttribute("type_name", typeIndexToName.get(mt.elementType.getTypeIndex()));
 			} else {
 				template = stg.getInstanceOf("call");
 				template.setAttribute("return_type", getType(method_type));
@@ -1193,11 +1194,21 @@ public class LLVMIRGenerator {
 				} else if (rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER &&
 						(columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
 						columnIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR)) {
-					template = stg.getInstanceOf("matrix_row_assign");
+					if (exprTypeIndex ==  SymbolTable.tINTERVAL ||
+							exprTypeIndex ==  SymbolTable.tVECTOR) {
+						template = stg.getInstanceOf("matrix_row_assign");
+					} else {
+						template = stg.getInstanceOf("matrix_row_assign_scalar");
+					}
 				} else if (columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTEGER &&
 						(rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
 						rowIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR)) {
-					template = stg.getInstanceOf("matrix_column_assign");
+					if (exprTypeIndex ==  SymbolTable.tINTERVAL ||
+							exprTypeIndex ==  SymbolTable.tVECTOR) {
+						template = stg.getInstanceOf("matrix_column_assign");
+					} else {
+						template = stg.getInstanceOf("matrix_column_assign_scalar");
+					}
 				} else if ((rowIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
 						rowIndexNode.evalType.getTypeIndex() == SymbolTable.tVECTOR) &&
 						(columnIndexNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL ||
@@ -2507,6 +2518,8 @@ public class LLVMIRGenerator {
 		int rhs_elementTypeIndex = -1;
 		if (type == SymbolTable.tVECTOR) {
 			elementTypeIndex = ((VectorType) t.evalType).elementType.getTypeIndex();
+		} else if (type == SymbolTable.tMATRIX) {
+			elementTypeIndex = ((MatrixType) t.evalType).elementType.getTypeIndex();
 		}
 		
 		if (lhs_type == SymbolTable.tVECTOR) {
@@ -2516,11 +2529,25 @@ public class LLVMIRGenerator {
 			if (lhs_elementTypeIndex > elementTypeIndex) {
 				elementTypeIndex = lhs_elementTypeIndex;
 			}
+		} else if (lhs_type == SymbolTable.tMATRIX) {
+			MatrixType mat_type = (MatrixType)((DashAST)t.getChild(0)).evalType;
+			lhs_elementTypeIndex = mat_type.elementType.getTypeIndex();
+			
+			if (lhs_elementTypeIndex > elementTypeIndex) {
+				elementTypeIndex = lhs_elementTypeIndex;
+			}
 		}
 		
 		if (rhs_type == SymbolTable.tVECTOR) {
 			VectorType vector_type = (VectorType)((DashAST)t.getChild(1)).evalType;
 			rhs_elementTypeIndex = vector_type.elementType.getTypeIndex();
+			
+			if (rhs_elementTypeIndex > elementTypeIndex) {
+				elementTypeIndex = rhs_elementTypeIndex;
+			}
+		} else if (rhs_type == SymbolTable.tMATRIX) {
+			MatrixType mat_type = (MatrixType)((DashAST)t.getChild(1)).evalType;
+			rhs_elementTypeIndex = mat_type.elementType.getTypeIndex();
 			
 			if (rhs_elementTypeIndex > elementTypeIndex) {
 				elementTypeIndex = rhs_elementTypeIndex;
@@ -2557,9 +2584,10 @@ public class LLVMIRGenerator {
 			rhs_elementTypeIndex = SymbolTable.tINTEGER;
 		}
 		
-		if ((rhs_elementTypeIndex == SymbolTable.tREAL ||
+		if ((rhs_elementTypeIndex == SymbolTable.tREAL || 
 				rhs_type == SymbolTable.tREAL) &&
-				lhs_elementTypeIndex == SymbolTable.tINTEGER) {
+				(lhs_elementTypeIndex == SymbolTable.tINTEGER &&
+				lhs_type == SymbolTable.tVECTOR)) {
 			StringTemplate promote = stg.getInstanceOf("vector_to_real");
 			promote.setAttribute("id", DashAST.getUniqueId());
 			promote.setAttribute("type_name", typeIndexToName.get(lhs_elementTypeIndex));
@@ -2570,14 +2598,43 @@ public class LLVMIRGenerator {
 			lhs_id = promote.getAttribute("id").toString();
 		}
 		
-		if ((lhs_elementTypeIndex == SymbolTable.tREAL ||
+		if ((lhs_elementTypeIndex == SymbolTable.tREAL || 
 				lhs_type == SymbolTable.tREAL) &&
-				rhs_elementTypeIndex == SymbolTable.tINTEGER) {
+				(rhs_elementTypeIndex == SymbolTable.tINTEGER &&
+				rhs_type == SymbolTable.tVECTOR)) {
 			StringTemplate promote = stg.getInstanceOf("vector_to_real");
 			promote.setAttribute("id", DashAST.getUniqueId());
 			promote.setAttribute("type_name", typeIndexToName.get(rhs_elementTypeIndex));
 			promote.setAttribute("vector_var_expr", rhs);
 			promote.setAttribute("vector_var_expr_id", rhs.getAttribute("id"));
+			
+			rhs = promote;
+			rhs_id = promote.getAttribute("id").toString();
+		}
+		
+		if ((rhs_elementTypeIndex == SymbolTable.tREAL || 
+				rhs_type == SymbolTable.tREAL) &&
+				(lhs_elementTypeIndex == SymbolTable.tINTEGER &&
+				lhs_type == SymbolTable.tMATRIX)) {
+			StringTemplate promote = stg.getInstanceOf("matrix_to_real");
+			promote.setAttribute("id", DashAST.getUniqueId());
+			promote.setAttribute("type_name", typeIndexToName.get(lhs_elementTypeIndex));
+			promote.setAttribute("matrix_var_expr", lhs);
+			promote.setAttribute("matrix_var_expr_id", lhs.getAttribute("id"));
+			
+			lhs = promote;
+			lhs_id = promote.getAttribute("id").toString();
+		}
+		
+		if ((lhs_elementTypeIndex == SymbolTable.tREAL || 
+				lhs_type == SymbolTable.tREAL) &&
+				(rhs_elementTypeIndex == SymbolTable.tINTEGER &&
+				rhs_type == SymbolTable.tMATRIX)) {
+			StringTemplate promote = stg.getInstanceOf("matrix_to_real");
+			promote.setAttribute("id", DashAST.getUniqueId());
+			promote.setAttribute("type_name", typeIndexToName.get(rhs_elementTypeIndex));
+			promote.setAttribute("matrix_var_expr", rhs);
+			promote.setAttribute("matrix_var_expr_id", rhs.getAttribute("id"));
 			
 			rhs = promote;
 			rhs_id = promote.getAttribute("id").toString();
@@ -2851,6 +2908,17 @@ public class LLVMIRGenerator {
 						isNumber(lhs_type)) {
 					template = stg.getInstanceOf("scalar_add_vector"); // Need to know what side is scalar
 				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_add_matrix");
+				} else if (lhs_type == SymbolTable.tMATRIX &&
+						isNumber(rhs_type)) {
+					template = stg.getInstanceOf("matrix_add_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isNumber(lhs_type)) {
+					template = stg.getInstanceOf("scalar_add_matrix"); // Need to know what side is scalar
+				}
 			} else {
 				if (lhs_type == SymbolTable.tINTEGER) {
 					template = stg.getInstanceOf("int_add");
@@ -2875,6 +2943,17 @@ public class LLVMIRGenerator {
 				}  else if (rhs_type == SymbolTable.tVECTOR &&
 						isNumber(lhs_type)) {
 					template = stg.getInstanceOf("scalar_subtract_vector");
+				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_subtract_matrix");
+				} else if (lhs_type == SymbolTable.tMATRIX &&
+						isNumber(rhs_type)) {
+					template = stg.getInstanceOf("matrix_subtract_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isNumber(lhs_type)) {
+					template = stg.getInstanceOf("scalar_subtract_matrix"); // Need to know what side is scalar
 				}
 			} else {
 				if (lhs_type ==SymbolTable.tINTEGER) {
@@ -2901,6 +2980,17 @@ public class LLVMIRGenerator {
 						isNumber(lhs_type)) {
 					template = stg.getInstanceOf("scalar_multiply_vector"); // Need to know what side is scalar
 				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_multiply_matrix");
+				} else if (lhs_type == SymbolTable.tMATRIX &&
+						isNumber(rhs_type)) {
+					template = stg.getInstanceOf("matrix_multiply_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isNumber(lhs_type)) {
+					template = stg.getInstanceOf("scalar_multiply_matrix"); // Need to know what side is scalar
+				}
 			} else {
 				if (lhs_type ==SymbolTable.tINTEGER) {
 					template = stg.getInstanceOf("int_mul");
@@ -2926,6 +3016,17 @@ public class LLVMIRGenerator {
 						isNumber(lhs_type)) {
 					template = stg.getInstanceOf("scalar_divide_vector");
 				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_divide_matrix");
+				} else if (lhs_type == SymbolTable.tMATRIX &&
+						isNumber(rhs_type)) {
+					template = stg.getInstanceOf("matrix_divide_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isNumber(lhs_type)) {
+					template = stg.getInstanceOf("scalar_divide_matrix"); // Need to know what side is scalar
+				}
 			} else {
 				if (lhs_type ==SymbolTable.tINTEGER) {
 					template = stg.getInstanceOf("int_div");
@@ -2946,6 +3047,17 @@ public class LLVMIRGenerator {
 						isNumber(lhs_type)) {
 					template = stg.getInstanceOf("scalar_modulus_vector"); // Need to know what side is scalar
 				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_modulus_matrix");
+				} else if (lhs_type == SymbolTable.tMATRIX &&
+						isNumber(rhs_type)) {
+					template = stg.getInstanceOf("matrix_modulus_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isNumber(lhs_type)) {
+					template = stg.getInstanceOf("scalar_modulus_matrix"); // Need to know what side is scalar
+				}
 			} else {
 				if (lhs_type ==SymbolTable.tINTEGER) {
 					template = stg.getInstanceOf("int_mod");
@@ -2965,6 +3077,17 @@ public class LLVMIRGenerator {
 				} else if (rhs_type == SymbolTable.tVECTOR &&
 						isNumber(lhs_type)) {
 					template = stg.getInstanceOf("scalar_power_vector"); // Need to know what side is scalar
+				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_power_matrix");
+				} else if (lhs_type == SymbolTable.tMATRIX &&
+						isNumber(rhs_type)) {
+					template = stg.getInstanceOf("matrix_power_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isNumber(lhs_type)) {
+					template = stg.getInstanceOf("scalar_power_matrix"); // Need to know what side is scalar
 				}
 			} else {
 				if (lhs_type ==SymbolTable.tINTEGER) {
@@ -2992,7 +3115,10 @@ public class LLVMIRGenerator {
 			if (lhs_type == SymbolTable.tVECTOR &&
 				rhs_type == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_dot_product");
-			}
+			} if (lhs_type == SymbolTable.tMATRIX &&
+					rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_dot_product");
+				}
 			break;
 		}
 		

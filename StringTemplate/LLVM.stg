@@ -97,10 +97,12 @@ declare i1  @<type>_columnIndexMatrix(i8*, i8*, i8*, i32)
 declare i1  @<type>_indexMatrix(i8*, i8*, i8*, i8*)
 
 declare i1  @<type>_setElementMatrix(i8*, i32, i32, <llvm_type>)
-declare i1 @<type>_rowAssignMatrix(i8*, i32, i8*, i8*)
-declare i1 @<type>_columnAssignMatrix(i8*, i8*, i32, i8*)
-declare i1 @<type>_matrixAssignMatrix(i8*, i8*, i8*, i8*)
-declare i1 @<type>_scalarAssignMatrix(i8*, i8*, i8*, <llvm_type>)
+declare i1  @<type>_rowAssignMatrix(i8*, i32, i8*, i8*)
+declare i1  @<type>_scalarRowAssignMatrix(i8*, i32, i8*, <llvm_type>)
+declare i1  @<type>_columnAssignMatrix(i8*, i8*, i32, i8*)
+declare i1  @<type>_scalarColumnAssignMatrix(i8*, i8*, i32, <llvm_type>)
+declare i1  @<type>_matrixAssignMatrix(i8*, i8*, i8*, i8*)
+declare i1  @<type>_scalarAssignMatrix(i8*, i8*, i8*, <llvm_type>)
 
 declare void  @<type>_printMatrix(i8*)
 
@@ -331,6 +333,25 @@ call_returning_vector(id, function_id, type_name, type_id, args, code, postcode)
   call void @<type_name>_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
   
   call void @<type_name>_assignVector(i8* <vlocal_result(id)>, i8*  <vlocal(id)>_tmp)
+  
+  call void @gc_free_method()
+<postcode; separator="\n">
+>>
+
+call_returning_matrix(id, function_id, type_name, type_id, args, code, postcode) ::= <<
+<code; separator="\n">
+
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  
+  call void @gc_add_method()
+  
+  <vlocal(id)>_tmp = call i8* <fglobal(function_id)>(<args; separator=", ">)
+  
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal(id)>_tmp)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal(id)>_tmp)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  
+  call void @<type_name>_assignMatrix(i8* <vlocal_result(id)>, i8* <vlocal(id)>_tmp)
   
   call void @gc_free_method()
 <postcode; separator="\n">

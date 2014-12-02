@@ -212,6 +212,23 @@ int NAME(rowAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, int32_t r, struc
 	return 1;
 }
 
+int NAME(scalarRowAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, int32_t r, struct Vector* column, TEMPLATE_TYPE value) {
+	if (r > matrix->rows || r < 1)
+		return 0;
+	
+	for (int i = 0; i < column->size; i++) {
+		int c = ((int32_t*)column->data)[i];
+
+		if (c > matrix->columns || c < 1)
+			return 0;
+		
+		int index = (r-1)*matrix->columns + (c-1);		
+		((TEMPLATE_TYPE*)matrix->data)[index] = value;
+	}
+	
+	return 1;
+}
+
 int NAME(columnAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector* row, int32_t c, struct Vector* value) {
 	
 	if (row->size != value->size)
@@ -228,6 +245,23 @@ int NAME(columnAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector
 		
 		int index = (r-1)*matrix->columns + (c-1);		
 		((TEMPLATE_TYPE*)matrix->data)[index] = ((TEMPLATE_TYPE*)value->data)[i];
+	}
+	
+	return 1;
+}
+
+int NAME(scalarColumnAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector* row, int32_t c, TEMPLATE_TYPE value) {
+	if (c > matrix->columns || c < 1)
+		return 0;
+	
+	for (int i = 0; i < row->size; i++) {
+		int r = ((int32_t*)row->data)[i];
+
+		if (r > matrix->rows || r < 1)
+			return 0;
+		
+		int index = (r-1)*matrix->columns + (c-1);		
+		((TEMPLATE_TYPE*)matrix->data)[index] = value;
 	}
 	
 	return 1;

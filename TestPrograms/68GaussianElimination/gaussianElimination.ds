@@ -39,6 +39,39 @@ procedure calc(real matrix A, real vector x) returns real vector {
 	return y;
 }
 
+function sign(real a) returns real {
+	if (a < 0)
+		return -1.0;
+	return 1.0;
+}
+
+function argmax(real vector v) returns integer {
+	integer n = length(v);
+	real max = sign(v[1])*v[1];
+	integer ind = 1;
+	
+	loop i in 2..n {
+		if (sign(v[i])*v[i] > max) {
+			max = sign(v[i])*v[i];
+			ind = i;
+		}
+	}
+	
+	return ind;
+}
+
+function zeros(integer n) returns real matrix {
+	real matrix A[n, n];
+	return A;
+}
+
+function eye(integer n) returns integer matrix {
+	integer matrix A[n, n];
+	loop i in 1..n {
+		A[i, i] = 1;
+	}
+	return A;
+}
 function solveDiagonal(real matrix A, real vector y) returns real vector {
 	integer size = length(y);
 	real vector x[size];
@@ -46,6 +79,35 @@ function solveDiagonal(real matrix A, real vector y) returns real vector {
 		x[i] = y[i]/A[i, i];
 	}
 	
+	return x;
+}
+
+function solve(real matrix A, real vector y) returns real vector {
+    integer n = length(y);
+    real vector x[n];
+    real matrix L = zeros(n);
+    real matrix U = A;
+    integer matrix P = eye(n);
+    
+    loop k in 1..(n-1) {
+    	integer p = argmax(U[k..n, k]);
+    	p = p + k - 1;
+    	
+    	if (p != k) {
+    		U[[p, k], 1..n] = U[[k, p], 1..n];
+            L[[p, k], 1..n] = L[[k, p], 1..n];
+            P[[p, k], 1..n] = P[[k, p], 1..n];
+    	}
+    	
+    	if (U[k, k] != 0) {
+    		 L[(k+1)..n, k] = U[(k+1)..n, k]/U[k, k];
+    		 U[(k+1)..n, k] = 0;
+    		 //U[(k+1)..n, (k+1)..n] = U[(k+1)..n, (k+1)..n] - L[(k+1)..n, k]*U[k, (k+1)..n];
+    	}
+    }
+    
+    L = L + eye(n);
+
 	return x;
 }
 
@@ -73,7 +135,7 @@ procedure main() returns integer {
 	"y: " -> out;
 	printVector(y);
 	
-	x = solveDiagonal(A, y);
+	x = solve(A, y);
 	
 	"x: " -> out;
 	printVector(x);

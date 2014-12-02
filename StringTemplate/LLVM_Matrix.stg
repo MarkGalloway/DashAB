@@ -159,12 +159,46 @@ if.fail<id>:
 if.success<id>:
 >>
 
+matrix_row_assign_scalar(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_scalarRowAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i32 <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
 matrix_column_assign(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
 <expr>
 <column_expr>
 <row_expr>
 <matrix_expr>
   <vlocal(id)>_success = call i1 @<type_name>_columnAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i32 <vlocal_result(column_expr_id)>, i8* <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_column_assign_scalar(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_scalarColumnAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i32 <vlocal_result(column_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
   br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
   
 if.fail<id>:
@@ -285,6 +319,15 @@ if.success<id>:
 matrix_print(id, type_name, expr, expr_id) ::= <<
 <expr>
 	call void @<type_name>_printMatrix(i8* <vlocal_result(expr_id)>)
+>>
+
+matrix_to_real(id, type_name, matrix_var_expr, matrix_var_expr_id) ::= <<
+<matrix_var_expr>
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(matrix_var_expr_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(matrix_var_expr_id)>)
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  call void @real_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixToReal(i8* <vlocal_result(id)>, i8* <vlocal_result(matrix_var_expr_id)>)
 >>
 
 /* TODO: Write rest of vector operation runtime function wrappers. */
