@@ -114,4 +114,48 @@ public class TestRuntimeErrors extends BaseTest {
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+
+    @Test
+    public void ltDifferentLengthVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestRuntimeErrors/008LTDifferentLengthVectors/ltDifferentLengthVectors.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("RuntimeError: Vectors are not of same length.\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
+    @Test
+    public void leDifferentLengthVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestRuntimeErrors/009LEDifferentLengthVectors/leDifferentLengthVectors.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("RuntimeError: Vectors are not of same length.\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
+    @Test
+    public void gtDifferentLengthVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestRuntimeErrors/010GTDifferentLengthVectors/gtDifferentLengthVectors.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("RuntimeError: Vectors are not of same length.\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
+    @Test
+    public void geDifferentLengthVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestRuntimeErrors/011GEDifferentLengthVectors/geDifferentLengthVectors.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("RuntimeError: Vectors are not of same length.\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
