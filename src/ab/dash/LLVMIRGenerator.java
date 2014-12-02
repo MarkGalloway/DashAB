@@ -330,6 +330,30 @@ public class LLVMIRGenerator {
 				template.setAttribute("vector_expr_id", getVector.getAttribute("id"));
 				return template;
 			}
+			
+			if (method.getShortName().equals("rows")) {
+				StringTemplate template = null;
+				template = stg.getInstanceOf("call_rows");
+				
+				StringTemplate getMatrix = exec((DashAST)argument_list.getChild(0));
+
+				template.setAttribute("id", t.llvmResultID);
+				template.setAttribute("matrix_expr", getMatrix);
+				template.setAttribute("matrix_expr_id", getMatrix.getAttribute("id"));
+				return template;
+			}
+			
+			if (method.getShortName().equals("columns")) {
+				StringTemplate template = null;
+				template = stg.getInstanceOf("call_columns");
+				
+				StringTemplate getMatrix = exec((DashAST)argument_list.getChild(0));
+
+				template.setAttribute("id", t.llvmResultID);
+				template.setAttribute("matrix_expr", getMatrix);
+				template.setAttribute("matrix_expr_id", getMatrix.getAttribute("id"));
+				return template;
+			}
 
 			for (int i = 0; i < argument_list.getChildCount(); i++) {
 				DashAST arg = (DashAST)argument_list.getChild(i);

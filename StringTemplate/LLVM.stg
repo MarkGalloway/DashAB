@@ -382,8 +382,18 @@ call_stream_state(id) ::= <<
 >>
 
 call_length(id, vector_expr, vector_expr_id) ::= <<
-  <vector_expr>
+<vector_expr>
   <vlocal_result(id)> = call i32 @getVectorSize(i8* <vlocal_result(vector_expr_id)>)
+>>
+
+call_rows(id, matrix_expr, matrix_expr_id) ::= <<
+<matrix_expr>
+  <vlocal_result(id)> = call i32 @getMatrixRows(i8* <vlocal_result(matrix_expr_id)>)
+>>
+
+call_columns(id, matrix_expr, matrix_expr_id) ::= <<
+<matrix_expr>
+  <vlocal_result(id)> = call i32 @getMatrixColumns(i8* <vlocal_result(matrix_expr_id)>)
 >>
 
 if(id, expr, expr_id, block) ::= <<

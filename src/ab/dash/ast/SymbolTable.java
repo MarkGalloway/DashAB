@@ -263,6 +263,24 @@ public class SymbolTable {
         length.define(length_input);
         
         globals.define(length);
+        
+        // rows
+        MethodSymbol rows =
+            	new MethodSymbol("rows", _integer, globals);
+        
+        VariableSymbol rows_input = new VariableSymbol("matrix", _matrix, _const);
+        rows.define(rows_input);
+        
+        globals.define(rows);
+        
+        // columns
+        MethodSymbol columns =
+            	new MethodSymbol("columns", _integer, globals);
+        
+        VariableSymbol columns_input = new VariableSymbol("matrix", _matrix, _const);
+        columns.define(columns_input);
+        
+        globals.define(columns);
     }
     
     public int getWarningCount() {
@@ -675,6 +693,7 @@ public class SymbolTable {
         id.symbol = ms;
         int i=0;
         
+        // Built in functions
         if (ms.name.equals("length")) {
         	if (args.size() != 1) {
         		error("line " + id.getLine() + ": length takes one vector.");
@@ -683,6 +702,34 @@ public class SymbolTable {
         	DashAST argAST = (DashAST)args.get(0);
         	if (argAST.evalType.getTypeIndex() != tVECTOR) {
         		error("line " + id.getLine() + ": length takes one vector.");
+        		return null;
+        	}
+        	
+        	return ms.type;
+        }
+        
+        if (ms.name.equals("rows")) {
+        	if (args.size() != 1) {
+        		error("line " + id.getLine() + ": rows takes one matrix.");
+        		return null;
+        	}
+        	DashAST argAST = (DashAST)args.get(0);
+        	if (argAST.evalType.getTypeIndex() != tMATRIX) {
+        		error("line " + id.getLine() + ": rows takes one matrix.");
+        		return null;
+        	}
+        	
+        	return ms.type;
+        }
+        
+        if (ms.name.equals("columns")) {
+        	if (args.size() != 1) {
+        		error("line " + id.getLine() + ": columns takes one matrix.");
+        		return null;
+        	}
+        	DashAST argAST = (DashAST)args.get(0);
+        	if (argAST.evalType.getTypeIndex() != tMATRIX) {
+        		error("line " + id.getLine() + ": columns takes one matrix.");
         		return null;
         	}
         	
