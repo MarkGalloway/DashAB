@@ -37,10 +37,21 @@ public class TestRuntimeErrors extends BaseTest {
 			e.printStackTrace();
 		}
     }
-    
+
     @Test
-    public void invalidIndexingWithVectorUpper() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+    public void addDifferentLengthVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestRuntimeErrors/001AddDifferentLengthVectors/addDifferentLengthVectors.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("RuntimeError: Vectors are not of same length.\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+
+    @Test
+    public void subtractDifferentLengthVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestRuntimeErrors/002SubtractDifferentLengthVectors/subtractDifferentLengthVectors.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
