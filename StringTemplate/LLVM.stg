@@ -104,6 +104,13 @@ declare i1  @<type>_scalarColumnAssignMatrix(i8*, i8*, i32, <llvm_type>)
 declare i1  @<type>_matrixAssignMatrix(i8*, i8*, i8*, i8*)
 declare i1  @<type>_scalarAssignMatrix(i8*, i8*, i8*, <llvm_type>)
 
+declare void  @<type>_MatrixLTMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixLEMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixGTMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixGEMatrix(i8*, i8*, i8*)
+declare i1  @<type>_MatrixEq(i8*, i8*)
+declare i1  @<type>_MatrixNe(i8*, i8*)
+
 declare void  @<type>_printMatrix(i8*)
 
 >>

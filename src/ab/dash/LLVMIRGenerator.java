@@ -2762,6 +2762,15 @@ public class LLVMIRGenerator {
 			} else if (rhs_type == SymbolTable.tVECTOR &&
 					isScalar(lhs_type)) {
 				template = stg.getInstanceOf("scalar_eq_vector"); // Need to know what side is scalar
+			} else if (lhs_type == SymbolTable.tMATRIX &&
+					rhs_type == SymbolTable.tMATRIX) {
+				template = stg.getInstanceOf("matrix_eq_matrix");
+			} else if (lhs_type == SymbolTable.tMATRIX &&
+					isScalar(rhs_type)) {
+				template = stg.getInstanceOf("matrix_eq_scalar");
+			} else if (rhs_type == SymbolTable.tMATRIX &&
+					isScalar(lhs_type)) {
+				template = stg.getInstanceOf("scalar_eq_matrix"); // Need to know what side is scalar
 			} else if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_eq");
 			} else if (lhs_type == SymbolTable.tREAL) {
@@ -2785,6 +2794,15 @@ public class LLVMIRGenerator {
 			} else if (rhs_type == SymbolTable.tVECTOR &&
 					isScalar(lhs_type)) {
 				template = stg.getInstanceOf("scalar_ne_vector"); // Need to know what side is scalar
+			} else if (lhs_type == SymbolTable.tMATRIX &&
+					rhs_type == SymbolTable.tMATRIX) {
+				template = stg.getInstanceOf("matrix_ne_matrix");
+			} else if (lhs_type == SymbolTable.tMATRIX &&
+					isScalar(rhs_type)) {
+				template = stg.getInstanceOf("matrix_ne_scalar");
+			} else if (rhs_type == SymbolTable.tMATRIX &&
+					isScalar(lhs_type)) {
+				template = stg.getInstanceOf("scalar_ne_matrix"); // Need to know what side is scalar
 			} else if (lhs_type == SymbolTable.tINTEGER) {
 				template = stg.getInstanceOf("int_ne");
 			} else if (lhs_type == SymbolTable.tREAL) {
@@ -2811,6 +2829,17 @@ public class LLVMIRGenerator {
 				} else if (rhs_type == SymbolTable.tVECTOR &&
 						isScalar(lhs_type)) {
 					template = stg.getInstanceOf("scalar_lt_vector"); // Need to know what side is scalar
+				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_lt_matrix");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						isScalar(rhs_type)) {
+					template = stg.getInstanceOf("matrix_lt_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isScalar(lhs_type)) {
+					template = stg.getInstanceOf("scalar_lt_matrix"); // Need to know what side is scalar
 				}
 			} else {
 				if (lhs_type == SymbolTable.tINTEGER) {
@@ -2841,6 +2870,17 @@ public class LLVMIRGenerator {
 						isScalar(lhs_type)) {
 					template = stg.getInstanceOf("scalar_le_vector"); // Need to know what side is scalar
 				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_le_matrix");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						isScalar(rhs_type)) {
+					template = stg.getInstanceOf("matrix_le_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isScalar(lhs_type)) {
+					template = stg.getInstanceOf("scalar_le_matrix"); // Need to know what side is scalar
+				}
 			} else {
 				if (lhs_type == SymbolTable.tINTEGER) {
 					template = stg.getInstanceOf("int_le");
@@ -2870,6 +2910,17 @@ public class LLVMIRGenerator {
 						isScalar(lhs_type)) {
 					template = stg.getInstanceOf("scalar_gt_vector"); // Need to know what side is scalar
 				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_gt_matrix");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						isScalar(rhs_type)) {
+					template = stg.getInstanceOf("matrix_gt_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isScalar(lhs_type)) {
+					template = stg.getInstanceOf("scalar_gt_matrix"); // Need to know what side is scalar
+				}
 			} else {
 				if (lhs_type == SymbolTable.tINTEGER) {
 					template = stg.getInstanceOf("int_gt");
@@ -2898,6 +2949,17 @@ public class LLVMIRGenerator {
 				} else if (rhs_type == SymbolTable.tVECTOR &&
 						isScalar(lhs_type)) {
 					template = stg.getInstanceOf("scalar_ge_vector"); // Need to know what side is scalar
+				}
+			} else if (type == SymbolTable.tMATRIX) {
+				if (lhs_type == SymbolTable.tMATRIX &&
+						rhs_type == SymbolTable.tMATRIX) {
+					template = stg.getInstanceOf("matrix_ge_matrix");
+				} else if (lhs_type == SymbolTable.tVECTOR &&
+						isScalar(rhs_type)) {
+					template = stg.getInstanceOf("matrix_ge_scalar");
+				} else if (rhs_type == SymbolTable.tMATRIX &&
+						isScalar(lhs_type)) {
+					template = stg.getInstanceOf("scalar_ge_matrix"); // Need to know what side is scalar
 				}
 			} else {
 				if (lhs_type == SymbolTable.tINTEGER) {

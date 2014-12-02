@@ -74,3 +74,83 @@ void NAME(MatrixUniaryMinus, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* l
 		out_data[i] = -lhs_data[i];
 }
 
+// SCALAR
+void NAME(MatrixAddScalar, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, TEMPLATE_TYPE rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] = lhs_data[i] + rhs;
+}
+
+void NAME(MatrixSubtractScalar, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, TEMPLATE_TYPE rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] = lhs_data[i] - rhs;
+}
+
+void NAME(ScalarSubtractMatrix, TEMPLATE_NAME)(struct Matrix* out, TEMPLATE_TYPE lhs, struct Matrix* rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < rhs->rows*rhs->columns; i++)
+		out_data[i] = lhs - rhs_data[i];
+}
+
+void NAME(MatrixMultiplyScalar, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, TEMPLATE_TYPE rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] = lhs_data[i] * rhs;
+}
+
+void NAME(MatrixDivideScalar, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, TEMPLATE_TYPE rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] = lhs_data[i] / rhs;
+}
+
+void NAME(ScalarDivideMatrix, TEMPLATE_NAME)(struct Matrix* out, TEMPLATE_TYPE lhs, struct Matrix* rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < rhs->rows*rhs->columns; i++)
+		out_data[i] = lhs / rhs_data[i];
+}
+
+void NAME(MatrixModulusScalar, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, TEMPLATE_TYPE rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] =  NAME(mod, TEMPLATE_NAME)(lhs_data[i], rhs);
+}
+
+void NAME(ScalarModulusMatrix, TEMPLATE_NAME)(struct Matrix* out, TEMPLATE_TYPE lhs, struct Matrix* rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < rhs->rows*rhs->columns; i++)
+		out_data[i] = NAME(mod, TEMPLATE_NAME)(lhs, rhs_data[i]);
+}
+
+void NAME(MatrixPowerScalar, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, TEMPLATE_TYPE rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] =  NAME(power, TEMPLATE_NAME)(lhs_data[i], rhs);
+}
+
+void NAME(ScalarPowerMatrix, TEMPLATE_NAME)(struct Matrix* out, TEMPLATE_TYPE lhs, struct Matrix* rhs) {
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < rhs->rows*rhs->columns; i++)
+		out_data[i] = NAME(power, TEMPLATE_NAME)(lhs, rhs_data[i]);
+}
