@@ -12,6 +12,7 @@ import org.junit.runners.Suite;
    TestLLVM.class,
    TestUnimplemented.class,
    TestInvalidLLVM.class,
+   TestRuntimeErrors.class,
 })
 
 public class FullTestSuite {   
