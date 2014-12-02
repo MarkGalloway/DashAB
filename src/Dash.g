@@ -136,7 +136,36 @@ tupleType
   ;
   
 tupleMember
+  // string
   : String ID? LBRACK expression RBRACK -> ^(FIELD_DECL Var["var"] ^(VECTOR CHARACTER_TYPE["character"] expression) ID?)
+  | String ID? LBRACK MULTIPLY RBRACK -> ^(FIELD_DECL Var["var"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID?)
+  | String ID? -> ^(FIELD_DECL Var["var"] ^(VECTOR CHARACTER_TYPE["character"] INFERRED) ID?)
+  
+  // vectors
+  | primitiveType Vector? ID? LBRACK expression RBRACK 
+      -> ^(FIELD_DECL Var["var"] ^(VECTOR primitiveType expression) ID?)
+  | primitiveType Vector? ID? LBRACK MULTIPLY RBRACK 
+      -> ^(FIELD_DECL Var["var"] ^(VECTOR primitiveType INFERRED) ID?)
+  | primitiveType Vector ID?
+      -> ^(FIELD_DECL Var["var"] ^(VECTOR primitiveType INFERRED) ID?)
+  
+  // matrices
+  | primitiveType Matrix? ID? LBRACK MULTIPLY ',' MULTIPLY RBRACK
+    -> ^(FIELD_DECL Var["var"] ^(MATRIX primitiveType INFERRED INFERRED) ID?)
+  | primitiveType Matrix? ID? LBRACK MULTIPLY ',' expression RBRACK 
+    -> ^(FIELD_DECL Var["var"] ^(MATRIX primitiveType INFERRED expression) ID?)
+  | primitiveType Matrix? ID? LBRACK expression ',' MULTIPLY RBRACK 
+  -> ^(FIELD_DECL Var["var"] ^(MATRIX primitiveType expression INFERRED) ID?)
+  | primitiveType Matrix? ID? LBRACK expression ',' expression RBRACK 
+      -> ^(FIELD_DECL Var["var"] ^(MATRIX primitiveType expression+) ID?)
+  | primitiveType Matrix ID?
+    -> ^(FIELD_DECL Var["var"] ^(MATRIX primitiveType INFERRED INFERRED) ID?)
+  
+  // interval
+  | INTEGER_TYPE Interval ID?
+    -> ^(FIELD_DECL Var["var"] Interval ID?)
+  
+  // primitive types
   | primitiveType ID? -> ^(FIELD_DECL Var["var"] primitiveType ID?)
   | a=ID b=ID? -> ^(FIELD_DECL Var["var"] $a $b?)
   ;

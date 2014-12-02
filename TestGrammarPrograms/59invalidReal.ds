@@ -1,0 +1,5 @@
+procedure main() returns integer {
+  const real r = ._;
+
+  return 0;
+}
