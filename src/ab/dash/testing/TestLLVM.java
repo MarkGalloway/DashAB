@@ -2023,4 +2023,28 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void matrixOr() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/129MatrixOr/matrixOr.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("T T\n");
+        sb.append("T T\n\n");
+        
+        sb.append("T T\n");
+        sb.append("T T\n\n");
+        
+        sb.append("F T\n");
+        sb.append("F T\n\n");
+        
+        sb.append("F F\n");
+        sb.append("T T\n\n");
+        
+        sb.append("F F\n");
+        sb.append("F F\n\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
