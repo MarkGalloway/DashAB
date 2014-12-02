@@ -65,8 +65,8 @@ function zeros(integer n) returns real matrix {
 	return A;
 }
 
-function eye(integer n) returns integer matrix {
-	integer matrix A[n, n];
+function eye(integer n) returns real matrix {
+	real matrix A[n, n];
 	loop i in 1..n {
 		A[i, i] = 1;
 	}
@@ -84,14 +84,14 @@ function vectorMult(real vector x, real vector y) returns real matrix {
 	return A;
 }
 
-function solve(real matrix A, real vector y) returns real vector {
+procedure solve(real matrix A, real vector y) returns real vector {
     integer n = length(y);
     real vector x[n];
     real vector z[n];
     real vector y_hat[n];
     real matrix L = zeros(n);
     real matrix U = A;
-    integer matrix P = eye(n);
+    real matrix P = eye(n);
     
     // Factor
     loop k in 1..(n-1) {
@@ -117,7 +117,7 @@ function solve(real matrix A, real vector y) returns real vector {
     
     // Solve Lower Tri
     loop j in 1..n {
-        z[j] = y[j]/L[j,j];
+        z[j] = y_hat[j]/L[j,j];
         y_hat[(j+1)..n] = y_hat[(j+1)..n] - L[(j+1)..n,j]*z[j];
     }
     

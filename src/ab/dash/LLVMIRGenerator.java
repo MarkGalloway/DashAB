@@ -341,10 +341,6 @@ public class LLVMIRGenerator {
 				}
 				
 				StringTemplate llvm_arg_type = getType(arg_type);
-				
-				if (arg_type.getTypeIndex() == SymbolTable.tVECTOR) {
-					// TODO: Check if size is valid
-				}
 
 				StringTemplate arg_template = null;
 				if (arg_child.symbol instanceof VariableSymbol && 
