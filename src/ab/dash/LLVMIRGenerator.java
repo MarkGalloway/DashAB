@@ -3227,6 +3227,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_modulus_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_modulus_scalar");
@@ -3258,6 +3261,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_power_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_power_scalar");
