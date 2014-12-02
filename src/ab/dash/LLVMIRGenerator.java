@@ -2382,7 +2382,17 @@ public class LLVMIRGenerator {
 				rhs_type = type;
 			}
 		}
-		
+
+		boolean vectorSizesMayDiffer = false;
+		boolean wrapInSizeCheck = false;
+		if (lhs_type == SymbolTable.tVECTOR && rhs_type == SymbolTable.tVECTOR) {
+			VectorType lhs_vtype = (VectorType)((DashAST)t.getChild(0)).evalType;
+			VectorType rhs_vtype = (VectorType)((DashAST)t.getChild(1)).evalType;
+
+			vectorSizesMayDiffer = (lhs_vtype.size != rhs_vtype.size) ||
+					(lhs_vtype.size == 0);
+		}
+
 		//TODO: Update LT LE GT GE EQ NE to handle vectors and scalars other than integers
 		StringTemplate template = null;
 		switch (op) {
@@ -2616,6 +2626,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_add_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_add_scalar");
@@ -2780,6 +2793,16 @@ public class LLVMIRGenerator {
 		template.setAttribute("lhs_id", lhs_id);
 		template.setAttribute("lhs", lhs);
 		template.setAttribute("id", id);
+
+		if (wrapInSizeCheck) {
+			StringTemplate check = stg.getInstanceOf("check_vectors_same_length");
+			check.setAttribute("id", template.getAttribute("id"));
+			check.setAttribute("code", template);
+			check.setAttribute("lhs_id", lhs_id);
+			check.setAttribute("rhs_id", rhs_id);
+			template = check;
+		}
+
 		return template;
 	}
 }
