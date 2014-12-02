@@ -9,24 +9,8 @@
 #define MAKE_NAME(name, type) type ## _ ## name
 #define NAME(name, type) MAKE_NAME(name, type)
 
-#ifndef VECTOR_ARITHMETIC_H_
-#define VECTOR_ARITHMETIC_H_
-int32_t int_mod(int32_t a, int32_t b) {
-	return fmodf(a, b);
-}
-
-int32_t int_power(int32_t a, int32_t b) {
-	return powi(a, b);
-}
-
-float real_mod(float a, float b) {
-	return fmodf(a, b);
-}
-
-float real_power(float a, float b) {
-	return powf(a, b);
-}
-#endif // VECTOR_ARITHMETIC_H_
+extern TEMPLATE_TYPE NAME(mod, TEMPLATE_NAME)(TEMPLATE_TYPE, TEMPLATE_TYPE);
+extern TEMPLATE_TYPE NAME(power, TEMPLATE_NAME)(TEMPLATE_TYPE, TEMPLATE_TYPE);
 
 void NAME(VectorAddVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
 	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	

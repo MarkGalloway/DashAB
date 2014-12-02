@@ -129,6 +129,25 @@ declare void  @<type>_ScalarPowerVector(i8*, <llvm_type>, i8*)
 declare void  @<type>_VectorUniaryMinus(i8*, i8*)
 declare void  @<type>_VectorDot(<llvm_type>*, i8*, i8*)
 
+declare void  @<type>_MatrixAddMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixAddScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_MatrixSubtractMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixSubtractScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarSubtractMatrix(i8*, <llvm_type>, i8*)
+declare void  @<type>_MatrixMultiplyMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixMultiplyScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_MatrixDivideMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixDivideScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarDivideMatrix(i8*, <llvm_type>, i8*)
+declare void  @<type>_MatrixModulusMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixModulusScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarModulusMatrix(i8*, <llvm_type>, i8*)
+declare void  @<type>_MatrixPowerMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixPowerScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarPowerMatrix(i8*, <llvm_type>, i8*)
+declare void  @<type>_MatrixUniaryMinus(i8*, i8*)
+declare void  @<type>_MatrixDot(<llvm_type>*, i8*, i8*)
+
 >>
 
 runtime_library() ::= <<
@@ -171,6 +190,7 @@ declare void @bool_VectorXOrScalar(i8*, i8*, i1)
 declare void @bool_VectorAndScalar(i8*, i8*, i1)
 
 declare void  @int_VectorToReal(i8*, i8*)
+declare void  @int_MatrixToReal(i8*, i8*)
 
 declare i8*  @allocMatrix()
 declare i32  @getMatrixRows(i8*)

@@ -71,8 +71,17 @@ void char_printMatrix(struct Matrix* matrix) {
 #define TEMPLATE_NAME int
 #define TEMPLATE_TYPE int32_t
 #include "matrix.h"
+#include "matrix_arithmetic.h"
 #undef TEMPLATE_TYPE
 #undef TEMPLATE_NAME
+
+void int_MatrixToReal(struct Matrix* out, struct Matrix* matrix) {
+	float *out_data = (float*) out->data;
+	int32_t *matrix_data = (int32_t*) matrix->data;
+
+	for (int i = 0; i < matrix->rows*matrix->columns; i++)
+		out_data[i] = (float)matrix_data[i];
+}
 
 void int_printMatrix(struct Matrix* matrix) {
 	int32_t *matrix_data = (int32_t*) matrix->data;
@@ -92,6 +101,7 @@ void int_printMatrix(struct Matrix* matrix) {
 #define TEMPLATE_NAME real
 #define TEMPLATE_TYPE float
 #include "matrix.h"
+#include "matrix_arithmetic.h"
 #undef TEMPLATE_TYPE
 #undef TEMPLATE_NAME
 

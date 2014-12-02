@@ -27,7 +27,7 @@ procedure printVector(real vector x) {
 	"]\n" -> out;
 }
 
-procedure calc(real matrix A, real vector x) returns real vector {
+function calc(real matrix A, real vector x) returns real vector {
 	integer size = length(x);
 	integer interval j = 1..size;
 	real vector y[size];
@@ -72,23 +72,28 @@ function eye(integer n) returns integer matrix {
 	}
 	return A;
 }
-function solveDiagonal(real matrix A, real vector y) returns real vector {
-	integer size = length(y);
-	real vector x[size];
-	loop i in 1..size {
-		x[i] = y[i]/A[i, i];
+
+function vectorMult(real vector x, real vector y) returns real matrix {
+	integer n = length(y);
+	real matrix A[n, n];
+	
+	loop i in 1..n, j in 1..n {
+		A[i, j] = x[i]*y[j];
 	}
 	
-	return x;
+	return A;
 }
 
 function solve(real matrix A, real vector y) returns real vector {
     integer n = length(y);
     real vector x[n];
+    real vector z[n];
+    real vector y_hat[n];
     real matrix L = zeros(n);
     real matrix U = A;
     integer matrix P = eye(n);
     
+    // Factor
     loop k in 1..(n-1) {
     	integer p = argmax(U[k..n, k]);
     	p = p + k - 1;
@@ -102,11 +107,26 @@ function solve(real matrix A, real vector y) returns real vector {
     	if (U[k, k] != 0) {
     		 L[(k+1)..n, k] = U[(k+1)..n, k]/U[k, k];
     		 U[(k+1)..n, k] = 0;
-    		 //U[(k+1)..n, (k+1)..n] = U[(k+1)..n, (k+1)..n] - L[(k+1)..n, k]*U[k, (k+1)..n];
+    		 U[(k+1)..n, (k+1)..n] = U[(k+1)..n, (k+1)..n] - vectorMult(L[(k+1)..n, k], U[k, (k+1)..n]);
     	}
     }
     
     L = L + eye(n);
+    
+    y_hat = calc(P, y);
+    
+    // Solve Lower Tri
+    loop j in 1..n {
+        z[j] = y[j]/L[j,j];
+        y_hat[(j+1)..n] = y_hat[(j+1)..n] - L[(j+1)..n,j]*z[j];
+    }
+    
+    // Solve Upper Tri
+    loop i in 1..n {
+    	integer j = n - i + 1;
+    	x[j] = z[j]/U[j,j];
+        z[1..(j-1)] = z[1..(j-1)] - U[1..(j-1),j]*x[j];
+    }
 
 	return x;
 }
