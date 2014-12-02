@@ -41,6 +41,7 @@ void* xmalloc(size_t n) {
 void xfree(void *ptr) {
 	allocs--;
 	free(ptr);
+	ptr = 0;
 }
 
 void int_releaseInterval(struct Interval* interval) {

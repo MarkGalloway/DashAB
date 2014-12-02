@@ -1,0 +1,17 @@
+const out = std_output();
+
+procedure main() returns integer {
+    integer matrix I[4,4] = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]];
+    real matrix R[4,4] = [[1.1, 2.2, 3.3, 4.4],[5.5, 6.6, 7.7, 8.8],[9.9, 10.1, 11.1, 12.2],[13.3, 14.4, 15.5, 16.6]];
+    character matrix C[4,4] = [['a','b','c','d'],['e','f','g','h'],['i','j','k','l'],['m','n','o','p']];
+    boolean matrix B[4,4] = [[true, false, true, false],[false, true, false, true],[true, true, false, false],[false, false, true, true]];
+    
+    I -> out;
+    '\n' -> out;
+    R -> out;
+     '\n' -> out;
+    C -> out;
+    '\n' -> out;
+    B -> out;
+    return 0;
+}

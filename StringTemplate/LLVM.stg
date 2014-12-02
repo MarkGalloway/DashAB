@@ -90,10 +90,29 @@ declare void  @<type>_assignMatrixScalar(i8*, <llvm_type>)
 declare void  @<type>_startLiteralMatrixCreation(i32)
 declare void  @<type>_addLiteralMatrixCreation(i8*)
 declare void  @<type>_endLiteralMatrixCreation(i8*)
-declare i1  @<type>_getElementMatrix(<llvm_type>*, i8*, i32, i32)
-declare i1  @<type>_setElementMatrix(i8*, i32, i32, <llvm_type>)
-declare void  @<type>_printMatrix(i8*)
 
+declare i1  @<type>_getElementMatrix(<llvm_type>*, i8*, i32, i32)
+declare i1  @<type>_rowIndexMatrix(i8*, i8*, i32, i8*)
+declare i1  @<type>_columnIndexMatrix(i8*, i8*, i8*, i32)
+declare i1  @<type>_indexMatrix(i8*, i8*, i8*, i8*)
+
+declare i1  @<type>_setElementMatrix(i8*, i32, i32, <llvm_type>)
+declare i1  @<type>_rowAssignMatrix(i8*, i32, i8*, i8*)
+declare i1  @<type>_scalarRowAssignMatrix(i8*, i32, i8*, <llvm_type>)
+declare i1  @<type>_columnAssignMatrix(i8*, i8*, i32, i8*)
+declare i1  @<type>_scalarColumnAssignMatrix(i8*, i8*, i32, <llvm_type>)
+declare i1  @<type>_matrixAssignMatrix(i8*, i8*, i8*, i8*)
+declare i1  @<type>_scalarAssignMatrix(i8*, i8*, i8*, <llvm_type>)
+
+declare void  @<type>_MatrixLTMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixLEMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixGTMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixGEMatrix(i8*, i8*, i8*)
+declare i1  @<type>_MatrixEq(i8*, i8*)
+declare i1  @<type>_MatrixNe(i8*, i8*)
+
+declare void  @<type>_printMatrix(i8*)
+declare void @<type>_reverseVector(i8*, i8*)
 >>
 
 runtime_library_vector_arithmetic(type, llvm_type) ::= <<
@@ -117,6 +136,25 @@ declare void  @<type>_ScalarPowerVector(i8*, <llvm_type>, i8*)
 declare void  @<type>_VectorUniaryMinus(i8*, i8*)
 declare void  @<type>_VectorDot(<llvm_type>*, i8*, i8*)
 
+declare void  @<type>_MatrixAddMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixAddScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_MatrixSubtractMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixSubtractScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarSubtractMatrix(i8*, <llvm_type>, i8*)
+declare void  @<type>_MatrixMultiplyMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixMultiplyScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_MatrixDivideMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixDivideScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarDivideMatrix(i8*, <llvm_type>, i8*)
+declare void  @<type>_MatrixModulusMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixModulusScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarModulusMatrix(i8*, <llvm_type>, i8*)
+declare void  @<type>_MatrixPowerMatrix(i8*, i8*, i8*)
+declare void  @<type>_MatrixPowerScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarPowerMatrix(i8*, <llvm_type>, i8*)
+declare void  @<type>_MatrixUniaryMinus(i8*, i8*)
+declare void  @<type>_MatrixDot(<llvm_type>*, i8*, i8*)
+
 >>
 
 runtime_library() ::= <<
@@ -133,7 +171,7 @@ declare void @gc_add_loop()
 
 declare void @gc_free_method()
 declare void @gc_free_loop()
-
+declare void @gc_free_all()
 declare void @gc_print()
 
 declare i8* @int_allocInterval(i32, i32)
@@ -159,10 +197,12 @@ declare void @bool_VectorXOrScalar(i8*, i8*, i1)
 declare void @bool_VectorAndScalar(i8*, i8*, i1)
 
 declare void  @int_VectorToReal(i8*, i8*)
+declare void  @int_MatrixToReal(i8*, i8*)
 
 declare i8*  @allocMatrix()
 declare i32  @getMatrixRows(i8*)
 declare i32  @getMatrixColumns(i8*)
+declare void @printMatrixIndexingOutOfBounds()
 
 declare i8*  @allocVector()
 declare i8*  @getData(i8*)
@@ -307,17 +347,39 @@ call_returning_tuple(id, function_id, type_id, args, code, postcode) ::= <<
 <postcode; separator="\n">
 >>
 
-call_returning_vector(id, function_id, type_name, vector_size, vector_size_id, type_id, args, code, postcode) ::= <<
+call_returning_vector(id, function_id, type_name, type_id, args, code, postcode) ::= <<
 <code; separator="\n">
-  <vector_size>
-  <vlocal(id)>_vec  = alloca i8*
+
   <vlocal_result(id)> = call i8* @allocVector()
-  call void @<type_name>_allocVector(i8* <vlocal_result(id)>, i32 <vlocal_result(vector_size_id)>)
-  store i8* <vlocal_result(id)>, i8** <vlocal(id)>_vec
   
   call void @gc_add_method()
+  
   <vlocal(id)>_tmp = call i8* <fglobal(function_id)>(<args; separator=", ">)
+  
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal(id)>_tmp)
+  call void @<type_name>_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  
   call void @<type_name>_assignVector(i8* <vlocal_result(id)>, i8*  <vlocal(id)>_tmp)
+  
+  call void @gc_free_method()
+<postcode; separator="\n">
+>>
+
+call_returning_matrix(id, function_id, type_name, type_id, args, code, postcode) ::= <<
+<code; separator="\n">
+
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  
+  call void @gc_add_method()
+  
+  <vlocal(id)>_tmp = call i8* <fglobal(function_id)>(<args; separator=", ">)
+  
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal(id)>_tmp)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal(id)>_tmp)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  
+  call void @<type_name>_assignMatrix(i8* <vlocal_result(id)>, i8* <vlocal(id)>_tmp)
+  
   call void @gc_free_method()
 <postcode; separator="\n">
 >>
@@ -327,8 +389,26 @@ call_stream_state(id) ::= <<
 >>
 
 call_length(id, vector_expr, vector_expr_id) ::= <<
-  <vector_expr>
+<vector_expr>
   <vlocal_result(id)> = call i32 @getVectorSize(i8* <vlocal_result(vector_expr_id)>)
+>>
+
+call_rows(id, matrix_expr, matrix_expr_id) ::= <<
+<matrix_expr>
+  <vlocal_result(id)> = call i32 @getMatrixRows(i8* <vlocal_result(matrix_expr_id)>)
+>>
+
+call_columns(id, matrix_expr, matrix_expr_id) ::= <<
+<matrix_expr>
+  <vlocal_result(id)> = call i32 @getMatrixColumns(i8* <vlocal_result(matrix_expr_id)>)
+>>
+
+call_reverse(id, type_name, vector_expr, vector_expr_id) ::= <<
+<vector_expr>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(vector_expr_id)>)
+  call void @<type_name>_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_reverseVector(i8* <vlocal_result(id)>, i8* <vlocal_result(vector_expr_id)>)
 >>
 
 if(id, expr, expr_id, block) ::= <<

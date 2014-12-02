@@ -107,10 +107,460 @@ matrix_assign_decl_scalar(id, type_name, llvm_type, matrix_var_expr, matrix_var_
   store i8* <vlocal(id)>_matrix, i8** <vlocal_result(matrix_var_expr_id)>
 >>
 
+matrix_assign(id, type_name, llvm_type, matrix_var_expr, matrix_var_expr_id, row_size, row_size_id, column_size, column_size_id, rhs_expr, rhs_expr_id) ::= <<
+<rhs_expr>
+<column_size>
+<row_size>
+<matrix_var_expr>
+  <vlocal(id)>_mat = load i8** <vlocal_result(matrix_var_expr_id)>
+  call void @<type_name>_assignMatrix(i8* <vlocal(id)>_mat, i8* <vlocal_result(rhs_expr_id)>)
+>>
+
+matrix_assign_scalar(id, type_name, llvm_type, matrix_var_expr, matrix_var_expr_id, row_size, row_size_id, column_size, column_size_id, rhs_expr, rhs_expr_id) ::= <<
+<rhs_expr>
+<column_size>
+<row_size>
+<matrix_var_expr>
+  <vlocal(id)>_mat = load i8** <vlocal_result(matrix_var_expr_id)>
+  call void @<type_name>_assignMatrixScalar(i8* <vlocal(id)>_mat, <llvm_type> <vlocal_result(rhs_expr_id)>)
+>>
+
+matrix_elem_assign(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_setElementMatrix(i8* <vlocal_result(matrix_expr_id)>, i32 <vlocal_result(row_expr_id)>, i32 <vlocal_result(column_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_row_assign(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_rowAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i32 <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>, i8* <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_row_assign_scalar(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_scalarRowAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i32 <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_column_assign(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_columnAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i32 <vlocal_result(column_expr_id)>, i8* <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_column_assign_scalar(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_scalarColumnAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i32 <vlocal_result(column_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_index_assign_matrix(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_matrixAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>, i8* <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_index_assign_scalar(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id, expr, expr_id) ::= <<
+<expr>
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_success = call i1 @<type_name>_scalarAssignMatrix(i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>, <llvm_type> <vlocal_result(expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_get_element(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id) ::= <<
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal(id)>_stack = call i8* @llvm.stacksave();
+  <vlocal(id)>_value = alloca <llvm_type>;
+  <vlocal(id)>_success = call i1 @<type_name>_getElementMatrix(<llvm_type>* <vlocal(id)>_value, i8* <vlocal_result(matrix_expr_id)>, i32 <vlocal_result(row_expr_id)>, i32 <vlocal_result(column_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+  
+  <vlocal_result(id)> = load <llvm_type>* <vlocal(id)>_value
+  call void @llvm.stackrestore(i8* <vlocal(id)>_stack);
+>>
+
+matrix_row_index(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id) ::= <<
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_success = call i1 @<type_name>_rowIndexMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(matrix_expr_id)>, i32 <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_column_index(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id) ::= <<
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_success = call i1 @<type_name>_columnIndexMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i32 <vlocal_result(column_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_index(id, type_name, llvm_type, matrix_expr, matrix_expr_id, row_expr, row_expr_id, column_expr, column_expr_id) ::= <<
+<column_expr>
+<row_expr>
+<matrix_expr>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_success = call i1 @<type_name>_indexMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(matrix_expr_id)>, i8* <vlocal_result(row_expr_id)>, i8* <vlocal_result(column_expr_id)>)
+  br i1 <vlocal(id)>_success, label %if.success<id>, label %if.fail<id>
+  
+if.fail<id>:
+	call void @printMatrixIndexingOutOfBounds()
+	call void @gc_free_all()
+  	tail call void @exit(i32 -1)
+  	unreachable
+  
+if.success<id>:
+>>
+
+matrix_add_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixAddMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_add_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixAddScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_add_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(rhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(rhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixAddScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(rhs_id)>, <llvm_type> <vlocal_result(lhs_id)>)
+>>
+
+matrix_subtract_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixSubtractMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_subtract_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixSubtractScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_subtract_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(rhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(rhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_ScalarSubtractMatrix(i8* <vlocal_result(id)>, <llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_multiply_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixMultiplyMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_multiply_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixMultiplyScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_multiply_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(rhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(rhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixMultiplyScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(rhs_id)>, <llvm_type> <vlocal_result(lhs_id)>)
+>>
+
+matrix_divide_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixDivideMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_divide_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixDivideScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_divide_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(rhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(rhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_ScalarDivideMatrix(i8* <vlocal_result(id)>, <llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_modulus_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixModulusMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_modulus_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixModulusScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_modulus_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(rhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(rhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_ScalarModulusMatrix(i8* <vlocal_result(id)>, <llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_power_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixPowerMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_power_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixPowerScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_power_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(rhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(rhs_id)>)
+  call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_ScalarPowerMatrix(i8* <vlocal_result(id)>, <llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_lt_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @bool_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixLTMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_le_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @bool_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixLEMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_gt_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @bool_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixGTMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_ge_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(lhs_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(lhs_id)>)
+  call void @bool_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixGEMatrix(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_eq_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i1 @<type_name>_MatrixEq(i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+matrix_ne_matrix(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i1 @<type_name>_MatrixNe(i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
 
 matrix_print(id, type_name, expr, expr_id) ::= <<
 <expr>
 	call void @<type_name>_printMatrix(i8* <vlocal_result(expr_id)>)
+>>
+
+matrix_to_real(id, type_name, matrix_var_expr, matrix_var_expr_id) ::= <<
+<matrix_var_expr>
+  <vlocal(id)>_rows = call i32 @getMatrixRows(i8* <vlocal_result(matrix_var_expr_id)>)
+  <vlocal(id)>_columns = call i32 @getMatrixColumns(i8* <vlocal_result(matrix_var_expr_id)>)
+  <vlocal_result(id)> = call i8* @allocMatrix()
+  call void @real_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+  call void @<type_name>_MatrixToReal(i8* <vlocal_result(id)>, i8* <vlocal_result(matrix_var_expr_id)>)
 >>
 
 /* TODO: Write rest of vector operation runtime function wrappers. */

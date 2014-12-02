@@ -39,6 +39,9 @@ public class BaseTest {
         base_globals.add("std_input()");
         base_globals.add("stream_state");
         base_globals.add("length");
+        base_globals.add("rows");
+        base_globals.add("columns");
+        base_globals.add("reverse");
         base_globals.add("tuple");
         base_globals.add("var");
         base_globals.add("null");

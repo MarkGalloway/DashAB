@@ -10,6 +10,14 @@ procedure foo() returns integer {
 	return 0;
 }
 
+procedure printInterval(integer interval i) {
+	integer n = length(i);
+	
+	loop j in 1..n {
+		i[j] -> out;
+	}
+}
+
 procedure main() returns integer {
 	integer interval i1 = 1..5;
 	integer vector v[*] = [1, 4, 2];
@@ -23,7 +31,7 @@ procedure main() returns integer {
 			integer interval i3 = 5..6;
 			
 			if (j == 3) {
-				i3 -> out; '\n' -> out;
+				printInterval(i3); '\n' -> out;
 			}
 				
 			j = j + 1;
@@ -48,7 +56,7 @@ procedure main() returns integer {
 			
 		foo();
 		
-		i2 -> out; '\n' -> out;
+		printInterval(i2); '\n' -> out;
 	}
 	
 	i = 0;
@@ -58,7 +66,7 @@ procedure main() returns integer {
 		i = i + 1;
 	}
 	
-	i1 -> out; '\n' -> out;
+	printInterval(i1); '\n' -> out;
 	
 	return 0;
 }

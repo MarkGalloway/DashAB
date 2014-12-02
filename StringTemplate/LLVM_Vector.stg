@@ -45,6 +45,7 @@ vector_assign_decl(id, type_name, vector_size, vector_size_id, vector_var_expr, 
   br i1 <vlocal(id)>_valid_size, label %if.success<id>, label %if.fail<id>
   
 if.fail<id>:
+	call void @gc_free_all()
   	tail call void @exit(i32 -1)
   	unreachable
   
@@ -111,6 +112,7 @@ vector_elem_assign(id, vector_expr, vector_expr_id, type_name, llvm_type, index_
   
 if.fail<id>:
 	call void @printIndexingOutOfBounds()
+	call void @gc_free_all()
   	tail call void @exit(i32 -1)
   	unreachable
   
@@ -125,6 +127,7 @@ vector_elem_assign_known_index(id, vector_expr, vector_expr_id, type_name, llvm_
   
 if.fail<id>:
 	call void @printIndexingOutOfBounds()
+	call void @gc_free_all()
   	tail call void @exit(i32 -1)
   	unreachable
   
@@ -141,6 +144,7 @@ vector_get_element(id, vector_expr, vector_expr_id, type_name, llvm_type, index_
   
 if.fail<id>:
 	call void @printIndexingOutOfBounds()
+	call void @gc_free_all()
   	tail call void @exit(i32 -1)
   	unreachable
   
@@ -159,6 +163,7 @@ vector_index(id, type_name, vector_expr, vector_expr_id, index_expr, index_expr_
   
 if.fail<id>:
 	call void @printIndexingOutOfBounds()
+	call void @gc_free_all()
   	tail call void @exit(i32 -1)
   	unreachable
   
@@ -174,6 +179,7 @@ vector_index_assign_vector(id, type_name, llvm_type, vector_expr, vector_expr_id
   
 if.fail<id>:
 	call void @printIndexingOutOfBounds()
+	call void @gc_free_all()
   	tail call void @exit(i32 -1)
   	unreachable
   
@@ -189,6 +195,7 @@ vector_index_assign_scalar(id, type_name, llvm_type, vector_expr, vector_expr_id
   
 if.fail<id>:
 	call void @printIndexingOutOfBounds()
+	call void @gc_free_all()
   	tail call void @exit(i32 -1)
   	unreachable
   
@@ -537,6 +544,7 @@ vector_by(id, type_name, lhs_expr, lhs_expr_id, rhs_expr, rhs_expr_id) ::= <<
   
 if.fail<id>:
 	call void @printInvalidBy()
+	call void @gc_free_all()
   	tail call void @exit(i32 -1)
   	unreachable
   

@@ -9,6 +9,8 @@
 #define MAKE_NAME(name, type) type ## _ ## name
 #define NAME(name, type) MAKE_NAME(name, type)
 
+extern void NAME(allocVector, TEMPLATE_NAME)(struct Vector*, int32_t);
+
 struct Vector** vectors_matrix_literal;
 int literal_index;
 
@@ -65,20 +67,105 @@ void NAME(endLiteralMatrixCreation, TEMPLATE_NAME)(struct Matrix* matrix) {
 	}	
 }
 
+// INDEXING
+int NAME(getElementMatrix, TEMPLATE_NAME)(TEMPLATE_TYPE* out, struct Matrix* matrix, int32_t r, int32_t c) {
+	if (r > matrix->rows || r < 1)
+		return 0;
+
+	if (c > matrix->columns || c < 1)
+		return 0;
+
+	int index = (r-1)*matrix->columns + (c-1);
+
+	*out = ((TEMPLATE_TYPE*)matrix->data)[index];
+	
+	return 1;
+}
+
+int NAME(rowIndexMatrix, TEMPLATE_NAME)(struct Vector* out, struct Matrix* matrix, int32_t r, struct Vector* column) {
+	if (r > matrix->rows || r < 1)
+		return 0;
+
+	NAME(allocVector, TEMPLATE_NAME)(out, column->size);
+	
+	for (int i = 0; i < column->size; i++) {
+		int c = ((int32_t*)column->data)[i];
+
+		if (c > matrix->columns || c < 1)
+			return 0;
+		
+		int index = (r-1)*matrix->columns + (c-1);		
+		((TEMPLATE_TYPE*)out->data)[i] = ((TEMPLATE_TYPE*)matrix->data)[index];
+	}
+	
+	return 1;
+}
+
+int NAME(columnIndexMatrix, TEMPLATE_NAME)(struct Vector* out, struct Matrix* matrix, struct Vector* row, int32_t c) {
+	if (c > matrix->columns || c < 1)
+		return 0;
+
+	NAME(allocVector, TEMPLATE_NAME)(out, row->size);
+	
+	for (int i = 0; i < row->size; i++) {
+		int r = ((int32_t*)row->data)[i];
+
+		if (r > matrix->rows || r < 1)
+			return 0;
+
+		int index = (r-1)*matrix->columns + (c-1);		
+		((TEMPLATE_TYPE*)out->data)[i] = ((TEMPLATE_TYPE*)matrix->data)[index];
+	}
+	
+	return 1;
+}
+
+int NAME(indexMatrix, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* matrix, struct Vector* row, struct Vector* column) {
+	NAME(allocMatrix, TEMPLATE_NAME)(out, row->size, row->size);
+	
+	for (int i = 0; i < row->size; i++) {
+		int r = ((int32_t*)row->data)[i];
+
+		if (r > matrix->rows || r < 1)
+			return 0;
+
+		for (int j = 0; j < column->size; j++) {
+			int c = ((int32_t*)column->data)[j];
+
+			if (c > matrix->columns || c < 1)
+				return 0;
+
+			int index = (r-1)*matrix->columns + (c-1);		
+			((TEMPLATE_TYPE*)out->data)[i*row->size + j] = ((TEMPLATE_TYPE*)matrix->data)[index];
+		}
+	}
+	
+	return 1;
+}
+
 // ASSIGNMENT
 void NAME(assignMatrix, TEMPLATE_NAME)(struct Matrix* lhs, struct Matrix* rhs) {
 	TEMPLATE_TYPE* lhs_data = (TEMPLATE_TYPE*)lhs->data;
 	TEMPLATE_TYPE* rhs_data = (TEMPLATE_TYPE*)rhs->data;
 	
-	int lhs_size = lhs->rows*lhs->columns;
-	int rhs_size = rhs->rows*rhs->columns;
-	
 	int i;
-	for (i = 0; i < lhs_size && i < rhs_size; i++)
-		lhs_data[i] = rhs_data[i];
+	for (i = 0; i < lhs->rows && i < rhs->rows; i++) {
+		int j;		
+		for (j = 0; j < lhs->columns && j < rhs->columns; j++) {
+			lhs_data[i*lhs->columns + j] = rhs_data[i*rhs->columns + j];
+		}
+		
+		for (; j < lhs->columns; j++) {
+			lhs_data[i*lhs->columns + j] = 0;
+		}
+	}
 
-	for (; i < lhs_size; i++)
-		lhs_data[i] = 0;
+	for (; i < lhs->rows; i++) {
+		int j;		
+		for (j = 0; j < lhs->columns; j++) {
+			lhs_data[i*lhs->columns + j] = 0;
+		}
+	}
 }
 
 void NAME(assignMatrixScalar, TEMPLATE_NAME)(struct Matrix* lhs, TEMPLATE_TYPE rhs) {
@@ -90,20 +177,6 @@ void NAME(assignMatrixScalar, TEMPLATE_NAME)(struct Matrix* lhs, TEMPLATE_TYPE r
 		lhs_data[i] = rhs;
 }
 
-int NAME(getElementMatrix, TEMPLATE_NAME)(TEMPLATE_TYPE* out, struct Matrix* matrix, int32_t r, int32_t c) {
-	if (r > matrix->rows || r < 1)
-		return 0;
-
-	if (c > matrix->columns || c < 1)
-		return 0;
-
-	int index = r*matrix->columns + c;
-
-	*out = ((TEMPLATE_TYPE*)matrix->data)[index - 1];
-	
-	return 1;
-}
-
 int NAME(setElementMatrix, TEMPLATE_NAME)( struct Matrix* matrix, int32_t r, int32_t c, TEMPLATE_TYPE value) {
 	if (r > matrix->rows || r < 1)
 		return 0;
@@ -111,9 +184,216 @@ int NAME(setElementMatrix, TEMPLATE_NAME)( struct Matrix* matrix, int32_t r, int
 	if (c > matrix->columns || c < 1)
 		return 0;
 
-	int index = r*matrix->columns + c;
+	int index = (r-1)*matrix->columns + (c-1);
 
-	((TEMPLATE_TYPE*)matrix->data)[index - 1] = value;
+	((TEMPLATE_TYPE*)matrix->data)[index] = value;
 	
 	return 1;
 }
+
+int NAME(rowAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, int32_t r, struct Vector* column, struct Vector* value) {
+	
+	if (column->size != value->size)
+		return 0;
+
+	if (r > matrix->rows || r < 1)
+		return 0;
+	
+	for (int i = 0; i < column->size; i++) {
+		int c = ((int32_t*)column->data)[i];
+
+		if (c > matrix->columns || c < 1)
+			return 0;
+		
+		int index = (r-1)*matrix->columns + (c-1);		
+		((TEMPLATE_TYPE*)matrix->data)[index] = ((TEMPLATE_TYPE*)value->data)[i];
+	}
+	
+	return 1;
+}
+
+int NAME(scalarRowAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, int32_t r, struct Vector* column, TEMPLATE_TYPE value) {
+	if (r > matrix->rows || r < 1)
+		return 0;
+	
+	for (int i = 0; i < column->size; i++) {
+		int c = ((int32_t*)column->data)[i];
+
+		if (c > matrix->columns || c < 1)
+			return 0;
+		
+		int index = (r-1)*matrix->columns + (c-1);		
+		((TEMPLATE_TYPE*)matrix->data)[index] = value;
+	}
+	
+	return 1;
+}
+
+int NAME(columnAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector* row, int32_t c, struct Vector* value) {
+	
+	if (row->size != value->size)
+		return 0;
+
+	if (c > matrix->columns || c < 1)
+		return 0;
+	
+	for (int i = 0; i < row->size; i++) {
+		int r = ((int32_t*)row->data)[i];
+
+		if (r > matrix->rows || r < 1)
+			return 0;
+		
+		int index = (r-1)*matrix->columns + (c-1);		
+		((TEMPLATE_TYPE*)matrix->data)[index] = ((TEMPLATE_TYPE*)value->data)[i];
+	}
+	
+	return 1;
+}
+
+int NAME(scalarColumnAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector* row, int32_t c, TEMPLATE_TYPE value) {
+	if (c > matrix->columns || c < 1)
+		return 0;
+	
+	for (int i = 0; i < row->size; i++) {
+		int r = ((int32_t*)row->data)[i];
+
+		if (r > matrix->rows || r < 1)
+			return 0;
+		
+		int index = (r-1)*matrix->columns + (c-1);		
+		((TEMPLATE_TYPE*)matrix->data)[index] = value;
+	}
+	
+	return 1;
+}
+
+int NAME(matrixAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector* row, struct Vector* column, struct Matrix* value) {
+	
+	if (row->size != value->rows)
+		return 0;
+
+	if (column->size != value->columns)
+		return 0;
+	
+	for (int i = 0; i < row->size; i++) {
+		int r = ((int32_t*)row->data)[i];
+
+		if (r > matrix->rows || r < 1)
+			return 0;
+
+		for (int j = 0; j < column->size; j++) {
+			int c = ((int32_t*)column->data)[j];
+			
+			if (c > matrix->columns || c < 1)
+				return 0;
+		
+			int index = (r-1)*matrix->columns + (c-1);		
+			((TEMPLATE_TYPE*)matrix->data)[index] = ((TEMPLATE_TYPE*)value->data)[i*column->size + j];
+		}
+	}
+	
+	return 1;
+}
+
+int NAME(scalarAssignMatrix, TEMPLATE_NAME)(struct Matrix* matrix, struct Vector* row, struct Vector* column, TEMPLATE_TYPE value) {
+	for (int i = 0; i < row->size; i++) {
+		int r = ((int32_t*)row->data)[i];
+
+		if (r > matrix->rows || r < 1)
+			return 0;
+
+		for (int j = 0; j < column->size; j++) {
+			int c = ((int32_t*)column->data)[j];
+			
+			if (c > matrix->columns || c < 1)
+				return 0;
+		
+			int index = (r-1)*matrix->columns + (c-1);		
+			((TEMPLATE_TYPE*)matrix->data)[index] = value;
+		}
+	}
+	
+	return 1;
+}
+
+// Operations
+
+void NAME(MatrixLTMatrix, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, struct Matrix* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] = lhs_data[i] < rhs_data[i];
+}
+
+void NAME(MatrixLEMatrix, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, struct Matrix* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] = lhs_data[i] <= rhs_data[i];
+}
+
+void NAME(MatrixGTMatrix, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, struct Matrix* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] = lhs_data[i] > rhs_data[i];
+}
+
+void NAME(MatrixGEMatrix, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, struct Matrix* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < lhs->rows*lhs->columns; i++)
+		out_data[i] = lhs_data[i] >= rhs_data[i];
+}
+
+
+int NAME(MatrixEq, TEMPLATE_NAME)(struct Matrix* lhs, struct Matrix* rhs) {
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	if (lhs->rows != rhs->rows)
+		return 0;
+
+	if (lhs->columns != rhs->columns)
+		return 0;
+	
+	int32_t match = 0;
+	int32_t size = lhs->rows*lhs->columns;
+	for (int i = 0; i < size; i++)
+		match += lhs_data[i] == rhs_data[i];
+
+	if (match == size)
+		return 1;
+
+	return 0;
+}
+
+int NAME(MatrixNe, TEMPLATE_NAME)(struct Matrix* lhs, struct Matrix* rhs) {
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	if (lhs->rows != rhs->rows)
+		return 1;
+
+	if (lhs->columns != rhs->columns)
+		return 1;
+	
+	int32_t match = 0;
+	int32_t size = lhs->rows*lhs->columns;
+	for (int i = 0; i < size; i++)
+		match += lhs_data[i] == rhs_data[i];
+
+	if (match == size)
+		return 0;
+
+	return 1;
+}
+

@@ -1,0 +1,134 @@
+const out = std_output();
+const inp = std_input();
+
+const integer matrix vglob[2,2] = [[1, 2], [3, 4]];
+
+procedure printMatrix(integer matrix A) {
+	loop i in 1..rows(A) {
+		"\t\t[" -> out;
+		loop j in 1..columns(A) {
+			A[i, j] -> out;
+			if (j < columns(A))
+				", " -> out;
+		}
+		"]\n" -> out;
+	}
+}
+
+procedure printMatrixB(boolean matrix A) {
+	loop i in 1..rows(A) {
+		"\t\t[" -> out;
+		loop j in 1..columns(A) {
+			A[i, j] -> out;
+			if (j < columns(A))
+				", " -> out;
+		}
+		"]\n" -> out;
+	}
+}
+
+function zeros(integer n) returns integer matrix {
+	integer matrix A[n, n];
+	return A;
+}
+
+procedure main() returns integer {
+	integer A1[1+1, 2] = [[1, 2], [3, 4]];
+	integer A2[*, *] = [[2, 4], [5, 6]];
+	integer A3[2, 2];
+	integer A4[2, 2] = zeros(2);
+	
+	A3 = zeros(2);
+	A3 = A3 + 2;
+	
+	"Matrices\n" -> out;
+	
+	"\tinteger A1[1+1, 2] = \n" -> out;
+	printMatrix(A1);
+	"\tinteger A2[*, *] = \n" -> out;
+	printMatrix(A2);
+	"\tinteger A3[2, 2] = \n" -> out;
+	printMatrix(A3);
+	"\tinteger A4[2, 2] = zeros(n) = \n" -> out;
+	printMatrix(A4);
+	
+	"Addition\n" -> out;
+	
+	"\t1 + A1 + 2 = \n" -> out;
+	printMatrix(1 + A1 + 2);
+	"\tA1 + A2 = \n" -> out;
+	printMatrix(A1 + A2);
+	
+	"Subtraction\n" -> out;
+	
+	"\tA2 - A1 = \n" -> out;
+	printMatrix(A2 - A1);
+	"\t(5 - A1) - 1) = \n" -> out;
+	printMatrix((5 - A1) - 1);
+	
+	"Multiplication\n" -> out;
+	
+	"\tA1 * A2 = \n" -> out;
+	printMatrix(A1 * A2);
+	"\t2 * A1 * 3 = \n" -> out;
+	printMatrix(2 * A1 * 3);
+	
+	"Division\n" -> out;
+	
+	"\t(2 * A1 * 3) / 3 = \n" -> out;
+	printMatrix((2 * A1 * 3) / 3);
+	"\t18 / [[1, 2], [3, 6]] = \n" -> out;
+	printMatrix(18 / [[1, 2], [3, 6]]);
+	"\tA1 / A1 = \n" -> out;
+	printMatrix(A1 / A1);
+	
+	"Modular\n" -> out;
+	
+	"\tA2 % A1 = \n" -> out;
+	printMatrix(A2 % A1);
+	"\tv1 % 2 = \n" -> out;
+	printMatrix(A1 % 2);
+	"\t2 % A1 = \n" -> out;
+	printMatrix(2 % A1);
+	
+	"Power\n" -> out;
+	
+	"\tA1 ^ A1 = \n" -> out;
+	printMatrix(A1 ^ A1);
+	"\tA1 ^ 2 = \n" -> out;
+	printMatrix(A1 ^ 2);
+	"\t2 ^ A1 = \n" -> out;
+	printMatrix(2 ^ A1);
+	
+	"Compare\n" -> out;
+	
+	"\tA1 < A3 = \n" -> out;
+	printMatrixB(A1 < A3);
+	"\tA1 <= A3 = \n" -> out;
+	printMatrixB(A1 <= A3);
+	"\tA1 > A3 = \n" -> out;
+	printMatrixB(A1 > A3);
+	"\tA1 >= A3 = \n" -> out;
+	printMatrixB(A1 >= A3);
+	
+	"Equality\n" -> out;
+	
+	"\tA1 == A1 = " -> out;
+	A1 == A1 -> out; '\n' -> out;
+	"\tA1 == A2 = " -> out;
+	A1 == A2 -> out; '\n' -> out;
+	"\tA1 != A1 = " -> out;
+	A1 != A1 -> out; '\n' -> out;
+	"\tA1 != A2 = " -> out;
+	A1 != A2 -> out; '\n' -> out;
+	
+	"Built-in\n" -> out;
+	"\trows(A1) = " -> out;
+	rows(A1) -> out; '\n' -> out;
+	"\tcolumns(A1) = " -> out;
+	columns(A1) -> out; '\n' -> out;
+	
+	A1 -> out;
+
+	return 0;
+}

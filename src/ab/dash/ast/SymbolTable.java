@@ -32,7 +32,7 @@ public class SymbolTable {
     /* tVOID is for procedures with no return and should not be added 
      * to the globals. This is mostly used for debugging type checking.
      */
-    public static final int tVOID = 9;		
+    public static final int tVOID = 12;		
     public static final BuiltInTypeSymbol _void =
             new BuiltInTypeSymbol("void", tVOID);
     
@@ -263,6 +263,33 @@ public class SymbolTable {
         length.define(length_input);
         
         globals.define(length);
+        
+        // rows
+        MethodSymbol rows =
+            	new MethodSymbol("rows", _integer, globals);
+        
+        VariableSymbol rows_input = new VariableSymbol("matrix", _matrix, _const);
+        rows.define(rows_input);
+        
+        globals.define(rows);
+        
+        // columns
+        MethodSymbol columns =
+            	new MethodSymbol("columns", _integer, globals);
+        
+        VariableSymbol columns_input = new VariableSymbol("matrix", _matrix, _const);
+        columns.define(columns_input);
+        
+        globals.define(columns);
+        
+        // reverse
+        MethodSymbol reverse =
+            	new MethodSymbol("reverse", _vector, globals);
+        
+        VariableSymbol reverse_input = new VariableSymbol("vector", _vector, _const);
+        reverse.define(reverse_input);
+        
+        globals.define(reverse);
     }
     
     public int getWarningCount() {
@@ -611,6 +638,30 @@ public class SymbolTable {
         	}
         }
         
+        if (tcolumn == tVECTOR && trow == tINTERVAL) {
+        	VectorType columnType = (VectorType)column.evalType;
+        	if (columnType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector for column must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
+        if (trow == tVECTOR && tcolumn == tINTERVAL) {
+        	VectorType rowType = (VectorType)row.evalType;
+        	if (rowType.elementType.getTypeIndex() == tINTEGER)
+        		return t;
+        	else {
+        		error("line " + row.getLine() + " : " + 
+        				text(row)+" indexing vector for row must be of type integer in "+
+                        text((DashAST)row.getParent()));
+        		return null;
+        	}
+        }
+        
         if (tcolumn == tVECTOR && trow == tINTEGER) {
         	VectorType columnType = (VectorType)column.evalType;
         	if (columnType.elementType.getTypeIndex() == tINTEGER)
@@ -629,8 +680,10 @@ public class SymbolTable {
         
         if (trow != tINTEGER || tcolumn != tINTEGER) {
         	error("line " + row.getLine() + " : " + 
-    				text(row)+" index must be of type integer in "+
+    				text(row)+", "+text(column)+" index must be of type integer in "+
                     text((DashAST)row.getParent()));
+        	error("R: " + trow);
+        	error("C: " + trow);
         	 return null;
         }
         
@@ -649,18 +702,69 @@ public class SymbolTable {
         id.symbol = ms;
         int i=0;
         
+        // Built in functions
         if (ms.name.equals("length")) {
         	if (args.size() != 1) {
         		error("line " + id.getLine() + ": length takes one vector.");
         		return null;
         	}
         	DashAST argAST = (DashAST)args.get(0);
-        	if (argAST.evalType.getTypeIndex() != tVECTOR) {
+        	if (argAST.evalType.getTypeIndex() != tINTERVAL &&
+        			argAST.evalType.getTypeIndex() != tVECTOR ) {
         		error("line " + id.getLine() + ": length takes one vector.");
         		return null;
         	}
         	
         	return ms.type;
+        }
+        
+        if (ms.name.equals("rows")) {
+        	if (args.size() != 1) {
+        		error("line " + id.getLine() + ": rows takes one matrix.");
+        		return null;
+        	}
+        	DashAST argAST = (DashAST)args.get(0);
+        	if (argAST.evalType.getTypeIndex() != tMATRIX) {
+        		error("line " + id.getLine() + ": rows takes one matrix.");
+        		return null;
+        	}
+        	
+        	return ms.type;
+        }
+        
+        if (ms.name.equals("columns")) {
+        	if (args.size() != 1) {
+        		error("line " + id.getLine() + ": columns takes one matrix.");
+        		return null;
+        	}
+        	DashAST argAST = (DashAST)args.get(0);
+        	if (argAST.evalType.getTypeIndex() != tMATRIX) {
+        		error("line " + id.getLine() + ": columns takes one matrix.");
+        		return null;
+        	}
+        	
+        	return ms.type;
+        }
+        
+        if (ms.name.equals("reverse")) {
+        	if (args.size() != 1) {
+        		error("line " + id.getLine() + ": reverse takes one vector.");
+        		return null;
+        	}
+        	DashAST argAST = (DashAST)args.get(0);
+        	if (argAST.evalType.getTypeIndex() != tINTERVAL &&
+        			argAST.evalType.getTypeIndex() != tVECTOR) {
+        		error("line " + id.getLine() + ": reverse takes one vector.");
+        		return null;
+        	}
+        	
+        	Type type = _integer;
+        	if (argAST.evalType.getTypeIndex() == tVECTOR) {
+        		VectorType vt = (VectorType) argAST.evalType;
+        		type = vt.elementType;
+        	}
+        	
+        	return new VectorType(type, 0);
         }
 		
         for (Symbol a : ms.orderedArgs.values() ) { // for each arg
@@ -741,9 +845,9 @@ public class SymbolTable {
         
         // Check for Type Inference
         if (declID.symbol.type == null) {
-        	if (te != tNULL && te != tIDENTITY)
+        	if (te != tNULL && te != tIDENTITY) {
         		declID.symbol.type = init.evalType;
-        	else {
+        	} else {
         		error("line " + declID.getLine() + ": type cannot be inferred for " + text((DashAST) init.getParent()));
         		return;
         	}
@@ -1241,10 +1345,10 @@ public class SymbolTable {
 			
 			if (rhsType.getTypeIndex() == tVECTOR) {
 				Type element2 = ((VectorType)rhsType).elementType;
-				return element== element2;
+				return element == element2 || element == promote(element2, element);
 			}
 			
-			return element.getTypeIndex() == rhsType.getTypeIndex();
+			return element == rhsType || element == promote(rhsType, element);
 		} else if (destType.getTypeIndex() == tMATRIX) {
 			if (rhsType.getTypeIndex() == tVECTOR ||
 					rhsType.getTypeIndex() == tINTERVAL)
@@ -1254,10 +1358,10 @@ public class SymbolTable {
 
 			if (rhsType.getTypeIndex() == tMATRIX) {
 				Type element2 = ((MatrixType)rhsType).elementType;
-				return element.getTypeIndex() == element2.getTypeIndex();
+				return element == element2  || element == promote(element2, element);
 			}
 			
-			return element.getTypeIndex() == rhsType.getTypeIndex();
+			return element == rhsType || element == promote(rhsType, element);
 		}
     	
     	if (promotion == null)
