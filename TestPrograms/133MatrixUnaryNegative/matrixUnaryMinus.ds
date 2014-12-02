@@ -1,0 +1,12 @@
+// 8.6.5 Vector Operations
+const out = std_output();
+
+procedure main() returns integer {
+	integer matrix M = [[-1, 2],[-2, 3]];
+	integer matrix M2 = -M;
+	
+	M -> out; '\n' -> out;
+	M2 -> out; '\n' -> out;
+
+	return 0;
+}
