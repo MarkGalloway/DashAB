@@ -3093,6 +3093,9 @@ public class LLVMIRGenerator {
 			} else if (type == SymbolTable.tVECTOR) {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 					template = stg.getInstanceOf("vector_subtract_vector");
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
@@ -3130,6 +3133,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_multiply_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_multiply_scalar");
@@ -3166,6 +3172,9 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_divide_vector");
+					if (vectorSizesMayDiffer) {
+						wrapInSizeCheck = true;
+					}
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_divide_scalar");
