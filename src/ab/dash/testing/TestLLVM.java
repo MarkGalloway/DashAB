@@ -747,7 +747,7 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/56NullTupleComparison/nullTupleComparison.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("T\n");
+        sb.append("TT\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
@@ -1997,6 +1997,30 @@ public class TestLLVM extends BaseTest {
         sb.append("F F T T\n\n");
 
 
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void matrixAnd() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/128MatrixAnd/matrixAnd.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("F F\n");
+        sb.append("F F\n\n");
+        
+        sb.append("F F\n");
+        sb.append("F F\n\n");
+        
+        sb.append("F T\n");
+        sb.append("F T\n\n");
+        
+        sb.append("F F\n");
+        sb.append("T T\n\n");
+        
+        sb.append("T T\n");
+        sb.append("T T\n\n");
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }
