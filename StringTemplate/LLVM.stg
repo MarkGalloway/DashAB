@@ -112,7 +112,7 @@ declare i1  @<type>_MatrixEq(i8*, i8*)
 declare i1  @<type>_MatrixNe(i8*, i8*)
 
 declare void  @<type>_printMatrix(i8*)
-
+declare void @<type>_reverseVector(i8*, i8*)
 >>
 
 runtime_library_vector_arithmetic(type, llvm_type) ::= <<
@@ -401,6 +401,14 @@ call_rows(id, matrix_expr, matrix_expr_id) ::= <<
 call_columns(id, matrix_expr, matrix_expr_id) ::= <<
 <matrix_expr>
   <vlocal_result(id)> = call i32 @getMatrixColumns(i8* <vlocal_result(matrix_expr_id)>)
+>>
+
+call_reverse(id, type_name, vector_expr, vector_expr_id) ::= <<
+<vector_expr>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(vector_expr_id)>)
+  call void @<type_name>_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_reverseVector(i8* <vlocal_result(id)>, i8* <vlocal_result(vector_expr_id)>)
 >>
 
 if(id, expr, expr_id, block) ::= <<

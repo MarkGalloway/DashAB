@@ -1387,4 +1387,16 @@ public class TestLLVM extends BaseTest {
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void reverse() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/125Reverse/reverse.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("321\n");
+        sb.append("4321\n");
+
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }
