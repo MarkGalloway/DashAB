@@ -3063,6 +3063,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_lt_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("matrix_lt_scalar");
@@ -3104,6 +3105,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_le_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("matrix_le_scalar");
@@ -3145,6 +3147,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_gt_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("matrix_gt_scalar");
@@ -3186,6 +3189,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_ge_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("matrix_ge_scalar");
@@ -3374,6 +3378,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_modulus_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("matrix_modulus_scalar");
@@ -3406,6 +3411,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_power_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("matrix_power_scalar");
