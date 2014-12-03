@@ -1,0 +1,13 @@
+procedure main() returns integer {
+    boolean matrix A[2, 2] = [[false, true],
+                              [false, true]];
+
+    boolean matrix B[3, 2] = [[false, false],
+                              [true,  false],
+                              [true,  true]];
+
+    boolean matrix AB = A and B;
+
+    return 0;
+}
+
