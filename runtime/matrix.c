@@ -221,7 +221,7 @@ int checkMatricesSameSize(struct Matrix* op1, struct Matrix* op2) {
 	if (op1->rows == op2->rows && op1->columns == op2->columns)
 		return 1;
 
-	printf("RuntimeError: Matrices are not of same size.");
+	printf("RuntimeError: Matrices are not the same size.");
 	return 0;
 }
 
