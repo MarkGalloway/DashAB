@@ -2780,7 +2780,6 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_and_matrix");
-					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("matrix_and_scalar");
@@ -2813,7 +2812,6 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_or_matrix");
-					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("matrix_or_scalar");
@@ -2845,7 +2843,6 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_xor_matrix");
-					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("matrix_xor_scalar");
