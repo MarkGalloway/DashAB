@@ -4,7 +4,8 @@ OBJ_FILES := $(addprefix runtime/,$(notdir $(C_FILES:.c=.o)))
 
 all: runtime
 	antlr3 src/*.g
-	javac -d ./ src/*.java src/ab/dash/*.java src/ab/dash/ast/*.java src/ab/dash/exceptions/*.java
+	antlr3 src/ab/dash/opt/*.g
+	javac -d ./ src/*.java src/ab/dash/*.java src/ab/dash/ast/*.java src/ab/dash/exceptions/*.java src/ab/dash/opt/*.java
 
 runtime: $(OBJ_FILES)
 	ar rcs libruntime.a $^
