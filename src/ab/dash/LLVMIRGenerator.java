@@ -3227,6 +3227,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_add_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("matrix_add_scalar");
@@ -3264,6 +3265,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_subtract_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("matrix_subtract_scalar");
@@ -3301,6 +3303,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_multiply_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("matrix_multiply_scalar");
@@ -3338,6 +3341,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_divide_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("matrix_divide_scalar");
