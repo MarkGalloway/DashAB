@@ -2143,4 +2143,18 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test
+    public void testGenerators() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/135TestGenerators/testGenerators.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("1 4 9 16 25\n\n");
+        
+        sb.append("1 2 3 4\n");
+        sb.append("2 4 6 8\n\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
 }

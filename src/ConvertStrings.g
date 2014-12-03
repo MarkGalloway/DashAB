@@ -87,5 +87,10 @@ string_literal
 				escape = false;
 			}
 		}
+		
+		DashAST expr = new DashAST(new CommonToken(DashLexer.EXPR, "EXPR"));
+		DashAST character_node = new DashAST(new CommonToken(DashLexer.CHARACTER, "\0"));
+		expr.addChild(character_node);
+		$STRING.addChild(expr);
 	}
 	;

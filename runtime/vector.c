@@ -125,6 +125,9 @@ void char_printVector(struct Vector* vector) {
 	int8_t *vector_data = (int8_t*) vector->data;
 
 	for (int i = 0; i < vector->size; i++) {
+		if (vector_data[i] == '\0')
+			break;
+		
 		printf("%c", vector_data[i]);
 	}
 }
