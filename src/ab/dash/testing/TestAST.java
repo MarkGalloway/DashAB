@@ -769,5 +769,12 @@ public class TestAST extends BaseTest {
         Runner.astTestMain(args);
         SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/98AST_output"), outErrIntercept.toString().trim());
     }
+    
+    @Test // typecast vector/matrix Test
+    public void typecastParsing() throws RecognitionException, LexerException, ParserException {
+        String[] args = new String[] {"TestGrammarPrograms/99typecasts.ds"};
+        Runner.astTestMain(args);
+        SampleFileWriter.assertFileContent(new File("TestGrammarPrograms/99AST_output"), outErrIntercept.toString().trim());
+    }
 
 }
