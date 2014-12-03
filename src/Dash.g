@@ -659,8 +659,29 @@ generator
   ;
 
 typecast
-  : As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN -> ^(TYPECAST primitiveType+ expression) 
-  | As LESS type GREATER LPAREN expression RPAREN -> ^(TYPECAST type expression)
+    // tuple
+  : As LESS LPAREN primitiveType (',' primitiveType)+ RPAREN  GREATER LPAREN expression RPAREN 
+      -> ^(TYPECAST primitiveType+ expression) 
+  
+      
+  // Vector
+  | As LESS primitiveType Vector GREATER LPAREN to=expression RPAREN 
+      -> ^(TYPECAST ^(VECTOR primitiveType INFERRED) $to)
+  | As LESS primitiveType Vector? LBRACK (size1=expression | size2=MULTIPLY) RBRACK GREATER  LPAREN to=expression RPAREN 
+      {if($size2 != null) { $size2.setType(INFERRED); $size2.setText("INFERRED"); }}
+      -> ^(TYPECAST ^(VECTOR primitiveType $size1? $size2?) $to)
+      
+  // Matrix
+  | As LESS primitiveType Matrix GREATER LPAREN to=expression RPAREN 
+      -> ^(TYPECAST ^(MATRIX primitiveType INFERRED INFERRED) $to)
+  | As LESS primitiveType Matrix? LBRACK (size1=expression | size2=MULTIPLY ) ',' (size3=expression |size4=MULTIPLY) RBRACK GREATER LPAREN to=expression RPAREN 
+      {if($size2 != null) { $size2.setType(INFERRED); $size2.setText("INFERRED"); }}
+      {if($size4 != null) { $size4.setType(INFERRED); $size4.setText("INFERRED"); }}
+      -> ^(TYPECAST ^(MATRIX primitiveType $size1? $size2? $size3? $size4?) $to)
+  
+  // primitive
+  | As LESS type GREATER LPAREN expression RPAREN 
+      -> ^(TYPECAST type expression)
   ;
 
 domainExpression
