@@ -154,3 +154,29 @@ void NAME(ScalarPowerMatrix, TEMPLATE_NAME)(struct Matrix* out, TEMPLATE_TYPE lh
 	for (int i = 0; i < rhs->rows*rhs->columns; i++)
 		out_data[i] = NAME(power, TEMPLATE_NAME)(lhs, rhs_data[i]);
 }
+
+int NAME(MatrixDot, TEMPLATE_NAME)(struct Matrix* out, struct Matrix* lhs, struct Matrix* rhs) {
+	
+	if (lhs->columns != rhs->rows)
+		return 0;
+
+	NAME(allocMatrix, TEMPLATE_NAME)(out, lhs->rows, rhs->columns);
+
+	TEMPLATE_TYPE *out_data = (TEMPLATE_TYPE*) out->data;	
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < lhs->rows; i++) {
+		for (int j = 0; j < rhs->columns; j++) {
+			int index = i*rhs->columns + j;
+			out_data[index] = 0;
+			for (int k = 0; k < lhs->columns; k++) {
+				int lhs_index = i*lhs->columns + k;
+				int rhs_index = k*rhs->columns + j;
+				out_data[index] += lhs_data[lhs_index]*rhs_data[rhs_index];
+			}
+		}
+	}
+
+	return 1;
+}

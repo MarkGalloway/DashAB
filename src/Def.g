@@ -18,6 +18,7 @@ package ab.dash;
 
 @members {
 SymbolTable symtab;
+Scope domainScope;
 Scope currentScope;
 MethodSymbol currentMethod;
 boolean debug_mode;
@@ -93,6 +94,9 @@ ArrayList<DashAST> ids = new ArrayList<DashAST>();
 	:
 	^(ITERATOR (^(IN ID .) {ids.add($ID);})+ .)
 		{
+		if (!$ITERATOR.hasAncestor(DOMAIN)) {
+		   domainScope = new LocalScope(currentScope);
+		 }
 	    currentScope = new LocalScope(currentScope);
 	    $ITERATOR.scope = currentScope;
 	        
@@ -123,6 +127,9 @@ exitIterator
 	ITERATOR
 		{
         debug("locals: " + currentScope);
+        if (!$ITERATOR.hasAncestor(DOMAIN)) {
+        	domainScope = domainScope.getEnclosingScope(); // pop scope
+        }
         currentScope = currentScope.getEnclosingScope(); // pop scope
        } // push scope
     ;
@@ -134,14 +141,16 @@ ArrayList<DashAST> ids = new ArrayList<DashAST>();
 	:
 	^(GENERATOR (^(IN ID .) {ids.add($ID);})+ .)
 		{
+		if (!$GENERATOR.hasAncestor(DOMAIN)) {
+		   domainScope = new LocalScope(currentScope);
+		 }
+		
 	    currentScope = new LocalScope(currentScope);
 	    $GENERATOR.scope = currentScope;
 	        
         for (int i = 0; i < ids.size(); i++) {
         	DashAST id = ids.get(i);
-	        debug("line " + id.getLine() + ": def " + id.getText() + " type ( unknown ) "
-	        + " specifier ( const )");
-	   
+        	
 		   // test for double declaration
 		   Symbol s = currentScope.resolveInCurrentScope(id.getText());
 		   if (s != null) {
@@ -155,6 +164,9 @@ ArrayList<DashAST> ids = new ArrayList<DashAST>();
 		   id.symbol = vs; // track in AST
 		   
 		   currentScope.define(vs);
+		   
+		   debug("line " + id.getLine() + ": def " + id.getText() + " type ( unknown ) "
+	        + " specifier ( const )" + " scope: " + currentScope.toString());
 	   }
        } // push scope
     ;
@@ -163,9 +175,12 @@ exitGenerator
 	:
 	GENERATOR
 		{
-        debug("locals: " + currentScope);
+        debug("generator locals: " + currentScope);
+        if (!$GENERATOR.hasAncestor(DOMAIN)) {
+        	domainScope = domainScope.getEnclosingScope(); // pop scope
+        }
         currentScope = currentScope.getEnclosingScope(); // pop scope
-       } // push scope
+       } // pop scope
     ;
 
 // START: tuple
@@ -326,10 +341,20 @@ DashAST t = (DashAST) input.LT(1);
 		.hasAncestor(INPUT))}? ID
   
   {
+  Scope scope = currentScope;
+  if (t.hasAncestor(DOMAIN)) {
+  	DashAST p = (DashAST)$ID.getParent();
+  	while (p.token.getType() != DashLexer.EXPR)
+  		p = (DashAST)p.getParent();
+  	
+  	if (((DashAST)p.getParent()).token.getType() == DashLexer.DOMAIN)
+  		scope = domainScope;
+  }
+  
    debug("line " + $ID.getLine() + ": ref " + $ID.text);
-   t.scope = currentScope;
+   t.scope = scope;
    
-   Symbol vs = currentScope.resolve($ID.text);
+   Symbol vs = scope.resolve($ID.text);
    if (vs == null && !t.hasAncestor(DOT))
    	symtab.error("line " + $ID.getLine() + ": unknown identifier " + $ID.text);
   }

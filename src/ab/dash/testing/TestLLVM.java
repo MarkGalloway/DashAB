@@ -2152,9 +2152,56 @@ public class TestLLVM extends BaseTest {
         
         sb.append("1 4 9 16 25\n\n");
         
-        sb.append("1 2 3 4\n");
-        sb.append("2 4 6 8\n\n");
+        sb.append("1 2 3\n");
+        sb.append("2 4 6\n\n");
+        
+        sb.append("1 4 9 16 25 36 49\n\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void testBinaryOpsDifferentSizeVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/52BinaryOperationsWithVectorsOfDifferentSizes/binaryOperationsWithVectorsOfDifferentSizes.ds"};
+       Runner.llvmMain(args);
+       assertEquals("RuntimeError: Vectors are not of same length.", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testEqualityOpsDifferentSizeVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/53EqualityOperationsWithVectorsOfDifferentSizes/equalityOperationsWithVectorsOfDifferentSizes.ds"};
+       Runner.llvmMain(args);
+       assertEquals("", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testMatrixIndexingExpr() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/136TestMatrixIndexingExpr/testMatrixIndexingExpr.ds"};
+       Runner.llvmMain(args);
+       assertEquals("3 4", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void domainExpressions() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/137DomainExpressions/domainExpressions.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       
+       sb.append("1234567");
+       
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void matrixMultiplicationDot() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/138MatrixMultiplicationDot/matrixMultiplicationDot.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       
+       sb.append("3 7 4 8\n");
+       sb.append("8 18 11 20\n");
+       sb.append("8 20 10 24\n");
+       
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
 }

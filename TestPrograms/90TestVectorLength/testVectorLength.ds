@@ -3,12 +3,12 @@ const out = std_output();
 
 procedure main() returns integer {
 	boolean vector vb[1] = [false];
-	character vector vc[2] = "12";
+	character vector vc[2] = "1";
 	integer vector vi = [8, 9, 6];
 	real vector vr[4] = 0.5;
 	
 	length(vb) -> out; '\n' -> out;
-	length(vc) -> out; '\n' -> out;
+	length(vc) -> out; '\n' -> out; // Remember null character is added so "1\0"
 	length(vi) -> out; '\n' -> out;
 	length(vr) -> out; '\n' -> out;
 	
