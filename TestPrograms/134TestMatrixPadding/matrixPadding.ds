@@ -1,0 +1,21 @@
+const out = std_output();
+
+procedure main() returns integer {
+    integer matrix A[2, 2] = [[1, 2]];
+    integer matrix B[2, 2] = [[1, 2], [1]];
+    integer matrix C[2, 2] = [[1],[2]];
+    integer matrix D[2, 2] = [[1]];
+    
+    boolean matrix A1[2, 2] = [[true, true]];
+    real matrix A2[2, 2] = [[2.1, 1.1]];
+
+    A -> out; '\n' -> out;
+    B -> out; '\n' -> out;
+    C -> out; '\n' -> out;
+    D -> out; '\n' -> out;
+    
+    A1 -> out; '\n' -> out;
+    A2 -> out; '\n' -> out;
+    
+    return 0;
+}

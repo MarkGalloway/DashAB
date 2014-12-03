@@ -747,7 +747,7 @@ public class TestLLVM extends BaseTest {
         String[] args = new String[] {"TestPrograms/56NullTupleComparison/nullTupleComparison.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
-        sb.append("T\n");
+        sb.append("TT\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
@@ -1286,6 +1286,7 @@ public class TestLLVM extends BaseTest {
         StringBuffer sb = new StringBuffer();
 
         sb.append("3 2 1\n");
+        sb.append("\n");
         sb.append("1 2\n");
         sb.append("3 4\n");
 
@@ -1420,8 +1421,10 @@ public class TestLLVM extends BaseTest {
         sb.append("4 5 6\n");
         sb.append("4 1\n");
         sb.append("2 5\n");
+        
         sb.append("5 4\n");
         sb.append("2 1\n");
+        
         sb.append("1 2\n");
         sb.append("4 5\n");
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
@@ -1627,7 +1630,7 @@ public class TestLLVM extends BaseTest {
        sb.append("4\n");
        sb.append("5\n");
        sb.append("T\n");
-       sb.append("T T F\n");
+       sb.append("T T F\n\n");
        sb.append("c\n");
        sb.append("tac\n");
        sb.append("4.5\n");
@@ -1873,6 +1876,7 @@ public class TestLLVM extends BaseTest {
        StringBuffer sb = new StringBuffer();
        sb.append("1 2\n");
        sb.append("3 4\n");
+       sb.append("\n");
        sb.append("1 2\n");
        sb.append("3 0\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
@@ -1886,6 +1890,7 @@ public class TestLLVM extends BaseTest {
        sb.append("1 2 3\n");
        sb.append("1 2 0\n");
        sb.append("0 0 0\n");
+       sb.append("\n");
        sb.append("1 2 3 0\n");
        sb.append("1 2 0 0\n");
        sb.append("0 0 0 0\n");
@@ -1899,43 +1904,43 @@ public class TestLLVM extends BaseTest {
        StringBuffer sb = new StringBuffer();
        sb.append("0 0 0\n");
        sb.append("0 0 0\n");
-       sb.append("0 0 0\n");
+       sb.append("0 0 0\n\n");
        
        sb.append("1 0 0\n");
        sb.append("0 2 0\n");
-       sb.append("0 0 3\n");
+       sb.append("0 0 3\n\n");
        
        sb.append("1 0 0\n");
        sb.append("0 1 0\n");
-       sb.append("0 0 3\n");
+       sb.append("0 0 3\n\n");
        
        sb.append("1 2 3\n");
        sb.append("0 1 0\n");
-       sb.append("4 5 6\n");
+       sb.append("4 5 6\n\n");
        
        sb.append("0 0 0\n");
        sb.append("0 0 0\n");
-       sb.append("0 0 0\n");
+       sb.append("0 0 0\n\n");
        
        sb.append("1 0 4\n");
        sb.append("2 0 5\n");
-       sb.append("3 0 6\n");
+       sb.append("3 0 6\n\n");
        
        sb.append("0 0 0\n");
        sb.append("0 0 0\n");
-       sb.append("0 0 0\n");
+       sb.append("0 0 0\n\n");
        
        sb.append("1 2 0\n");
        sb.append("3 4 0\n");
-       sb.append("0 0 0\n");
+       sb.append("0 0 0\n\n");
        
        sb.append("4 3 0\n");
        sb.append("2 1 0\n");
-       sb.append("0 0 0\n");
+       sb.append("0 0 0\n\n");
        
        sb.append("1 1 0\n");
        sb.append("1 1 0\n");
-       sb.append("0 0 0\n");
+       sb.append("0 0 0\n\n");
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
 
@@ -1945,7 +1950,7 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
-        sb.append("3 2 1\n");
+        sb.append("3 2 1\n\n");
         sb.append("4 3 2 1\n");
 
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
@@ -1974,24 +1979,168 @@ public class TestLLVM extends BaseTest {
         sb.append("1 2 3 4\n");
         sb.append("5 6 7 8\n");
         sb.append("9 10 11 12\n");
-        sb.append("13 14 15 16\n");
+        sb.append("13 14 15 16\n\n");
         
         sb.append("1.1 2.2 3.3 4.4\n");
         sb.append("5.5 6.6 7.7 8.8\n");
         sb.append("9.9 10.1 11.1 12.2\n");
-        sb.append("13.3 14.4 15.5 16.6\n");
+        sb.append("13.3 14.4 15.5 16.6\n\n");
         
         sb.append("a b c d\n");
         sb.append("e f g h\n");
         sb.append("i j k l\n");
-        sb.append("m n o p\n");
+        sb.append("m n o p\n\n");
         
         sb.append("T F T F\n");
         sb.append("F T F T\n");
         sb.append("T T F F\n");
-        sb.append("F F T T\n");
+        sb.append("F F T T\n\n");
 
 
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void matrixAnd() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/128MatrixAnd/matrixAnd.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("F F\n");
+        sb.append("F F\n\n");
+        
+        sb.append("F F\n");
+        sb.append("F F\n\n");
+        
+        sb.append("F T\n");
+        sb.append("F T\n\n");
+        
+        sb.append("F F\n");
+        sb.append("T T\n\n");
+        
+        sb.append("T T\n");
+        sb.append("T T\n\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void matrixOr() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/129MatrixOr/matrixOr.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("T T\n");
+        sb.append("T T\n\n");
+        
+        sb.append("T T\n");
+        sb.append("T T\n\n");
+        
+        sb.append("F T\n");
+        sb.append("F T\n\n");
+        
+        sb.append("F F\n");
+        sb.append("T T\n\n");
+        
+        sb.append("F F\n");
+        sb.append("F F\n\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void matrixXor() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/130MatrixXor/matrixXor.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("F T\n");
+        sb.append("T F\n\n");
+        
+        sb.append("T T\n");
+        sb.append("T T\n\n");
+        
+        sb.append("T T\n");
+        sb.append("F F\n\n");
+        
+        sb.append("F F\n");
+        sb.append("T T\n\n");
+        
+        sb.append("F F\n");
+        sb.append("F F\n\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void matrixUnary() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/131MatrixUnary/MatrixUnaryOperations.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("-1 2\n");
+        sb.append("-2 3\n\n");
+        
+        sb.append("-1 2\n");
+        sb.append("-2 3\n\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void matrixNot() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/132TestMatrixNot/testMatrixNot.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("false true\n");
+        sb.append("false true\n\n");
+        
+        sb.append("true false\n");
+        sb.append("true false\n\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void matrixUnaryMinus() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/133MatrixUnaryNegative/matrixUnaryMinus.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("-1 2\n");
+        sb.append("-2 3\n\n");
+        
+        sb.append("1 -2\n");
+        sb.append("2 -3\n\n");
+        
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+    }
+    
+    @Test
+    public void matrixPadding() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/134TestMatrixPadding/matrixPadding.ds"};
+        Runner.llvmMain(args);
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("1 2\n");
+        sb.append("0 0\n\n");
+        
+        sb.append("1 2\n");
+        sb.append("1 0\n\n");
+        
+        sb.append("1 0\n");
+        sb.append("2 0\n\n");
+        
+        sb.append("1 0\n");
+        sb.append("0 0\n\n");
+        
+        sb.append("T T\n");
+        sb.append("F F\n\n");
+        
+        sb.append("2.1 1.1\n");
+        sb.append("0 0\n\n");
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }

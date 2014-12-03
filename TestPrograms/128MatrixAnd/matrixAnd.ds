@@ -1,0 +1,24 @@
+const out = std_output();
+
+procedure main() returns integer {
+    boolean matrix A[2, 2] = [[false, true],  [false, true]];
+    boolean matrix B[2, 2] = [[false, false], [true,  true]];
+    
+    boolean matrix C[2, 2] = [[false, false], [false, false]];
+    boolean matrix D[2, 2] = [[true, true], [true, true]];
+
+    boolean matrix AB = A and B;
+    boolean matrix CD = C and D;
+    boolean matrix AD = A and D;
+    boolean matrix BD = B and D;
+    boolean matrix DD = D and D;
+
+    AB -> out; '\n' -> out;
+    CD -> out; '\n' -> out;
+    AD -> out; '\n' -> out;
+    BD -> out; '\n' -> out;
+    DD -> out; '\n' -> out;
+    
+	return 0;
+}
+

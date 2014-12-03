@@ -12,13 +12,13 @@ procedure main() returns integer {
 	character vector v6 = "1234" by 3; // ['1', '4']
 	real vector v7 = [1.5, 2.5, 3.5, 4.5, 5.5] by 3; // [1.5, 4.5]
 	
-	v1 -> out; '\n' -> out;
-	v2-> out; '\n' -> out; 
-	v3 -> out; '\n' -> out;
-	v4 -> out; '\n' -> out;
-	v5 -> out; '\n' -> out;
+	v1 -> out;
+	v2 -> out;
+	v3 -> out;
+	v4 -> out;
+	v5 -> out;
 	v6 -> out; '\n' -> out;
-	v7 -> out; '\n' -> out;
+	v7 -> out;
 	
 	return 0;
 }
