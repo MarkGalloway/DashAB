@@ -542,6 +542,99 @@ br label %<vloop_entry(id)>
 
 >>
 
+generator_vector(id, sym_id, type_name_x, llvm_type_x, type_name, llvm_type, expr, expr_id, block, block_id) ::= <<
+<vlocal_symbol(sym_id)> = alloca <llvm_type_x>
+<vlocal(id)>_i  = alloca i32
+store i32 1, i32* <vlocal(id)>_i
+<expr>
+<vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(expr_id)>)
+
+<vlocal_result(id)> = call i8* @allocVector()
+call void @<type_name>_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+
+br label %<vloop_entry(id)>
+
+<vloop_entry(id)>:
+  <vlocal(id)>_i_tmp = load i32* <vlocal(id)>_i
+  <vlocal(id)>_end = icmp sle i32 <vlocal(id)>_i_tmp, <vlocal(id)>_size
+  br i1 <vlocal(id)>_end, label %<vloop_body(id)>, label %<vloop_done(id)>
+
+<vloop_body(id)>:
+  <vlocal(id)>_index = load i32* <vlocal(id)>_i
+  <vlocal(id)>_success = call i1 @<type_name_x>_getElement(<llvm_type_x>* <vlocal_symbol(sym_id)>, i8* <vlocal_result(expr_id)>, i32 <vlocal(id)>_index)
+  call void @gc_add_loop()
+  <block>
+  <vlocal(id)>_success2 = call i1 @<type_name>_setElement(i8* <vlocal_result(id)>, i32 <vlocal(id)>_index, <llvm_type> <vlocal_result(block_id)>)
+  call void @gc_free_loop()
+  <vlocal(id)>_index_increment = add i32 <vlocal(id)>_index, 1
+  store i32 <vlocal(id)>_index_increment, i32* <vlocal(id)>_i
+  br label %<vloop_entry(id)>
+
+<vloop_done(id)>:
+
+>>
+
+generator_matrix(id, sym_id_x, type_name_x, llvm_type_x, expr_x, expr_x_id, sym_id_y, type_name_y, llvm_type_y, expr_y, expr_y_id, type_name, llvm_type, block, block_id) ::= <<
+<vlocal_symbol(sym_id_x)> = alloca <llvm_type_x>
+<vlocal(id)>_i  = alloca i32
+store i32 1, i32* <vlocal(id)>_i
+
+<vlocal_symbol(sym_id_y)> = alloca <llvm_type_y>
+<vlocal(id)>_j  = alloca i32
+
+<expr_y>
+<expr_x>
+
+<vlocal(id)>_rows = call i32 @getVectorSize(i8* <vlocal_result(expr_x_id)>)
+<vlocal(id)>_columns = call i32 @getVectorSize(i8* <vlocal_result(expr_y_id)>)
+
+<vlocal_result(id)> = call i8* @allocMatrix()
+call void @<type_name>_allocMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_rows, i32 <vlocal(id)>_columns)
+
+br label %<vloop_entry(id)>_outer
+
+<vloop_entry(id)>_outer:
+  <vlocal(id)>_i_tmp = load i32* <vlocal(id)>_i
+  <vlocal(id)>_end1 = icmp sle i32 <vlocal(id)>_i_tmp, <vlocal(id)>_rows
+  
+  br i1 <vlocal(id)>_end1, label %<vloop_body(id)>_outer, label %<vloop_done(id)>_outer
+
+<vloop_body(id)>_outer:
+  store i32 1, i32* <vlocal(id)>_j
+  <vlocal(id)>_index_row = load i32* <vlocal(id)>_i
+  <vlocal(id)>_success = call i1 @<type_name_x>_getElement(<llvm_type_x>* <vlocal_symbol(sym_id_x)>, i8* <vlocal_result(expr_x_id)>, i32 <vlocal(id)>_index_row)
+  
+  br label %<vloop_entry(id)>_inner
+
+<vloop_entry(id)>_inner:
+  <vlocal(id)>_j_tmp = load i32* <vlocal(id)>_j
+  <vlocal(id)>_end2 = icmp sle i32 <vlocal(id)>_j_tmp, <vlocal(id)>_columns
+  br i1 <vlocal(id)>_end2, label %<vloop_body(id)>_inner, label %<vloop_done(id)>_inner
+
+<vloop_body(id)>_inner:
+  <vlocal(id)>_index_column = load i32* <vlocal(id)>_j
+  <vlocal(id)>_success2 = call i1 @<type_name_y>_getElement(<llvm_type_y>* <vlocal_symbol(sym_id_y)>, i8* <vlocal_result(expr_y_id)>, i32 <vlocal(id)>_index_column)
+  
+  
+  call void @gc_add_loop()
+  <block>
+  <vlocal(id)>_success3 = call i1 @<type_name>_setElementMatrix(i8* <vlocal_result(id)>, i32 <vlocal(id)>_index_row, i32 <vlocal(id)>_index_column, <llvm_type> <vlocal_result(block_id)>)
+  call void @gc_free_loop()
+  
+  <vlocal(id)>_index_increment2 = add i32 <vlocal(id)>_index_column, 1
+  store i32 <vlocal(id)>_index_increment2, i32* <vlocal(id)>_j
+  br label %<vloop_entry(id)>_inner
+  
+<vloop_done(id)>_inner:
+  
+  <vlocal(id)>_index_increment = add i32 <vlocal(id)>_index_row, 1
+  store i32 <vlocal(id)>_index_increment, i32* <vlocal(id)>_i
+  br label %<vloop_entry(id)>_outer
+
+<vloop_done(id)>_outer:
+
+>>
+
 break(id, loop_id) ::= <<
   call void @gc_free_loop()
   br label %<vloop_done(loop_id)>

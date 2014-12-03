@@ -39,6 +39,7 @@ bottomup // match subexpressions innermost to outermost
 	
 topdown
 	: iterator
+	| generatorDomain
 	;
 
 // promotion and type checking
@@ -56,6 +57,10 @@ loopstat
   
 iterator
 	:^(ITERATOR (^(IN id=ID e=exprRoot) {symtab.iterator($id, $e.start);})+ .)
+	;
+	
+generatorDomain
+	: ^(GENERATOR (^(IN id=ID e=exprRoot) {symtab.iterator($id, $e.start);})+ .)
 	;
 
 decl
@@ -121,6 +126,7 @@ expr returns [Type type]
     |   member      {$type = $member.type;}
     |   call        {$type = $call.type;}
     |	index		{$type = $index.type;}
+    |	generator	{$type = $generator.type;}
     |   binaryOps   {$type = $binaryOps.type;}
     ;
 
@@ -166,6 +172,22 @@ index returns [Type type]
 			$start.evalType = $type;
 		}
     ;
+    
+generator returns [Type type]
+@init { int domainCount = 0; }
+@after { $start.evalType = $type; }
+	: ^(GENERATOR (^(IN id=ID .) {domainCount++;})+ o=exprRoot)
+	{
+		if (domainCount >= 3) {
+			symtab.error("line " + $GENERATOR.line + ": generator can not conatin more than 2 domains.");
+		} else if (domainCount >= 2) {
+			$type = new MatrixType($o.start.evalType, 0, 0);
+		} else if (domainCount >= 1) {
+			$type = new VectorType($o.start.evalType, 0);
+		} 
+	}
+    ;
+	
 	
 tuple_list returns [Type type]
 @init { 
