@@ -2180,4 +2180,15 @@ public class TestLLVM extends BaseTest {
        Runner.llvmMain(args);
        assertEquals("3 4", outErrIntercept.toString().trim());
    }
+    
+    @Test 
+    public void domainExpressions() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/137DomainExpressions/domainExpressions.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       
+       sb.append("1234567");
+       
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
 }
