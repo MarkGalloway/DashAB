@@ -2781,6 +2781,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_and_matrix");
+					insertMatrixSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("matrix_and_scalar");
