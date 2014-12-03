@@ -137,6 +137,22 @@ void NAME(VectorLTVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs,
 		out_data[i] = lhs_data[i] < rhs_data[i];
 }
 
+void NAME(ScalarLTVector, TEMPLATE_NAME)(struct Vector* out, TEMPLATE_TYPE lhs, struct Vector* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs < rhs_data[i];
+}
+
+void NAME(VectorLTScalar, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, TEMPLATE_TYPE rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] < rhs;
+}
+
 void NAME(VectorLEVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
 	int8_t *out_data = (int8_t*) out->data;
 	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
@@ -144,6 +160,22 @@ void NAME(VectorLEVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs,
 
 	for (int i = 0; i < lhs->size; i++)
 		out_data[i] = lhs_data[i] <= rhs_data[i];
+}
+
+void NAME(ScalarLEVector, TEMPLATE_NAME)(struct Vector* out, TEMPLATE_TYPE lhs, struct Vector* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs <= rhs_data[i];
+}
+
+void NAME(VectorLEScalar, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, TEMPLATE_TYPE rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] <= rhs;
 }
 
 void NAME(VectorGTVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
@@ -155,6 +187,22 @@ void NAME(VectorGTVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs,
 		out_data[i] = lhs_data[i] > rhs_data[i];
 }
 
+void NAME(ScalarGTVector, TEMPLATE_NAME)(struct Vector* out, TEMPLATE_TYPE lhs, struct Vector* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs > rhs_data[i];
+}
+
+void NAME(VectorGTScalar, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, TEMPLATE_TYPE rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] > rhs;
+}
+
 void NAME(VectorGEVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, struct Vector* rhs) {
 	int8_t *out_data = (int8_t*) out->data;
 	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
@@ -164,8 +212,24 @@ void NAME(VectorGEVector, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs,
 		out_data[i] = lhs_data[i] >= rhs_data[i];
 }
 
+void NAME(ScalarGEVector, TEMPLATE_NAME)(struct Vector* out, TEMPLATE_TYPE lhs, struct Vector* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
 
-int NAME(VectorEq, TEMPLATE_NAME)(struct Vector* lhs, struct Vector* rhs) {
+	for (int i = 0; i < rhs->size; i++)
+		out_data[i] = lhs >= rhs_data[i];
+}
+
+void NAME(VectorGEScalar, TEMPLATE_NAME)(struct Vector* out, struct Vector* lhs, TEMPLATE_TYPE rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	for (int i = 0; i < lhs->size; i++)
+		out_data[i] = lhs_data[i] >= rhs;
+}
+
+
+int NAME(VectorEQVector, TEMPLATE_NAME)(struct Vector* lhs, struct Vector* rhs) {
 	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
 	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
 
@@ -182,7 +246,34 @@ int NAME(VectorEq, TEMPLATE_NAME)(struct Vector* lhs, struct Vector* rhs) {
 	return 0;
 }
 
-int NAME(VectorNe, TEMPLATE_NAME)(struct Vector* lhs, struct Vector* rhs) {
+int NAME(ScalarEQVector, TEMPLATE_NAME)(TEMPLATE_TYPE lhs, struct Vector* rhs) {
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	int32_t match = 0;
+	for (int i = 0; i < rhs->size; i++)
+		match += lhs == rhs_data[i];
+
+	if (match == rhs->size)
+		return 1;
+
+	return 0;
+}
+
+int NAME(VectorEQScalar, TEMPLATE_NAME)(struct Vector* lhs, TEMPLATE_TYPE rhs) {
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	int32_t match = 0;
+	for (int i = 0; i < lhs->size; i++)
+		match += rhs == lhs_data[i];
+
+	if (match == lhs->size)
+		return 1;
+
+	return 0;
+}
+
+
+int NAME(VectorNEVector, TEMPLATE_NAME)(struct Vector* lhs, struct Vector* rhs) {
 	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
 	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
 
@@ -192,6 +283,32 @@ int NAME(VectorNe, TEMPLATE_NAME)(struct Vector* lhs, struct Vector* rhs) {
 	int32_t match = 0;
 	for (int i = 0; i < lhs->size; i++)
 		match += lhs_data[i] == rhs_data[i];
+
+	if (match == lhs->size)
+		return 0;
+
+	return 1;
+}
+
+int NAME(ScalarNEVector, TEMPLATE_NAME)(TEMPLATE_TYPE lhs, struct Vector* rhs) {
+	TEMPLATE_TYPE *rhs_data = (TEMPLATE_TYPE*) rhs->data;
+
+	int32_t match = 0;
+	for (int i = 0; i < rhs->size; i++)
+		match += lhs == rhs_data[i];
+
+	if (match == rhs->size)
+		return 0;
+
+	return 1;
+}
+
+int NAME(VectorNEScalar, TEMPLATE_NAME)(struct Vector* lhs, TEMPLATE_TYPE rhs) {
+	TEMPLATE_TYPE *lhs_data = (TEMPLATE_TYPE*) lhs->data;
+
+	int32_t match = 0;
+	for (int i = 0; i < lhs->size; i++)
+		match += rhs == lhs_data[i];
 
 	if (match == lhs->size)
 		return 0;

@@ -399,6 +399,24 @@ vector_lt_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
   call void @<type_name>_VectorLTVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
 >>
 
+vector_lt_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(lhs_id)>)
+  call void @bool_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_VectorLTScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_lt_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_id)>)
+  call void @bool_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_ScalarLTVector(i8* <vlocal_result(id)>, <llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
 vector_le_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
@@ -406,6 +424,24 @@ vector_le_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
   <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(lhs_id)>)
   call void @<type_name>_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
   call void @<type_name>_VectorLEVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+vector_le_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(lhs_id)>)
+  call void @bool_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_VectorLEScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_le_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_id)>)
+  call void @bool_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_ScalarLEVector(i8* <vlocal_result(id)>, <llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
 >>
 
 vector_gt_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
@@ -417,6 +453,24 @@ vector_gt_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
   call void @<type_name>_VectorGTVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
 >>
 
+vector_gt_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(lhs_id)>)
+  call void @bool_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_VectorGTScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_gt_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_id)>)
+  call void @bool_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_ScalarGTVector(i8* <vlocal_result(id)>, <llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
 vector_ge_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
@@ -426,16 +480,58 @@ vector_ge_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
   call void @<type_name>_VectorGEVector(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
 >>
 
+vector_ge_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(lhs_id)>)
+  call void @bool_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_VectorGEScalar(i8* <vlocal_result(id)>, i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_ge_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i8* @allocVector()
+  <vlocal(id)>_size = call i32 @getVectorSize(i8* <vlocal_result(rhs_id)>)
+  call void @bool_allocVector(i8* <vlocal_result(id)>, i32 <vlocal(id)>_size)
+  call void @<type_name>_ScalarGEVector(i8* <vlocal_result(id)>, <llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
 vector_eq_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
-  <vlocal_result(id)> = call i1 @<type_name>_VectorEq(i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+  <vlocal_result(id)> = call i1 @<type_name>_VectorEQVector(i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+vector_eq_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i1 @<type_name>_VectorEQScalar(i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_eq_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i1 @<type_name>_ScalarEQVector(<llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
 >>
 
 vector_ne_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
 <rhs>
 <lhs>
-  <vlocal_result(id)> = call i1 @<type_name>_VectorNe(i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+  <vlocal_result(id)> = call i1 @<type_name>_VectorNEVector(i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+>>
+
+vector_ne_scalar(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i1 @<type_name>_VectorNEScalar(i8* <vlocal_result(lhs_id)>, <llvm_type> <vlocal_result(rhs_id)>)
+>>
+
+scalar_ne_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<
+<rhs>
+<lhs>
+  <vlocal_result(id)> = call i1 @<type_name>_ScalarNEVector(<llvm_type> <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
 >>
 
 vector_and_vector(id, type_name, llvm_type, lhs, lhs_id, rhs, rhs_id) ::= <<

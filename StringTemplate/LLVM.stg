@@ -72,16 +72,37 @@ declare i1  @<type>_setElement(i8*, i32, <llvm_type>)
 declare i1  @<type>_indexVector(i8*, i8*, i8*)
 declare i1  @<type>_VectorIndexAssignVector(i8*, i8*, i8*)
 declare i1  @<type>_VectorIndexAssignScalar(i8*, i8*, <llvm_type>)
+
 declare void  @<type>_VectorLTVector(i8*, i8*, i8*)
+declare void  @<type>_VectorLTScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarLTVector(i8*, <llvm_type>, i8*)
+
 declare void  @<type>_VectorLEVector(i8*, i8*, i8*)
+declare void  @<type>_VectorLEScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarLEVector(i8*, <llvm_type>, i8*)
+
 declare void  @<type>_VectorGTVector(i8*, i8*, i8*)
+declare void  @<type>_VectorGTScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarGTVector(i8*, <llvm_type>, i8*)
+
 declare void  @<type>_VectorGEVector(i8*, i8*, i8*)
-declare i1  @<type>_VectorEq(i8*, i8*)
-declare i1  @<type>_VectorNe(i8*, i8*)
+declare void  @<type>_VectorGEScalar(i8*, i8*, <llvm_type>)
+declare void  @<type>_ScalarGEVector(i8*, <llvm_type>, i8*)
+
+declare i1  @<type>_VectorEQVector(i8*, i8*)
+declare i1  @<type>_VectorEQScalar(i8*, <llvm_type>)
+declare i1  @<type>_ScalarEQVector(<llvm_type>, i8*)
+
+declare i1  @<type>_VectorNEVector(i8*, i8*)
+declare i1  @<type>_VectorNEScalar(i8*, <llvm_type>)
+declare i1  @<type>_ScalarNEVector(<llvm_type>, i8*)
+
 declare i1  @<type>_VectorBy(i8*, i8*, i32)
+
 declare void  @<type>_VectorConcatVector(i8*, i8*, i8*)
 declare void  @<type>_VectorConcatScalar(i8*, i8*, <llvm_type>)
 declare void  @<type>_ScalarConcatVector(i8*, <llvm_type>, i8*)
+
 declare void  @<type>_printVector(i8*)
 
 declare void  @<type>_allocMatrix(i8*, i32, i32)
