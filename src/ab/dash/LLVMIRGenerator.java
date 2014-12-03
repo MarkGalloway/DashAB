@@ -1623,7 +1623,7 @@ public class LLVMIRGenerator {
 					getVector = stg.getInstanceOf("vector_get_global");
 			} else {
 				if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
-					getVector = stg.getInstanceOf("interval_get_global");
+					getVector = stg.getInstanceOf("interval_get_local");
 				else
 					getVector = stg.getInstanceOf("vector_get_local");
 			}
