@@ -685,7 +685,7 @@ matrix_to_real(id, type_name, matrix_var_expr, matrix_var_expr_id) ::= <<
 >>
 
 check_matrices_same_length(id, lhs_id, rhs_id) ::= <<
-  <vlocal(id)>_sizes_match = call i1 @checkMatricesSameLength(i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
+  <vlocal(id)>_sizes_match = call i1 @checkMatricesSameSize(i8* <vlocal_result(lhs_id)>, i8* <vlocal_result(rhs_id)>)
   br i1 <vlocal(id)>_sizes_match, label %if.match<id>, label %if.mismatch<id>
 
 if.mismatch<id>:
