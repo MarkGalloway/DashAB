@@ -2155,6 +2155,8 @@ public class TestLLVM extends BaseTest {
         sb.append("1 2 3\n");
         sb.append("2 4 6\n\n");
         
+        sb.append("1 4 9 16 25 36 49\n\n");
+        
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
 }

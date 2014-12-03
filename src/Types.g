@@ -39,7 +39,7 @@ bottomup // match subexpressions innermost to outermost
 	
 topdown
 	: iterator
-	| generatorDomain
+	| generator
 	;
 
 // promotion and type checking
@@ -56,11 +56,7 @@ loopstat
   ;
   
 iterator
-	:^(ITERATOR (^(IN id=ID e=exprRoot) {symtab.iterator($id, $e.start);})+ .)
-	;
-	
-generatorDomain
-	: ^(GENERATOR (^(IN id=ID e=exprRoot) {symtab.iterator($id, $e.start);})+ .)
+	:^(ITERATOR (^(IN id=ID ^(DOMAIN e=exprRoot)) {symtab.iterator($id, $e.start);})+ .)
 	;
 
 decl
@@ -95,6 +91,10 @@ input
 
 // type computations and checking
 
+domainExpr
+	: ^(EXPR expr) {$EXPR.evalType = $expr.type;} // annotate AST
+    ;
+    
 exprRoot // invoke type computation rule after matching EXPR
     : ^(EXPR expr) {$EXPR.evalType = $expr.type;} // annotate AST
     ;
@@ -176,7 +176,7 @@ index returns [Type type]
 generator returns [Type type]
 @init { int domainCount = 0; }
 @after { $start.evalType = $type; }
-	: ^(GENERATOR (^(IN id=ID .) {domainCount++;})+ o=exprRoot)
+	: ^(GENERATOR (^(IN id=ID ^(DOMAIN e=exprRoot)) {symtab.iterator($id, $e.start); domainCount++;})+ o=exprRoot)
 	{
 		if (domainCount >= 3) {
 			symtab.error("line " + $GENERATOR.line + ": generator can not conatin more than 2 domains.");

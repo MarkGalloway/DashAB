@@ -854,7 +854,7 @@ public class LLVMIRGenerator {
 				Symbol sym = sym_node.symbol;
 				int sym_id = sym.id;
 				
-				DashAST expr_node = (DashAST)node.getChild(1);
+				DashAST expr_node = (DashAST)node.getChild(1).getChild(0);
 				StringTemplate expr = exec(expr_node);
 				String expr_id = Integer.toString(((DashAST)expr_node.getChild(0)).llvmResultID);
 				
@@ -914,7 +914,7 @@ public class LLVMIRGenerator {
 				Symbol sym_x = sym_node_x.symbol;
 				int sym_id_x = sym_x.id;
 				
-				DashAST expr_node_x = (DashAST)domain_x.getChild(1);
+				DashAST expr_node_x = (DashAST)domain_x.getChild(1).getChild(0);
 				StringTemplate expr_x = exec(expr_node_x);
 				String expr_id_x = Integer.toString(((DashAST)expr_node_x.getChild(0)).llvmResultID);
 				
@@ -957,7 +957,7 @@ public class LLVMIRGenerator {
 				Symbol sym_x = sym_node_x.symbol;
 				int sym_id_x = sym_x.id;
 				
-				DashAST expr_node_x = (DashAST)domain_x.getChild(1);
+				DashAST expr_node_x = (DashAST)domain_x.getChild(1).getChild(0);
 				StringTemplate expr_x = exec(expr_node_x);
 				String expr_id_x = Integer.toString(((DashAST)expr_node_x.getChild(0)).llvmResultID);
 				
@@ -984,7 +984,7 @@ public class LLVMIRGenerator {
 				Symbol sym_y = sym_node_y.symbol;
 				int sym_id_y = sym_y.id;
 				
-				DashAST expr_node_y = (DashAST)domain_y.getChild(1);
+				DashAST expr_node_y = (DashAST)domain_y.getChild(1).getChild(0);
 				StringTemplate expr_y = exec(expr_node_y);
 				String expr_id_y = Integer.toString(((DashAST)expr_node_y.getChild(0)).llvmResultID);
 				
@@ -1762,22 +1762,25 @@ public class LLVMIRGenerator {
 				VectorType vecType = (VectorType) varNode.evalType;
 				elementTypeIndex = vecType.elementType.getTypeIndex();
 			}
-
 			StringTemplate getVector = null;
-			if (varNode.symbol.scope.getScopeIndex() == SymbolTable.scGLOBAL) {
-				if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
-					getVector = stg.getInstanceOf("interval_get_global");
-				else
-					getVector = stg.getInstanceOf("vector_get_global");
+			if (varSymbol != null) {
+				if (varNode.symbol.scope.getScopeIndex() == SymbolTable.scGLOBAL) {
+					if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
+						getVector = stg.getInstanceOf("interval_get_global");
+					else
+						getVector = stg.getInstanceOf("vector_get_global");
+				} else {
+					if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
+						getVector = stg.getInstanceOf("interval_get_local");
+					else
+						getVector = stg.getInstanceOf("vector_get_local");
+				}
+				
+				getVector.setAttribute("id", DashAST.getUniqueId());
+				getVector.setAttribute("sym_id", varSymbol.id);
 			} else {
-				if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
-					getVector = stg.getInstanceOf("interval_get_local");
-				else
-					getVector = stg.getInstanceOf("vector_get_local");
+				getVector = exec((DashAST) varNode);
 			}
-			
-			getVector.setAttribute("id", DashAST.getUniqueId());
-			getVector.setAttribute("sym_id", varSymbol.id);
 			
 			if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
 				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)

@@ -38,6 +38,8 @@ tokens {
   MATRIX_INDEX;
   FILTER;
   IN;
+  DOMAIN;
+  DOMAIN_INDEX;
   GENERATOR;
 }
 
@@ -685,7 +687,7 @@ typecast
   ;
 
 domainExpression
-  : ID In expression -> ^(IN ID expression)
+  : ID In expression -> ^(IN ID ^(DOMAIN expression))
   ;
    
 /* END EXPRESSIONS */
