@@ -2759,6 +2759,7 @@ public class LLVMIRGenerator {
 		}
 
 		boolean insertVectorSizeCheck = false;
+		boolean insertMatrixSizeCheck = false;
 
 		//TODO: Update LT LE GT GE EQ NE to handle vectors and scalars other than integers
 		StringTemplate template = null;
@@ -3341,6 +3342,12 @@ public class LLVMIRGenerator {
 			check.setAttribute("lhs_id", lhs_id);
 			check.setAttribute("rhs_id", rhs_id);
 			template.setAttribute("length_check", check);
+		} else if (insertMatrixSizeCheck) {
+			StringTemplate check = stg.getInstanceOf("check_matrices_same_length");
+			check.setAttribute("id", DashAST.getUniqueId());
+			check.setAttribute("lhs_id", lhs_id);
+			check.setAttribute("rhs_id", rhs_id);
+			template.setAttribute("size_check", check);
 		}
 
 		return template;
