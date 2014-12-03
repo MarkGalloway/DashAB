@@ -2864,7 +2864,6 @@ public class LLVMIRGenerator {
 			}  else if (lhs_type == SymbolTable.tVECTOR &&
 					rhs_type == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_eq_vector");
-				insertSizeCheck = true;
 			} else if (lhs_type == SymbolTable.tVECTOR &&
 					isScalar(rhs_type)) {
 				template = stg.getInstanceOf("vector_eq_scalar");
@@ -2897,7 +2896,6 @@ public class LLVMIRGenerator {
 			} else if (lhs_type == SymbolTable.tVECTOR &&
 					rhs_type == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_ne_vector");
-				insertSizeCheck = true;
 			} else if (lhs_type == SymbolTable.tVECTOR &&
 					isScalar(rhs_type)) {
 				template = stg.getInstanceOf("vector_ne_scalar");
