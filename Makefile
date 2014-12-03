@@ -1,4 +1,4 @@
-antlr = /opt/antlr-3.2/lib/antlr-3.2.jar
+antlr = /usr/local/lib/antlr-3.3-complete.jar
 C_FILES := $(wildcard runtime/*.c)
 OBJ_FILES := $(addprefix runtime/,$(notdir $(C_FILES:.c=.o)))
 
