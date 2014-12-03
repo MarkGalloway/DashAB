@@ -46,6 +46,7 @@ topdown
   :
   enterBlock
   | enterIterator
+  | enterGenerator
   | enterMethod
   | typecast
   | typeDef
@@ -61,6 +62,7 @@ bottomup
   :
   exitBlock
   | exitIterator
+  | exitGenerator
   | exitMethod
   ;
 
@@ -119,6 +121,47 @@ ArrayList<DashAST> ids = new ArrayList<DashAST>();
 exitIterator
 	:
 	ITERATOR
+		{
+        debug("locals: " + currentScope);
+        currentScope = currentScope.getEnclosingScope(); // pop scope
+       } // push scope
+    ;
+    
+enterGenerator
+@init {
+ArrayList<DashAST> ids = new ArrayList<DashAST>();
+}
+	:
+	^(GENERATOR (^(IN ID .) {ids.add($ID);})+ .)
+		{
+	    currentScope = new LocalScope(currentScope);
+	    $GENERATOR.scope = currentScope;
+	        
+        for (int i = 0; i < ids.size(); i++) {
+        	DashAST id = ids.get(i);
+	        debug("line " + id.getLine() + ": def " + id.getText() + " type ( unknown ) "
+	        + " specifier ( const )");
+	   
+		   // test for double declaration
+		   Symbol s = currentScope.resolveInCurrentScope(id.getText());
+		   if (s != null) {
+		   	symtab.error("line " + id.getLine() + ": Identifier " + id.getText()
+		   			+ " declared twice in the same scope.");
+		   }
+		   
+		   VariableSymbol vs = new VariableSymbol(id.getText(), null, SymbolTable._const);
+		   vs.def = id; // track AST location of def's ID
+		   vs.scope = currentScope;
+		   id.symbol = vs; // track in AST
+		   
+		   currentScope.define(vs);
+	   }
+       } // push scope
+    ;
+    
+exitGenerator
+	:
+	GENERATOR
 		{
         debug("locals: " + currentScope);
         currentScope = currentScope.getEnclosingScope(); // pop scope
