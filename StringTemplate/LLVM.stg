@@ -174,7 +174,7 @@ declare void  @<type>_MatrixPowerMatrix(i8*, i8*, i8*)
 declare void  @<type>_MatrixPowerScalar(i8*, i8*, <llvm_type>)
 declare void  @<type>_ScalarPowerMatrix(i8*, <llvm_type>, i8*)
 declare void  @<type>_MatrixUniaryMinus(i8*, i8*)
-declare void  @<type>_MatrixDot(<llvm_type>*, i8*, i8*)
+declare void  @<type>_MatrixDot(i8*, i8*, i8*)
 
 >>
 

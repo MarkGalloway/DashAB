@@ -1,0 +1,36 @@
+const out = std_output();
+
+procedure main() returns integer {
+	real matrix A[3, 2] = 
+	[
+	[1, 1],
+	[2, 3],
+	[4, 2]
+	];
+	
+	real matrix B[2, 4] = 
+	[
+	[1, 3, 1, 4],
+	[2,	4, 3, 4]
+	];
+	
+	A ** B -> out;
+	
+/*
+A:
+1	1
+2	3
+4	2
+
+B:
+1	3	1	4
+2	4	3	4
+
+Out:
+3	7	4	8
+8	18	11	20
+8	20	10	24
+*/
+    
+    return 0;
+}

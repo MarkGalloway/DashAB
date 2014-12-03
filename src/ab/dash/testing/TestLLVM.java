@@ -2191,4 +2191,17 @@ public class TestLLVM extends BaseTest {
        
        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
    }
+    
+    @Test 
+    public void matrixMultiplicationDot() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/138MatrixMultiplicationDot/matrixMultiplicationDot.ds"};
+       Runner.llvmMain(args);
+       StringBuffer sb = new StringBuffer();
+       
+       sb.append("3 7 4 8\n");
+       sb.append("8 18 11 20\n");
+       sb.append("8 20 10 24\n");
+       
+       assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+   }
 }

@@ -1246,6 +1246,13 @@ public class SymbolTable {
             	type_index = tINTEGER;
             	type = _integer;
             }
+        } else if ( lhs.evalType.getTypeIndex() == tMATRIX) {
+    		MatrixType matType = (MatrixType) lhs.evalType;
+    		int lhs_index = matType.elementType.getTypeIndex();
+            if (lhs_index > type_index) {
+            	type_index = lhs_index;
+            	type = matType.elementType;
+            }
         }
     	
     	if ( rhs.evalType.getTypeIndex() == tVECTOR) {
@@ -1260,9 +1267,32 @@ public class SymbolTable {
             	type_index = tINTEGER;
             	type = _integer;
             }
+        } else if (rhs.evalType.getTypeIndex() == tMATRIX) {
+    		MatrixType matType = (MatrixType) rhs.evalType;
+    		int rhs_index = matType.elementType.getTypeIndex();
+            if (rhs_index > type_index) {
+            	type_index = rhs_index;
+            	type = matType.elementType;
+            }
         }
     	
-    	return type;
+    	if (lhs.evalType.getTypeIndex() == tMATRIX &&
+    			rhs.evalType.getTypeIndex() == tMATRIX) {
+    		return new MatrixType(type, 0, 0);
+    	}
+    	
+    	if ((lhs.evalType.getTypeIndex() == tINTERVAL ||
+    			lhs.evalType.getTypeIndex() == tVECTOR) &&
+    			(rhs.evalType.getTypeIndex() == tINTERVAL ||
+    			rhs.evalType.getTypeIndex() == tVECTOR)) {
+    		return type;
+    	}
+    	
+    	error("line " + lhs.getLine() + ": " +
+        		" ** operator must take two vectors or to matrices in "+
+                       text((DashAST)lhs.getParent()));
+    	
+    	return null;
     }
     
     public boolean typeCast(DashAST typecast, DashAST list) {
