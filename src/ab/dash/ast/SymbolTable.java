@@ -540,6 +540,15 @@ public class SymbolTable {
                                text((DashAST)a.getParent()));
                 return _boolean; // even though wrong, assume result boolean
             }
+        } else if ( a.evalType.getTypeIndex() == tMATRIX) {
+        	Type e = ((MatrixType)a.evalType).elementType;
+        	
+        	if ( e.getTypeIndex() != tBOOLEAN ) {
+                error("line " + a.getLine() + ": " +
+                		text(a)+" must have boolean[][] type in "+
+                               text((DashAST)a.getParent()));
+                return _boolean; // even though wrong, assume result boolean
+            }
         } else if ( a.evalType != _boolean ) {
             error("line " + a.getLine() + ": " +
             		text(a)+" must have boolean type in "+
