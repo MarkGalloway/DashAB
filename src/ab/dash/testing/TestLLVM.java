@@ -2073,8 +2073,8 @@ public class TestLLVM extends BaseTest {
     }
     
     @Test
-    public void matrixUnary() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
-        String[] args = new String[] {"TestPrograms/131MatrixUnary/MatrixUnaryOperations.ds"};
+    public void matrixUnaryPositive() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+        String[] args = new String[] {"TestPrograms/131MatrixUnaryPositive/MatrixUnaryOperations.ds"};
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 

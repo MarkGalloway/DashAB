@@ -4,7 +4,7 @@ const out = std_output();
 
 procedure main() returns integer {
 	string hello = "hello";
-	string hello2 = ['h','e','l','l','o'];
+	string hello2[5] = ['h','e','l','l','o'];
 	character vector hello3[5] = ['h','e','l','l','o'];
 	
 	string goodbye = "goodbye";
