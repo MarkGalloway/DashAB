@@ -231,6 +231,7 @@ declare void  @int_MatrixToReal(i8*, i8*)
 declare i8*  @allocMatrix()
 declare i32  @getMatrixRows(i8*)
 declare i32  @getMatrixColumns(i8*)
+declare i1   @checkMatricesSameSize(i8*, i8*)
 declare void @printMatrixIndexingOutOfBounds()
 
 declare i8*  @allocVector()
