@@ -1754,7 +1754,6 @@ public class LLVMIRGenerator {
 			DashAST varNode = (DashAST) t.getChild(0);
 			DashAST indexNode = (DashAST) t.getChild(1);
 			
-			VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
 			int elementTypeIndex = -1;
 			if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
 				elementTypeIndex = SymbolTable.tINTEGER;
@@ -1762,25 +1761,8 @@ public class LLVMIRGenerator {
 				VectorType vecType = (VectorType) varNode.evalType;
 				elementTypeIndex = vecType.elementType.getTypeIndex();
 			}
-			StringTemplate getVector = null;
-			if (varSymbol != null) {
-				if (varNode.symbol.scope.getScopeIndex() == SymbolTable.scGLOBAL) {
-					if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
-						getVector = stg.getInstanceOf("interval_get_global");
-					else
-						getVector = stg.getInstanceOf("vector_get_global");
-				} else {
-					if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL)
-						getVector = stg.getInstanceOf("interval_get_local");
-					else
-						getVector = stg.getInstanceOf("vector_get_local");
-				}
-				
-				getVector.setAttribute("id", DashAST.getUniqueId());
-				getVector.setAttribute("sym_id", varSymbol.id);
-			} else {
-				getVector = exec((DashAST) varNode);
-			}
+			
+			StringTemplate getVector = exec((DashAST) varNode);
 			
 			if (varNode.evalType.getTypeIndex() == SymbolTable.tINTERVAL) {
 				//interval_to_vector(id, interval_var_expr, interval_var_expr_id)
@@ -1841,18 +1823,9 @@ public class LLVMIRGenerator {
 			DashAST columnIndexNode = (DashAST) t.getChild(2);
 
 			MatrixType matType = (MatrixType) varNode.evalType;
-			VariableSymbol varSymbol = (VariableSymbol) varNode.symbol;
 			int elementTypeIndex = matType.elementType.getTypeIndex();
 
-			StringTemplate getMatrix = null;
-			if (varNode.symbol.scope.getScopeIndex() == SymbolTable.scGLOBAL) {
-				getMatrix = stg.getInstanceOf("matrix_get_global");
-			} else {
-				getMatrix = stg.getInstanceOf("matrix_get_local");
-			}
-			getMatrix.setAttribute("id", DashAST.getUniqueId());
-			getMatrix.setAttribute("sym_id", varSymbol.id);
-			
+			StringTemplate getMatrix = exec((DashAST) varNode);;
 			StringTemplate rowExpr = exec(rowIndexNode);
 			StringTemplate columnExpr = exec(columnIndexNode);
 			

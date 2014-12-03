@@ -2159,4 +2159,25 @@ public class TestLLVM extends BaseTest {
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
+    
+    @Test 
+    public void testBinaryOpsDifferentSizeVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/52BinaryOperationsWithVectorsOfDifferentSizes/binaryOperationsWithVectorsOfDifferentSizes.ds"};
+       Runner.llvmMain(args);
+       assertEquals("RuntimeError: Vectors are not of same length.", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testEqualityOpsDifferentSizeVectors() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestInvalidSyntaxPrograms/53EqualityOperationsWithVectorsOfDifferentSizes/equalityOperationsWithVectorsOfDifferentSizes.ds"};
+       Runner.llvmMain(args);
+       assertEquals("", outErrIntercept.toString().trim());
+   }
+    
+    @Test 
+    public void testMatrixIndexingExpr() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+       String[] args = new String[] {"TestPrograms/136TestMatrixIndexingExpr/testMatrixIndexingExpr.ds"};
+       Runner.llvmMain(args);
+       assertEquals("3 4", outErrIntercept.toString().trim());
+   }
 }

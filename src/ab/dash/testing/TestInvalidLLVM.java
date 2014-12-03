@@ -379,7 +379,10 @@ public class TestInvalidLLVM extends BaseTest {
     public void invalidTupleIndex() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
         String[] args = new String[] {"TestUndefinedVariablePrograms/08InvalidTupleIndex/invalidTupleIndex.ds"};
         Runner.llvmMain(args);
-        assertEquals("line 7: t:<(<tuple.b:boolean>, <tuple.b:character>, <tuple.i:integer>, <tuple.r:real>) > tuple member not found t.5", outErrIntercept.toString().trim());
+        StringBuffer sb = new StringBuffer();
+        sb.append("line 7: t:<(<tuple.b:boolean>, <tuple.b:character>, <tuple.i:integer>, <tuple.r:real>) > tuple member not found t.5\n");
+        		sb.append("line 7: The specifier for t.5 is constant and can not be reassigned in t.5 = true;\n");
+        assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }
     
     // Programs with invalid types: Put TestInvalidTypePrograms Here
