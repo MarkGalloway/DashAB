@@ -48,4 +48,26 @@ public class TestMatrixRuntimeErrors extends BaseTest {
 
 		assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
 	}
+
+	@Test
+	public void orDifferentSizedMatrices() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+		String[] args = new String[] {"TestMatrixRuntimeErrors/002OrDifferentSizeMatrices/orDifferentSizeMatrices.ds"};
+		Runner.llvmMain(args);
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("RuntimeError: Matrices are not the same size.\n");
+
+		assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+	}
+
+	@Test
+	public void xorDifferentSizedMatrices() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+		String[] args = new String[] {"TestMatrixRuntimeErrors/003XorDifferentSizeMatrices/xorDifferentSizeMatrices.ds"};
+		Runner.llvmMain(args);
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("RuntimeError: Matrices are not the same size.\n");
+
+		assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+	}
 }
