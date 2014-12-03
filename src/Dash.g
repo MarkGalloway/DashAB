@@ -206,17 +206,12 @@ functionParameter
       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
   | Var primitiveType (Vector | Matrix)? ID LBRACK (expression|MULTIPLY) (',' (expression|MULTIPLY))? RBRACK
       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
-  | Var String ID LBRACK expression RBRACK 
-       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
-  | Var String ID LBRACK MULTIPLY RBRACK 
-       { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
-  | Var String ID
+  | Var String ID (LBRACK (expression|MULTIPLY) RBRACK)?
        { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
   | Var type ID { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }  
-  | Var primitiveType (Vector | Matrix)? ID
+  | Var primitiveType (Vector | Matrix | Interval)? ID
     { emitErrorMessage("line " + $Var.getLine() + ": Function parameters cannot be declared as var."); }
   
-       
   // vectors 
   | specifier? primitiveType Vector? ID LBRACK expression RBRACK 
       -> ^(ARG_DECL Const["const"] ^(VECTOR primitiveType expression) ID)
