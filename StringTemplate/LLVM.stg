@@ -217,6 +217,14 @@ declare void @bool_VectorOrScalar(i8*, i8*, i1)
 declare void @bool_VectorXOrScalar(i8*, i8*, i1)
 declare void @bool_VectorAndScalar(i8*, i8*, i1)
 
+declare void @bool_MatrixNot(i8*, i8*)
+declare void  @bool_MatrixOrMatrix(i8*, i8*, i8*)
+declare void  @bool_MatrixXOrMatrix(i8*, i8*, i8*)
+declare void  @bool_MatrixAndMatrix(i8*, i8*, i8*)
+declare void @bool_MatrixOrScalar(i8*, i8*, i1)
+declare void @bool_MatrixXOrScalar(i8*, i8*, i1)
+declare void @bool_MatrixAndScalar(i8*, i8*, i1)
+
 declare void  @int_VectorToReal(i8*, i8*)
 declare void  @int_MatrixToReal(i8*, i8*)
 

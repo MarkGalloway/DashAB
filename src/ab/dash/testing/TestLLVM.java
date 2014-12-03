@@ -2007,7 +2007,7 @@ public class TestLLVM extends BaseTest {
         StringBuffer sb = new StringBuffer();
 
         sb.append("F F\n");
-        sb.append("F F\n\n");
+        sb.append("F T\n\n");
         
         sb.append("F F\n");
         sb.append("F F\n\n");
@@ -2030,7 +2030,7 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
-        sb.append("T T\n");
+        sb.append("F T\n");
         sb.append("T T\n\n");
         
         sb.append("T T\n");
@@ -2093,11 +2093,11 @@ public class TestLLVM extends BaseTest {
         Runner.llvmMain(args);
         StringBuffer sb = new StringBuffer();
 
-        sb.append("false true\n");
-        sb.append("false true\n\n");
+        sb.append("F T\n");
+        sb.append("F T\n\n");
         
-        sb.append("true false\n");
-        sb.append("true false\n\n");
+        sb.append("T F\n");
+        sb.append("T F\n\n");
         
         assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
     }

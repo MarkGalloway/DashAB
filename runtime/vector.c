@@ -97,16 +97,17 @@ void bool_VectorAndScalar(struct Vector* out, struct Vector* lhs, int8_t rhs) {
 void bool_printVector(struct Vector* vector) {
 	int8_t *vector_data = (int8_t*) vector->data;
 
-	for (int i = 0; i < vector->size-1; i++) {
+	for (int i = 0; i < vector->size; i++) {
 		if (vector_data[i] == 0)
-			printf("F ");
+			printf("F");
 		else
-			printf("T ");
+			printf("T");
+
+		if (i < vector->size - 1)
+			printf(" ");
 	}
-	if (vector_data[vector->size-1] == 0)
-		printf("F\n");
-	else
-		printf("T\n");
+
+	printf("\n");
 }
 
 
@@ -150,10 +151,14 @@ void int_VectorToReal(struct Vector* out, struct Vector* vector) {
 void int_printVector(struct Vector* vector) {
 	int32_t *vector_data = (int32_t*) vector->data;
 
-	for (int i = 0; i < vector->size-1; i++) {
-		printf("%d ", vector_data[i]);
+	for (int i = 0; i < vector->size; i++) {
+		printf("%d", vector_data[i]);
+		
+		if (i < vector->size - 1)
+			printf(" ");
 	}
-	printf("%d\n", vector_data[vector->size-1]);
+
+	printf("\n");
 }
 
 //////////////////////////
@@ -170,10 +175,14 @@ void int_printVector(struct Vector* vector) {
 void real_printVector(struct Vector* vector) {
 	float *vector_data = (float*) vector->data;
 
-	for (int i = 0; i < vector->size-1; i++) {
-		printf("%g ", vector_data[i]);
+	for (int i = 0; i < vector->size; i++) {
+		printf("%g", vector_data[i]);
+		
+		if (i < vector->size - 1)
+			printf(" ");
 	}
-	printf("%g\n", vector_data[vector->size-1]);
+
+	printf("\n");
 }
 
 //////////////////////////
@@ -274,8 +283,14 @@ int int_IntervalBy(struct Vector* out, struct Interval* lhs, int32_t by) {
 }
 
 void int_printInterval(struct Interval* interval) {
-	for (int i = interval->lower; i <= interval->upper; i++)
+	for (int i = interval->lower; i <= interval->upper; i++) {
 		printf("%d", i);
+		
+		if (i < interval->upper)
+			printf(" ");
+	}
+
+	printf("\n");
 }
 
 int int_IntervalRange(struct Interval* interval) {

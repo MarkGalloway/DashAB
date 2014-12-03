@@ -27,20 +27,86 @@ extern void gc_add_object(void* object, int32_t type);
 #undef TEMPLATE_TYPE
 #undef TEMPLATE_NAME
 
+void bool_MatrixNot(struct Matrix* out, struct Matrix* lhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+	
+	int32_t size = out->rows*out->columns;
+	for (int i = 0; i < size; i++)
+		out_data[i] = (!lhs_data[i]) & 1;
+}
+
+void bool_MatrixOrMatrix(struct Matrix* out, struct Matrix* lhs, struct Matrix* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+	int8_t *rhs_data = (int8_t*) rhs->data;
+	
+	int32_t size = out->rows*out->columns;
+	for (int i = 0; i < size; i++)
+		out_data[i] = (lhs_data[i] || rhs_data[i]) & 1;
+}
+
+void bool_MatrixXOrMatrix(struct Matrix* out, struct Matrix* lhs, struct Matrix* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+	int8_t *rhs_data = (int8_t*) rhs->data;
+	
+	int32_t size = out->rows*out->columns;
+	for (int i = 0; i < size; i++)
+		out_data[i] = (lhs_data[i] ^ rhs_data[i]) & 1; 
+}
+
+void bool_MatrixAndMatrix(struct Matrix* out, struct Matrix* lhs, struct Matrix* rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+	int8_t *rhs_data = (int8_t*) rhs->data;
+	
+	int32_t size = out->rows*out->columns;
+	for (int i = 0; i < size; i++)
+		out_data[i] = (lhs_data[i] && rhs_data[i]) & 1;
+}
+
+void bool_MatrixOrScalar(struct Matrix* out, struct Matrix* lhs, int8_t rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+	
+	int32_t size = out->rows*out->columns;
+	for (int i = 0; i < size; i++)
+		out_data[i] = (lhs_data[i] || rhs) & 1;
+}
+
+void bool_MatrixXOrScalar(struct Matrix* out, struct Matrix* lhs, int8_t rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+	
+	int32_t size = out->rows*out->columns;
+	for (int i = 0; i < size; i++)
+		out_data[i] = (lhs_data[i] ^ rhs) & 1; 
+}
+
+void bool_MatrixAndScalar(struct Matrix* out, struct Matrix* lhs, int8_t rhs) {
+	int8_t *out_data = (int8_t*) out->data;
+	int8_t *lhs_data = (int8_t*) lhs->data;
+	
+	int32_t size = out->rows*out->columns;
+	for (int i = 0; i < size; i++)
+		out_data[i] = (lhs_data[i] && rhs) & 1;
+}
+
 void bool_printMatrix(struct Matrix* matrix) {
 	int8_t *matrix_data = (int8_t*) matrix->data;
 
 	for (int i = 0; i < matrix->rows; i++) {
-		for (int j = 0; j < matrix->columns-1; j++) {
+		for (int j = 0; j < matrix->columns; j++) {
 			if (matrix_data[i*matrix->columns + j] == 0)
-				printf("F ");
+				printf("F");
 			else
-				printf("T ");
+				printf("T");
+
+			if (j < matrix->columns - 1)
+				printf(" ");
 		}
-		if (matrix_data[i*matrix->columns + matrix->columns - 1] == 0)
-			printf("F\n");
-		else
-			printf("T\n");
+		printf("\n");
 	}
 }
 
@@ -61,10 +127,13 @@ void char_printMatrix(struct Matrix* matrix) {
 	int8_t *matrix_data = (int8_t*) matrix->data;
 
 	for (int i = 0; i < matrix->rows; i++) {
-		for (int j = 0; j < matrix->columns-1; j++) {
-			printf("%c ", matrix_data[i*matrix->columns + j]);
+		for (int j = 0; j < matrix->columns; j++) {
+			printf("%c", matrix_data[i*matrix->columns + j]);
+			
+			if (j < matrix->columns - 1)
+				printf(" ");
 		}
-		printf("%c\n", matrix_data[i*matrix->columns + matrix->columns - 1]);
+		printf("\n");
 	}
 }
 
@@ -92,10 +161,13 @@ void int_printMatrix(struct Matrix* matrix) {
 	int32_t *matrix_data = (int32_t*) matrix->data;
 
 	for (int i = 0; i < matrix->rows; i++) {
-		for (int j = 0; j < matrix->columns-1; j++) {
-			printf("%d ", matrix_data[i*matrix->columns + j]);
+		for (int j = 0; j < matrix->columns; j++) {
+			printf("%d", matrix_data[i*matrix->columns + j]);
+			
+			if (j < matrix->columns - 1)
+				printf(" ");
 		}
-		printf("%d\n", matrix_data[i*matrix->columns + matrix->columns - 1]);
+		printf("\n");
 	}
 }
 
@@ -115,10 +187,14 @@ void real_printMatrix(struct Matrix* matrix) {
 	float *matrix_data = (float*) matrix->data;
 
 	for (int i = 0; i < matrix->rows; i++) {
-		for (int j = 0; j < matrix->columns-1; j++) {
-			printf("%g ", matrix_data[i*matrix->columns + j]);
+		for (int j = 0; j < matrix->columns; j++) {
+			printf("%g", matrix_data[i*matrix->columns + j]);
+			
+			if (j < matrix->columns - 1)
+				printf(" ");
 		}
-		printf("%g\n", matrix_data[i*matrix->columns + matrix->columns - 1]);
+		
+		printf("\n");
 	}
 }
 
