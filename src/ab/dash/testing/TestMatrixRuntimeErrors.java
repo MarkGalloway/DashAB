@@ -70,4 +70,48 @@ public class TestMatrixRuntimeErrors extends BaseTest {
 
 		assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
 	}
+
+	@Test
+	public void addDifferentSizedMatrices() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+		String[] args = new String[] {"TestMatrixRuntimeErrors/004AddDifferentSizeMatrices/addDifferentSizeMatrices.ds"};
+		Runner.llvmMain(args);
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("RuntimeError: Matrices are not the same size.\n");
+
+		assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+	}
+
+	@Test
+	public void subtractDifferentSizedMatrices() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+		String[] args = new String[] {"TestMatrixRuntimeErrors/005SubtractDifferentSizeMatrices/subtractDifferentSizeMatrices.ds"};
+		Runner.llvmMain(args);
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("RuntimeError: Matrices are not the same size.\n");
+
+		assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+	}
+
+	@Test
+	public void multiplyDifferentSizedMatrices() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+		String[] args = new String[] {"TestMatrixRuntimeErrors/006MultiplyDifferentSizeMatrices/multiplyDifferentSizeMatrices.ds"};
+		Runner.llvmMain(args);
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("RuntimeError: Matrices are not the same size.\n");
+
+		assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+	}
+
+	@Test
+	public void divideDifferentSizedMatrices() throws IOException, RecognitionException, LexerException, ParserException, SymbolTableException, InterruptedException {
+		String[] args = new String[] {"TestMatrixRuntimeErrors/007DivideDifferentSizeMatrices/divideDifferentSizeMatrices.ds"};
+		Runner.llvmMain(args);
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("RuntimeError: Matrices are not the same size.\n");
+
+		assertEquals(sb.toString().trim(), outErrIntercept.toString().trim());
+	}
 }

@@ -1,0 +1,13 @@
+procedure main() returns integer {
+    integer matrix A[2, 2] = [[4, 5],
+                              [4, 5]];
+
+    integer matrix B[3, 2] = [[4, 4],
+                              [5, 4],
+                              [5, 5]];
+
+    integer matrix AB = A * B;
+
+    return 0;
+}
+
