@@ -2758,7 +2758,7 @@ public class LLVMIRGenerator {
 			}
 		}
 
-		boolean wrapInSizeCheck = false;
+		boolean insertSizeCheck = false;
 
 		//TODO: Update LT LE GT GE EQ NE to handle vectors and scalars other than integers
 		StringTemplate template = null;
@@ -2768,7 +2768,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_and_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("vector_and_scalar");
@@ -2780,7 +2780,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_and_matrix");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("matrix_and_scalar");
@@ -2801,7 +2801,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_or_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("vector_or_scalar");
@@ -2813,7 +2813,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_or_matrix");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("matrix_or_scalar");
@@ -2833,7 +2833,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_xor_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("vector_xor_scalar");
@@ -2845,7 +2845,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tMATRIX) {
 					template = stg.getInstanceOf("matrix_xor_matrix");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tMATRIX &&
 						rhs_type == SymbolTable.tBOOLEAN) {
 					template = stg.getInstanceOf("matrix_xor_scalar");
@@ -2867,7 +2867,7 @@ public class LLVMIRGenerator {
 			}  else if (lhs_type == SymbolTable.tVECTOR &&
 					rhs_type == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_eq_vector");
-				wrapInSizeCheck = true;
+				insertSizeCheck = true;
 			} else if (lhs_type == SymbolTable.tVECTOR &&
 					isScalar(rhs_type)) {
 				template = stg.getInstanceOf("vector_eq_scalar");
@@ -2900,7 +2900,7 @@ public class LLVMIRGenerator {
 			} else if (lhs_type == SymbolTable.tVECTOR &&
 					rhs_type == SymbolTable.tVECTOR) {
 				template = stg.getInstanceOf("vector_ne_vector");
-				wrapInSizeCheck = true;
+				insertSizeCheck = true;
 			} else if (lhs_type == SymbolTable.tVECTOR &&
 					isScalar(rhs_type)) {
 				template = stg.getInstanceOf("vector_ne_scalar");
@@ -2936,7 +2936,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_lt_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_lt_scalar");
@@ -2977,7 +2977,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_le_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_le_scalar");
@@ -3018,7 +3018,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_gt_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_gt_scalar");
@@ -3059,7 +3059,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_ge_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isScalar(rhs_type)) {
 					template = stg.getInstanceOf("vector_ge_scalar");
@@ -3100,7 +3100,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_add_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_add_scalar");
@@ -3137,7 +3137,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_subtract_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_subtract_scalar");
@@ -3174,7 +3174,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_multiply_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_multiply_scalar");
@@ -3211,7 +3211,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_divide_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_divide_scalar");
@@ -3243,7 +3243,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_modulus_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_modulus_scalar");
@@ -3275,7 +3275,7 @@ public class LLVMIRGenerator {
 				if (lhs_type == SymbolTable.tVECTOR &&
 						rhs_type == SymbolTable.tVECTOR) {
 					template = stg.getInstanceOf("vector_power_vector");
-					wrapInSizeCheck = true;
+					insertSizeCheck = true;
 				} else if (lhs_type == SymbolTable.tVECTOR &&
 						isNumber(rhs_type)) {
 					template = stg.getInstanceOf("vector_power_scalar");
@@ -3340,13 +3340,12 @@ public class LLVMIRGenerator {
 		template.setAttribute("lhs", lhs);
 		template.setAttribute("id", id);
 
-		if (wrapInSizeCheck) {
+		if (insertSizeCheck) {
 			StringTemplate check = stg.getInstanceOf("check_vectors_same_length");
-			check.setAttribute("id", template.getAttribute("id"));
-			check.setAttribute("code", template);
+			check.setAttribute("id", DashAST.getUniqueId());
 			check.setAttribute("lhs_id", lhs_id);
 			check.setAttribute("rhs_id", rhs_id);
-			template = check;
+			template.setAttribute("length_check", check);
 		}
 
 		return template;
